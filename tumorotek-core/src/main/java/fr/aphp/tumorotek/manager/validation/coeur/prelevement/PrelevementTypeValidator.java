@@ -80,6 +80,7 @@ public class PrelevementTypeValidator implements Validator
 
       if(pType.getIncaCat() != null){
          //incaCat non vide
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(!pType.getIncaCat().matches("[A-Z]{1,2}")){
             errs.rejectValue("incaCat", "prelevementType.incaCat.illegal");
          }

@@ -46,6 +46,7 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.DropEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -431,6 +432,28 @@ public class FicheAffichage extends AbstractFicheCombineController
       clearConstraints();
       super.onClick$revertC();
    }
+
+
+   //TK-524 :
+   public void onBlur$intituleBox() {
+      String intitule = intituleBox.getValue();
+
+      // Vérifier si on est en mode création ou modification
+      boolean isCreation = (affichage == null || affichage.getAffichageId() == null);
+
+      // Vérifier l'unicité de l'intitulé :
+      // - En mode création, toujours vérifier l'unicité
+      // - En mode modification, vérifier l'unicité seulement si l'intitulé a été modifié
+      if (!intitule.trim().isEmpty() && (isCreation || !intitule.equals(affichage.getIntitule()))) {
+         List<Affichage> affichageAvecIntituleExists = ManagerLocator.getAffichageManager()
+                 .findByIntituleInPlateformeManager(intitule, SessionUtils.getCurrentPlateforme());
+         if (!affichageAvecIntituleExists.isEmpty()) {
+            final String banque = affichageAvecIntituleExists.get(0).getBanque().getNom();
+            throw new WrongValueException(intituleBox, Labels.getLabel("onglet.requete.doublon.error.intitule", new String[] {intitule, banque}));
+         }
+      }
+   }
+
 
    @Override
    public void onClick$validateC(){

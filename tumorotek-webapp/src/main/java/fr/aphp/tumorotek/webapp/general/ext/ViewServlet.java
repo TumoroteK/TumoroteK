@@ -43,6 +43,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -115,7 +116,7 @@ public class ViewServlet extends HttpServlet
                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             }else{
                req.getSession().setAttribute("resourceRequest", resReq);
-               resp.sendRedirect(resp.encodeRedirectURL(req.getContextPath() + "/login/SelectBanque.zul"));
+               resp.sendRedirect(resp.encodeRedirectURL(req.getContextPath() + ConfigManager.SELECT_BANQUE_URL));
             }
          }else{
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);

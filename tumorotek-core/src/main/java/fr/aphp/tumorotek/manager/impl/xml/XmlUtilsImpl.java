@@ -123,6 +123,10 @@ public class XmlUtilsImpl implements XmlUtils
       Document document = null;
       // Racine du document
       final Element racine = new Element("Impression");
+      // CHT : le bloc rattachant l'XML créé au fichier dtd a été mis en commentaire
+      // sans doute à cause d'un problème rencontré lors de l'ajout de l'élément ImageHautDePage à HautDePage
+      // car cela ne respectait plus impression.dtd qui attendait uniquement du test dans HautDePage
+      // à revoir donc (TK-622) 
       // DTD
       //DocType dtd = new DocType(
       //"Impression", "src/main/resources/impression.dtd");
@@ -411,11 +415,31 @@ public class XmlUtilsImpl implements XmlUtils
       }
    }
 
+   //Cette méthode permet de n'afficher qu'un élèment de bas de page à gauche (en plus du numéro de page affiché par défaut à droite).
    @Override
    public void addBasDePage(final Element parent, final String legende){
-      if(parent != null){
+      addBasDePage(parent, legende, null);
+   }
+
+   //Cette méthode permet d'afficher 3 éléments en bas de page : à gauche, au centre avec le numéro de page affiché par défaut à droite)
+   @Override
+   public void addBasDePage(final Element parent, final String left, final String middle) {
+      if (parent != null) {
+
          final Element basDePage = new Element("BasDePage");
-         basDePage.setText(legende);
+         
+         if(left != null && !left.trim().isEmpty()) {
+            final Element texteGaucheElement = new Element("TexteGauche");
+            texteGaucheElement.setText(left);
+            basDePage.addContent(texteGaucheElement);
+         }
+
+         if(middle != null && !middle.trim().isEmpty()) {
+            final Element texteCentreElement = new Element("TexteCentre");
+            texteCentreElement.setText(middle);
+            basDePage.addContent(texteCentreElement);
+         }
+
          parent.addContent(basDePage);
       }
    }
@@ -697,7 +721,7 @@ public class XmlUtilsImpl implements XmlUtils
          }
 
       }else{
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] values = boite.getTerminaleType().getScheme().split(";");
          int cpt = 0;
          final List<Element> lignes = new ArrayList<>();
@@ -1138,7 +1162,7 @@ public class XmlUtilsImpl implements XmlUtils
          }
 
       }else{
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String[] values = boite.getTerminaleType().getScheme().split(";");
          int cpt = 0;
          final List<Element> lignes = new ArrayList<>();

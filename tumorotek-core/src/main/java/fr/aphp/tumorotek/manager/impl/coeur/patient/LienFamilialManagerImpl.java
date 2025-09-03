@@ -181,6 +181,7 @@ public class LienFamilialManagerImpl implements LienFamilialManager
     * @return nom reciproque
     */
    private String switchNomReciproque(final String nom){
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       final Pattern p = Pattern.compile("([A-Za-z]+)-([A-Za-z]+)");
       final Matcher m = p.matcher(nom);
       m.matches(); // toujours TRUE car Validator en amont

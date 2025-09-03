@@ -191,12 +191,12 @@
 									<intbox id="heureBox" 
 										width="50px" height="20px"
 										value="@{fwinEchantillonEdit$composer.heureDelai,  
-										load-after='dateStockCalBox.onBlur'}" />
+										load-after='dateStockCalBox.onBlur,validate.onClick'}" />
 									<label value=" h " style="font-weight:bold;"/>
 									<intbox id="minBox" 
 										width="50px" height="20px"
 										value="@{fwinEchantillonEdit$composer.minDelai,
-										load-after='dateStockCalBox.onBlur'}"/>
+										load-after='dateStockCalBox.onBlur,validate.onClick'}"/>
 									<label value=" min " style="font-weight:bold;"/>
 								</div>	
 							</div>

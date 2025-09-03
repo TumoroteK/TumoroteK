@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action.contexte;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jdom.Element;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -47,20 +48,46 @@ import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
+import fr.aphp.tumorotek.action.exception.ForbiddenI18nException;
 import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.component.OneToManyComponent;
+import fr.aphp.tumorotek.manager.impl.xml.EnteteListe;
+import fr.aphp.tumorotek.manager.impl.xml.LigneListe;
+import fr.aphp.tumorotek.manager.impl.xml.ListeElement;
+import fr.aphp.tumorotek.manager.impl.xml.Paragraphe;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
+/*
+ * /!\ dans le cadre du ticket TK-636, cette classe a été réécrite pour respecter le principe d'indépendance de ce composant qui ne doit pas 
+ * porter de règle de gestion propre à ces cas d'appel (pour cela, utilisation d'une "strategy")
+ * De même, les objets gérés par ce composant (objects) n'ont pas à être reportés comme attributs des objets appelants
+ * Cela a eu pour conséquence de gérer la copy de ceux-ci dans cette classe et de définir une méthode revert.
+ * Par conséquent cette classe est différente des autres classes XxxAssocies. 
+ * Dans l'absolu, il faudrait les adapter avec la même logique mais c'est lourd et un peu risqué. Sera fait selon les besoins
+ * 
+ *
+ */
 public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
 {
 
    private static final long serialVersionUID = 1L;
 
    private List<ConteneurDecorator> objects = new ArrayList<>();
-
-   private boolean conteneursDeBanque = true;
-
+   
+   private List<ConteneurDecorator> copyObjects = new ArrayList<>();
+   
+   //TK-636 : optimisation : findObjectsAddable est appelé à chaque ajout / suppression d'un élément
+   //c'est inutile d'aller chercher tous les conteneurs associables à chaque fois car cela ne doit pas changer
+   private List<Conteneur> allConteneursAssociables = new ArrayList<>();
+   
+   //TK-636 : certains traitements sont différents selon l'appelant (Fiche Banque ou Fiche Plateforme). 
+   //On passe donc par le pattern Strategy : l'appelant instanciera la bonne stratégie
+   private ConteneursAssociesStrategy conteneursAssociesStrategy;
+   
+   //plateforme dépendant de l'appelant. Elle est comparée à la plateforme des conteneurs
+   //pour appliquer des règles de gestion particulières dans le cas de conteneur partagé
    private Plateforme plateforme;
 
    @Override
@@ -68,7 +95,24 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
       objLinkLabel = new Label();
       super.doAfterCompose(comp);
    }
-
+   
+   public void initData(List<Conteneur> listConteneurDejaAssocie, Plateforme plateforme) {
+      this.plateforme = plateforme;
+      setObjects(decorateConteneurs(listConteneurDejaAssocie));
+   }
+   
+   private List<ConteneurDecorator> decorateConteneurs(List<Conteneur> listConteneur) {
+      List<ConteneurDecorator> result = new ArrayList<ConteneurDecorator>();
+      if(listConteneur != null){
+         for(final Conteneur conteneur : listConteneur){
+            result.add(new ConteneurDecorator(conteneur, plateforme, 
+                                    conteneursAssociesStrategy.returnIfConteneurIsSupprimable(plateforme, conteneur)));
+         }
+      }
+      
+      return result;
+   }
+   
    @Override
    public List<ConteneurDecorator> getObjects(){
       return this.objects;
@@ -77,9 +121,15 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
    @Override
    public void setObjects(final List<ConteneurDecorator> objs){
       this.objects = objs;
+      copyObjects = objs;
+      allConteneursAssociables = conteneursAssociesStrategy.retrieveListAllConteneurAssociable(plateforme);
       updateComponent();
    }
-
+   
+   public void revert() {
+      setObjects(copyObjects);
+   }
+   
    public Plateforme getPlateforme(){
       return plateforme;
    }
@@ -88,6 +138,10 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
       this.plateforme = p;
    }
 
+   public void setConteneursAssociesStrategy(ConteneursAssociesStrategy conteneursAssociesStrategy){
+      this.conteneursAssociesStrategy = conteneursAssociesStrategy;
+   }
+   
    @Override
    public void addToListObjects(final ConteneurDecorator obj){
       getObjects().add(obj);
@@ -121,41 +175,36 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
    @Override
    public String getGroupHeaderValue(){
       final StringBuffer sb = new StringBuffer();
-      sb.append(Labels.getLabel("Champ.Banque.Conteneurs"));
+      sb.append(Labels.getLabel("Champ.ConteneursAssocies.Conteneurs"));
       sb.append(" (");
       sb.append(getObjects().size());
       sb.append(")");
       return sb.toString();
    }
-
+   
    @Override
    public List<ConteneurDecorator> findObjectsAddable(){
-      // conteneurs ajoutables
-      final List<ConteneurDecorator> conts = new ArrayList<>();
+      // conteneurs ajoutables sous forme de conteneurDecorator
+      List<ConteneurDecorator> listConteneurDecoratorAjoutable = new ArrayList<>();
+      
+      //Pour déterminer les conteneurs ajoutables, on va chercher tous les conteneurs "associables" et on retire les conteneurs déjà ajoutés. Cela permet de garder les 2 listes bien synchronisées
+      List<Conteneur> listConteneurAjoutable = new ArrayList<Conteneur>(allConteneursAssociables);
 
-      if(conteneursDeBanque){
-         conts.addAll(ConteneurDecorator
-            .decorateListe(ManagerLocator.getConteneurManager().findByPlateformeOrigWithOrderManager(getPlateforme()), null));
-      }
-
-      conts.addAll(ConteneurDecorator.decorateListe(
-         ManagerLocator.getConteneurManager().findByPartageManager(getPlateforme(), conteneursDeBanque),
-         !conteneursDeBanque ? getPlateforme() : null));
-
-      // retire les conteneurs deja assignés
+      //on retire les conteneurs déjà associés
       for(int i = 0; i < getObjects().size(); i++){
-         conts.remove(getObjects().get(i));
+         listConteneurAjoutable.remove(getObjects().get(i).getConteneur());
       }
-      return conts;
-   }
+      
+      //transforme en decorator
+      listConteneurDecoratorAjoutable.addAll(decorateConteneurs(listConteneurAjoutable));
 
+      return listConteneurDecoratorAjoutable;
+   }
+   
+   
    @Override
    public void drawActionForComponent(){
       addObj.setDisabled(!SessionUtils.isAdminPF(sessionScope));
-      //
-      //		List<String> entites = new ArrayList<String>();
-      //		entites.add("Stockage");
-      //		setDroitsConsultation(drawConsultationLinks(entites));
 
       // si pas le droit d'accès aux conteneurs, on cache le lien
       if(!getDroitsConsultation().get("Stockage")){
@@ -165,16 +214,16 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
       }
    }
 
-   public boolean isConteneursDeBanque(){
-      return conteneursDeBanque;
-   }
-
-   public void setConteneursDeBanque(final boolean cDeBanque){
-      this.conteneursDeBanque = cDeBanque;
-   }
-
    /**
-    * Vérifies qu'aucun référencement sur ce conteneur, impliquant un
+    * cette méthode permet de renvoyer à l'appelant du composant les conteneurs pour l'association
+    * @return
+    */
+   public List<Conteneur> retrieveListConteneurForAssociation() {
+      return conteneursAssociesStrategy.retrieveListConteneurForAssociation(objects);
+   }
+   
+   /**
+    * Vérifie qu'aucun référencement sur ce conteneur, impliquant un
     * probable stockage de matériel, n'a été établi à partir de la
     * ConteneurPlateforme.
     **/
@@ -183,21 +232,93 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
 
       final ConteneurDecorator cur = (ConteneurDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
 
-      if(!isConteneursDeBanque()){ // referencement depuis plateforme
-         if(ManagerLocator.getConteneurManager()
-            .findByBanquesWithOrderManager(
-               new ArrayList<>(ManagerLocator.getPlateformeManager().getBanquesManager(cur.getCurrent())))
-            .contains(cur.getConteneur())){
-            Messagebox.show(Labels.getLabel("plateforme.conteneur.remove.error"), Labels.getLabel("general.warning"),
-               Messagebox.OK, Messagebox.ERROR);
-         }else{
-            super.onClick$deleteImage(event);
-         }
-      }else{ // referencement depuis Banque -> warning
-         Messagebox.show(Labels.getLabel("banque.conteneur.remove.warning"), Labels.getLabel("general.warning"), Messagebox.OK,
-            Messagebox.EXCLAMATION);
+      try {
+         conteneursAssociesStrategy.doBeforeDelete(cur);
          super.onClick$deleteImage(event);
+      }
+      catch (ForbiddenI18nException forbiddenI18nException) {
+         Messagebox.show(Labels.getLabel(forbiddenI18nException.getKeyI18n()), Labels.getLabel("general.warning"),
+            Messagebox.OK, Messagebox.ERROR);
       }
 
    }
+   
+   /**
+    * Ajoute les infos conteneurs à imprimer à la page passée en paramètre.
+    * @param page
+    */
+   public void addInfosConteneursToPrint(final Element page){
+      // TK-635 : La colonne de la plateforme d'origine n'est ajoutée que si au moins un conteneur dans la liste est partagé par une
+      // autre plateforme. 
+      // Cette condition évite d'encombrer le tableau avec une colonne inutile lorsque tous les conteneurs appartiennent à la plateforme
+      // de l'objet en cours d'impression (banque ou plateforme)
+      boolean existsConteneurPartage = 
+         objects.stream(). anyMatch(conteneurDecorator -> !plateforme.equals(conteneurDecorator.getConteneur().getPlateformeOrig()));
+      
+      int nbColonne = 5;
+      if(existsConteneurPartage) {
+         nbColonne = 6;
+      }
+     
+      // Entete
+      final String[] listeEntete = new String[nbColonne];
+      listeEntete[0] = Labels.getLabel("conteneur.code");
+      listeEntete[1] = Labels.getLabel("conteneur.nom");
+      listeEntete[2] = Labels.getLabel("conteneur.temp");
+      listeEntete[3] = Labels.getLabel("conteneur.service");
+      listeEntete[4] = Labels.getLabel("service.etablissement");
+      if(existsConteneurPartage) {
+         listeEntete[5] = Labels.getLabel("conteneur.plateformeOrig");
+      }
+      final EnteteListe entetes = new EnteteListe(listeEntete);
+
+      // liste des conteneurs
+      final LigneListe[] liste = new LigneListe[objects.size()];
+      for(int i = 0; i < objects.size(); i++){
+         final String[] valeurs = new String[nbColonne];
+         Conteneur conteneur = objects.get(i).getConteneur();
+         // code
+         valeurs[0] = conteneur.getCode();
+         // nom
+         valeurs[1] = conteneur.getNom();
+         // température
+         final StringBuffer sb = new StringBuffer();
+         sb.append(conteneur.getTemp());
+         sb.append("°C");
+         valeurs[2] = sb.toString();
+         // service
+         if(conteneur.getService() != null){
+            valeurs[3] = conteneur.getService().getNom();
+         }else{
+            valeurs[3] = "-";
+         }
+         // etablissement
+         if(conteneur.getService() != null
+            && conteneur.getService().getEtablissement() != null){
+            valeurs[4] = conteneur.getService().getEtablissement().getNom();
+         }else{
+            valeurs[4] = "-";
+         }
+         if(existsConteneurPartage) {
+            valeurs[5] = conteneur.getPlateformeOrig().getNom();
+         }
+         
+         final LigneListe ligne = new LigneListe(valeurs);
+         liste[i] = ligne;
+      }
+      ListeElement listeSites = null;
+      if(objects.size() > 0){
+         listeSites = new ListeElement(null, entetes, liste);
+      }
+
+      // ajout du paragraphe
+      final StringBuffer sb = new StringBuffer();
+      sb.append(Labels.getLabel("Champ.ConteneursAssocies.Conteneurs"));
+      sb.append(" (");
+      sb.append(objects.size());
+      sb.append(")");
+      final Paragraphe par = new Paragraphe(sb.toString(), null, null, null, listeSites);
+      ManagerLocator.getXmlUtils().addParagraphe(page, par);
+   }
+
 }

@@ -55,6 +55,8 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 /**
  *
  * Objet persistant mappant la table CHAMP_ENTITE_BLOC.
+ * Cette table est le référentiel des champs constituant les différents bloc d'impression. 
+ * Elle est alimentée à la création de la base de données
  * Classe créée le 30/07/2010.
  *
  * @author Pierre Ventadour

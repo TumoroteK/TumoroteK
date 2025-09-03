@@ -113,7 +113,7 @@ CREATE PROCEDURE stats_count_prepasimples(IN date_debut DATE, IN date_fin DATE, 
     SET @sql = CONCAT(@sql, ' on b.banque_id = tt.banque_id');
 
     SET @sql = COMPOSE_PRELSQL(@sql, date_debut, date_fin, null, sModeleId);
-
+    
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;

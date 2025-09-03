@@ -38,6 +38,8 @@ package fr.aphp.tumorotek.manager.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Groupement;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -74,13 +76,6 @@ public interface RequeteManager
     */
    void renameRequeteManager(Requete requete, String intitule);
 
-   /**
-    * Copie une Requête en BDD.
-    * @param requete Requête à copier.
-    * @param copieur Utilisateur qui copie la Requête.
-    * @return la Requête copiée.
-    */
-   Requete copyRequeteManager(Requete requete, Utilisateur copieur, Banque banque);
 
    /**
     * Créé une nouvelle Requête en BDD.
@@ -103,14 +98,6 @@ public interface RequeteManager
    void removeObjectManager(Requete requete);
 
    /**
-    * Recherche les Requêtes dont l'utilisateur créateur est passé en
-    * paramètre.
-    * @param util Utilisateur qui à créé les Requêtes recherchées.
-    * @return la liste de toutes les Requêtes de l'Utilisateur.
-    */
-   List<Requete> findByUtilisateurManager(Utilisateur util);
-
-   /**
     * Recherche les Requêtes dont la Banque est passée en
     * paramètre.
     * @param banque Banque qui à créé les Requêtes recherchées.
@@ -127,40 +114,32 @@ public interface RequeteManager
    List<Requete> findByBanqueInLIstManager(List<Banque> banques);
 
    /**
-    * Recherche les Requêtes dont l'intitulé est passé en paramètre.
-    * @param intitule Intitulé des Requêtes recherchées.
-    * @return la liste de toutes les Requêtes de l'intitulé.
-    */
-   List<Requete> findByIntituleManager(String intitule);
-
-   /**
-    * Recherche les Requetes dont l'intitulé et l'utilisateur
-    * sont passés en paramètre.
-    * @param intitilé des Requetes recherchées.
-    * @param util Utilisateur qui à créé les Requetes recherchées.
-    * @return la liste de toutes les Requetes de l'intitulé.
-    */
-   List<Requete> findByIntituleAndUtilisateurManager(String intitule, Utilisateur util);
-
-   /**
-    * Recherche les doublons d'un Affichage passé en paramètre.
-    * @param affichage un Affichage pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(Requete requete);
-
-   /**
-    * Méthode qui permet de vérifier que 2 Requêtes sont des copies.
-    * @param r Requête première Requête à vérifier.
-    * @param copie deuxième Requête à vérifier.
-    * @return true si les 2 Requêtes sont des copies, false sinon.
-    */
-   Boolean isCopyManager(Requete r, Requete copie);
-
-   /**
     * Méthode qui vérifie que la Requete n'est pas utilisée.
     * @param requete Requete.
     * @return True si la Requete est associée à une recherche.
     */
    Boolean isUsedObjectManager(Requete requete);
+
+
+   /**
+    * Recherche les Requêtes par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule L'intitulé de la Requête à rechercher
+    * @param plateforme La plateforme dans laquelle rechercher
+    * @return la liste des Requêtes correspondantes
+    */
+   List<Requete> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
+
+   /**
+    * Vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+    * Si la requête passée en paramètre existe déjà en base de données (champ requeteId valorisé) - cas de la modification de l'intitulé - 
+    * l'id de la requête trouvée en base de données sera comparé avec celui de la requête en paramètre
+    * pour ne renvoyer true que si les 2 sont différents.
+    *
+    * @param requete La requête de laquelle sera récupéré l'intitulé pour vérifier l'existence d'un doublon.
+    * @param plateforme La plateforme dans laquelle vérifier l'unicité de l'intitulé.
+    * @return true / false.
+    */
+   boolean isDoublonIntituleInPlateformeManager(final Requete requete, Plateforme plateforme);
+
 }

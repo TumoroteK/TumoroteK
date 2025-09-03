@@ -65,28 +65,29 @@ public class FichePasswordModale extends GenericForwardComposer<Component>
    public void onClick$validate(){
       if(!isAdminPF){
          // vérification de l'ancien mdp
-         if(!ObjectTypesFormatters.getEncodedPassword(oldPassword).equals(this.utilisateur.getPassword())){
+         if(!ManagerLocator.getTKDelegatingPasswordEncoder().matches(oldPassword, utilisateur.getPassword())){
             throw new WrongValueException(ancienPasswordBox, Labels.getLabel("utilisateur.bad.old.password"));
          }
       }
-      // vérification de la confirmation du mdp
+      // vérification de la confirmation du nouveau mdp
       if(!confirmationPassword.equals(newPassword)){
          throw new WrongValueException(confirmPasswordBox, Labels.getLabel("utilisateur.bad.password"));
       }
 
-      if(!ObjectTypesFormatters.getEncodedPassword(newPassword).equals(utilisateur.getPassword())){
-         Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
-         Events.echoEvent("onLaterUpdate", self, null);
-      }else{
-         Messagebox.show(Labels.getLabel("utilisateur.same.password"), "Error", Messagebox.OK, Messagebox.ERROR);
+      //vérification que le mot de passe a bien été changé
+      if(newPassword.equals(oldPassword)) {
+         throw new WrongValueException(confirmPasswordBox, Labels.getLabel("utilisateur.same.password"));
       }
+      
+      Clients.showBusy(Labels.getLabel("utilisateur.creation.encours"));
+      Events.echoEvent("onLaterUpdate", self, null);
    }
 
    public void onLaterUpdate(){
       try{
          // sauvegarde
          ManagerLocator.getUtilisateurManager().updatePasswordManager(utilisateur,
-            ObjectTypesFormatters.getEncodedPassword(newPassword), ObjectTypesFormatters.getNbMoisMdp(),
+            ManagerLocator.getTKDelegatingPasswordEncoder().encode(newPassword), ObjectTypesFormatters.getNbMoisMdp(),
             SessionUtils.getLoggedUser(sessionScope));
          // ferme wait message
          Clients.clearBusy();

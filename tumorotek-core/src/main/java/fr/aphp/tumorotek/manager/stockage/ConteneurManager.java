@@ -150,12 +150,31 @@ public interface ConteneurManager
    Set<ConteneurPlateforme> getConteneurPlateformesManager(Conteneur conteneur);
 
    /**
-    * Recherche les doublons du Conteneur passé en paramètre.
-    * @param conteneur Conteneur pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
+    * Vérifie s'il existe déjà en base de données, un conteneur différent de celui passé en paramètre,
+    * ayant le même code et la même plateforme d'origine.
+    *
+    * Cette méthode est utilisée pour le contrôle lors de la création (conteneurId null) 
+    * et de la modification (conteneurId non null). Dans ce dernier cas, le contrôle fera la recherche 
+    * en excluant ce conteneurId.
+    * 
+    * @param conteneur Le conteneur à vérifier. Ne doit pas être null et doit contenir un code et une plateforme non null.
+    * @return {@code true} si la recherche ramène un conteneur, {@code false} sinon.
     */
-   Boolean findDoublonManager(Conteneur conteneur, List<Banque> banques);
+   boolean findDoublonManager(Conteneur conteneur);
 
+   /**
+    * Recherche les conteneurs différents de celui passé en paramètre,
+    * ayant le même nom et la même plateforme d'origine.
+    *
+    * Cette méthode est utilisée pour avertir l'utilisateur lors de la création (conteneurId null) 
+    * et de la modification (conteneurId non null). Dans ce dernier cas, le contrôle fera la recherche 
+    * en excluant ce conteneurId.
+    * 
+    * @param conteneur Le conteneur à vérifier. Ne doit pas être null et doit contenir un nom et une plateforme non null.
+    * @return la liste des conteneurs trouvés.
+    */
+   List<Conteneur> findAutreAvecMemeNomEtMemePlateformeManager(final Conteneur conteneur);
+   
    /**
     * Teste si le Conteneur passé en paramètre est utilisé par
     * d'autres objets.
@@ -256,14 +275,23 @@ public interface ConteneurManager
    boolean hasRetoursManager(Conteneur conteneur);
 
    /**
-    * Recherche tous les conteneurs qui sont accessibles à partir
-    * d'une plateforme, et si ils sont actuellement déja assignés en partage ou pas.
+    * Recherche tous les conteneurs mis à disposition de la plateforme en paramètre (par une autre plateforme) en filtrant sur la caractéristique "partage"
+    * qui indique que la plateforme destinataire à accepter ou pas le partage. L'acceptation (partage valant true) assigne le conteneur à la plateforme et 
+    * permet ensuite d'ajouter ce conteneur à ses collections.
     * @param Plateforme pf
     * @param partage true/false
     * @return Liste de conteneurs.
     */
    List<Conteneur> findByPartageManager(Plateforme pf, Boolean partage);
 
+   /**
+    * Recherche tous les conteneurs mis à disposition de la plateforme en paramètre (par une autre plateforme) que celle-ci l'aie accepté ou non.
+    * @param Plateforme pf
+    * @param partage true/false
+    * @return Liste de conteneurs.
+    */
+   List<Conteneur> findAllPartagesManager(Plateforme pf);
+   
    /**
     * Recherche la température de stockage correspondant à un emplacement.
     * Renvoie null si aucune température ou emplacement null.
@@ -296,4 +324,29 @@ public interface ConteneurManager
     * @since 2.2.1-IRELEC
     */
    ConteneurPlateforme getOneConteneurPlateformeManager(Conteneur conteneur, Plateforme pf);
+
+   /**
+    * Recherche les conteneurs ayant le code spécifié en paramètre et appartenant à une plateforme donnée.
+    * Cette méthode est utilisée pour détecter d'éventuels doublons lors de la création
+    * d'un conteneur, en tenant compte de la distinction par plateforme introduite en version 2.
+    * NB : normalement cette méthode ne doit ramener qu'un seul élément maximum mais vu qu'en version 1
+    * le contrôle de doublons était à la collection, il pourrait rester sur la plateforme, plusieurs conteneurs avec le même code.
+    * Par conséquent, par sécurité, la méthode renvoie une liste.
+    *
+    * @param code        Le code du conteneur recherché.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @return            La liste des conteneurs correspondants aux critères spécifiés.
+    */
+   List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme);
+
+
+   /**
+    * Recherche une liste de conteneurs ayant le nom spécifié en paramètre et appartenant à une plateforme donnée.
+    *
+    * @param nom         Le nom des conteneurs recherchés.
+    * @param plateforme  La plateforme sur laquelle faire la recherche.
+    * @return            La liste des conteneurs correspondant aux critères spécifiés.
+    */
+   List<Conteneur> findByNomAndPlateforme(String nom, Plateforme plateforme);
+
 }

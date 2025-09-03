@@ -550,27 +550,38 @@ public class ListeStockages extends AbstractController
    // du couple enceintes/terminales qui fait le déplacement
    private boolean checkConteneurDeplacementCoherence(TumoTreeNode destObj){
       int[] departContPath = ttm.getPath((TumoTreeNode) currentObject);
+      //Le déplacement est une permutation donc il faut faire les vérifications au niveau des banques du conteneur de destination
+      //pour le contenu de l'enceinte / terminale de départ et au niveau des banques du conteneur de départ pour le contenu
+      //de l'enceinte / terminale de destination.
       Conteneur departCont = getRootConteneurs().get(departContPath[0]);
       Conteneur destCont = getRootConteneurs().get(ttm.getSelectionPath()[0]);
 
       Set<Banque> departContBanks = ManagerLocator.getConteneurManager().getBanquesManager(departCont);
       Set<Banque> destContBanks = ManagerLocator.getConteneurManager().getBanquesManager(destCont);
 
-      // current objects banks
+      // récupération des banques des objets contenus dans la destination pour comparaison avec les banques autorisées pour le conteneur de départ : 
       List<Banque> movedObjectBanks = destObj instanceof EnceinteNode ?
          ManagerLocator.getEnceinteManager().getDistinctBanquesFromTkObjectsManager(((EnceinteNode) destObj).getEnceinte()) :
          ManagerLocator.getTerminaleManager().getDistinctBanquesFromTkObjectsManager(((TerminaleNode) destObj).getTerminale());
 
-      Conteneur unavailableConteneur = null;
-      List<Banque> missingBanks = null;
       // le conteneur de destination est-il accessible par les collections 
       // représentées par le contenu de la boite déplacée
-      if(!destContBanks.containsAll(restrictedBanqueDeplacement)){
+      Conteneur unavailableConteneur = null;
+      //TK-331 : on n'affiche à l'utilisateur que les banques manquantes.
+      //initialisation avec toutes les banques de l'enceinte déplacée
+      List<Banque> missingBanks = new ArrayList<Banque>(restrictedBanqueDeplacement);
+      //suppression des banques définies dans le conteneur de destination. On remontera à l'utilisateur celles qui restent
+      missingBanks.removeIf(bank -> destContBanks.contains(bank));
+      if(!missingBanks.isEmpty()) {
          unavailableConteneur = destCont;
-         missingBanks = restrictedBanqueDeplacement;
-      }else if(!departContBanks.containsAll(movedObjectBanks)){
-         unavailableConteneur = departCont;
-         missingBanks = movedObjectBanks;
+      }
+      else {
+         //si 1er contrôle OK, on fait le même contrôle dans l'autre sens car les enceintes sont permutées
+         missingBanks = new ArrayList<Banque>(movedObjectBanks);
+         missingBanks.removeIf(bank -> departContBanks.contains(bank));
+         if(!missingBanks.isEmpty()) {
+            unavailableConteneur = departCont;
+         }
       }
 
       if(unavailableConteneur != null){ // incoherence -> on met la destination en rouge
@@ -704,31 +715,29 @@ public class ListeStockages extends AbstractController
       StockageUtils.createExcelForPlanConteneur(conteneurs, avecBoites);
    }
 
-   /**
-    * Gère les erreurs survenues lors de la génération du fichier Excel.
-    *
-    * Cette méthode affiche une notification à l'utilisateur et enregistre l'erreur dans les logs.
-    *
-    * @param labelKey Clé du label pour le message d'erreur.
-    * @param e L'exception qui a été levée.
-    */
-   private void handleError(String labelKey, Exception e) {
-      String errorMessage = Labels.getLabel(labelKey, new Object[]{e.getMessage()});
-      Clients.showNotification(errorMessage, "error", null, null, 3000);
-      log.error(errorMessage, e);
-   }
-
-
+   //la méthode est mal nommée : elle ferme tous les noeuds ouverts, resélectionne le noeud de l'arborescence 
+   //associé au conteneur et l'ouvre  
    public void updateConteneur(final Conteneur conteneur){
 
       final ConteneurNode node = new ConteneurNode(conteneur, null, curPf);
 
       ((TreeOpenableModel) ttm).clearOpen();
-      selectedItem = mainTreeContext.renderItemByPath(ttm.getPath(node));
+      int[] nodePath = ttm.getConteneurPath(node);
+      selectedItem = mainTreeContext.renderItemByPath(nodePath);
 
-      ttm.addOpenPath(ttm.getPath(node));
+      ttm.addOpenPath(nodePath);
    }
-
+   
+   
+   //TK-421 :
+   //impossible de mettre à jour uniquement le node concerné car beaucoup d'objets ListeStockage font référence
+   //aux conteneurs donc il y a un risque d'introduction d'incohérence.
+   //Par ailleurs, cette méthode n'est appelée que dans le cas de la mise à jour des code ou libellé d'un conteneur
+   //ce qui doit être assez rare. Donc le rapport bénéfice / risque fait prévilégier la sécurité à l'optimisation.
+   public void updateLibelleConteneurNode(final Conteneur conteneur) {
+      updateAllConteneurs(false);
+   }
+   
    /**
     * Mets à jour la liste des conteneurs
     * @version 2.1

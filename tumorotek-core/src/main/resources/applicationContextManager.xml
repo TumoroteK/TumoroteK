@@ -83,6 +83,7 @@
 				<property name="patientValidator" ref="patientValidator" />
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />
+				<property name="entityManagerFactory" ref="entityManagerFactory" />
 			</bean>
 		</property>
 	</bean>
@@ -286,6 +287,8 @@
 				<property name="dossierExterneDao" ref="dossierExterneDao" />
 				<property name="objetNonConformeManager"
 					ref="objetNonConformeManager" />
+				<property name="majDelaiCongelFromPrelevementProcessor"
+					ref="majDelaiCongelFromPrelevementProcessor" />					
 				<!-- <property name="prelevementDelegateDao" ref="prelevementDelegateDao" 
 					/> -->
 			</bean>
@@ -364,6 +367,15 @@
 			</bean>
 		</property>
 	</bean>
+
+	<bean id="majDelaiCongelFromPrelevementProcessor" parent="txProxyTemplate">
+		<property name="target">
+			<bean
+				class="fr.aphp.tumorotek.manager.impl.coeur.prelevement.MajDelaiCongelFromPrelevementProcessor">
+				<property name="echantillonManager" ref="echantillonManager" />
+			</bean>
+		</property>
+	</bean>				
 
 	<bean id="prelEchanManager" parent="txProxyTemplate">
 		<property name="target">
@@ -803,8 +815,15 @@
 				<property name="templateManager" ref="templateManager" />
 				<property name="utilisateurManager"
 					ref="utilisateurManager" />
+				<property name="maladieManager"	ref="maladieManager" />
+				<property name="patientManager"	ref="patientManager" />
 			</bean>
 		</property>
+	</bean>
+
+	<!-- ce bean ne prend pas en charge de transaction au niveau de la bdd. Elle sera gérée par le banqueManagerImpl associé -->
+	<bean id="banqueSuppressionProcessor" class="fr.aphp.tumorotek.manager.impl.contexte.BanqueSuppressionProcessorImpl">
+		<property name="banqueManager" ref="banqueManager" />	
 	</bean>
 
 	<bean id="categorieValidator"

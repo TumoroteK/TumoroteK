@@ -65,12 +65,6 @@ public interface GroupementManager
     */
    List<Groupement> findAllObjectsManager();
 
-   /**
-    * Copie un Groupement en BDD.
-    * @param groupement Groupement à copier.
-    * @return le Groupement copié.
-    */
-   Groupement copyGroupementManager(Groupement groupement);
 
    /**
     * Créé un Groupement en BDD.
@@ -113,12 +107,5 @@ public interface GroupementManager
     */
    List<Critere> findCriteresManager(Groupement groupementRacine);
 
-   /**
-    * Méthode qui permet de vérifier que 2 Groupements sont des copies (et que
-    * leurs enfants aussi).
-    * @param g Groupement premier Groupement à vérifier.
-    * @param copie deuxième Groupement à vérifier.
-    * @return true si les 2 Groupements sont des copies, false sinon.
-    */
-   Boolean isCopyManager(Groupement g, Groupement copie);
+
 }

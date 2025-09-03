@@ -136,7 +136,7 @@ public class EntiteManagerImpl implements EntiteManager
          //Toutefois cela permet de sécuriser si un jour ChampAnnotation et ChampDelegue étaient ajoutés dans la table ENTITE (ce qui devrait être le cas)
          //Ainsi, initialisation avec cette valeur avant surcharge si on n'est pas dans ce cas:
          String nomAttribut = "id";
-
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(!entite.getNom().matches("ChampAnnotation|ChampDelegue|ChampEntite")){
             final String first = nomTable.substring(0, 1);
             final String end = nomTable.substring(1);

@@ -127,7 +127,7 @@ public class CritereValidator implements Validator
                errs.rejectValue("operateur", "critere.operateur.illegal");
             }
 
-         }else if(type.matches("date.*")){
+         }else if(type.startsWith("date")){
             if(!critere.getOperateur().equals("<") && !critere.getOperateur().equals("<=") && !critere.getOperateur().equals(">")
                && !critere.getOperateur().equals(">=") && !critere.getOperateur().equals("=")
                && !critere.getOperateur().equals("!=") && !critere.getOperateur().equals("is null")){

@@ -67,17 +67,14 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 @Entity
 @Table(name = "RECHERCHE")
 @NamedQueries(
-   value = {@NamedQuery(name = "Recherche.findByUtilisateur", query = "SELECT r FROM Recherche r WHERE " + "r.createur = ?1"),
-      @NamedQuery(name = "Recherche.findByExcludedId", query = "SELECT r FROM Recherche r " + "WHERE r.rechercheId != ?1"),
-      @NamedQuery(name = "Recherche.findByAffichage", query = "SELECT r FROM Recherche r " + "WHERE r.affichage = ?1"),
+   value = {@NamedQuery(name = "Recherche.findByAffichage", query = "SELECT r FROM Recherche r " + "WHERE r.affichage = ?1"),
       @NamedQuery(name = "Recherche.findByRequete", query = "SELECT r FROM Recherche r " + "WHERE r.requete = ?1"),
-      @NamedQuery(name = "Recherche.findByIntituleUtilisateur",
-         query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1 " + "AND r.createur = ?2"),
-      @NamedQuery(name = "Recherche.findByIntitule", query = "SELECT r FROM Recherche r " + "WHERE r.intitule like ?1"),
       @NamedQuery(name = "Recherche.findByBanqueId",
          query = "SELECT r FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId = ?1"),
       @NamedQuery(name = "Recherche.findByBanqueIdinList",
-         query = "SELECT distinct(r) FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId in (?1)")})
+         query = "SELECT distinct(r) FROM Recherche r " + "left join r.banques b " + "WHERE b.banqueId in (?1)"),
+      @NamedQuery(name = "Recherche.findByIntituleInPlateforme",
+      query = "SELECT r FROM Recherche r join r.banques b WHERE r.intitule = ?1 and b.plateforme = ?2")})
 public class Recherche implements TKdataObject, Comparable<Recherche>
 {
 
@@ -161,6 +158,9 @@ public class Recherche implements TKdataObject, Comparable<Recherche>
       this.requete = req;
    }
 
+   //Ce @ManyToMany est une erreur de conception car la banque concernée est celle à laquelle la requête est rattachée
+   //et non celles sur lesquelles la recherche peut être exécutée. Celles-ci ne sont pas stockées en base...
+   //à revoir (TK-638)
    @ManyToMany(targetEntity = Banque.class)
    @JoinTable(name = "RECHERCHE_BANQUE", joinColumns = @JoinColumn(name = "RECHERCHE_ID"),
       inverseJoinColumns = @JoinColumn(name = "BANQUE_ID"))

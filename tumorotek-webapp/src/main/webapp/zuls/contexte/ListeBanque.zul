@@ -46,10 +46,11 @@
 			model="@{lwinBanque$composer.listObjects, load-after='banquesActifsBox.onCheck'}"
 			rowRenderer="${lwinBanque$composer.listObjectsRenderer}">
 			<columns sizable="true">
-				<column label="${c:l('Champ.Banque.Nom')}" sort="auto" />
-				<column label="${c:l('Champ.Banque.Contexte')}" sort="auto" />
-				<column label="${c:l('Champ.Banque.Proprietaire')}" sort="auto" />
-				<column label="${c:l('Champ.Banque.Collaborateur')}" />
+			    <!-- TK-627 - NB : sort="auto" est case-INsensitive mais sort="auto(property)" est case-SENSITIVE : https://www.zkoss.org/wiki/ZK_Component_Reference/Data/Listbox#Case-insensitive -->
+				<column label="${c:l('Champ.Banque.Nom')}" sort="auto(LOWER(nom))" />
+				<column label="${c:l('Champ.Banque.Contexte')}" sort="auto(LOWER(contexte.libelle))" />
+				<column label="${c:l('Champ.Banque.Proprietaire')}" sort="auto(LOWER(proprietaire.nom))" />
+				<column label="${c:l('Champ.Banque.Collaborateur')}" sort="auto(LOWER(collaborateur.nom))" />
 			</columns>
 			<rows>
 			</rows>

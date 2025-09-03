@@ -36,9 +36,11 @@
 package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
@@ -200,6 +202,13 @@ public class RechercheManagerImpl implements RechercheManager
       return rechercheDao.findAll();
    }
 
+   //A brancher sur le front (TK-641)
+   //NB : la modification en base de l'intitulé est faite
+   //par l'appel de l'update global sur l'objet donc
+   //il vaut mieux le récupérer avant pour ne pas écraser
+   //des modifications faites entre temps par un autre utilisateur
+   //Sinon, il faut écrire une requête hql pour mettre à jour uniquement
+   //ce champ. Ceci serai la méthode la plus optimisée.
    /**
     * Renomme une Recherche (change son intitulé).
     *
@@ -215,91 +224,21 @@ public class RechercheManagerImpl implements RechercheManager
          log.warn("Objet obligatoire Recherche manquant lors du renommage d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Recherche");
       }
-      if(findByIdManager(recherche.getRechercheId()) == null){
+      Recherche refreshedRecherche = findByIdManager(recherche.getRechercheId());
+      if(refreshedRecherche == null){
          throw new SearchedObjectIdNotExistException("Recherche", recherche.getRechercheId());
       }
       // on modifie l'intitule
-      recherche.setIntitule(intitule);
+      refreshedRecherche.setIntitule(intitule);
       // On met a jour la recherche
-      if(findDoublonManager(recherche)){
+      if(isDoublonIntituleInPlateformeManager(refreshedRecherche, refreshedRecherche.getBanques().get(0).getPlateforme())){//une recherche est rattachée à tort à plusieurs banques :-(
          log.warn("Doublon lors de la modification de l'objet Recherche : {}",  recherche);
          throw new DoublonFoundException("Recherche", "modification");
       }
-      BeanValidator.validateObject(recherche, new Validator[] {rechercheValidator});
-      rechercheDao.updateObject(recherche);
+      BeanValidator.validateObject(refreshedRecherche, new Validator[] {rechercheValidator});
+      rechercheDao.updateObject(refreshedRecherche);
    }
 
-   /**
-   //	 * Copie une Recherche en BDD.
-   //	 *
-   //	 * @param recherche
-   //	 *            Recherche à copier.
-   //	 * @param copieur
-   //	 *            Utilisateur qui copie la Recherche.
-   //	 * @return la Recherche copiée.
-   //	 */
-   //	@Override
-   //	public Recherche copyRechercheManager(Recherche recherche,
-   //			Utilisateur copieur, Banque banque) {
-   //		// On verifie que la recherche n'est pas nulle
-   //		if (recherche == null) {
-   //			log.warn("Objet obligatoire Recherche manquant lors "
-   //					+ "de la copie d'un objet Recherche");
-   //			throw new RequiredObjectIsNullException("Recherche", "copie",
-   //					"Recherche");
-   //		}
-   //		// On verifie que l'utilisateur n'est pas nul
-   //		if (copieur == null) {
-   //			log.warn("Objet obligatoire Utilisateur manquant lors "
-   //					+ "de la copie d'un objet Recherche");
-   //			throw new RequiredObjectIsNullException("Recherche",
-   //					"modification", "Utilisateur");
-   //		}
-   //		Affichage affichage = null;
-   //		// On vérifie que l'affichage n'appartient pas au copieur
-   //		if (recherche.getAffichage().getCreateur().equals(copieur)) {
-   //			affichage = recherche.getAffichage();
-   //		} else {
-   //			// On copie l'affichage
-   //			affichage = affichageManager.copyAffichageManager(recherche
-   //					.getAffichage(), copieur, banque);
-   //			// On vérifie que la copie n'est pas déjà dans la liste du copieur
-   //			List<Affichage> affichages = affichageManager
-   //					.findByUtilisateurManager(copieur);
-   //			if (affichages.contains(affichage)) {
-   //				affichage = affichages.get(affichages.indexOf(affichage));
-   //			}
-   //		}
-   //
-   //		Requete requete = null;
-   //		// On vérifie que la requete n'appartient pas au copieur
-   //		if (recherche.getRequete().getCreateur().equals(copieur)) {
-   //			requete = recherche.getRequete();
-   //		} else {
-   //			// On copie la requete
-   //			requete = requeteManager.copyRequeteManager(recherche.getRequete(),
-   //					copieur, banque);
-   //			// On vérifie que la copie n'est pas déjà dans la liste du copieur
-   //			List<Requete> requetes = requeteManager
-   //					.findByUtilisateurManager(copieur);
-   //			if (requetes.contains(requete)) {
-   //				requete = requetes.get(requetes.indexOf(requete));
-   //			}
-   //		}
-   //		// copie de la recherche
-   //		Recherche r = new Recherche(recherche.getIntitule(), affichage,
-   //				requete, recherche.getBanques(), copieur);
-   //		BeanValidator.validateObject(r, new Validator[] { rechercheValidator });
-   //		// enregistrement de la recherche en BDD
-   //		rechercheDao.createObject(r);
-   //
-   //		updateBanques(r, r.getBanques());
-   //
-   //		// ajout de la recherche copiee dans la liste
-   //		recherches.add(r);
-   //
-   //		return r;
-   //	}
 
    /**
     * Créé une nouvelle Recherche en BDD.
@@ -332,6 +271,19 @@ public class RechercheManagerImpl implements RechercheManager
          log.warn("Objet obligatoire Utilisateur manquant lors de la création d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "création", "Utilisateur");
       }
+      
+      //On vérifie que la banque n'est pas nul
+      if(banque == null){
+         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Recherche");
+         throw new RequiredObjectIsNullException("Recherche", "création", "Banque");
+      }
+      
+      // On vérifie si une recherche avec le même intitulé existe déjà
+      if(isDoublonIntituleInPlateformeManager(recherche, banque.getPlateforme())){
+         log.warn("Doublon lors de la creation de l'objet Recherche : {}",  recherche);
+         throw new DoublonFoundException("Recherche", "creation");
+      }
+      
       if(affichage.getAffichageId() != null){
          affichage = affichageDao.mergeObject(affichage);
       }else{
@@ -390,6 +342,16 @@ public class RechercheManagerImpl implements RechercheManager
       if(createur == null){
          log.warn("Objet obligatoire Utilisateur manquant lors de la modification d'un objet Recherche");
          throw new RequiredObjectIsNullException("Recherche", "modification", "Utilisateur");
+      }
+      //On vérifie que la banque n'est pas nul
+      if(banque == null){
+         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Recherche");
+         throw new RequiredObjectIsNullException("Recherche", "modification", "Banque");
+      }
+      // On vérifie si une recherche avec le même intitulé existe déjà
+      if(isDoublonIntituleInPlateformeManager(recherche, banque.getPlateforme())){
+         log.warn("Doublon lors de la creation de l'objet Recherche : {}",  recherche);
+         throw new DoublonFoundException("Recherche", "modification");
       }
       if(affichage.getAffichageId() != null){
          affichage = affichageDao.mergeObject(affichage);
@@ -450,47 +412,7 @@ public class RechercheManagerImpl implements RechercheManager
       rechercheDao.removeObject(recherche.getRechercheId());
    }
 
-   /**
-    * Recherche les Recherches dont l'utilisateur créateur est passé en
-    * paramètre.
-    *
-    * @param util
-    *            Utilisateur qui à créé les Recherches recherchées.
-    * @return la liste de toutes les Recherches de l'Utilisateur.
-    */
-   @Override
-   public List<Recherche> findByUtilisateurManager(final Utilisateur util){
-      // On vérifie que l'utilisateur n'est pas nul
-      if(util == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors de la recherche par l'Utilisateur d'un objet Recherche");
-         throw new RequiredObjectIsNullException("Recherche", "recherche par Utilisateur", "Utilisateur");
-      }
-      return rechercheDao.findByUtilisateur(util);
-   }
 
-   /**
-    * Recherche les Recherches dont l'intitulé est passé en paramètre.
-    *
-    * @param intitule Intitulé des Recherches recherchées.
-    * @return la liste de toutes les Recherches de l'intitulé.
-    */
-   @Override
-   public List<Recherche> findByIntituleManager(final String intitule){
-      // On vérifie que l'utilisateur n'est pas nul
-      if(intitule == null){
-         log.warn("Objet obligatoire Intitule manquant lors de la recherche par l'intitule d'un objet Recherche");
-         throw new RequiredObjectIsNullException("Recherche", "recherche par Intitule", "Intitule");
-      }
-      return rechercheDao.findByIntitule(intitule);
-   }
-
-   @Override
-   public List<Recherche> findByIntituleAndUtilisateurManager(final String intitule, final Utilisateur util){
-      if(intitule != null && util != null){
-         return rechercheDao.findByIntituleUtilisateur(intitule, util);
-      }
-      return new ArrayList<>();
-   }
 
    /**
     * Recherche les Recherches dont la Requête est passée en paramètre.
@@ -540,75 +462,6 @@ public class RechercheManagerImpl implements RechercheManager
       return new ArrayList<>();
    }
 
-   /**
-    * Recherche les doublons d'une Recherche passée en paramètre.
-    *
-    * @param recherche
-    *            une Recherche pour laquelle on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   @Override
-   public Boolean findDoublonManager(final Recherche recherche){
-      // On vérifie que la recherche n'est pas nulle
-      if(recherche == null){
-         log.warn("Objet obligatoire Recherche manquant lors de la recherche de doublon d'un objet Recherche");
-         throw new RequiredObjectIsNullException("Recherche", "recherche de doublon", "Recherche");
-      }
-      if(recherche.getRechercheId() == null){
-         return rechercheDao.findAll().contains(recherche);
-      }
-      return rechercheDao.findByExcludedId(recherche.getRechercheId()).contains(recherche);
-   }
-
-   /**
-    * Méthode qui permet de vérifier que 2 Recherches sont des copies.
-    *
-    * @param r
-    *            Recherche première Recherche à vérifier.
-    * @param copie
-    *            deuxième Recherche à vérifier.
-    * @return true si les 2 Recherches sont des copies, false sinon.
-    */
-   @Override
-   public Boolean isCopyManager(final Recherche r, final Recherche copie){
-      if(copie == null){
-         return false;
-      }else if(r.getIntitule() == null){
-         if(copie.getIntitule() == null){
-            if(r.getAffichage() == null){
-               if(r.getRequete() == null){
-                  return (copie.getRequete() == null);
-               }
-               return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
-            }else if(affichageManager.isCopyManager(r.getAffichage(), copie.getAffichage())){
-               if(r.getRequete() == null){
-                  return (copie.getRequete() == null);
-               }
-               return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
-            }else{
-               return false;
-            }
-         }
-         return false;
-      }else{
-         if(r.getIntitule().equals(copie.getIntitule())){
-            if(r.getAffichage() == null){
-               if(r.getRequete() == null){
-                  return (copie.getRequete() == null);
-               }
-               return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
-            }else if(affichageManager.isCopyManager(r.getAffichage(), copie.getAffichage())){
-               if(r.getRequete() == null){
-                  return (copie.getRequete() == null);
-               }
-               return requeteManager.isCopyManager(r.getRequete(), copie.getRequete());
-            }else{
-               return false;
-            }
-         }
-         return false;
-      }
-   }
 
    /**
     * Cette méthode met à jour les associations entre une recherche et une
@@ -689,4 +542,35 @@ public class RechercheManagerImpl implements RechercheManager
       return new ArrayList<>();
    }
 
-}
+   @Override
+   public List<Recherche> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme) {
+      if (intitule == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+      return rechercheDao.findByIntituleInPlateforme(intitule, plateforme);
+   }
+
+   //Depuis le ticket TK-524, cette méthode remplace la méthode findDoublonManager :
+   //le contrôle de "doublon" est désormais fait sur l'intitulé uniquement pour une plateforme donnée. 
+   //Le nom de la méthode a été modifié pour mieux refléter ce qu'elle fait.
+   @Override
+   public boolean isDoublonIntituleInPlateformeManager(Recherche recherche, Plateforme plateforme) {
+         final List<Recherche> intitulesExistants = findByIntituleInPlateformeManager(recherche.getIntitule(), plateforme);
+
+         if(!intitulesExistants.isEmpty()) {
+            // Cas d'une nouvelle recherche
+            if(recherche.getRechercheId() == null) {
+               return true;
+            }
+
+            // Cas d'une modification : vérifier si l'intitulé appartient à une autre Recherche
+            for(final Recherche rechercheCourante : intitulesExistants) {
+               if(!recherche.getRechercheId().equals(rechercheCourante.getRechercheId()))
+                  return true;
+            }
+         }
+         return false;
+      }
+   }
+
+

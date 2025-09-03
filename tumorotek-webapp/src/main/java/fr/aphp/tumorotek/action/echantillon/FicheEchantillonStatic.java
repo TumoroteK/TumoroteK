@@ -45,6 +45,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -73,9 +74,11 @@ import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Vbox;
+import org.zkoss.zul.Image;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.cession.retour.ListeRetour;
+import fr.aphp.tumorotek.action.cession.retour.RetourDecorator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheStaticController;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
@@ -99,6 +102,7 @@ import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Cession;
+import fr.aphp.tumorotek.model.cession.Retour;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
@@ -211,6 +215,10 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
    protected Div codesMorphoDiv;
 
+   // Une image représentant un drapeau rouge, utilisée si l'échantillon a au moins un retour avec impact
+   // ce qui signifie une dégradation probable de la qualité du matériel.
+   protected Image impactIcon;
+
    // INCa
    private Integer nbItemsINCaTotaux;
 
@@ -236,7 +244,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       this.prodDerivesGrid.setVisible(false);
       this.cessionsGrid.setVisible(false);
       this.addDerive.setDisabled(true);
-
+      this.impactIcon.setVisible(false);
+      this.impactIcon.setTooltiptext(Labels.getLabel("Champ.Retour.Impact"));
       // **************** gastbi
       setGroupDerivesEchanOpen(false);
       setGroupCessionsEchanOpen(false);
@@ -254,8 +263,21 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       return (EchantillonController) super.getObjectTabController();
    }
 
+   /**
+    * Initialise l'objet de type {@code Echantillon} et met à jour les composants UI associés.
+    *
+    * <p>
+    * Cette méthode configure les groupes (produits dérivés, cessions, sorties) et les informations
+    * complémentaires liées à l'échantillon.
+    * Elle ajuste également l'affichage en fonction des droits utilisateur et des données disponibles.
+    * </p>
+    *
+    * @param e l'objet {@code TKdataObject} à associer, converti en {@code Echantillon}.
+    *
+    */
    @Override
    public void setObject(final TKdataObject e){
+
       this.echantillon = (Echantillon) e;
 
       initAssociations();
@@ -297,17 +319,31 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
          cessionsGrid.setVisible(true);
          setGroupCessionsEchanOpen(true);
       }
+      
+      boolean impactIconVisible = false;
       if(listeRetour.getListObjects().size() == 0){
          if(listeRetour.getObjectsListGrid().isVisible()){
             setGroupSortiesEchanOpen(false);
             listeRetour.getObjectsListGrid().setVisible(false);
          }
       }else{
+         // TK-499 : gestion de l'affichage du drapeau rouge au niveau du code de l'échantillon si celui-ci contient au moins
+         // un évènement de stockage indiqué comme "avec une dégradation probable de la qualité du matériel"
+         // Filtre la liste des retourDecorators associés à l'échantillon pour garder ceux avec un impact (dégradation probable de la qualité du matériel).
+         List<RetourDecorator> retourDecoratorsAvecImpact = listeRetour.getListObjects().stream()
+                                       .map(tkDataObject -> ((RetourDecorator)tkDataObject))
+                                       .filter(retourDecorator -> retourDecorator.getRetour().getImpact() != null && retourDecorator.getRetour().getImpact())
+                                       .collect(Collectors.toList());
+
+         // Rend l'icône d'impact visible uniquement si des retours avec impact sont trouvés.
+         impactIconVisible = !retourDecoratorsAvecImpact.isEmpty();
+        
          if(!listeRetour.getObjectsListGrid().isVisible()){
             setGroupSortiesEchanOpen(true);
             listeRetour.getObjectsListGrid().setVisible(true);
          }
       }
+      impactIcon.setVisible(impactIconVisible);
       listeRetour.getLwinRetour().invalidate();
 
       if(prelevement != null){

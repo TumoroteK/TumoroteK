@@ -151,34 +151,6 @@ public class ResultatManagerImpl implements ResultatManager
       return resultatDao.findAll();
    }
 
-   /**
-    * Copie un Résultat en BDD.
-    * @param resultat Résultat à copier.
-    * @return le Résultat copié.
-    */
-   @Override
-   public Resultat copyResultatManager(final Resultat resultat, final Affichage affichage){
-      //On vérifie que le résultat n'est pas nul
-      if(resultat == null){
-         log.warn("Objet obligatoire Resultat manquant lors de la copie d'un objet Resultat");
-         throw new RequiredObjectIsNullException("Resultat", "copie", "Resultat");
-      }
-      //On vérifie que l'affichage n'est pas nul
-      if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors de la copie d'un objet Resultat");
-         throw new RequiredObjectIsNullException("Resultat", "copie", "Affichage");
-      }
-      //On copie le champ
-      Champ champ = null;
-      if(resultat.getChamp() != null){
-         champ = champManager.copyChampManager(resultat.getChamp());
-      }
-      final Resultat temp = new Resultat(resultat.getNomColonne(), champ, resultat.getTri(), resultat.getOrdreTri(),
-         resultat.getPosition(), resultat.getFormat(), affichage);
-      BeanValidator.validateObject(resultat, new Validator[] {resultatValidator});
-      createObjectManager(temp, temp.getAffichage(), temp.getChamp());
-      return temp;
-   }
 
    /**
     * Créé un Résultat en BDD.

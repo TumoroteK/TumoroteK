@@ -14,9 +14,11 @@
     <context-param>
         <param-name>contextConfigLocation</param-name>
         <param-value>
-        	classpath:applicationContext.xml
             classpath:applicationContextDaoBase.xml
             classpath:applicationContextManagerBase.xml
+            <!-- configuration standard avec applicationContext-security.xml, pour intégrer TK dans un portail avec un SSO, commenter la ligne suivante et décommenter classpath:applicationContext-securityCas.xml
+            	 NB : seul le TK Melbase est actuellement en SSO. Le TK Melbase n'évolue pas et n'est pas géré par Sesan donc si le code lié à l'authentification devait évoluer
+            	 il ne sera pas nécessaire de reprendre la partie SSO. Echanges entre Mathieu et Corinne le 28/02/2025 -->
             classpath:applicationContext-security.xml
             <!-- classpath:applicationContext-securityCas.xml -->
             classpath:camel-config.xml

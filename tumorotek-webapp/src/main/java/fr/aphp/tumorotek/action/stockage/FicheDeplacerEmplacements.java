@@ -86,6 +86,7 @@ import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.impl.xml.BoiteImpression;
 import fr.aphp.tumorotek.manager.interfacage.scan.TKScanTerminaleDTO;
 import fr.aphp.tumorotek.model.TKStockableObject;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -311,9 +312,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       // creation de EmplacementDecorator
       EmplacementDecorator emplacementDecorator = new EmplacementDecorator(emplacement);
       emplacementDecorator.setTkStockObj(tkStockableObject);
-      emplacementDecorator.setCode(tkStockableObject.getCode());
       emplacementDecorator.setEmplacementDepart(true);
-      emplacementDecorator.setType(tkStockableObject.getType().getNom());
       emplacementDecorator.setTerminale(emplacement.getTerminale());
       emplacementDecorator.setAdrl(ManagerLocator.getEmplacementManager().getAdrlManager(emplacement, false));
       // ajouter au deplacements
@@ -504,6 +503,7 @@ public class FicheDeplacerEmplacements extends FicheTerminale
       deplacementsRestants = new ArrayList<>();
       emplacementDepart = new ArrayList<>();
       deplacements = new ArrayList<>();
+      //TODO TK-687 : mutualiser le code pour gérer les échantillons et les dérivés avec la même méthode
       // si l'on souhaite stocker des échantillons
       if(echans != null){
          echantillons = new ArrayList<>();
@@ -514,7 +514,10 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                echantillons.add(echans.get(i));
                final EmplacementDecorator deco = new EmplacementDecorator(new Emplacement());
                deco.setAdrl("--");
-               deco.setCode(echans.get(i).getCode());
+               //TK-642 : les informations liées à l'échantillon (type et date de stockage) seront récupérées de l'échantillon rattaché 
+               //=> pour être cohérent, le code sera également récupéré de l'objet
+               //deco.setCode(echans.get(i).getCode());
+               deco.setTkStockObj(echans.get(i));
                final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
                deco.getEmplacement().setEntite(e);
                deco.getEmplacement().setObjetId(echans.get(i).getEchantillonId());
@@ -532,7 +535,9 @@ public class FicheDeplacerEmplacements extends FicheTerminale
                derives.add(der.get(i));
                final EmplacementDecorator deco = new EmplacementDecorator(new Emplacement());
                deco.setAdrl("--");
-               deco.setCode(der.get(i).getCode());
+               //TK-642 : les informations liées au dérivé seront récupérées du dérivé rattaché 
+               //deco.setCode(der.get(i).getCode());
+               deco.setTkStockObj(der.get(i));
                final Entite e = ManagerLocator.getEntiteManager().findByNomManager(typeEntite).get(0);
                deco.getEmplacement().setEntite(e);
                deco.getEmplacement().setObjetId(der.get(i).getProdDeriveId());
@@ -1529,140 +1534,6 @@ public class FicheDeplacerEmplacements extends FicheTerminale
    //	 */
    @Override
    public void initModelisation(){
-      //		// initialise les listes contenant les emplacements
-      //		initEmplacements();
-      //		imagesEmplacements = new ArrayList<Image>();
-      //
-      //		if (terminale.getTerminaleType().getScheme() == null) {
-      //
-      //			if (terminale.getTerminaleType().getHauteur() != null
-      //					&& terminale.getTerminaleType().getLongueur() != null) {
-      //				Vbox mainVbox = new Vbox();
-      //				mainVbox.setSpacing("0");
-      //
-      //				// création des abscisses
-      //				Hbox separator = new Hbox();
-      //				separator.setHeight("5px");
-      //				separator.setParent(mainVbox);
-      //				Hbox hBoxA = new Hbox();
-      //				hBoxA.setSpacing("0");
-      //				Div div = new Div();
-      //				div.setWidth("20px");
-      //				div.setParent(hBoxA);
-      //				for (int j = 0; j < terminale.getTerminaleType()
-      //					.getLongueur(); j++) {
-      //					Div divAbs = new Div();
-      //					divAbs.setWidth("30px");
-      //					divAbs.setParent(hBoxA);
-      //					divAbs.setAttribute("align", "center");
-      //					Label abs = new Label();
-      //					abs.setSclass("formLabel");
-      //					abs.setValue(getValueAbscisse(j + 1));
-      //					abs.setParent(divAbs);
-      //				}
-      //				hBoxA.setParent(mainVbox);
-      //
-      //				int cpt = 0;
-      //				List<Hbox> lignesBox = new ArrayList<Hbox>();
-      //				for (int i = 0; i < terminale.getTerminaleType()
-      //					.getHauteur(); i++) {
-      //					Hbox hBox = new Hbox();
-      //					hBox.setSpacing("0");
-      //
-      //					// création des ordonnées
-      //					Div divOrd = new Div();
-      //					divOrd.setWidth("20px");
-      //					divOrd.setHeight("23px");
-      //					divOrd.setParent(hBox);
-      //					Label ord = new Label();
-      //					ord.setSclass("formLabel");
-      //					ord.setValue(getValueOrdonnee(i + 1));
-      //					ord.setParent(divOrd);
-      //					for (int j = 0; j < terminale.getTerminaleType()
-      //						.getLongueur(); j++) {
-      //						EmplacementDecorator deco = emplacementDecos.get(cpt);
-      //
-      //						Image img = createImage(deco);
-      //						img.setParent(hBox);
-      //						imagesEmplacements.add(img);
-      //
-      //						++cpt;
-      //					}
-      //					//hBox.setParent(mainVbox);
-      //					// on stocke les lignes dans une liste
-      //					lignesBox.add(hBox);
-      //				}
-      //
-      //				// si la numérotation commence sur la 1ere ligne
-      //				if (terminale.getTerminaleType().getDepartNumHaut()) {
-      //					for (int i = 0; i < lignesBox.size(); i++) {
-      //						lignesBox.get(i).setParent(mainVbox);
-      //					}
-      //				} else {
-      //					// sinon on inverse l'affichage des lignes
-      //					for (int i = lignesBox.size() - 1; i >= 0; i--) {
-      //						lignesBox.get(i).setParent(mainVbox);
-      //					}
-      //				}
-      //
-      //				mainVbox.setParent(modeleBoite);
-      //			}
-      //
-      //		} else {
-      //
-      //			String[] values = terminale.getTerminaleType()
-      //				.getScheme()
-      //				.split(";");
-      //			Vbox mainVbox = new Vbox();
-      //			mainVbox.setSpacing("0");
-      //			mainVbox.setWidth("100%");
-      //			mainVbox.setAlign("center");
-      //			int cpt = 0;
-      //			List<Hbox> lignesBox = new ArrayList<Hbox>();
-      //			// si la numérotation commence sur la 1ere ligne
-      //			if (this.terminale.getTerminaleType().getDepartNumHaut()) {
-      //				for (int i = 0; i < values.length; i++) {
-      //					int nbPlaces = Integer.parseInt(values[i]);
-      //					Hbox hBox = new Hbox();
-      //					hBox.setSpacing("0");
-      //					hBox.setAlign("center");
-      //					for (int j = 0; j < nbPlaces; j++) {
-      //						EmplacementDecorator deco = emplacementDecos.get(cpt);
-      //
-      //						Image img = createImage(deco);
-      //						img.setParent(hBox);
-      //						imagesEmplacements.add(img);
-      //
-      //						++cpt;
-      //					}
-      //					//hBox.setParent(mainVbox);
-      //					lignesBox.add(hBox);
-      //				}
-      //			} else {
-      //				// sinon on inverse le parcours des lignes
-      //				for (int i = values.length - 1; i >= 0; i--) {
-      //					int nbPlaces = Integer.parseInt(values[i]);
-      //					Hbox hBox = new Hbox();
-      //					hBox.setSpacing("0");
-      //					hBox.setAlign("center");
-      //					for (int j = 0; j < nbPlaces; j++) {
-      //						EmplacementDecorator deco = emplacementDecos.get(cpt);
-      //
-      //						Image img = createImage(deco);
-      //						img.setParent(hBox);
-      //						imagesEmplacements.add(img);
-      //
-      //						++cpt;
-      //					}
-      //					lignesBox.add(0, hBox);
-      //				}
-      //			}
-      //			for (int i = 0; i < lignesBox.size(); i++) {
-      //				lignesBox.get(i).setParent(mainVbox);
-      //			}
-      //			mainVbox.setParent(modeleBoite);
-      //		}
-      //
       super.initModelisation();
 
       // on init les listes pour saisir une coordonnée

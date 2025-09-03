@@ -150,36 +150,12 @@ public class RechercheDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   /**
-   * Test l'appel de la méthode findRecherchesByUtilisateur().
-   */
-   public void testFindRecherchesByUtilisateur() throws Exception{
-      final List<Utilisateur> utilisateurs = this.utilisateurDao.findAll();
-      final Iterator<Utilisateur> itUtil = utilisateurs.iterator();
-      while(itUtil.hasNext()){
-         final Utilisateur utilisateur = itUtil.next();
-         final List<Recherche> recherches = this.rechercheDao.findByUtilisateur(utilisateur);
-         final Iterator<Recherche> it = recherches.iterator();
-         while(it.hasNext()){
-            assertTrue(it.next().getCreateur().equals(utilisateur));
-         }
-      }
-   }
+
 
    /**
-   * Test l'appel de la méthode findByExcludedId().
+   * Test l'appel de la méthode findByRequete().
    */
-   public void testFindByExcludedId(){
-      final List<Recherche> liste = rechercheDao.findAll();
-      final Iterator<Recherche> it = liste.iterator();
-      while(it.hasNext()){
-         final Recherche temp = it.next();
-         final List<Recherche> recherches = rechercheDao.findByExcludedId(temp.getRechercheId());
-         assertTrue(recherches.size() == liste.size() - 1);
-         assertFalse(recherches.contains(temp));
-      }
 
-   }
 
    public void testFindByRequete(){
       final Requete r1 = requeteDao.findById(1);
@@ -194,27 +170,6 @@ public class RechercheDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   /**
-    * Test l'appel de la méthode findByIntituleUtilisateur().
-    */
-   public void testFindByIntituleUtilisateur() throws Exception{
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Utilisateur u2 = utilisateurDao.findById(2);
-      List<Recherche> liste = rechercheDao.findByIntituleUtilisateur("Aff%", u1);
-      assertTrue(liste.size() == 1);
-
-      liste = rechercheDao.findByIntituleUtilisateur("yug%", u1);
-      assertTrue(liste.size() == 0);
-
-      liste = rechercheDao.findByIntituleUtilisateur("Essen%", u2);
-      assertTrue(liste.size() == 0);
-
-      liste = rechercheDao.findByIntituleUtilisateur(null, u1);
-      assertTrue(liste.size() == 0);
-
-      liste = rechercheDao.findByIntituleUtilisateur("Essen%", null);
-      assertTrue(liste.size() == 0);
-   }
 
    /**
     * Test l'insertion, la mise à jour et la suppression 

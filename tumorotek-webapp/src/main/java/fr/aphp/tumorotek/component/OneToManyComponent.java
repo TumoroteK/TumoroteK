@@ -68,6 +68,7 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
 
    private static final long serialVersionUID = 8722970657499733752L;
 
+   //contient les objets associés à l'instant t
    protected Grid objectsList;
 
    protected Button addObj;
@@ -84,6 +85,7 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
 
    protected Box addObjBox;
 
+   //contient les objets ajoutables
    protected Listbox objectsBox;
 
    private Group groupHeader;

@@ -58,8 +58,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
@@ -68,6 +66,7 @@ import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
+import fr.aphp.tumorotek.utils.NonConformiteUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.commons.lang3.StringUtils;
@@ -478,6 +477,7 @@ public class ImportManagerImpl implements ImportManager
                if(!nomEntiteDuThesaurus.equals("Collaborateur")
                   && !nomEntiteDuThesaurus.equals("Service")){
                   // on formate le champ du thésaurus à extraire
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String nomChamp =
                      champDeLaTableThesaurus.getNom().replaceFirst(".", (champDeLaTableThesaurus.getNom().charAt(0) + "").toLowerCase());
                   try{
@@ -561,7 +561,7 @@ public class ImportManagerImpl implements ImportManager
             // cas standard : 
             //  - récupération de toutes les valeurs du thesaurus et mise en cache
             //  - affectation des valeurs éventuellement filtrées par le contexte Gatsbi à chaque champ importé
-            if(!champAImporter.getNom().matches("Conforme.*Raison")){
+            if(!NonConformiteUtils.isUneRaisonDeNonConformite(champAImporter.getNom())){
                // ajout à la hashtable "byEntite" de toutes les valeurs du thesaurus
                if(!valuesByEntiteThesaurus.containsKey(champDeLaTableThesaurus.getEntite())){
                   valuesByEntiteThesaurus.put(champDeLaTableThesaurus.getEntite(), extractValuesForOneThesaurus(champDeLaTableThesaurus, importTemplate.getBanque()));
@@ -597,21 +597,16 @@ public class ImportManagerImpl implements ImportManager
    //gère les cas particuliers où la table thesaurus a une colonne type donc les valeurs doivent être filtrée en fonction du champ utilisant ce thesaurus
    private CaseInsensitiveMap<String, Object> manageCasParticuliers(ChampEntite champAImporter, Banque banque){
       CaseInsensitiveMap<String, Object> mapValeurThesaurusForThisChamp = null;
-      // si non conformité récupération directement en base des valeurs appropriées à chaque champ
-      if(champAImporter.getNom().matches("Conforme.*Raison")){
-         final Pattern p = Pattern.compile("Conforme(.*)\\.Raison");
-         final Matcher m = p.matcher(champAImporter.getNom());
-         final boolean b = m.matches();
-         if(b && m.groupCount() > 0){
-            final String cNom = m.group(1);
-            final Iterator<NonConformite> ncfs = nonConformiteManager
-                  .findByPlateformeEntiteAndTypeStringManager(banque.getPlateforme(), cNom, champAImporter.getEntite()).iterator();
-            mapValeurThesaurusForThisChamp = new CaseInsensitiveMap<String, Object>();
-            NonConformite nc;
-            while(ncfs.hasNext()){
-               nc = ncfs.next();
-               mapValeurThesaurusForThisChamp.put(nc.getNom(), nc); 
-            }
+      // Récupération du nom de la non-conformité
+      String nonConformiteNom = NonConformiteUtils.retrieveNomDeLaNonConformiteOrNull(champAImporter.getNom());
+      if (nonConformiteNom != null) {
+         final Iterator<NonConformite> ncfs = nonConformiteManager.findByPlateformeEntiteAndTypeStringManager(
+                 banque.getPlateforme(), nonConformiteNom, champAImporter.getEntite()).iterator();
+         mapValeurThesaurusForThisChamp = new CaseInsensitiveMap<>();
+         NonConformite nc;
+         while (ncfs.hasNext()) {
+            nc = ncfs.next();
+            mapValeurThesaurusForThisChamp.put(nc.getNom(), nc);
          }
       }
       //TODO : le thesuarus Unité à la même particularité que non_conformite, il contient un champ type
@@ -694,6 +689,7 @@ public class ImportManagerImpl implements ImportManager
       if(attribut != null && obj != null){
          // on formate l'attribut pour qu'il corresponde à celui
          // de l'objet
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          String nomChamp = attribut.getNom().replaceFirst(".", (attribut.getNom().charAt(0) + "").toLowerCase());
          if(nomChamp.endsWith("Id")){
             nomChamp = nomChamp.substring(0, nomChamp.length() - 2);
@@ -876,6 +872,7 @@ public class ImportManagerImpl implements ImportManager
          Object value = null;
          if(ind > -1){
             // on va extraire le type de l'attibut à remplir
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             String nomChamp = colonne.getChamp().getChampEntite().getNom().replaceFirst(".",
                (colonne.getChamp().getChampEntite().getNom().charAt(0) + "").toLowerCase());
             if(nomChamp.endsWith("Id")){
@@ -979,6 +976,7 @@ public class ImportManagerImpl implements ImportManager
                final Set<Risque> risques = new HashSet<>();
                if(((String) value).contains(";")){
                   List<String> listValeurNonAutorisee = new ArrayList<String>();
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String[] split = ((String) value).split(";");
                   for(int i = 0; i < split.length; i++){
                      // on récupère l'objet correspondant à la valeur
@@ -1047,6 +1045,7 @@ public class ImportManagerImpl implements ImportManager
             // non conformites peuvent être séparés par des points-virgules
             if(((String) value).contains(";")){
                List<String> listValeurNonAutorisee = new ArrayList<String>();
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                final String[] split = ((String) value).split(";");
                for(int i = 0; i < split.length; i++){
                   // on récupère l'objet correspondant à la valeur
@@ -1155,13 +1154,14 @@ public class ImportManagerImpl implements ImportManager
 
             final DataType dt = colonne.getChamp().getChampAnnotation().getDataType();
             boolean isDate = false;
-            if(dt.getType().matches("date.*")){
+            if(dt.getType().startsWith("date")){
                isDate = true;
             }
 
             value = getCellContent(row.getCell(ind), isDate, properties.getEvaluator());
 
             // boolean corresp
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             if(dt.getType().matches("boolean")){
                value = translateBoolValue((String) value);
             }
@@ -1200,6 +1200,7 @@ public class ImportManagerImpl implements ImportManager
                   // valeurs peuvent être séparés par des points-virgules
                   Object itemVal = null;
                   List<String> listValeurNonAutorisee = new ArrayList<String>();
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String[] split = ((String) value).split(";");
                   for(int i = 0; i < split.length; i++){
                      String valeurCourante = split[i].trim();
@@ -1388,7 +1389,7 @@ public class ImportManagerImpl implements ImportManager
                if(colonnes.get(i).getChamp().getChampEntite() != null){
 
                   // non conformites
-                  if(colonnes.get(i).getChamp().getChampEntite().getNom().matches("Conforme.*Raison")){
+                  if(NonConformiteUtils.isUneRaisonDeNonConformite(colonnes.get(i).getChamp().getChampEntite().getNom())){
                      if(ncfsPrelevement == null){ // init la liste
                         ncfsPrelevement = new HashMap<>();
                      }
@@ -1538,6 +1539,7 @@ public class ImportManagerImpl implements ImportManager
    @Override
    public ProdDerive setAllPropertiesForProdDerive(final Row row, final ImportProperties properties) throws WrongImportValueForThesaurusException {
       ProdDerive derive = null;
+
       if(row != null && properties != null){
          // nouvel échantillon
          derive = new ProdDerive();
@@ -1551,14 +1553,10 @@ public class ImportManagerImpl implements ImportManager
             final List<AnnotationValeur> annotations = new ArrayList<>();
             // pour chaque colonne, on set la valeur
             for(int i = 0; i < colonnes.size(); i++){
-               // si la colonne correspond à un attribut
-               // de l'objet
+               // si la colonne correspond à un attribut de l'objet
                if(colonnes.get(i).getChamp().getChampEntite() != null){
-                  // non conformites
-                  if(!colonnes.get(i).getChamp().getChampEntite().getNom().matches("Conforme.*Raison")){
-
-                     setPropertyForImportColonne(derive, colonnes.get(i), row, properties);
-                  }else if(colonnes.get(i).getChamp().getChampEntite().getNom().equals("ConformeTraitement.Raison")){
+                  // non conformites (2 cas possibles à date)
+                  if(colonnes.get(i).getChamp().getChampEntite().getNom().equals("ConformeTraitement.Raison")){
                      if(ncfsDeriveTrait == null){ // init la liste
                         ncfsDeriveTrait = new HashMap<>();
                      }
@@ -1568,6 +1566,9 @@ public class ImportManagerImpl implements ImportManager
                         ncfsDeriveCess = new HashMap<>();
                      }
                      setNonConformites(derive, colonnes.get(i), row, properties, ncfsDeriveCess);
+                  }
+                  else {//champs autres que non conformité :
+                     setPropertyForImportColonne(derive, colonnes.get(i), row, properties);
                   }
 
                }else if(colonnes.get(i).getChamp().getChampAnnotation() != null){
@@ -1736,11 +1737,11 @@ public class ImportManagerImpl implements ImportManager
                            prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
                            prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,
                            utilisateur, true, null, true, ncfsPrelevement != null ? ncfsPrelevement.get(prlvt) : null);
-                     }else{ // update Objet
+                     }else{ // update Objet - on ne passe jamais ici car l'import en modification n'est pas possible (21/05/2025)
 
                         toDelete.addAll(prlvtDuo.getSecondAnnoVals());
 
-                        prelevementManager.updateObjectWithNonConformitesManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
+                        prelevementManager.updateObjectWithNonConformitesSansGestionImpactSurDelaiCongelManager(prlvt, prlvt.getBanque(), prlvt.getNature(),
                            prlvt.getMaladie(), prlvt.getConsentType(), prlvt.getPreleveur(), prlvt.getServicePreleveur(),
                            prlvt.getPrelevementType(), prlvt.getConditType(), prlvt.getConditMilieu(), prlvt.getTransporteur(),
                            prlvt.getOperateur(), prlvt.getQuantiteUnite(), null, !toUpdate.isEmpty() ? toUpdate : null,

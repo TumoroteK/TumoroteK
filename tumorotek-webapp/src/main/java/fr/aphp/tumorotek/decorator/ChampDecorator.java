@@ -133,6 +133,7 @@ public class ChampDecorator implements Comparable<Object>
       iProperty.append(".");
       iProperty.append(c.getContexte().getNom());
       iProperty.append(".");
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       iProperty.append(StringUtils.capitalize(c.getNom().replaceAll("Id$", "")));
 
       return Labels.getLabel(iProperty.toString());

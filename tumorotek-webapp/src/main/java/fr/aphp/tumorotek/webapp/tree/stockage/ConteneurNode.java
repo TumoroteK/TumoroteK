@@ -66,20 +66,12 @@ public class ConteneurNode extends TumoTreeNode
    public ConteneurNode(final Conteneur cont, final Banque banque, final Plateforme curPf){
       this.conteneur = cont;
       this.selectedBanque = banque;
-      if(this.conteneur != null && !this.conteneur.equals(new Conteneur())){
-         if(this.conteneur.getNom() != null){
-            this.libelle = this.conteneur.getNom();
-         }else{
-            this.libelle = this.conteneur.getCode();
-         }
+      initLibelle(curPf);
+   }
 
-         // conteneur partagé depuis pf extérieur
-         // ajoute au libellé
-         // TK-289
-         if(!conteneur.getPlateformeOrig().equals(curPf)){
-            this.libelle = this.libelle.concat(" [").concat(conteneur.getPlateformeOrig().getAlias() != null
-               ? conteneur.getPlateformeOrig().getAlias() : conteneur.getPlateformeOrig().getNom()).concat("]");
-         }
+   public void initLibelle(final Plateforme curPf){
+      if(conteneur != null && !conteneur.equals(new Conteneur())){
+         this.libelle = conteneur.getLibelleForPlateforme(curPf);
       }else{
          this.libelle = "(Vide)";
       }

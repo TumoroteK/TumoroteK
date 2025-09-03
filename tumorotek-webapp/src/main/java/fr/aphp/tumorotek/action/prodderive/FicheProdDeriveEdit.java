@@ -115,11 +115,15 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private static final long serialVersionUID = 4384639895874573764L;
 
-
+   //TODO TK-709 :
+   //Il y a une confusion entre les 2 Textbox ci-dessous : codePrefixeLabelDerive, codeBoxDerive
+   //C'est codePrefixeLabelDerive qui est utilisé dans le zul alors que ça devrait être codeBoxDerive (défini mais pas utilisé)
+   //En effet, dans la FicheProdDeriveEdit utilisée uniquement pour la modification (c'est FicheMultiProdDerive qui est utilisé pour la création)
+   //c'est c'est un code (global car précédemment défini) qui est utilisée (la notion de préfixe n'intervient qu'à la création pour définir un lien avec un éventuel parent)
    protected Textbox codePrefixeLabelDerive;
-
    protected Textbox codeBoxDerive;
-
+   //
+   
    protected Textbox codeLaboBoxDerive;
 
    protected Label volumeBoxDerive;
@@ -295,9 +299,13 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
    private String valeurTransfoQuantite = "";
 
+   // /!\ mélange entre les 2 notions : codePrefixe utilisé lors de la création (donc dans FicheMultiProdDerive)
+   // et le code "final" (du dérivé) utilisé dans cette classe qui correspond à la modification
+   // Dans cette classe l'attribut devrait s'appeler code et dans FicheMultiProdDerive un 2e attribut codePrefixe devrait être défini
+   //TODO TK-709
    private String codePrefixe = "";
 
-   private String codeSuffixe = "";
+   private String codeSuffixe = "";//n'est pas utilisé (cf commentaire ci-dessus)
 
    private String codeParent = "";
 
@@ -610,7 +618,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       // Update du prlvt
       final Maladie maladie = ((Prelevement) getParentObject()).getMaladie();
-      ManagerLocator.getPrelevementManager().updateObjectManager(((Prelevement) getParentObject()),
+      ManagerLocator.getPrelevementManager().updateObjectSansGestionImpactSurDelaiCongelManager(((Prelevement) getParentObject()),
          ((Prelevement) getParentObject()).getBanque(), ((Prelevement) getParentObject()).getNature(), maladie,
          ((Prelevement) getParentObject()).getConsentType(), ((Prelevement) getParentObject()).getPreleveur(),
          ((Prelevement) getParentObject()).getServicePreleveur(), ((Prelevement) getParentObject()).getPrelevementType(),
@@ -2322,6 +2330,11 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       return ProdDeriveConstraints.getCodeNullConstraint();
    }
 
+   //TK-669 :
+   public ConstCode getCodeConstraint(){
+      return ProdDeriveConstraints.getCodeConstraint();
+   }
+
    /**
     * Méthode vidant tous les messages d'erreurs apparaissant dans
     * les contraintes de la fiche.
@@ -2375,6 +2388,15 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }
    }
 
+   /**
+    * Cette méthode est utilisée pour vérifier si la date fournie respecte les
+    * contraintes de cohérence spécifiées pour les dates de transformation et
+    * de stockage.
+    *
+    * @param comp Le composant à valider (doit être de type CalendarBox).
+    * @param value La valeur à valider, qui doit être une instance de Calendar ou null.
+    * @throws WrongValueException Si une incohérence de date est détectée.
+    */
    @Override
    protected void validateCoherenceDate(final Component comp, final Object value){
 
@@ -2388,7 +2410,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          ((CalendarBox) comp).clearErrorMessage(dateToValidate);
          ((CalendarBox) comp).setValue(null);
 
-         if(dateTransfoCalBox.equals(comp)){
+         if(dateStockCalBox.equals(comp)){
             prodDerive.setDateStock(null);
          }else if(dateTransfoCalBox.equals(comp)){
             prodDerive.setDateTransformation(null);
@@ -2419,7 +2441,6 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
                this.prodDerive.setTransformation(transformation);
             }
             this.prodDerive.setDateStock((Calendar) value);
-
             errs = ManagerLocator.getProdDeriveValidator().checkDateStockCoherence(this.prodDerive);
          }
 

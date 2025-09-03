@@ -253,6 +253,7 @@ public final class Utils
          value = value.replace(" ", "");
          String[] pfs = null;
          if(value.contains(":")){
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             pfs = value.split(";");
          }else{
             pfs = new String[1];
@@ -265,6 +266,7 @@ public final class Utils
                final String tmp = pfs[i].substring(pfs[i].indexOf(":") + 1);
                String[] ems = null;
                if(tmp.contains(",")){
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   ems = tmp.split(",");
                }else{
                   ems = new String[1];
@@ -361,6 +363,7 @@ public final class Utils
    public static String getReadablePropertyFromChampEntite(final ChampEntite chpE){
       String readProp = null;
       if(chpE != null){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          readProp = chpE.getNom().replaceFirst(".", (chpE.getNom().charAt(0) + "").toLowerCase());
          if(readProp.endsWith("Id")){
             readProp = readProp.substring(0, readProp.length() - 2);
@@ -429,37 +432,28 @@ public final class Utils
        return resultat;
    }      
    
-   /**
-    * dans une map dont les valeurs sont des listes, ajoute une valeur à la liste correspondant à la clé passée en paramètre
-    */
-   public static <K, T> void addElementToListMapForThisKey(Map<K, List<T>> map, K key, T elementToAdded) {
-      if(key != null) {
-         if(map == null) {
-            map = new HashMap<K, List<T>>();
-         }
-         List<T> listForAdd = map.get(key);
-         if(listForAdd == null) {
-            listForAdd = new ArrayList<T>();
-            map.put(key, listForAdd);
-         }
-         listForAdd.add(elementToAdded);
-      }
-   }
-   
-   /**
-    * retourne une liste aggrégeant toutes les listes contenues dans une map
-    * @param <K>
-    * @param <T>
-    * @param map
-    * @return
-    */
-   public static <K, T> List<T> addAllMapValues(Map<K, List<T>> map) {
-      List<T> listResult = new ArrayList<T>();
+   public static <K, T> int retrieveNbElementInMapOfList(Map<K, List<T>> map) {
+      int res = 0;
       Iterator<List<T>> iterator = map.values().iterator();
       while (iterator.hasNext()) {
-         listResult.addAll(iterator.next());
+         res = res + iterator.next().size();
       }
       
-      return listResult;
+      return res;
+   }
+   
+   public static String manageLibelleAuSingulierOuPluriel(String keyPrefix, int nb) {
+      if(keyPrefix == null) {
+         return keyPrefix;
+      }
+      String suffix = null;
+      if(nb > 1) {
+         suffix = ".pluriel";
+      }
+      else {
+         suffix = ".singulier";
+      }  
+      
+      return new StringBuffer(keyPrefix).append(suffix).toString();
    }
 }

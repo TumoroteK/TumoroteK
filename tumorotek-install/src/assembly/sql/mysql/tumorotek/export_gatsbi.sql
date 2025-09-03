@@ -2,15 +2,25 @@
 
 DROP FUNCTION IF EXISTS `is_chp_visible`&&
 
-CREATE FUNCTION `is_chp_visible`(chp_id INTEGER, etude_id INTEGER)
+CREATE FUNCTION `is_chp_visible`(p_chp_id INTEGER, p_etude_id INTEGER)
   RETURNS VARCHAR(100)
 DETERMINISTIC
 READS SQL DATA
 
 BEGIN
-   
-    SET @test = (SELECT count(*) from GATSBI_ETUDE_CONTEXTE ec join GATSBI_CONTEXTE_CHAMP_ENTITE e on ec.CONTEXTE_ID=e.CONTEXTE_ID where e.CHAMP_ENTITE_ID = chp_id and ec.ETUDE_ID = etude_id and e.VISIBLE = 1);
-    RETURN @test;
+    -- il faut gérer le cas des études pour lesquelles aucun contexte n'est défini pour le type (Patient, Prelevement, Echantillon)
+    -- correspondant au champ_id passé en paramètre. Dans ce cas, TK considère que tous les champs sont visibles.
+    -- pour forcer la requête à ramener quelque chose dans ce cas, passage par une sous-requête qui ramène forcément quelque chose pour l'étude courante, jointe à gauche
+    -- avec la requête qui récupère la visibilité quand le contexte est défini
+    -- le cast permet de transformer le bit type du "booléen" visible en un entier
+	 SET @test = (SELECT ifnull(info_visible.visible, 1) AS visible FROM
+ 					(SELECT etude_id FROM GATSBI_ETUDE  WHERE ETUDE_ID = p_etude_id) AS etude 
+ 					LEFT OUTER JOIN 
+ 					(SELECT ec.etude_ID, cast(cce.visible AS UNSIGNED) AS visible FROM GATSBI_ETUDE_CONTEXTE ec INNER JOIN GATSBI_CONTEXTE_CHAMP_ENTITE cce ON ec.CONTEXTE_ID=cce.CONTEXTE_ID 
+ 						WHERE cce.CHAMP_ENTITE_ID = p_chp_id AND ec.ETUDE_ID = p_etude_id) AS info_visible
+ 					ON etude.etude_id = info_visible.etude_id);
+
+	RETURN @test;
 
 END&&
 
@@ -34,7 +44,6 @@ CREATE PROCEDURE `create_tmp_patient_table_gatsbi`(IN etude_id INTEGER)
 	    IF ((is_chp_visible(9, etude_id)), 'PAYS_NAISSANCE varchar(100), ', ''),
 	    IF ((is_chp_visible(10, etude_id)), 'PATIENT_ETAT char(10), ', ''),
 	    IF ((is_chp_visible(11, etude_id)), 'DATE_ETAT date, DATE_DECES date, ', ''),
---	    IF ((is_chp_visible(12, etude_id)), 'DATE_DECES date, ', ''),
 	    IF ((is_chp_visible(227, etude_id)), 'MEDECIN_PATIENT varchar(300), ', ''),
 	   'NOMBRE_PRELEVEMENT int(4), 
         DATE_HEURE_SAISIE    datetime,
@@ -53,6 +62,9 @@ DROP PROCEDURE IF EXISTS `fill_tmp_table_patient_gatsbi`&&
 CREATE PROCEDURE `fill_tmp_table_patient_gatsbi`(IN pat_id INTEGER, IN banque_id INTEGER, IN etude_id INTEGER)
   BEGIN
 
+	-- /!\ il ne faut pas mettre de retour chariot après la condition du is_chp_visible
+	-- car celui-ci est interprété comme un 0 qui est concaténé donc la requête construite n'est plus valide 
+	-- (pb rencontré après la condition (is_chp_visible(227, etude_id)... 
     SET @sql = CONCAT('INSERT INTO TMP_PATIENT_EXPORT SELECT ',
     	'p.patient_id, ', 
     	'pi.identifiant, ',
@@ -66,16 +78,14 @@ CREATE PROCEDURE `fill_tmp_table_patient_gatsbi`(IN pat_id INTEGER, IN banque_id
 		IF ((is_chp_visible(9, etude_id)), 'pays_naissance, ', ''),
 		IF ((is_chp_visible(10, etude_id)), 'patient_etat, ', ''),
 		IF ((is_chp_visible(11, etude_id)), 'date_etat, date_deces, ', ''),
-		--IF ((is_chp_visible(12, etude_id)), 'date_deces, ', ''),
-		IF ((is_chp_visible(227, etude_id)), 
-			CONCAT('LEFT((SELECT GROUP_CONCAT(c.nom) FROM PATIENT_MEDECIN pm 
+		IF ((is_chp_visible(227, etude_id)), CONCAT('LEFT((SELECT GROUP_CONCAT(c.nom) FROM PATIENT_MEDECIN pm 
 				JOIN COLLABORATEUR c WHERE pm.COLLABORATEUR_ID = c.COLLABORATEUR_ID AND pm.PATIENT_id = ', pat_id, '), 200), '), ''),
 		'(SELECT count(*) FROM PRELEVEMENT pr INNER JOIN MALADIE m WHERE pr.maladie_id = m.maladie_id AND m.patient_id = ', pat_id, '),
 	    (SELECT op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 1 AND op.objet_id = ', pat_id, '),
         (SELECT ut.login FROM UTILISATEUR ut JOIN OPERATION op ON ut.utilisateur_id = op.utilisateur_id WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 1 AND op.objet_id = ', pat_id, '),
         LEFT((SELECT GROUP_CONCAT(maladie_id) FROM MALADIE m WHERE m.patient_id = ', pat_id, '), 100) 
     	FROM PATIENT p JOIN PATIENT_IDENTIFIANT pi on p.patient_id = pi.patient_id WHERE p.patient_id = ', pat_id, ' AND pi.banque_id = ', banque_id);
-      	    
+    
     PREPARE stmt FROM @sql;
     EXECUTE stmt;
     DEALLOCATE PREPARE stmt;
@@ -97,7 +107,6 @@ CREATE PROCEDURE `create_tmp_anonyme_table_gatsbi`(IN etude_id INTEGER)
 	    IF ((is_chp_visible(9, etude_id)), 'PAYS_NAISSANCE varchar(100), ', ''),
 	    IF ((is_chp_visible(10, etude_id)), 'PATIENT_ETAT char(10), ', ''),
 	    IF ((is_chp_visible(11, etude_id)), 'DATE_ETAT date, DATE_DECES date, ', ''),
---	    IF ((is_chp_visible(12, etude_id)), 'DATE_DECES date, ', ''),
 	    IF ((is_chp_visible(227, etude_id)), 'MEDECIN_PATIENT varchar(300), ', ''),
       	'NOMBRE_PRELEVEMENT int(4),
       	DATE_HEURE_SAISIE  datetime,
@@ -116,6 +125,9 @@ DROP PROCEDURE IF EXISTS `fill_tmp_anonyme_table_gatsbi`&&
 CREATE PROCEDURE `fill_tmp_anonyme_table_gatsbi`(IN pat_id INTEGER, IN banque_id INTEGER, IN etude_id INTEGER)
   BEGIN
 
+	-- /!\ il ne faut pas mettre de retour chariot après la condition du is_chp_visible si la suite n'est pas entre ' ' (appel d'une function)
+	-- car le retour chariot est interprété comme un 0 qui est concaténé. La requête construite n'est donc plus valide 
+	-- (pb rencontré après la condition (is_chp_visible(227, etude_id) qui appelle une function...) 
     SET @sql = CONCAT('INSERT INTO TMP_PATIENT_EXPORT SELECT ',
     	'p.patient_id, ', 
     	'pi.identifiant, ',
@@ -125,9 +137,7 @@ CREATE PROCEDURE `fill_tmp_anonyme_table_gatsbi`(IN pat_id INTEGER, IN banque_id
 		IF ((is_chp_visible(9, etude_id)), 'pays_naissance, ', ''),
 		IF ((is_chp_visible(10, etude_id)), 'patient_etat, ', ''),
 		IF ((is_chp_visible(11, etude_id)), 'date_etat, date_deces, ', ''),
---		IF ((is_chp_visible(12, etude_id)), 'date_deces, ', ''),
-		IF ((is_chp_visible(227, etude_id)), 
-			CONCAT('LEFT((SELECT GROUP_CONCAT(c.nom) FROM PATIENT_MEDECIN pm 
+		IF ((is_chp_visible(227, etude_id)), CONCAT('LEFT((SELECT GROUP_CONCAT(c.nom) FROM PATIENT_MEDECIN pm 
 				JOIN COLLABORATEUR c WHERE pm.COLLABORATEUR_ID = c.COLLABORATEUR_ID AND pm.PATIENT_id = ', pat_id, '), 200), '), ''),
 		'(SELECT count(*) FROM PRELEVEMENT pr INNER JOIN MALADIE m WHERE pr.maladie_id = m.maladie_id AND m.patient_id = ', pat_id, '),
 	    (SELECT op.date_ FROM OPERATION op WHERE op.OPERATION_TYPE_ID = 3 AND op.entite_id = 1 AND op.objet_id = ', pat_id, '),
@@ -171,11 +181,9 @@ CREATE PROCEDURE `fill_tmp_table_maladie_gatsbi`(IN pat_id INTEGER, IN etude_id 
     SET @sql = CONCAT('INSERT INTO TMP_MALADIE_EXPORT SELECT ', 
 		'LEFT(GROUP_CONCAT(libelle SEPARATOR " ; "), 200), ',
     	'LEFT(GROUP_CONCAT(date_debut SEPARATOR " ; "), 200), ',
-		IF ((is_chp_visible(18, etude_id)), 
-           'LEFT(GROUP_CONCAT(code SEPARATOR " ; " ), 200), ', ''),
-        IF ((is_chp_visible(19, etude_id)), 
-           'LEFT(GROUP_CONCAT(date_diagnostic SEPARATOR " ; "), 200), ', ''),
-         'patient_id
+		IF ((is_chp_visible(18, etude_id)), 'LEFT(GROUP_CONCAT(code SEPARATOR " ; " ), 200), ', ''),
+        IF ((is_chp_visible(19, etude_id)), 'LEFT(GROUP_CONCAT(date_diagnostic SEPARATOR " ; "), 200), ', ''),
+        'patient_id
     FROM MALADIE
     WHERE patient_id = ', pat_id,  ' group by patient_id');
   
@@ -218,7 +226,7 @@ CREATE PROCEDURE `create_tmp_prelevement_table_gatsbi`(IN etude_id INTEGER)
 	    IF ((is_chp_visible(269, etude_id)), 'CONG_DEPART boolean, ', ''),
 	    IF ((is_chp_visible(270, etude_id)), 'CONG_ARRIVEE boolean, ', ''),
 	    IF ((is_chp_visible(273, etude_id)), 'LABO_INTER varchar(3), ', ''),
-	    IF ((is_chp_visible(40, etude_id)), 'QUANTITE DECIMAL(12, 3), ', ''),
+        IF ((is_chp_visible(40, etude_id)), 'QUANTITE DECIMAL(12, 3), QUANTITE_UNITE varchar(25), ', ''),
 	    IF ((is_chp_visible(44, etude_id)), 'PATIENT_NDA varchar(20), ', ''),
 	    IF ((is_chp_visible(229, etude_id)), 'CODE_ORGANE VARCHAR(500), ', ''),
 	    IF ((is_chp_visible(230, etude_id)), 'DIAGNOSTIC VARCHAR(500), ', ''),
@@ -252,6 +260,9 @@ END&&
 DROP PROCEDURE IF EXISTS `fill_tmp_table_prel_gatsbi`&&
 CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id INTEGER)
   BEGIN
+
+	-- /!\ il ne faut pas mettre de retour chariot après la condition du is_chp_visible si la suite n'est pas entre ' ' (appel d'une function)
+	-- car le retour chariot est interprété comme un 0 qui est concaténé. La requête construite n'est donc plus valide 
     SET @sql = CONCAT('INSERT INTO TMP_PRELEVEMENT_EXPORT SELECT ', 
         'p.prelevement_id, ',
         'b.nom, ',
@@ -261,10 +272,8 @@ CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id IN
         IF ((is_chp_visible(30, etude_id)), 'p.date_prelevement, ', ''),
         IF ((is_chp_visible(31, etude_id)), 'pt.type, ', ''),
         IF ((is_chp_visible(47, etude_id)), 'p.sterile, ', ''),
-        IF ((is_chp_visible(249, etude_id)), 
-            'LEFT((select GROUP_CONCAT(r.nom) from RISQUE r JOIN PRELEVEMENT_RISQUE pr ON r.risque_id = pr.risque_id WHERE pr.prelevement_id = p.prelevement_id), 200) , ', ''),
-        IF ((is_chp_visible(256, etude_id)), 
-            'p.conforme_arrivee, LEFT((select GROUP_CONCAT(nc.nom) FROM OBJET_NON_CONFORME onc LEFT JOIN NON_CONFORMITE nc ON onc.non_conformite_id = nc.non_conformite_id LEFT JOIN CONFORMITE_TYPE ct ON nc.conformite_type_id = ct.conformite_type_id WHERE ct.conformite_type_id = 1 AND p.prelevement_id = onc.objet_id), 1000), ', ''),
+        IF ((is_chp_visible(249, etude_id)), 'LEFT((select GROUP_CONCAT(r.nom) from RISQUE r JOIN PRELEVEMENT_RISQUE pr ON r.risque_id = pr.risque_id WHERE pr.prelevement_id = p.prelevement_id), 200) , ', ''),
+        IF ((is_chp_visible(256, etude_id)), 'p.conforme_arrivee, LEFT((select GROUP_CONCAT(nc.nom) FROM OBJET_NON_CONFORME onc LEFT JOIN NON_CONFORMITE nc ON onc.non_conformite_id = nc.non_conformite_id LEFT JOIN CONFORMITE_TYPE ct ON nc.conformite_type_id = ct.conformite_type_id WHERE ct.conformite_type_id = 1 AND p.prelevement_id = onc.objet_id), 1000), ', ''),
         IF ((is_chp_visible(29, etude_id)), 'et.nom,  s.nom,', ''),
         IF ((is_chp_visible(28, etude_id)), 'co.nom, ', ''),
         IF ((is_chp_visible(32, etude_id)), 'ct.type, ', ''),
@@ -280,7 +289,7 @@ CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id IN
         IF ((is_chp_visible(269, etude_id)), 'p.cong_depart, ', ''),
         IF ((is_chp_visible(270, etude_id)), 'p.cong_arrivee, ', ''),
         IF ((is_chp_visible(273, etude_id)), CONCAT('(select count(l.labo_inter_id) FROM LABO_INTER l where l.prelevement_id = ', prel_id, '),'), ''),
-        IF ((is_chp_visible(40, etude_id)), 'p.quantite, ', ''),
+        IF ((is_chp_visible(40, etude_id)), 'p.quantite, u.unite, ', ''),
         IF ((is_chp_visible(44, etude_id)), 'p.patient_nda, ', ''),
         IF ((is_chp_visible(229, etude_id)), CONCAT('LEFT((SELECT GROUP_CONCAT(distinct(ca.code) ORDER BY ca.ordre) FROM CODE_ASSIGNE ca INNER JOIN ECHANTILLON e ON e.echantillon_id = ca.echantillon_id WHERE ca.IS_ORGANE = 1 AND e.prelevement_id = ', prel_id, '), 500), '), ''), 
         IF ((is_chp_visible(230, etude_id)), CONCAT('LEFT((SELECT GROUP_CONCAT(distinct(ca.code) ORDER BY ca.ordre) FROM CODE_ASSIGNE ca INNER JOIN ECHANTILLON e ON e.echantillon_id = ca.echantillon_id WHERE ca.IS_MORPHO = 1 AND e.prelevement_id =',  prel_id, '), 500), '), ''),  
@@ -326,6 +335,7 @@ CREATE PROCEDURE `fill_tmp_table_prel_gatsbi`(IN prel_id INTEGER, IN etude_id IN
            LEFT JOIN COLLABORATEUR coco ON p.operateur_id = coco.collaborateur_id
            LEFT JOIN MALADIE m on p.maladie_id = m.maladie_id
            LEFT JOIN PATIENT pat ON m.patient_id = pat.patient_id
+           LEFT JOIN UNITE u ON p.quantite_unite_id = u.unite_id
     WHERE p.banque_id = b.banque_id
       AND ent.ENTITE_ID = 2
       AND p.prelevement_id = ', prel_id);
@@ -362,10 +372,10 @@ CREATE PROCEDURE `create_tmp_echantillon_table_gatsbi`(IN etude_id INTEGER)
 		', ''),
       'EMPLACEMENT varchar(100), 
 		',
-      IF ((is_chp_visible(265, etude_id)), 'TEMP_STOCK decimal(12, 3), 
-		', ''),
-      IF ((is_chp_visible(55, etude_id)), 'OBJET_STATUT varchar(20), 
-		', ''),
+      'TEMP_STOCK decimal(12, 3), 
+		',
+      'OBJET_STATUT varchar(20), 
+		',
       IF ((is_chp_visible(68, etude_id)), 'ECHAN_QUALITE varchar(200), 
 		', ''),
       IF ((is_chp_visible(70, etude_id)), 'MODE_PREPA varchar(200), 
@@ -425,10 +435,10 @@ CREATE PROCEDURE `fill_tmp_table_echan_gatsbi`(IN echan_id INTEGER, IN etude_id 
 			', ''),
         'get_adrl(e.emplacement_id), 
 			',
-        IF ((is_chp_visible(265, etude_id)), '(SELECT temp FROM CONTENEUR WHERE conteneur_id = get_conteneur(e.emplacement_id)), 
-			', ''),
-        IF ((is_chp_visible(55, etude_id)), 'os.statut, 
-			', ''),
+        '(SELECT temp FROM CONTENEUR WHERE conteneur_id = get_conteneur(e.emplacement_id)), 
+			',
+        'os.statut, 
+			',
         IF ((is_chp_visible(68, etude_id)), 'eq.echan_qualite, 
 			', ''),
         IF ((is_chp_visible(70, etude_id)), 'mp.nom, 

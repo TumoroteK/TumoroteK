@@ -221,7 +221,7 @@ public class ValeurExterneDecorator
       if(valeurExterne.getChampEntiteId() != null){
          final ChampEntite ce = ManagerLocator.getChampEntiteManager().findByIdManager(valeurExterne.getChampEntiteId());
          // on formate la nouvelle valeur si c'est une date
-         if(ce.getDataType().getType().matches("date.*")){
+         if(ce.getDataType().getType().startsWith("date")){
             // si l'attibut est un calendar, on caste
             // la valeur issue du fichier
             Date date = null;
@@ -371,8 +371,10 @@ public class ValeurExterneDecorator
             String[] codesVal = null;
             // DIAMIC Hack
             if(val.getValeur().contains("~")){
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                codesVal = val.getValeur().split("~");
             }else{
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                codesVal = val.getValeur().split(";");
             }
 

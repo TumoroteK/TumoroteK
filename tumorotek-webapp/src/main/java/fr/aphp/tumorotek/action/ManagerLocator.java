@@ -94,6 +94,7 @@ import fr.aphp.tumorotek.manager.coeur.prodderive.ProdQualiteManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.ProdTypeManager;
 import fr.aphp.tumorotek.manager.coeur.prodderive.TransformationManager;
 import fr.aphp.tumorotek.manager.context.BanqueManager;
+import fr.aphp.tumorotek.manager.context.BanqueSuppressionProcessor;
 import fr.aphp.tumorotek.manager.context.CategorieManager;
 import fr.aphp.tumorotek.manager.context.CollaborateurManager;
 import fr.aphp.tumorotek.manager.context.ContexteManager;
@@ -114,6 +115,7 @@ import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.ImportChampAnnotationBatchProcessor;
 import fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationEntiteStrategyFactory;
+import fr.aphp.tumorotek.manager.impl.coeur.prelevement.MajDelaiCongelFromPrelevementProcessor;
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.manager.impression.BlocImpressionManager;
@@ -221,6 +223,7 @@ import fr.aphp.tumorotek.model.contexte.Specialite;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.stockage.ConteneurType;
 import fr.aphp.tumorotek.model.stockage.EnceinteType;
+import fr.aphp.tumorotek.security.TKDelegatingPasswordEncoder;
 
 /**
  * @version 2.2.1
@@ -322,6 +325,10 @@ public final class ManagerLocator
    public static BanqueManager getBanqueManager(){
       return (BanqueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("banqueManager");
    }
+   
+   public static BanqueSuppressionProcessor getBanqueSuppressionProcessor(){
+      return (BanqueSuppressionProcessor) (ContextLoader.getCurrentWebApplicationContext()).getBean("banqueSuppressionProcessor");
+   }
 
    public static TransporteurManager getTransporteurManager(){
       return (TransporteurManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("transporteurManager");
@@ -386,6 +393,10 @@ public final class ManagerLocator
       return (FichierManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("fichierManager");
    }
 
+   public static MajDelaiCongelFromPrelevementProcessor getMajDelaiCongelFromPrelevementProcessor(){
+      return (MajDelaiCongelFromPrelevementProcessor) (ContextLoader.getCurrentWebApplicationContext()).getBean("majDelaiCongelFromPrelevementProcessor");
+   }
+   
    /* Managers du package divers */
    public static EntiteManager getEntiteManager(){
       return (EntiteManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("entiteManager");
@@ -797,6 +808,7 @@ public final class ManagerLocator
       return (ImportHistoriqueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("importHistoriqueManager");
    }
 
+   //NB : compatibiliteEntreImportTemplateEtBanqueValidator a un état contrairement à la majorité des autres bean : chaque appel de cette méthode génére une nouvelle instance
    public static CompatibiliteEntreImportTemplateEtBanqueValidator getCompatibiliteEntreImportTemplateEtBanqueValidator(){
       return (CompatibiliteEntreImportTemplateEtBanqueValidator) (ContextLoader.getCurrentWebApplicationContext()).getBean("compatibiliteEntreImportTemplateEtBanqueValidator");
    }
@@ -968,4 +980,9 @@ public final class ManagerLocator
       return (PlanCongelateurSansBoiteExcelGenerator) ContextLoader.getCurrentWebApplicationContext()
          .getBean("planCongelateurSansBoiteExcelGenerator");
    }
+   
+   public static TKDelegatingPasswordEncoder getTKDelegatingPasswordEncoder(){
+      return (TKDelegatingPasswordEncoder) (ContextLoader.getCurrentWebApplicationContext()).getBean("tkDelegatingPasswordEncoder");
+   }
+   
 }

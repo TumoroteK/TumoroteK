@@ -65,7 +65,7 @@
 					<label value="@{obj.conteneur.plateformeOrig.nom}" sclass="formValue" />
 					<image id="deleteImage" width="12px" height="12px"
 						src="/images/icones/small_delete.png"
-						style="cursor:pointer" visible="@{obj.deleteHeaderVisible}" />
+						style="cursor:pointer" visible="@{obj.supprimable}" />
 				</row>
 			</rows>
 		</grid>
@@ -75,8 +75,8 @@
 				 use="fr.aphp.tumorotek.component.TKDisablableButton" />
 			<box orient="horizontal" id="addObjBox" visible="false">
 				<listbox id="objectsBox" mold="select" rows="1">
-					<listitem self="@{each='obj'}" value="@{obj}">	
-						<listcell label="@{obj.conteneur.nom}" />
+					<listitem self="@{each='conteneurDecorator'}" value="@{conteneurDecorator}">	
+						<listcell label="@{conteneurDecorator.libelleComplet}" />
 					</listitem>
 				</listbox>
 				<image id="addSelObj" src="/images/icones/small_validate.png" style="cursor:pointer" />

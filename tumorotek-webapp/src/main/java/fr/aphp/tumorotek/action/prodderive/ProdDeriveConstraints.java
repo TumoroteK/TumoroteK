@@ -47,31 +47,41 @@ import fr.aphp.tumorotek.action.constraints.ConstCode;
  */
 public final class ProdDeriveConstraints
 {
-
+   //TK-668 et TK-669 :
+   public static final int CODE__MAX_SIZE = 50;
+   public static final int CODE_PREFIX__MAX_SIZE = CODE__MAX_SIZE-2;//au minimum, on a le séparateur + 1 caractère pour le suffixe
+   public static final int CODE_SUFFIX__MAX_SIZE = 30;//valeur surprenante mais gardée car un contrôle sur la longueur globale du code a été ajouté
+   
    private ProdDeriveConstraints(){}
 
    private static ConstCode codePrefixConstraint = new ConstCode();
    static{
       codePrefixConstraint.setNullable(false);
-      codePrefixConstraint.setSize(30);
+      codePrefixConstraint.setSize(CODE_PREFIX__MAX_SIZE);
    }
 
    private static ConstCode codePrefixNullableConstraint = new ConstCode();
    static{
       codePrefixNullableConstraint.setNullable(true);
-      codePrefixNullableConstraint.setSize(30);
+      codePrefixNullableConstraint.setSize(CODE_PREFIX__MAX_SIZE);
    }
 
    private static ConstCode codeSuffixConstraint = new ConstCode();
    static{
       codeSuffixConstraint.setNullable(false);
-      codeSuffixConstraint.setSize(30);
+      codeSuffixConstraint.setSize(CODE_SUFFIX__MAX_SIZE);
+   }
+   
+   private static ConstCode codeConstraint = new ConstCode();
+   static{
+      codeConstraint.setNullable(false);
+      codeConstraint.setSize(CODE__MAX_SIZE);
    }
 
    private static ConstCode codeNullConstraint = new ConstCode();
    static{
       codeNullConstraint.setNullable(true);
-      codeNullConstraint.setSize(30);
+      codeNullConstraint.setSize(CODE__MAX_SIZE);
    }
 
    public static ConstCode getCodePrefixConstraint(){
@@ -90,4 +100,8 @@ public final class ProdDeriveConstraints
       return codeNullConstraint;
    }
 
+   //TK-669 :
+   public static ConstCode getCodeConstraint(){
+      return codeConstraint;
+   }
 }

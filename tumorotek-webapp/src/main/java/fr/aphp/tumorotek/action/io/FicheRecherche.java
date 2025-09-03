@@ -388,6 +388,30 @@ public class FicheRecherche extends AbstractFicheCombineController
       super.onClick$revertC();
    }
 
+   //TK-524
+   public void onBlur$intituleBox() {
+      String intitule = intituleBox.getValue();
+
+      // Vérifier si on est en mode création ou modification
+      boolean isCreation = ( recherche == null || recherche.getRechercheId() == null);
+
+      // Vérifier l'unicité de l'intitulé :
+      // - En mode création, toujours vérifier l'unicité
+      // - En mode modification, vérifier l'unicité seulement si l'intitulé a été modifié
+      if (!intitule.trim().isEmpty() && (isCreation || !intitule.equals(recherche.getIntitule()))) {
+         List<Recherche> rechercheAvecIntituleExists = ManagerLocator.getRechercheManager()
+                 .findByIntituleInPlateformeManager(intitule, SessionUtils.getCurrentPlateforme());
+         if (!rechercheAvecIntituleExists.isEmpty()) {
+            //NB : l'erreur de conception sur Recherche qui est rattachée à sa banque par une relation ManyToMany (confusion avec les banques d'exécution non stockées en base)
+            //fait qu'on ne peut pas récupérer facilement la banque de la recherche (le code ci-dessous amène une LazyInitializationException)
+            //par conséquent, contrairement à la saisie de l'affichage et d'une requête, on ne transmettra pas la banque dans le message d'erreur :
+            //final String banque = rechercheAvecIntituleExists.get(0).getBanques().get(0).getNom();
+            //throw new WrongValueException(intituleBox, Labels.getLabel("onglet.requete.doublon.error.intitule", new String[] {intitule, banque}));
+            throw new WrongValueException(intituleBox, Labels.getLabel("onglet.requete.recherche.doublon.error.intitule", new String[] {intitule}));
+         }
+      }
+   }
+
    @Override
    public void onClick$validateC(){
       if(recherche.getAffichage() == null){
@@ -483,6 +507,8 @@ public class FicheRecherche extends AbstractFicheCombineController
       Clients.clearWrongValue(requetesBox);
    }
 
+   //code à revoir (TK-638), la liste de banques gérée ci-dessous est une erreur de conception au niveau de l'objet Recherche :
+   //le fait de transmettre la banque courante suffit :
    protected Recherche saveRecherche(final Utilisateur createur){
       //On récupère les banques sélectionées
       final List<Banque> banks = new ArrayList<>();
@@ -497,6 +523,8 @@ public class FicheRecherche extends AbstractFicheCombineController
       return recherche;
    }
 
+   //code à revoir (TK-638), la liste de banques gérée ci-dessous est une erreur de conception au niveau de l'objet Recherche :
+   //le fait de transmettre la banque courante suffit :
    protected void updateRecherche(final Utilisateur createur){
       //On récupère les banques sélectionées
       final List<Banque> banks = new ArrayList<>();

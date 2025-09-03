@@ -154,19 +154,19 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
    @Test
    public void testFindByLoginAndArchvieManager(){
       final List<Plateforme> pfs = plateformeManager.findAllObjectsManager();
-      List<Utilisateur> list = utilisateurManager.findByLoginAndArchiveManager("USER1", false, pfs);
+      List<Utilisateur> list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("USER1", false, pfs);
       assertTrue(list.size() == 1);
 
-      list = utilisateurManager.findByLoginAndArchiveManager("USER1", true, pfs);
+      list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("USER1", true, pfs);
       assertTrue(list.size() == 0);
 
-      list = utilisateurManager.findByLoginAndArchiveManager("USER", true, pfs);
+      list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("USER", true, pfs);
       assertTrue(list.size() == 0);
 
-      list = utilisateurManager.findByLoginAndArchiveManager("", false, pfs);
+      list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("", false, pfs);
       assertTrue(list.size() == 0);
 
-      list = utilisateurManager.findByLoginAndArchiveManager(null, false, pfs);
+      list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager(null, false, pfs);
       assertTrue(list.size() == 0);
    }
 
@@ -336,31 +336,6 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
 
       assertFalse(utilisateurManager.isUsedObjectManager(new Utilisateur()));
       assertFalse(utilisateurManager.isUsedObjectManager(null));
-   }
-
-   @Test
-   public void testFindByLoginPasswordAndArchiveManager(){
-      List<Utilisateur> liste =
-         utilisateurManager.findByLoginPasswordAndArchiveManager("USER5", "b383bb08bd750d8ef04d034ad648a208", false);
-      assertTrue(liste.size() == 1);
-
-      liste = utilisateurManager.findByLoginPasswordAndArchiveManager("USER6", "b383bb08bd750d8ef04d034ad648a208", false);
-      assertTrue(liste.size() == 0);
-
-      liste = utilisateurManager.findByLoginPasswordAndArchiveManager("USER5", "b383bb08bd750d8ef04d034ad64dvs8a208", false);
-      assertTrue(liste.size() == 0);
-
-      liste = utilisateurManager.findByLoginPasswordAndArchiveManager("USER5", "b383bb08bd750d8ef04d034ad648a208", true);
-      assertTrue(liste.size() == 0);
-
-      liste = utilisateurManager.findByLoginPasswordAndArchiveManager(null, "b383bb08bd750d8ef04d034ad648a208", false);
-      assertTrue(liste.size() == 0);
-
-      liste = utilisateurManager.findByLoginPasswordAndArchiveManager("USER5", null, false);
-      assertTrue(liste.size() == 0);
-
-      liste = utilisateurManager.findByLoginPasswordAndArchiveManager(null, null, false);
-      assertTrue(liste.size() == 0);
    }
 
    /**

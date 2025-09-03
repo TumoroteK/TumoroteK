@@ -497,7 +497,7 @@ public abstract class ExportNode
       }else if(ce.getEntite().getNom().equals("Cession")){
          obj = new Cession();
       }
-
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       final String nomChamp = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
       try{
          final String type = PropertyUtils.getPropertyDescriptor(obj, nomChamp).getPropertyType().getSimpleName();

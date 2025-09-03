@@ -520,10 +520,11 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
       if(!user.isLdap()){
          // encodage du password
-         if(passwordBox.getValue() != null && !passwordBox.getValue().trim().isEmpty()){
-            user.setPassword(ObjectTypesFormatters.getEncodedPassword(passwordBox.getValue()));
+         String password = passwordBox.getValue();
+         if( password != null && !password.trim().isEmpty()){
+            user.setPassword(ManagerLocator.getTKDelegatingPasswordEncoder().encode(password));
          }
-      }else{
+      }else{//cas du LDAP (sens du test pas logique) :
          user.setPassword(null);
       }
 
@@ -798,7 +799,7 @@ public class FicheUtilisateur extends AbstractFicheCombineController
 
       // encrypt only if new password
       if(passwordBox.isVisible()){
-         user.setPassword(ObjectTypesFormatters.getEncodedPassword(passwordBox.getValue()));
+         user.setPassword(ManagerLocator.getTKDelegatingPasswordEncoder().encode(passwordBox.getValue()));
       }
 
       user.setLdap(authLdapCheckbox.isChecked());

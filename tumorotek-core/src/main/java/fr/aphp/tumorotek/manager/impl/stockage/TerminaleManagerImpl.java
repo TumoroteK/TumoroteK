@@ -333,6 +333,7 @@ public class TerminaleManagerImpl implements TerminaleManager
          // si un schéma est défini
          if(terminale.getTerminaleType().getScheme() != null){
             // on récupère le nb de lignes
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             nbLignes = terminale.getTerminaleType().getScheme().split(";").length;
          }else{
             nbLignes = terminale.getTerminaleType().getHauteur();
@@ -365,6 +366,7 @@ public class TerminaleManagerImpl implements TerminaleManager
          // si un schéma est défini
          if(terminale.getTerminaleType().getScheme() != null){
             // on récupère les lignes
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             final String[] lignes = terminale.getTerminaleType().getScheme().split(";");
             // si le num de ligne est valide
             if(numLigne <= lignes.length){

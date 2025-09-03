@@ -41,6 +41,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Set;
 
+import fr.aphp.tumorotek.dto.MajDelaiCongelFromPrelevementDTO;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.model.CodeIdPair;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -107,7 +108,10 @@ public interface PrelevementManager
       Utilisateur utilisateur, boolean doValidation, String baseDir, boolean isImport);
 
    /**
-    * Sauvegarde les modifications apportées à un objet persistant.
+    * Sauvegarde les modifications apportées au prélèvement
+    * /!\ en appelant cette méthode, l'éventuelle mise à jour des délais de congélation des échantillons suite à 
+    * une modification de la date de prélèvement n'est PAS gérée
+    * {@link updateObjectManager} pour la gérer.
     * @param prelevement Prelevement a modifier
     * @param banque Banque associee (non null)
     * @param nature Nature associee (non null)
@@ -134,13 +138,47 @@ public interface PrelevementManager
     * dans le file system
     * @param boolean multiple si modification multiple
     */
-   void updateObjectManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie, ConsentType consentType,
+   void updateObjectSansGestionImpactSurDelaiCongelManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie, ConsentType consentType,
       Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType, ConditType conditType,
       ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
       List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete,
       List<File> filesCreated, List<File> filesToDelete, Utilisateur utilisateur, Integer cascadeNonSterile, boolean doValidation,
       String baseDir, boolean multiple);
+   
+   /**
+    * Sauvegarde les modifications apportées au prélèvement
+    */
+   void updateObjectManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie, ConsentType consentType,
+      Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType, ConditType conditType,
+      ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
+      List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete,
+      List<File> filesCreated, List<File> filesToDelete, Utilisateur utilisateur, Integer cascadeNonSterile, boolean doValidation,
+      String baseDir, boolean multiple, MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO);
 
+   /**
+    * Surcharge de {@link updateObjectSansGestionImpactSurDelaiCongelManager} pour lui ajouter les non
+    * conformites.
+    * /!\ en appelant cette méthode, l'éventuelle mise à jour des délais de congélation des échantillons suite à 
+    * une modification de la date de prélèvement n'est PAS gérée
+    * {@link updateObjectManager} pour la gérer.
+    */
+   void updateObjectWithNonConformitesSansGestionImpactSurDelaiCongelManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie,
+      ConsentType consentType, Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType,
+      ConditType conditType, ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
+      List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete,
+      Utilisateur utilisateur, Integer cascadeNonSterile, boolean doValidation, String baseDir, boolean multiple,
+      List<NonConformite> noconfs);
+
+   /**
+    * Surcharge de {@link updateObjectManager} pour lui ajouter les non conformites.
+    */
+   void updateObjectWithNonConformitesManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie,
+      ConsentType consentType, Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType,
+      ConditType conditType, ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
+      List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete,
+      Utilisateur utilisateur, Integer cascadeNonSterile, boolean doValidation, String baseDir, boolean multiple, 
+      MajDelaiCongelFromPrelevementDTO majDelaiCongelDTO, List<NonConformite> noconfs);   
+   
    /**
     * Cherche les doublons en se basant sur le code du prélèvement
     * et l'appartenance à la plateforme de la banque à laquelle le prélèvement
@@ -625,39 +663,7 @@ public interface PrelevementManager
       List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, Utilisateur utilisateur, boolean doValidation,
       String baseDir, boolean isImport, List<NonConformite> noconfs);
 
-   /**
-    * Surcharge du manager updateObject pour lui ajouter les non
-    * conformites.
-    * @param prelevement
-    * @param banque
-    * @param nature
-    * @param maladie
-    * @param consentType
-    * @param preleveur
-    * @param servicePreleveur
-    * @param prelevementType
-    * @param conditType
-    * @param conditMilieu
-    * @param transporteur
-    * @param operateur
-    * @param quantiteUnite
-    * @param laboInters
-    * @param listAnnoToCreateOrUpdate
-    * @param listAnnoToDelete
-    * @param utilisateur
-    * @param cascadeNonSterile
-    * @param doValidation
-    * @param baseDir
-    * @param multiple
-    * @param noconfs
-    */
-   void updateObjectWithNonConformitesManager(Prelevement prelevement, Banque banque, Nature nature, Maladie maladie,
-      ConsentType consentType, Collaborateur preleveur, Service servicePreleveur, PrelevementType prelevementType,
-      ConditType conditType, ConditMilieu conditMilieu, Transporteur transporteur, Collaborateur operateur, Unite quantiteUnite,
-      List<LaboInter> laboInters, List<AnnotationValeur> listAnnoToCreateOrUpdate, List<AnnotationValeur> listAnnoToDelete,
-      Utilisateur utilisateur, Integer cascadeNonSterile, boolean doValidation, String baseDir, boolean multiple,
-      List<NonConformite> noconfs);
-
+   
    /**
     * Supprime les prélèvements et en cascade les échantillons/dérivés dont
     * ils sont parents à partir des ids passés en paramètres.

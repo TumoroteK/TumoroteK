@@ -76,6 +76,7 @@ import fr.aphp.tumorotek.manager.coeur.cession.CessionManager;
 import fr.aphp.tumorotek.manager.coeur.cession.ContratManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.context.BanqueManager;
+import fr.aphp.tumorotek.manager.context.BanqueSuppressionProcessor;
 import fr.aphp.tumorotek.manager.context.CollaborateurManager;
 import fr.aphp.tumorotek.manager.context.CoordonneeManager;
 import fr.aphp.tumorotek.manager.context.EtablissementManager;
@@ -150,6 +151,9 @@ public class ServiceManagerTest extends AbstractManagerTest4
 
    @Autowired
    private BanqueManager banqueManager;
+   
+   @Autowired
+   private BanqueSuppressionProcessor banqueSuppressionProcessor;
 
    @Autowired
    private BanqueDao banqueDao;
@@ -916,7 +920,7 @@ public class ServiceManagerTest extends AbstractManagerTest4
       }
       assertTrue(catched);
 
-      prelevementManager.updateObjectManager(p, p.getBanque(), p.getNature(), null, p.getConsentType(), null, null, null, null,
+      prelevementManager.updateObjectSansGestionImpactSurDelaiCongelManager(p, p.getBanque(), p.getNature(), null, p.getConsentType(), null, null, null, null,
          null, null, null, null, null, null, null, null, null, u, null, false, "/tmp/", false);
 
       serviceManager.removeObjectCascadeManager(sTest1, null, u);
@@ -1043,9 +1047,9 @@ public class ServiceManagerTest extends AbstractManagerTest4
       assertTrue(banqueDao.findByProprietaire(actif).get(0).getNom().equals("BANK"));
       assertTrue(banqueDao.findByProprietaire(actif).get(1).getNom().equals("BANK2"));
 
-      banqueManager.removeObjectManager(banqueDao.findByNom("BANK").get(0), null, u1, "/tmp/", true);
+      banqueSuppressionProcessor.removeObjectAndFileSystem(banqueDao.findByNom("BANK").get(0), null, u1, "/tmp/", true);
       assertTrue(banqueDao.findByNom("BANK").isEmpty());
-      banqueManager.removeObjectManager(banqueDao.findByNom("BANK2").get(0), null, u1, "/tmp/", true);
+      banqueSuppressionProcessor.removeObjectAndFileSystem(banqueDao.findByNom("BANK2").get(0), null, u1, "/tmp/", true);
       assertTrue(banqueDao.findByNom("BANK2").isEmpty());
 
       final List<TKFantomableObject> fs = new ArrayList<>();

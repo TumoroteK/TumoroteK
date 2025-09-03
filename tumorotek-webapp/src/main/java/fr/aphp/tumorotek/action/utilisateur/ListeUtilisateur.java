@@ -364,7 +364,7 @@ public class ListeUtilisateur extends AbstractListeController2
       if(findLoginBox.getValue() != null){
 
          final List<Utilisateur> utilisateurs =
-            ManagerLocator.getUtilisateurManager().findByLoginAndArchiveManager(findLoginBox.getValue(), findArchive, pfs);
+            ManagerLocator.getUtilisateurManager().findByLoginArchiveAndPlateformeExcludedSuperAdminManager(findLoginBox.getValue(), findArchive, pfs);
 
          listObjects = utilisateurs;
          setCurrentRow(null);

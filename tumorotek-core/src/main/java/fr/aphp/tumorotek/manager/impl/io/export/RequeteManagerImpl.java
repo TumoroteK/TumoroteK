@@ -36,6 +36,7 @@
 package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -55,6 +56,7 @@ import fr.aphp.tumorotek.manager.io.export.RequeteManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.io.export.RequeteValidator;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Groupement;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
@@ -154,6 +156,13 @@ public class RequeteManagerImpl implements RequeteManager
       return requeteDao.findAll();
    }
 
+   //A brancher sur le front (TK-641)
+   //NB : la modification en base de l'intitulé est faite
+   //par l'appel de l'update global sur l'objet donc
+   //il vaut mieux le récupérer avant pour ne pas écraser
+   //des modifications faites entre temps par un autre utilisateur
+   //Sinon, il faut écrire une requête hql pour mettre à jour uniquement
+   //ce champ. Ceci serai la méthode la plus optimisée.
    /**
     * Renomme une Requête (change son intitulé).
     * @param requete Requête à renommer.
@@ -166,58 +175,23 @@ public class RequeteManagerImpl implements RequeteManager
          log.warn("Objet obligatoire Requete manquant lors du renommage d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Requete");
       }
-      if(findByIdManager(requete.getRequeteId()) == null){
-         throw new SearchedObjectIdNotExistException("Requete", requete.getRequeteId());
+      Requete refreshedRequete = findByIdManager(requete.getRequeteId());
+      if(refreshedRequete == null){
+         throw new SearchedObjectIdNotExistException("Requete", refreshedRequete.getRequeteId());
       }else{
          //on modifie l'intitule
-         requete.setIntitule(intitule);
+         refreshedRequete.setIntitule(intitule);
          //On met a jour la requete
-         if(findDoublonManager(requete)){
+         if(isDoublonIntituleInPlateformeManager(refreshedRequete, refreshedRequete.getBanque().getPlateforme())){
             log.warn("Doublon lors de la modification de l'objet Requete : {}",  requete);
             throw new DoublonFoundException("Requete", "modification");
          }else{
-            BeanValidator.validateObject(requete, new Validator[] {requeteValidator});
-            requeteDao.updateObject(requete);
+            BeanValidator.validateObject(refreshedRequete, new Validator[] {requeteValidator});
+            requeteDao.updateObject(refreshedRequete);
          }
       }
    }
 
-   /**
-    * Copie une Requête en BDD.
-    * @param requete Requête à copier.
-    * @param copieur Utilisateur qui copie la Requête.
-    * @return la Requête copiée.
-    */
-   @Override
-   public Requete copyRequeteManager(final Requete requete, final Utilisateur copieur, final Banque banque){
-      //On verifie que la requete n'est pas nulle
-      if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors de la copie d'un objet Requete");
-         throw new RequiredObjectIsNullException("Requete", "copie", "Requete");
-      }
-      //On verifie que l'utilisateur n'est pas nul
-      if(copieur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors de la copie d'un objet Requete");
-         throw new RequiredObjectIsNullException("Requete", "modification", "Utilisateur");
-      }
-      //On vérifie que la banque n'est pas nul
-      if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Requete");
-         throw new RequiredObjectIsNullException("Requete", "création", "Banque");
-      }
-      //On copie le groupement racine
-      final Groupement groupement = groupementManager.copyGroupementManager(requete.getGroupementRacine());
-      //copie de la requete
-      final Requete r = new Requete(requete.getIntitule(), copieur, groupement);
-      r.setBanque(banque);
-      BeanValidator.validateObject(r, new Validator[] {requeteValidator});
-      //enregistrement de la requete en BDD
-      requeteDao.createObject(r);
-      //ajout de la requete copiee dans la liste
-      requetes.add(r);
-
-      return r;
-   }
 
    /**
     * Créé une nouvelle Requête en BDD.
@@ -246,7 +220,13 @@ public class RequeteManagerImpl implements RequeteManager
          log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "création", "Banque");
       }
+      // On vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+      if (isDoublonIntituleInPlateformeManager(requete, banque.getPlateforme())){
+         log.warn("Doublon lors de la creation de l'objet Requete : {}",  requete);
+         throw new DoublonFoundException("Requete", "creation");
+      }
       requete.setBanque(banque);
+      
       if(groupement.getGroupementId() != null){
          groupement = groupementDao.mergeObject(groupement);
       }else{
@@ -284,6 +264,11 @@ public class RequeteManagerImpl implements RequeteManager
       if(createur == null){
          log.warn("Objet obligatoire Utilisateur manquant lors de la modification d'un objet Requete");
          throw new RequiredObjectIsNullException("Requete", "modification", "Utilisateur");
+      }
+      // On vérifie si une requête avec le même intitulé existe déjà dans la plateforme donnée.
+      if (isDoublonIntituleInPlateformeManager(requete, requete.getBanque().getPlateforme())){
+         log.warn("Doublon lors de la creation de l'objet Requete : {}",  requete);
+         throw new DoublonFoundException("Requete", "creation");
       }
       final Groupement oldGroupement = requete.getGroupementRacine();
       if(groupement.getGroupementId() != null){
@@ -345,98 +330,6 @@ public class RequeteManagerImpl implements RequeteManager
       }
    }
 
-   /**
-    * Recherche les Requêtes dont l'utilisateur créateur est passé en
-    * paramètre.
-    * @param util Utilisateur qui à créé les Requêtes recherchées.
-    * @return la liste de toutes les Requêtes de l'Utilisateur.
-    */
-   @Override
-   public List<Requete> findByUtilisateurManager(final Utilisateur util){
-      //On vérifie que l'utilisateur n'est pas nul
-      if(util == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors de la recherche par l'Utilisateur d'un objet Requete");
-         throw new RequiredObjectIsNullException("Requete", "recherche par Utilisateur", "Utilisateur");
-      }
-      return requeteDao.findByUtilisateur(util);
-   }
-
-   /**
-    * Recherche les Requêtes dont l'intitulé est passé en paramètre.
-    * @param intitule Intitulé des Requêtes recherchées.
-    * @return la liste de toutes les Requêtes de l'intitulé.
-    */
-   @Override
-   public List<Requete> findByIntituleManager(final String intitule){
-      //On vérifie que l'utilisateur n'est pas nul
-      if(intitule == null){
-         log.warn("Objet obligatoire intitule manquant lors de la recherche par l'intitulé d'un objet Requete");
-         throw new RequiredObjectIsNullException("Requete", "recherche par Intitulé", "Intitulé");
-      }
-      return requeteDao.findByIntitule(intitule);
-   }
-
-   @Override
-   public List<Requete> findByIntituleAndUtilisateurManager(final String intitule, final Utilisateur util){
-      if(intitule != null && util != null){
-         return requeteDao.findByIntituleUtilisateur(intitule, util);
-      }else{
-         return new ArrayList<>();
-      }
-   }
-
-   /**
-    * Recherche les doublons d'une Requete passée en paramètre.
-    * @param requete une Requete pour laquelle on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   @Override
-   public Boolean findDoublonManager(final Requete requete){
-      //On vérifie que l'affichage n'est pas nul
-      if(requete == null){
-         log.warn("Objet obligatoire Requete manquant lors de la recherche de doublon d'un objet Requete");
-         throw new RequiredObjectIsNullException("Requete", "recherche de doublon", "Requete");
-      }
-      if(requete.getRequeteId() == null){
-         return requeteDao.findAll().contains(requete);
-      }else{
-         return requeteDao.findByExcludedId(requete.getRequeteId()).contains(requete);
-      }
-
-   }
-
-   /**
-    * Méthode qui permet de vérifier que 2 Requêtes sont des copies.
-    * @param r Requête première Requête à vérifier.
-    * @param copie deuxième Requête à vérifier.
-    * @return true si les 2 Requêtes sont des copies, false sinon.
-    */
-   @Override
-   public Boolean isCopyManager(final Requete r, final Requete copie){
-      if(copie == null){
-         return false;
-      }else if(r.getIntitule() == null){
-         if(copie.getIntitule() == null){
-            if(r.getGroupementRacine() == null){
-               return (copie.getGroupementRacine() == null);
-            }else{
-               return groupementManager.isCopyManager(r.getGroupementRacine(), copie.getGroupementRacine());
-            }
-         }else{
-            return false;
-         }
-      }else{
-         if(r.getIntitule().equals(copie.getIntitule())){
-            if(r.getGroupementRacine() == null){
-               return (copie.getGroupementRacine() == null);
-            }else{
-               return groupementManager.isCopyManager(r.getGroupementRacine(), copie.getGroupementRacine());
-            }
-         }else{
-            return false;
-         }
-      }
-   }
 
    @Override
    public Boolean isUsedObjectManager(final Requete requete){
@@ -463,6 +356,36 @@ public class RequeteManagerImpl implements RequeteManager
       }else{
          return new ArrayList<>();
       }
+   }
+
+   @Override
+   public List<Requete> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme) {
+      if (intitule == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+      return requeteDao.findByIntituleInPlateforme(intitule, plateforme);
+   }
+
+   //Depuis le ticket TK-524, cette méthode remplace la méthode findDoublonManager :
+   //le contrôle de "doublon" est désormais fait sur l'intitulé uniquement pour une plateforme donnée. 
+   //Le nom de la méthode a été modifié pour mieux refléter ce qu'elle fait.
+   @Override
+   public boolean isDoublonIntituleInPlateformeManager(Requete requete, Plateforme plateforme) {
+      final List<Requete> intitulesExistants = findByIntituleInPlateformeManager(requete.getIntitule(), plateforme);
+
+      if (!intitulesExistants.isEmpty()) {
+         // Si l'affichage n'a pas d'ID, cela signifie que c'est un nouvel ajout
+         if (requete.getRequeteId() == null) {
+            return true;
+         }
+
+         for (final Requete requeteCourante : intitulesExistants) {
+            if (!requete.getRequeteId().equals(requeteCourante.getRequeteId())) {
+               return true;
+            }
+         }
+      }
+      return false;
    }
 
 }

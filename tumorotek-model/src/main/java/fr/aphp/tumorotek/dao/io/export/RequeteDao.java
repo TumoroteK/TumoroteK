@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -53,12 +54,6 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public interface RequeteDao extends GenericDaoJpa<Requete, Integer>
 {
 
-   /**
-    * Recherche les requêtes d'un utilisateur.
-    * @param utilisateur : utilisateur dont on veut connaître les requêtes.
-    * @return la liste des requêtes de l'utilisateur
-    */
-   List<Requete> findByUtilisateur(Utilisateur utilisateur);
 
    /**
    * Recherche les requêtes d'une Banque.
@@ -75,27 +70,12 @@ public interface RequeteDao extends GenericDaoJpa<Requete, Integer>
    List<Requete> findByBanqueInList(List<Banque> banques);
 
    /**
-   * Recherche toutes les Requetes, sauf celle dont l'id est passé
-   * en paramètre.
-   * @param requeteId Identifiant de la Requete que l'on souhaite
-   * exclure de la liste retournée.
-   * @return une liste de Requetes.
-   */
-   List<Requete> findByExcludedId(Integer requeteId);
-
-   /**
-    * Recherche les requêtes d'un intitulé.
-    * @param intitulé : intitulé dont on veut connaître les requêtes.
-    * @return la liste des requêtes de l'intitulé
+    * Recherche les Requêtes par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule : L'intitulé de la Requête à rechercher
+    * @param plateforme : La plateforme dans laquelle rechercher
+    * @return la liste des Requêtes correspondantes
     */
-   List<Requete> findByIntitule(String intitule);
-
-   /**
-    * Recherche les Requetes d'un utilisateur par intitulé.
-    * @param intitulé : intitulé dont on veut connaître les Requetes.
-    * @param utilisateur : Utilisateur ayant créé les Requetes.
-    * @return la liste des Requetes de l'intitulé
-    */
-   List<Requete> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
+   List<Requete> findByIntituleInPlateforme(String intitule, Plateforme plateforme);
 
 }

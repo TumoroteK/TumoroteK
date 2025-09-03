@@ -1113,7 +1113,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       p.setRisques(risks);
 
       // Modif
-      prelevementManager.updateObjectManager(p, null, null, null, null, null, null, null, null, null, null, null, null, labos,
+      prelevementManager.updateObjectSansGestionImpactSurDelaiCongelManager(p, null, null, null, null, null, null, null, null, null, null, null, null, labos,
          null, null, null, null, u, 3, true, "/tmp/", false);
       assertTrue(prelevementManager.findByCodeLikeManager("Dupl_-RER", true).get(0).getNumeroLabo().equals("1234"));
       assertTrue(getOperationManager().findByObjectManager(p).size() == 2);
@@ -1133,7 +1133,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       try{
          p.setCode("PRLVT1");
          p.setConditNbr(10);
-         prelevementManager.updateObjectManager(p, b, null, null, null, null, null, null, null, null, null, null, null, null,
+         prelevementManager.updateObjectSansGestionImpactSurDelaiCongelManager(p, b, null, null, null, null, null, null, null, null, null, null, null, null,
             null, null, null, null, u, null, true, "/tmp/", false);
       }catch(final DoublonFoundException e){
          catched = true;
@@ -2030,7 +2030,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
 
       prel.setNumeroLabo("One");
 
-      prelevementManager.updateObjectManager(prel, null, null, null, null, null, null, null, null, null, null, null, null, null,
+      prelevementManager.updateObjectSansGestionImpactSurDelaiCongelManager(prel, null, null, null, null, null, null, null, null, null, null, null, null, null,
          listAnnots, listDelete, null, null, utilisateur, null, true, "/tmp/", false);
 
       assertTrue(getOperationManager().findByObjectManager(prel).size() == 4);
@@ -2050,7 +2050,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       // .findByChampAndObjetManager(c2, prel).get(0));
       listAnnots.clear();
 
-      prelevementManager.updateObjectManager(prel, null, null, null, null, null, null, null, null, null, null, null, null, null,
+      prelevementManager.updateObjectSansGestionImpactSurDelaiCongelManager(prel, null, null, null, null, null, null, null, null, null, null, null, null, null,
          listAnnots, listDelete, null, null, utilisateur, null, true, "/tmp/", false);
 
       assertTrue(annotationValeurManager.findByChampAndObjetManager(c, prel).size() == 0);
@@ -2858,7 +2858,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       bool.setBool(true);
       bool.setBanque(b1);
       listAnnots.add(bool);
-      prelevementManager.updateObjectManager(p, p.getBanque(), p.getNature(), null, p.getConsentType(), null, null, null, null,
+      prelevementManager.updateObjectSansGestionImpactSurDelaiCongelManager(p, p.getBanque(), p.getNature(), null, p.getConsentType(), null, null, null, null,
          null, null, null, null, null, listAnnots, null, null, null, u, null, false, "/tmp/", false);
       assertTrue(annotationValeurManager.findByObjectManager(p).size() == 2);
       assertTrue(annotationValeurManager.findAllObjectsManager().size() == 14);
@@ -3514,7 +3514,7 @@ public class PrelevementManagerTest extends AbstractManagerTest4
       ncfs.add(nonConformiteDao.findById(1));
       ncfs.add(nonConformiteDao.findById(3));
 
-      prelevementManager.updateObjectWithNonConformitesManager(prel1, banqueDao.findById(1), n, null, ct, null, null, null, null,
+      prelevementManager.updateObjectWithNonConformitesSansGestionImpactSurDelaiCongelManager(prel1, banqueDao.findById(1), n, null, ct, null, null, null, null,
          null, null, null, null, null, null, null, u, 0, false, null, false, ncfs);
 
       assertTrue(objetNonConformeDao.findByObjetAndEntite(prel1.getPrelevementId(), entiteDao.findById(2)).size() == 2);

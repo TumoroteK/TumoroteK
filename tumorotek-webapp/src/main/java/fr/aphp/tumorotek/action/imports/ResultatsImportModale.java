@@ -1182,6 +1182,7 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
       }else{
          champOk = champ;
       }
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       champOk = champOk.replaceFirst(".", (champOk.charAt(0) + "").toUpperCase());
       iProperty.append(champOk);
 

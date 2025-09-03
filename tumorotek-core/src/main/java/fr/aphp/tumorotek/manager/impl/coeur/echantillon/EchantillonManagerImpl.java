@@ -54,11 +54,13 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.apache.commons.collections4.CollectionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.Validator;
 
@@ -66,7 +68,6 @@ import fr.aphp.tumorotek.TKConstants;
 import fr.aphp.tumorotek.dao.coeur.ObjetStatutDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchanQualiteDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
-// import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDelegateDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonTypeDao;
 import fr.aphp.tumorotek.dao.coeur.echantillon.ModePrepaDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
@@ -125,7 +126,7 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
-
+import fr.aphp.tumorotek.utils.TKDateUtils;
 /**
  *
  * Implémentation du manager du bean de domaine Echantillon.
@@ -1941,23 +1942,22 @@ public class EchantillonManagerImpl implements EchantillonManager
 
    @Override
    public long calculDelaiStockage(final Echantillon echan, final Prelevement prel){
+      if(prel != null) {
+         return calculDelaiStockage(echan, prel.getDatePrelevement());
+      }
 
-      long milli = -1;
+      return TKDateUtils.UNDEFINED_VALUE_IN_MILLISECONDS;
+   }
 
-      // on vérifie que la date de prlvt est exploitables
-      if(prel != null && prel.getDatePrelevement() != null && (prel.getDatePrelevement().get(Calendar.HOUR_OF_DAY) != 0
-         || prel.getDatePrelevement().get(Calendar.MINUTE) != 0 || prel.getDatePrelevement().get(Calendar.SECOND) != 0)){
+   @Override
+   public long calculDelaiStockage(final Echantillon echan, final Calendar datePrelevement) {
+      long milli = TKDateUtils.UNDEFINED_VALUE_IN_MILLISECONDS;
 
-         if(echan.getDateStock() != null){
-            if(echan.getDateStock().get(Calendar.HOUR_OF_DAY) != 0 || echan.getDateStock().get(Calendar.MINUTE) != 0
-               || echan.getDateStock().get(Calendar.SECOND) != 0){
-               milli = echan.getDateStock().getTimeInMillis() - prel.getDatePrelevement().getTimeInMillis();
-            }
-         }
+      if (TKDateUtils.isDateNonNullWithHeureSignificative(datePrelevement) && TKDateUtils.isDateNonNullWithHeureSignificative(echan.getDateStock())) {
+         milli = echan.getDateStock().getTimeInMillis() - datePrelevement.getTimeInMillis();
       }
 
       return milli;
-
    }
 
    @Override
@@ -1978,7 +1978,7 @@ public class EchantillonManagerImpl implements EchantillonManager
          echantillon.setBanque(banque);
       }else if(echantillon.getBanque() == null){
          log.warn("Objet obligatoire Banque manquant lors de la {} d'un Echantillon", operation);
-         throw new RequiredObjectIsNullException("Prelevement", operation, "Banque");
+         throw new RequiredObjectIsNullException("Echantillon", operation, "Banque");
       }
 
       // Gatsbi required
@@ -2100,6 +2100,45 @@ public class EchantillonManagerImpl implements EchantillonManager
       }
 
       return res;
+   }
+   
+   @Override
+   public void updateDelaiCongelationWithTheoriqueIfPossible(Calendar datePrelevement, List<Echantillon> echantillons){
+      if(echantillons != null) {
+         // Parcourt la liste des échantillons pour mettre à jour les délais de congélation
+         for(Echantillon echantillon : echantillons){
+            long delaiCongelation = calculDelaiStockage(echantillon, datePrelevement);
+            // Conversion du délai de congélation en float pour la mise à jour (en minutes)
+            Float delaiCongelationInMinutes = TKDateUtils.convertMillisecondsToMinutes(delaiCongelation);
+            if (delaiCongelationInMinutes != TKDateUtils.UNDEFINED_VALUE_IN_MINUTES ){
+               // Mise à jour de l'échantillon dans la base de données
+               updateDelaiCongelation(delaiCongelationInMinutes, echantillon.getEchantillonId());
+            }
+         }
+      }
+   }
+   
+   @Override
+   public void removeDelaiCongelation(List<Echantillon> echantillons) {
+      if(echantillons != null) {
+         for(Echantillon echantillon : echantillons){
+            updateDelaiCongelation(null, echantillon.getEchantillonId());
+         }
+      }
+   }
+   
+   @Override
+   public int updateDelaiCongelation(Float newDelaiCongelation, Integer echantillonId) {
+      String hql = "UPDATE Echantillon set delaiCgl = :delaiCongelation where echantillonId = :echantillonId";
+      EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
+      if(em == null) {
+         em = entityManagerFactory.createEntityManager();
+      }
+      Query query = em.createQuery(hql);
+      query.setParameter("delaiCongelation", newDelaiCongelation);
+      query.setParameter("echantillonId", echantillonId);
+      
+      return query.executeUpdate();
    }
    
    @Override

@@ -316,11 +316,6 @@ public class ImportDossierExterneModale extends AbstractFicheCombineController
                         echantillonsAnnoValeurs.add(avs.get(j));
                      }
                   }else if(isCode && echantillonValeurExternes.get(i).getCode() != null){
-                     // } else if (isCode) {
-                     //	String[] codes = echantillonValeurExternes.get(i)
-                     //		.getValeurExterne().getValeur().split(";");
-
-                     //	for (int j = 0; j < codes.length; j++) {
                      final CodeAssigne codeAs = new CodeAssigne();
                      codeAs.setCodeRefId(echantillonValeurExternes.get(i).getCode().getCodeId());
                      codeAs.setCode(echantillonValeurExternes.get(i).getCode().getCode());
@@ -412,7 +407,7 @@ public class ImportDossierExterneModale extends AbstractFicheCombineController
                   .findByChampAndObjetManager(prelevementAnnoValeurs.get(i).getChampAnnotation(), prelevement));
             }
 
-            ManagerLocator.getPrelevementManager().updateObjectManager(prelevement, prelevement.getBanque(),
+            ManagerLocator.getPrelevementManager().updateObjectSansGestionImpactSurDelaiCongelManager(prelevement, prelevement.getBanque(),
                prelevement.getNature(), maladie, prelevement.getConsentType(), prelevement.getPreleveur(),
                prelevement.getServicePreleveur(), prelevement.getPrelevementType(), prelevement.getConditType(),
                prelevement.getConditMilieu(), prelevement.getTransporteur(), prelevement.getOperateur(),

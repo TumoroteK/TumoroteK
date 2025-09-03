@@ -52,43 +52,53 @@ import org.springframework.validation.Errors;
  */
 public final class ValidationUtilities
 {
-   //	public static final String MOTREGEXP =
-   //			"[a-z_A-Z0-9'öÖôÔàâéèêôùûçîïÀÂÉÈÔÙÛÇ\\s\\.+\\-:();?]+";
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String MOTREGEXP = "[\\p{L}|\\p{P}|\\p{N}|\\p{Z}|\\p{M}|\\+\\-@/<=>$%°~]+";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String MOTNOPUNCTREGEXP = "[\\p{L}|\\p{N}|\\p{Z}|\\p{M}|\\+\\-@/<=>$%°~]+";
 
    //lettres en minuscules et majuscules, les chiffres, le underscore (_), le caractère blanc (\s), le point (\.), le - et le +.
    //le dernier + veut dire qu'il faut au moins un de ces caractères
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String CODEREGEXP = "[a-zA-Z0-9_\\s\\.\\-\\+\\/]+";
    
    public static final String NOMBREREGEX = "-?[0-9]+(\\.|,)?[0-9]*E?[0-9]*";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String ONLYSPACESREGEXP = "\\s*";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String SEXEREGEXP = "F|M|(Ind)";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String PATIENT_ETAT_REGEXP = "V|D|(Inconnu)";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String COMBINAISON_OPERATEUR_REGEXP = "\\+|\\-";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String GROUPEMENT_OPERATEUR_REGEXP = "(and)|(or)";
 
    public static final String DATATYPE_REGEXP = "(alphanum)|(text)|(date)" + "|(bool)|(item)";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String MAILREGEXP = "[a-zA-Z0-9_.+\\-@]+";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String HTTPREGEXP = "(https?:\\/\\/){0,1}[a-zA-Z0-9_\\s\\.\\-\\/\\?=\\+&%]+";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String PATHREGEXP = "[:a-zA-Z0-9_\\.\\-\\/\\s]+";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String FILENAMEREGEXP = "[a-zA-Z0-9_\\.\\-]+";
 
-   public static final String PASSWORDREGEXP = "^.*(?=.*[a-z])(?=.*[A-Z])(?=.*[\\d])(?=.*[\\W]).*$";
-
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String IPREGEXP =
       "^\\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}" + "(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\b$";
 
+   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String SHEETNAME_INFAMOUSCHARS = "\\\\|\\/|\\*|\\[|\\]|:|\\?";
 
    private ValidationUtilities(){}

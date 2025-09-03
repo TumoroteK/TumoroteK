@@ -46,8 +46,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -214,69 +212,7 @@ public class ExportCatalogueManagerImpl implements ExportCatalogueManager
 
    }
 
-   /**
-    * Methode permettant de recupere une valeur pour un item.
-    * @param Connection con
-    * @param requête SQL
-    * @param message d'erreur
-    * @param obligatoire si true
-    * @param regexp
-    * @param defaut
-    */
-   public static String fetchItemAsString(final Connection con, final String requete, final String errorMessage,
-      final boolean obligatoire, final String regexp, final String defaut){
-      Statement s = null;
-      ResultSet rs = null;
-      String item = null;
 
-      try{
-         s = con.createStatement();
-         rs = s.executeQuery(requete);
-         if(rs.next()){
-            item = rs.getString(1);
-         }
-         rs.close();
-         s.close();
-         if(obligatoire){
-            if(item == null || item.equals("")){
-               if(defaut == null){
-                  throw new ItemException(2, errorMessage);
-               }
-               return defaut;
-            }
-         }
-         if(regexp != null && item != null){
-            final Pattern p = Pattern.compile(regexp);
-            final Matcher m = p.matcher(item);
-            final boolean b = m.matches();
-            if(!b){
-               throw new ItemException(3, "Valeur inattendue " + item);
-            }else if(m.groupCount() > 0){
-               item = m.group(1);
-            }
-         }
-
-         return item;
-      }catch(final SQLException e){
-         log.error(e.getMessage(), e); 
-      }finally{
-         if(s != null){
-            try{
-               s.close();
-            }catch(final SQLException e){
-               s = null;
-            }
-         }
-         if(rs != null){
-            try{
-               rs.close();
-            }catch(final SQLException e){
-               rs = null;
-            }
-         }
-      }
-      return defaut;
-   }
 
    /**
     * Methode permettant de recupere une valeur au format Date

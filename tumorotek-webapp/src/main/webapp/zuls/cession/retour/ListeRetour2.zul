@@ -46,6 +46,7 @@
 				hflex="1"
 				>
 				<columns sizable="true">
+					<column width="30px" />
 					<column label="${c:l('Champ.Retour.DateSortie')}" />
 					<column label="${c:l('Champ.Retour.DateRetour')}" />
 					<column label="${c:l('listeRetour.delai')}" />
@@ -56,8 +57,14 @@
 					<column id="deleteCol" align="center" width="30px"/>
 				</columns>
 				<rows>
+					<!-- Note : l'objet currRetour est de type RetourDecorator et non Retour.
+					Pour accéder à un champ, vérifiez que le décorateur a un getter pour ce champ ou
+					 appelez l'objet Retour du RetourDecorator -->
 					<row self="@{each='currRetour'}" value="@{currRetour}" style="@{currRetour.rowStyle}">
-						<label id="viewObj" value="@{currRetour.dateSortie}" class="formLink" style="@{currRetour.linkStyle}" />
+						<!-- Une icône pour signaler un impact (dégradation probable de la qualité du matériel). -->
+						<image src="/images/icones/flag.png" visible="@{currRetour.retour.impact}" tooltiptext="${c:l('Champ.Retour.Impact')}"/>
+						<label id="viewObj" value="@{currRetour.dateSortie}" class="formLink"
+							   style="@{currRetour.linkStyle}"/>
 						<label value="@{currRetour.dateRetour}"/>
 						<label value="@{currRetour.delaiInHeureMin}"/>
 						<label value="@{currRetour.sortieObjet}" style="word-wrap: break-word" maxlength="50"/>

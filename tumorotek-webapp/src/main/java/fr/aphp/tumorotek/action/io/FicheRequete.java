@@ -46,6 +46,7 @@ import org.zkoss.zk.ui.HtmlMacroComponent;
 import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
@@ -338,6 +339,26 @@ public class FicheRequete extends AbstractFicheCombineController
       revertRequete();
       clearConstraints();
       super.onClick$revertC();
+   }
+
+   //TK-524
+   public void onBlur$intituleBox() {
+      String intitule = intituleBox.getValue();
+
+      // Vérifier si on est en mode création ou modification
+      boolean isCreation = ( requete == null || requete.getRequeteId() == null);
+
+      // Vérifier l'unicité de l'intitulé :
+      // - En mode création, toujours vérifier l'unicité
+      // - En mode modification, vérifier l'unicité seulement si l'intitulé a été modifié
+      if (!intitule.trim().isEmpty() && (isCreation || !intitule.equals(requete.getIntitule()))) {
+         List<Requete> requeteAvecIntituleExists = ManagerLocator.getRequeteManager()
+                 .findByIntituleInPlateformeManager(intitule, SessionUtils.getCurrentPlateforme());
+         if (!requeteAvecIntituleExists.isEmpty()) {
+            final String banque = requeteAvecIntituleExists.get(0).getBanque().getNom();
+            throw new WrongValueException(intituleBox, Labels.getLabel("onglet.requete.doublon.error.intitule", new String[] {intitule, banque}));
+         }
+      }
    }
 
    @Override

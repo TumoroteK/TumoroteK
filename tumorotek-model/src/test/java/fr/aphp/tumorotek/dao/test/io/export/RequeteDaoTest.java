@@ -199,43 +199,6 @@ public class RequeteDaoTest extends AbstractDaoTest
       assertTrue(liste.size() == 0);
    }
 
-   /**
-    * Test l'appel de la méthode findRequetesByUtilisateurId().
-    */
-   public void testFindRequetesByUtilisateurId() throws Exception{
-      final List<Utilisateur> utilisateurs = this.utilisateurDao.findAll();
-      final Iterator<Utilisateur> itUtilisateur = utilisateurs.iterator();
-      while(itUtilisateur.hasNext()){
-         final Utilisateur utilisateur = itUtilisateur.next();
-         final List<Requete> requetes = requeteDao.findByUtilisateur(utilisateur);
-         final Iterator<Requete> it = requetes.iterator();
-         while(it.hasNext()){
-            assertTrue(it.next().getCreateur().equals(utilisateur));
-         }
-      }
-   }
-
-   /**
-   * Test l'appel de la méthode findByIntituleUtilisateur().
-   */
-   public void testFindByIntituleUtilisateur() throws Exception{
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Utilisateur u2 = utilisateurDao.findById(2);
-      List<Requete> liste = requeteDao.findByIntituleUtilisateur("Echantillon%", u1);
-      assertTrue(liste.size() == 1);
-
-      liste = requeteDao.findByIntituleUtilisateur("yug%", u1);
-      assertTrue(liste.size() == 0);
-
-      liste = requeteDao.findByIntituleUtilisateur("Essen%", u2);
-      assertTrue(liste.size() == 0);
-
-      liste = requeteDao.findByIntituleUtilisateur(null, u1);
-      assertTrue(liste.size() == 0);
-
-      liste = requeteDao.findByIntituleUtilisateur("Essen%", null);
-      assertTrue(liste.size() == 0);
-   }
 
    /**
     * Test l'insertion, la mise à jour et la suppression 

@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.manager.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.io.export.Requete;
@@ -75,15 +76,6 @@ public interface RechercheManager
     */
    void renameRechercheManager(Recherche recherche, String intitule);
 
-   //	/**
-   //	 * Copie une Recherche en BDD.
-   //	 * @param recherche Recherche à copier.
-   //	 * @param copieur Utilisateur qui copie la Recherche.
-   //	 * @return la Recherche copiée.
-   //	 */
-   //	Recherche copyRechercheManager(Recherche recherche, Utilisateur copieur,
-   //			Banque banque);
-
    /**
     * Créé une nouvelle Recherche en BDD.
     * @param recherche Recherche à créer.
@@ -113,31 +105,6 @@ public interface RechercheManager
    void removeObjectManager(Recherche recherche);
 
    /**
-    * Recherche les Recherches dont l'utilisateur créateur est passé en
-    * paramètre.
-    * @param util Utilisateur qui à créé les Recherches recherchées.
-    * @return la liste de toutes les Recherches de l'Utilisateur.
-    */
-   List<Recherche> findByUtilisateurManager(Utilisateur util);
-
-   /**
-    * Recherche les Recherches dont l'intitulé est passé en paramètre.
-    *
-    * @param intitule Intitulé des Recherches recherchées.
-    * @return la liste de toutes les Recherches de l'intitulé.
-    */
-   List<Recherche> findByIntituleManager(String intitule);
-
-   /**
-    * Recherche les Recherches dont l'intitulé et l'utilisateur
-    * sont passés en paramètre.
-    * @param intitilé des Recherches recherchés.
-    * @param util Utilisateur qui à créé les Recherches recherchés.
-    * @return la liste de toutes les Recherches de l'intitulé.
-    */
-   List<Recherche> findByIntituleAndUtilisateurManager(String intitule, Utilisateur util);
-
-   /**
     * Recherche les Recherches dont la Requête est passée en paramètre.
     *
     * @param requete Requete des Recherches recherchées.
@@ -153,20 +120,6 @@ public interface RechercheManager
     */
    List<Recherche> findByAffichageManager(Affichage affichage);
 
-   /**
-    * Recherche les doublons d'un Affichage passé en paramètre.
-    * @param affichage un Affichage pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   Boolean findDoublonManager(Recherche recherche);
-
-   /**
-    * Méthode qui permet de vérifier que 2 Recherches sont des copies.
-    * @param r Recherche première Recherche à vérifier.
-    * @param copie deuxième Recherche à vérifier.
-    * @return true si les 2 Recherches sont des copies, false sinon.
-    */
-   Boolean isCopyManager(Recherche r, Recherche copie);
 
    /**
     * Récupère les banques d'une Recherche.
@@ -189,4 +142,26 @@ public interface RechercheManager
     * @return la liste de tous les Recherches des Banques.
     */
    List<Recherche> findByBanqueInLIstManager(List<Banque> banques);
+
+
+   /**
+    * Recherche les Recherches par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule L'intitulé de la Recherche à rechercher
+    * @param plateforme La plateforme dans laquelle rechercher
+    * @return la liste des Recherches correspondantes
+    */
+   List<Recherche> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme);
+
+   /**
+    * Vérifie si une recherche avec le même intitulé existe déjà dans la plateforme donnée.
+    * Si la recherche passé en paramètre existe déjà en base de données (champ rechercheId valorisé) - cas de la modification de l'intitulé - 
+    * l'id de la recherche trouvée en base de données sera comparé avec celui de la recherche en paramètre
+    * pour ne renvoyer true que si les 2 sont différents.
+    *
+    * @param recherche La recherche de laquelle sera récupéré l'intitulé pour vérifier l'existence d'un doublon.
+    * @param plateforme La plateforme dans laquelle vérifier l'unicité de l'intitulé.
+    * @return true / false.
+    */
+    boolean isDoublonIntituleInPlateformeManager(Recherche recherche, Plateforme plateforme);
 }

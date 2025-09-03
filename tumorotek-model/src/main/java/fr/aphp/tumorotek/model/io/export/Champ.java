@@ -245,10 +245,12 @@ public class Champ implements Comparable<Champ>
          }
          final String nomEntite = this.getChampDelegue().getEntite().getNom();
          final String contexte = this.getChampDelegue().getContexte().getNom();
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          final String nomChampDelegue = StringUtils.capitalize(this.getChampDelegue().getNom()).replaceAll("Id$", "");
          return nomEntite + "." + contexte + "." + nomChampDelegue;
       }else if(this.champEntite != null){
          String champEntiteNom = this.champEntite.getNom();
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(this.getChampEntite().getNom().matches("^[a-zA-Z]+Id$")){
             champEntiteNom = champEntiteNom.substring(0, champEntiteNom.length() - 2);
          }
@@ -266,10 +268,12 @@ public class Champ implements Comparable<Champ>
          retour = this.champAnnotation.getNom();
       }else if(this.champEntite != null){
          retour = this.champEntite.getNom();
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          if(retour.matches("^[a-zA-Z]+Id$")){
             retour = retour.substring(0, retour.length() - 2);
          }
       }else if(this.champDelegue != null){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          retour = this.champDelegue.getNom().replaceAll("Id$", "");
       }
       return retour;
@@ -303,8 +307,10 @@ public class Champ implements Comparable<Champ>
 
       final String champParentNom;
       if(this.champParent.getChampEntite() != null){
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          champParentNom = this.champParent.getChampEntite().getNom().replaceAll("Id$", "");
       }else{
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          champParentNom = this.champParent.getChampDelegue().getNom().replaceAll("Id$", "");
       }
 

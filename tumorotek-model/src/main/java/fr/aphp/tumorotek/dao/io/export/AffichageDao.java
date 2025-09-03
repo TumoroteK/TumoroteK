@@ -39,6 +39,7 @@ import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -54,13 +55,6 @@ public interface AffichageDao extends GenericDaoJpa<Affichage, Integer>
 {
 
    /**
-    * Recherche les Affichages d'un Utilisateur.
-    * @param utilisateur : Utilisateur dont on veut connaître les Affichages.
-    * @return la liste des Affichages de l'Utilisateur
-    */
-   List<Affichage> findByUtilisateur(Utilisateur utilisateur);
-
-   /**
    * Recherche les Affichages d'une Banque.
    * @param banque Banque dont on veut connaître les Affichages.
    * @return la liste des Affichages de la Banque.
@@ -74,27 +68,13 @@ public interface AffichageDao extends GenericDaoJpa<Affichage, Integer>
    */
    List<Affichage> findByBanqueInList(List<Banque> banques);
 
-   /**
-   * Recherche les Affichages d'un intitulé.
-   * @param intitulé : intitulé dont on veut connaître les Affichages.
-   * @return la liste des Affichages de l'intitulé
-   */
-   List<Affichage> findByIntitule(String intitule);
 
    /**
-   * Recherche les Affichages d'un utilisateur par intitulé.
-   * @param intitulé : intitulé dont on veut connaître les Affichages.
-   * @param utilisateur : Utilisateur ayant créé les Affichages.
-   * @return la liste des Affichages de l'intitulé
-   */
-   List<Affichage> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
-
-   /**
-   * Recherche tous les Affichages, sauf celui dont l'id est passé
-   * en paramètre.
-   * @param affichageId Identifiant de l'Affichage que l'on souhaite
-   * exclure de la liste retournée.
-   * @return une liste d'Affichages.
-   */
-   List<Affichage> findByExcludedId(Integer affichageId);
+    * Recherche les Affichages par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule : L'intitulé de l'Affichage à rechercher
+    * @param plateforme : La plateforme dans laquelle rechercher
+    * @return la liste des Affichages correspondants
+    */
+   List<Affichage> findByIntituleInPlateforme(String intitule, Plateforme plateforme);
 }

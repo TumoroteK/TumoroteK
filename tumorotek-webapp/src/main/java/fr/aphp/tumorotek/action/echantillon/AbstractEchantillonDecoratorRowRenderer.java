@@ -85,6 +85,7 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
       // code
       if(deco.isNew() && deco.getAdrlTmp() == null){
          final Textbox tb = new Textbox();
+         tb.setWidth("100%");
          tb.setValue(deco.getCode());
          tb.setInplace(true);
          tb.setConstraint(EchantillonConstraints.getCodePrefixConstraint());

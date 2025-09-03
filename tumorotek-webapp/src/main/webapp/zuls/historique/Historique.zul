@@ -122,7 +122,7 @@
 							>
 							<columns sizable="true" menupopup="auto" >
 								<column
-									label="${c:l('historique.utilisateur')}" sort="auto(utilisateur.login)"/>
+									label="${c:l('historique.utilisateur')}" sort="auto(LOWER(utilisateur.login))"/>
 								<column label="${c:l('historique.operationType')}" sort="auto(operationType.nom)"/>
 								<column label="${c:l('historique.entite')}"/>
 								<column label="${c:l('historique.identifiant')}"/>

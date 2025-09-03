@@ -133,12 +133,14 @@ public final class PrinterFormat
       final StringTokenizer str = new StringTokenizer(codeEchantillon, ".");
 
       codePrelevement = str.nextToken();
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       numeroTube = codeEchantillon.replaceFirst(codePrelevement, "");
 
       return numeroTube;
    }
 
    public static String formaterUnite(final String unite){
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       return unite.replaceAll("&micro;", "µ");
    }
 

@@ -65,7 +65,7 @@ public class GennoFixProcessor implements Processor
          while(scanner.hasNextLine()){
             final String line = scanner.nextLine();
             sb.append(line);
-            if(!line.matches(".*\\|+$")){
+            if(!line.endsWith("|")){
                log.info("la ligne ne se termine pas par un delimiteur: ".concat(line));
                sb.append("|");
             }

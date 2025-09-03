@@ -490,7 +490,7 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
 
       // clean up
       p3.setQuantite(new Float(100.0));
-      prelevementManager.updateObjectManager(p3, p3.getBanque(), p3.getNature(), p3.getMaladie(), p3.getConsentType(),
+      prelevementManager.updateObjectSansGestionImpactSurDelaiCongelManager(p3, p3.getBanque(), p3.getNature(), p3.getMaladie(), p3.getConsentType(),
          p3.getPreleveur(), p3.getServicePreleveur(), p3.getPrelevementType(), p3.getConditType(), p3.getConditMilieu(),
          p3.getTransporteur(), p3.getOperateur(), p3.getQuantiteUnite(), null, null, null, null, null, u, null, false, null,
          false);

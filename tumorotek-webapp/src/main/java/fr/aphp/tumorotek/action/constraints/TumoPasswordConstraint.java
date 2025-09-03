@@ -75,43 +75,67 @@ public class TumoPasswordConstraint
    }
 
    /**
-    * Applique la validation textBox par match avec la regexp.
+    * Valide le mot de passe en fonction des critères définis.
+    *
+    * <p>Critères de validation :
+    * <ul>
+    *   <li>La taille minimale et maximale du mot de passe (définie dans {@code UtilisateurConstraints}).</li>
+    *   <li>Doit contenir au moins une lettre minuscule.</li>
+    *   <li>Doit contenir au moins une lettre majuscule.</li>
+    *   <li>Doit contenir au moins un chiffre.</li>
+    *   <li>Doit contenir au moins un caractère spécial.</li>
+    * </ul>
+    * </p>
+    *
+    * @param comp   Le composant associé au champ du mot de passe.
+    * @param value  La valeur saisie par l'utilisateur.
+    * @param constr La contrainte associée au champ.
+    * @throws WrongValueException Si le mot de passe ne respecte pas les critères définis.
     */
-   public void validatePassword(final Component comp, final Object value, final String regexp, final Constraint constr){
+   public void validatePassword(final Component comp, final Object value, final Constraint constr){
       // on récupère la valeur dans textBox
       final String textValue = (String) value;
-      // Si le text n'est pas vide, on applique la contrainte
       try{
+         // Vérifier si textValue n'est pas null
          if(textValue != null){
-            boolean isValide = true;
-            // on vérifie que cet attribut est bien de type "size"
-            if(this.minSize != null){
-               // validité sur la taille
-               if(textValue.length() < this.minSize){
-                  throw new WrongValueException(comp, Labels.getLabel("validation.password.illegal"));
-               }
-            }
-            // on vérifie que cet attribut est bien de type "size"
-            if(this.maxSize != null){
-               // validité sur la taille
-               if(textValue.length() > this.maxSize){
-                  throw new WrongValueException(comp, Labels.getLabel("validation.password.illegal"));
-               }
-            }
 
-            /*if (regexp != null) {
-            	regexp = regexp.substring(0, regexp.length() - 1)
-            		.concat("*");
-            }*/
-            if(regexp != null){
-               isValide = textValue.matches(regexp);
-            }
-
-            // validité sur la syntaxe
-            if(!isValide){
+            // Valider la taille minimale (définie dans UtilisateurConstraints)
+            if(this.minSize != null && textValue.length() < this.minSize){
                throw new WrongValueException(comp, Labels.getLabel("validation.password.illegal"));
             }
 
+            // Valider la taille maximale (définie dans UtilisateurConstraints)
+            if(this.maxSize != null && textValue.length() > this.maxSize){
+               throw new WrongValueException(comp, Labels.getLabel("validation.password.illegal"));
+            }
+
+            // Vérifier les types de caractères requis
+            boolean hasLowercase = false;
+            boolean hasUppercase = false;
+            boolean hasDigit = false;
+            boolean hasSpecialChar = false;
+            boolean validationOK = false;
+
+            for(char c : textValue.toCharArray()){
+               if(Character.isLowerCase(c))
+                  hasLowercase = true;
+               else if(Character.isUpperCase(c))
+                  hasUppercase = true;
+               else if(Character.isDigit(c))
+                  hasDigit = true;
+               else if(!Character.isLetterOrDigit(c))
+                  hasSpecialChar = true;
+
+               // Optimisation : arrêter la vérification dès que toutes les conditions sont remplies
+               if(hasLowercase && hasUppercase && hasDigit && hasSpecialChar) {
+                  validationOK  = true;
+                  break;
+               }
+            }
+            // Si une condition n'est pas remplie, lever une exception
+            if(!validationOK){
+               throw new WrongValueException(comp, Labels.getLabel("validation.password.illegal"));
+            }
          }else{
             // la contrainte est retiree
             ((Textbox) comp).setConstraint("");
@@ -120,10 +144,12 @@ public class TumoPasswordConstraint
             // on remet la contrainte
             ((Textbox) comp).setConstraint(constr);
          }
-      }catch(final WrongValueException e){
+      } catch(final WrongValueException e){
          Clients.scrollIntoView(e.getComponent());
          throw (e);
       }
+
    }
+
 
 }

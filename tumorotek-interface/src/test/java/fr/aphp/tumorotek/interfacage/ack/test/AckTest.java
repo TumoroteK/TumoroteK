@@ -273,6 +273,7 @@ public class AckTest
          while((line = br.readLine()) != null){
 
             // use comma as separator
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
             final String[] values = line.split(cvsSplitBy);
 
             p.setPrelevementId(Integer.parseInt(values[1]));

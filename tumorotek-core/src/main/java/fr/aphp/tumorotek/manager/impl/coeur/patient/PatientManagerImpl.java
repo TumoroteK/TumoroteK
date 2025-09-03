@@ -52,10 +52,13 @@ import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import org.springframework.orm.jpa.EntityManagerFactoryUtils;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
@@ -403,7 +406,12 @@ public class PatientManagerImpl implements PatientManager
          if (pat.getBanque() != null) {
             patients.addAll(patientDao
                .findByIdentifiant(pat.getIdentifiant(), Arrays.asList(pat.getBanque())));
-            return patients.get(0); // un seul patient possible par identifiant par banque
+            //TG-256 : le patient peut exister mais avec un autre identifiant, dans ce cas, on le récupèrera avec 
+            //le recherche sur le nom faite sur dans le bloc if (patients.isEmpty()) ...
+            //=> ajout d'un test !patients.isEmpty()
+            if(!patients.isEmpty()) {
+               return patients.get(0); // un seul patient possible par identifiant par banque
+            }
          }
          
          // le patient existant porte sur l'identité
@@ -1020,6 +1028,11 @@ public class PatientManagerImpl implements PatientManager
             if(sip.getPaysNaissance() != null && !sip.getPaysNaissance().equals(inBase.getPaysNaissance())){
                fields.add(inBase.getClass().getDeclaredField("paysNaissance"));
             }
+            //TK-707 : Pb dans le cas où un flux de mise à jour envoie "Vivant" avec une date de décès à null
+            //alors que la patient a été préalablement déclaré décédé avec une date de décès.
+            //En effet, le statut va passer à vivant mais la date de décès ne va pas être mise à jour car la valeur transmise est null
+            //Or il y a un test pour ne pas prendre en compte le passage à null de la date de décès
+            //le validator va détecter une incohérence
             if(!sip.getPatientEtat().equals(inBase.getPatientEtat())){
                fields.add(inBase.getClass().getDeclaredField("patientEtat"));
             }
@@ -1222,5 +1235,26 @@ public class PatientManagerImpl implements PatientManager
       }
       return new ArrayList<PatientIdentifiant>();
    }
-
+   
+   //TG-272
+   /**
+    * Supprime tous les patientIdentifiants de la banque passée en paramètre.
+    * @since 2.3.0 (gatsbi), les patients sont rattachés à la collection quand lors de la création de leurs prélèvements
+    * sur une collection Gatsbi
+    * @param banque
+    */
+   @Override
+   public void removeAllPatientIdentifiantsForBanque(Banque banque){
+      // /!\ cette méthode est une mise à jour : il ne faut créer un entityManager que si une transaction 
+      // n'est pas déjà en cours...
+      //normalement vu que la propogation définie sur la méthode est REQUIRED - d'après la conf dans applicationContextAOP.xml, 
+      //ça doit toujours être le cas mais on sécurise quand même en créant un entityManager si celui récupéré est null
+      EntityManager em = EntityManagerFactoryUtils.getTransactionalEntityManager(entityManagerFactory);
+      if(em == null) {
+         em = entityManagerFactory.createEntityManager();
+      }
+      Query queryDelete = em.createNamedQuery("PatientIdentifiant.removeAllForBanque");
+      queryDelete.setParameter(1, banque);
+      queryDelete.executeUpdate(); 
+   }
 }

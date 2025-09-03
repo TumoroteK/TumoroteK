@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
+import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ETypeDelaiCongelation;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
 import fr.aphp.tumorotek.model.CodeIdPair;
@@ -800,6 +801,17 @@ public interface EchantillonManager
    long calculDelaiStockage(Echantillon echan, Prelevement prel);
 
    /**
+    * Calcule le délai de stockage en millisecondes entre la date de prélèvement et la date de stockage d'un échantillon.
+    *
+    * @param echan L'objet Echantillon pour lequel calculer le délai de stockage.
+    * @param datePrelevement La date de prélèvement au format Calendar.
+    * @return Le délai de stockage en millisecondes, ou -1 si les dates ne sont pas valides ou si l'une des dates est nulle.
+    */
+
+   long calculDelaiStockage(Echantillon echan, Calendar datePrelevement);
+
+
+   /**
     * Renvoie tous les échantillons ayant eu une dégradation possible
     * @param banks
     * @param impact
@@ -835,6 +847,29 @@ public interface EchantillonManager
     * @since 2.3.0-gatsbi
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> selectedBanques, boolean b);
+ 
+   /**
+    * valorise le délai de congélation des échantillons passés en paramètre avec le délai théorique (date de stockage - date de prélèvement)
+    * si celui-ci est calculable c'est-à-dire si les 2 dates sont renseignées avec les heures
+    * @param datePrelevement
+    * @param echantillons
+    */
+   void updateDelaiCongelationWithTheoriqueIfPossible(Calendar datePrelevement, List<Echantillon> echantillons);
+   
+   /**
+    * valorise à null le délai de congélation pour les échantillons de la liste passée en paramètre
+    * @param echantillons
+    */
+   void removeDelaiCongelation(List<Echantillon> echantillons);
+   
+   /**
+    * met à jour l'unique champ delaiCgl dans l'objet échantillon dont l'id est passé en paramètre
+    * @param newDelaiCongelation nouvelle valeur du délai de congélation (peut être null pour forcer une réinitialisation)
+    * @param echantillonId l'id de l'échantillon concerné
+    * @return le nombre de ligne mise à jour
+    */
+   int updateDelaiCongelation(Float newDelaiCongelation, Integer echantillonId);
+   
 
    /**
     * Cette méthode récupère les échantillons associés au statut spécifié à partir de la liste donnée d'objets CederObjet.

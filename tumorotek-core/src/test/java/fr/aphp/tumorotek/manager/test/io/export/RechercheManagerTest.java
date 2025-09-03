@@ -124,59 +124,7 @@ public class RechercheManagerTest extends AbstractManagerTest4
       }
    }
 
-   //	@Test
-   //	public void testCopyRecherche() {
-   //		//On récupère un recherche
-   //		Recherche recherche = manager.findByIdManager(3);
-   //		assertNotNull(recherche);
-   //		Utilisateur util = utilisateurDao.findById(3);
-   //		Banque b = banqueDao.findById(1);
-   //		
-   //		// On teste une copie avec des attributs non valides
-   //		try {
-   //			manager.copyRechercheManager(recherche, null, b);
-   //		} catch (RequiredObjectIsNullException e) {
-   //			assertEquals("RequiredObjectIsNullException",
-   //					e.getClass().getSimpleName());
-   //		}
-   //		try {
-   //			manager.copyRechercheManager(null, util, b);
-   //		} catch (RequiredObjectIsNullException e) {
-   //			assertEquals("RequiredObjectIsNullException",
-   //					e.getClass().getSimpleName());
-   //		}
-   //		try {
-   //			manager.copyRechercheManager(recherche, util, null);
-   //		} catch (RequiredObjectIsNullException e) {
-   //			assertEquals("RequiredObjectIsNullException",
-   //					e.getClass().getSimpleName());
-   //		}
-   //
-   //		//On récupère la premiere requete
-   //		Recherche copie = manager.copyRechercheManager(recherche, util, b);
-   //		
-   //		//On verifie que la recherche et la copie sont identiques
-   //		assertTrue(manager.isCopyManager(recherche, copie));
-   //		
-   //		//On verifie que la copie est bien en base de donnees
-   //		Recherche copie2 = manager.findByIdManager(copie.getRechercheId());
-   //		assertNotNull(copie2);
-   //		
-   //		int idAffichage = copie2.getAffichage().getAffichageId();
-   //		int idRequete = copie2.getRequete().getRequeteId();
-   //		
-   //		//On supprime les éléments créés
-   //		manager.removeObjectManager(copie2);
-   //		
-   //		//On supprime l'affichage
-   //		Affichage affichage = affichageManager.findByIdManager(idAffichage);
-   //		affichageManager.removeObjectManager(affichage);
-   //		
-   //		//On supprime la requete
-   //		Requete requete = requeteManager.findByIdManager(idRequete);
-   //		requeteManager.removeObjectManager(requete);
-   //	}
-   //	
+
    @Test
    public void testRenameRecherche(){
       //On récupère un recherche
@@ -215,36 +163,6 @@ public class RechercheManagerTest extends AbstractManagerTest4
       manager.renameRechercheManager(recherche, oldIntitule);
    }
 
-   @Test
-   public void testFindByUtilisateur(){
-      final Utilisateur util = utilisateurDao.findById(1);
-      final List<Recherche> recherches = manager.findByUtilisateurManager(util);
-      final Iterator<Recherche> it = recherches.iterator();
-      while(it.hasNext()){
-         final Recherche temp = it.next();
-         assertTrue(temp.getCreateur().equals(util));
-      }
-   }
-
-   @Test
-   public void testFindByIntituleAndUtilisateurManager(){
-      final Utilisateur u1 = utilisateurDao.findById(1);
-      final Utilisateur u2 = utilisateurDao.findById(2);
-      List<Recherche> liste = manager.findByIntituleAndUtilisateurManager("Aff%", u1);
-      assertTrue(liste.size() == 1);
-
-      liste = manager.findByIntituleAndUtilisateurManager("yug%", u1);
-      assertTrue(liste.size() == 0);
-
-      liste = manager.findByIntituleAndUtilisateurManager("Essen%", u2);
-      assertTrue(liste.size() == 0);
-
-      liste = manager.findByIntituleAndUtilisateurManager(null, u1);
-      assertTrue(liste.size() == 0);
-
-      liste = manager.findByIntituleAndUtilisateurManager("Essen%", null);
-      assertTrue(liste.size() == 0);
-   }
 
    @Test
    public void testFindBanquesManager(){
@@ -370,28 +288,5 @@ public class RechercheManagerTest extends AbstractManagerTest4
       requeteManager.removeObjectManager(oldRequete);
    }
 
-   @Test
-   public void testFindDoublons(){
-      final Recherche recherche = new Recherche();
-      final Utilisateur createur = utilisateurDao.findById(1);
-      recherche.setCreateur(createur);
-      recherche.setIntitule("Femmes");
-      final Affichage affichage = affichageDao.findById(1);
-      recherche.setAffichage(affichage);
-      final Requete requete = requeteDao.findById(3);
-      recherche.setRequete(requete);
 
-      final ArrayList<Banque> banques = new ArrayList<>();
-      banques.add(banqueDao.findById(1));
-      banques.add(banqueDao.findById(2));
-      banques.add(banqueDao.findById(3));
-      banques.add(banqueDao.findById(4));
-
-      recherche.setBanques(banques);
-
-      assertTrue(manager.findDoublonManager(recherche));
-
-      recherche.setIntitule("Femems");
-      assertFalse(manager.findDoublonManager(recherche));
-   }
 }

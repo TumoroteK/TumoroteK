@@ -1,6 +1,46 @@
-#### Notes de version
+#### Notes
 
 ##### Version 2.3.1.0-SNAPSHOT - Publiée le ??? (en cours)
+
+
+
+##### Version 2.3.0.14 - Publiée le 27/01/2025
+###### Corrections ano pour un contexte Gatsbi
+- YouTrack [TK-611](https://tumorotek.myjetbrains.com/youtrack/issue/TK-611) : Export collection Gatsbi avec un contexte non défini : les colonnes de ce contexte n'apparaissent pas
+- YouTrack [TG-272](https://tumorotek.myjetbrains.com/youtrack/issue/TG-272) : Impossible de supprimer une collection Gatsbi dans un cas particulier
+
+###### Amélioration du code dans le module Gatsbi (version 1.0.0.9)
+
+
+##### Version 2.3.0.13 - Publiée le 13/01/2025
+- YouTrack [TK-589](https://tumorotek.myjetbrains.com/youtrack/issue/TK-589) : Problème lors de la création d'un index à cause d'une valeur par défaut à 0000-00-00 00:00:00, valeur qui n'est plus autorisée
+- YouTrack [TK-593](https://tumorotek.myjetbrains.com/youtrack/issue/TK-593) : Indicateurs : plantage lors de l'exécution si sélection de l'indicateur "Prélèvements groupés par patient et par date de prélèvement"
+
+###### Corrections ano pour un contexte Gatsbi
+- YouTrack [TG-255](https://tumorotek.myjetbrains.com/youtrack/issue/TG-255) : [TK] <span class="badge badge-prelevement">Prélèvement</span> : erreur lors de la création d'un prélèvement (failed to lazily initialize a collection of role) dans un cas bien particulier
+
+
+##### Version 2.3.0.12 - Publiée le 14/10/2024
+###### Report de la correction faite sur la version 2.2.11
+- YouTrack [TK-568](https://tumorotek.myjetbrains.com/youtrack/issue/TK-568) : Interfaçage VisionMate : erreur lors du scan des boîtes avec mysql v8
+- YouTrack [TK-569](https://tumorotek.myjetbrains.com/youtrack/issue/TK-569) : Scan de boîte pour contrôle d'une cession : en cas d'échantillon / dérivé ne faisant pas partie de la cession, popup d'avertissement vide
+
+##### Version 2.3.0.11 - Publiée le 16/09/2024
+- YouTrack [TG-154](https://tumorotek.myjetbrains.com/youtrack/issue/TG-154) : [TK] : Ajout du guide utilisateur de Gatsbi sur la page d'accueil de TK
+
+
+###### Corrections ano tous contextes
+- YouTrack [TG-266](https://tumorotek.myjetbrains.com/youtrack/issue/TG-266) : Fiche <span class="badge badge-prelevement">Prélèvement</span> en édition : le n° de dossier patient (nda) n'est plus modifiable (régression)
+- YouTrack [TK-539](https://tumorotek.myjetbrains.com/youtrack/issue/TK-539) : Historique (d'un objet ou dans l'admin) : l'information "import" n'est pas précisée lorsque la création a été effectuée par un import
+- YouTrack [TK-552](https://tumorotek.myjetbrains.com/youtrack/issue/TK-552) : Liste <span class="badge badge-prelevement">Prélèvement</span> en contexte sérologie : les informations patient ne sont pas cachées si le profil a Anonymisation est à Oui (régression)
+- YouTrack [TK-553](https://tumorotek.myjetbrains.com/youtrack/issue/TK-553) : Fiche Profil : ne pas proposer l'export nominatif si anonymisation est coché
+
+
+###### Corrections ano pour un contexte Gatsbi
+- YouTrack [TG-235](https://tumorotek.myjetbrains.com/youtrack/issue/TG-235) : [TK] - Contexte Gatsbi : Plantage lors de la modification multiple sur des patients
+- YouTrack [TG-256](https://tumorotek.myjetbrains.com/youtrack/issue/TG-256) : [TK] - Contexte Gatsbi : import prélèvement : erreur IndexOutOfBoundException pour certaines lignes
+- YouTrack [TG-265](https://tumorotek.myjetbrains.com/youtrack/issue/TG-265) : [TK] - Contexte Gatsbi, création <span class="badge badge-prelevement">Prélèvement</span> avec utilisation de la numérotation : incrémentation de 2 au lieu de 1 quand un paramétrage Gatsbi est défini
+
 
 ##### Version 2.3.0.10 - Publiée le 01/07/2024
 ###### Corrections dans TK pour un contexte Gatsbi
@@ -112,6 +152,10 @@
 
 
 ***
+##### Version 2.2.11 - Publiée le 14/10/2024
+###### Correction
+- YouTrack [TK-568](https://tumorotek.myjetbrains.com/youtrack/issue/TK-568) : Interfaçage VisionMate : erreur lors du scan des boîtes avec mysql v8
+- YouTrack [TK-569](https://tumorotek.myjetbrains.com/youtrack/issue/TK-569) : Scan de boîte pour contrôle d'une cession : en cas d'échantillon / dérivé ne faisant pas partie de la cession, popup d'avertissement vide
 
 ##### Version 2.2.10 (dernière version sans le module Gatsbi) - Publiée le 20/05/2024
 ###### Amélioration

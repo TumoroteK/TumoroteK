@@ -36,9 +36,11 @@
 package fr.aphp.tumorotek.manager.impl.io.export;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Validator;
@@ -56,6 +58,7 @@ import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.io.export.AffichageValidator;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Affichage;
+import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -151,6 +154,13 @@ public class AffichageManagerImpl implements AffichageManager
       return affichageDao.findAll();
    }
 
+   //A brancher sur le front (TK-641)
+   //NB : la modification en base de l'intitulé est faite
+   //par l'appel de l'update global sur l'objet donc
+   //il vaut mieux le récupérer avant pour ne pas écraser
+   //des modifications faites entre temps par un autre utilisateur
+   //Sinon, il faut écrire une requête hql pour mettre à jour uniquement
+   //ce champ. Ceci serai la méthode la plus optimisée.
    /**
     * Renomme un Affichage (change son intitulé).
     * @param affichage Affichage à renommer.
@@ -163,69 +173,22 @@ public class AffichageManagerImpl implements AffichageManager
          log.warn("Objet obligatoire Affichage manquant lors du renommage d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "modification", "Affichage");
       }
-      if(findByIdManager(affichage.getAffichageId()) == null){
+      Affichage refreshedAffichage = findByIdManager(affichage.getAffichageId());
+      if(refreshedAffichage == null){
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
       }
       //on modifie l'intitule de l'affichage
-      affichage.setIntitule(intitule);
+      refreshedAffichage.setIntitule(intitule);
       //On met a jour l'affichage
-      if(findDoublonManager(affichage)){
+      if(isDoublonIntituleInPlateformeManager(refreshedAffichage, refreshedAffichage.getBanque().getPlateforme())){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
-      BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
-      affichageDao.updateObject(affichage);
-      log.info("Modification de l'objet Affichage : {}",  affichage);
+      BeanValidator.validateObject(refreshedAffichage, new Validator[] {affichageValidator});
+      affichageDao.updateObject(refreshedAffichage);
+      log.info("Modification de l'objet Affichage : {}",  refreshedAffichage);
    }
 
-   /**
-    * Copie un Affichage en BDD.
-    * @param affichage Affichage à copier.
-    * @param copieur Utilisateur qui copie l'Affichage.
-    * @return l'Affichage copié.
-    */
-   @Override
-   public Affichage copyAffichageManager(final Affichage affichage, final Utilisateur copieur, final Banque banque){
-      //On vérifie que l'affichage n'est pas nul
-      if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors de la copie d'un objet Affichage");
-         throw new RequiredObjectIsNullException("Affichage", "copie", "Affichage");
-      }
-      //On vérifie que le créateur n'est pas nul
-      if(copieur == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors de la copie d'un objet Affichage");
-         throw new RequiredObjectIsNullException("Affichage", "copie", "Utilisateur");
-      }
-      //On vérifie que la banque n'est pas nul
-      if(banque == null){
-         log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Affichage");
-         throw new RequiredObjectIsNullException("Affichage", "création", "Banque");
-      }
-      final Affichage a = new Affichage();
-      a.setIntitule(affichage.getIntitule());
-      a.setCreateur(copieur);
-      a.setNbLignes(affichage.getNbLignes());
-      a.setBanque(banque);
-
-      // On vérifie que l'affichage est bien enregistré
-      if(findDoublonManager(a)){
-         log.warn("Doublon lors de la modification de l'objet Affichage : {}",  a);
-         throw new DoublonFoundException("Affichage", "modification");
-      }
-      final Iterator<Resultat> itR = resultatDao.findByAffichage(affichage).iterator();
-      final ArrayList<Resultat> resultats = new ArrayList<>();
-      while(itR.hasNext()){
-         resultats.add(resultatManager.copyResultatManager(itR.next(), a));
-      }
-      a.setResultats(resultats);
-
-      createObjectManager(a, a.getResultats(), a.getCreateur(), a.getBanque());
-      // ajout de la requete dans la liste
-      affichages.add(a);
-      log.info("Enregistrement de l'objet Affichage : {}",  a);
-
-      return a;
-   }
 
    /**
     * Créé un nouvel Affichage en BDD.
@@ -252,14 +215,15 @@ public class AffichageManagerImpl implements AffichageManager
          log.warn("Objet obligatoire Banque manquant lors de la création d'un objet Affichage");
          throw new RequiredObjectIsNullException("Affichage", "création", "Banque");
       }
-      // On met l'utilisateur dans l'affichage
-      affichage.setBanque(banque);
-
-      // On enregistre l'affichage
-      if(findDoublonManager(affichage)){
+      // On vérifie si un affichage avec le même intitulé existe déjà
+      if(isDoublonIntituleInPlateformeManager(affichage, banque.getPlateforme())){
          log.warn("Doublon lors de la creation de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "creation");
       }
+      // On met l'utilisateur dans l'affichage
+      affichage.setBanque(banque);
+      
+      // On enregistre l'affichage
       BeanValidator.validateObject(affichage, new Validator[] {affichageValidator});
       affichageDao.createObject(affichage);
 
@@ -288,7 +252,7 @@ public class AffichageManagerImpl implements AffichageManager
          throw new SearchedObjectIdNotExistException("Affichage", affichage.getAffichageId());
       }
       //On met à jour l'affichage
-      if(findDoublonManager(affichage)){
+      if(isDoublonIntituleInPlateformeManager(affichage, affichage.getBanque().getPlateforme())){
          log.warn("Doublon lors de la modification de l'objet Affichage : {}",  affichage);
          throw new DoublonFoundException("Affichage", "modification");
       }
@@ -311,35 +275,6 @@ public class AffichageManagerImpl implements AffichageManager
       return false;
    }
 
-   /*private void updateResultatsAffichage(Affichage affichage,
-   		List<Resultat> resultats) {
-   	//On récupère les résultats de l'affichage
-   	List<Resultat> resultatsAff = resultatManager
-   			.findByAffichageManager(affichage);
-   	//On enregistre ceux qui ne sont pas présents
-   	for (int i = 0; i < resultats.size(); i++) {
-   		Resultat temp = resultats.get(i);
-   		if (!resultatsAff.contains(temp)) {
-   			if (temp.getResultatId() != null) {
-   				resultatsAff.add(resultatDao.mergeObject(temp));
-   			} else {
-   				resultatManager.createObjectManager(temp, affichage,
-   						temp.getChamp());
-   				resultatsAff.add(temp);
-   			}
-   		}
-   	}
-   	//On supprime ceux qui ont disparus
-   	for (int i = 0; i < resultatsAff.size(); i++) {
-   		Resultat temp = resultatsAff.get(i);
-   		if (!resultats.contains(temp)) {
-   			resultatsAff.remove(temp);
-   			resultatManager.removeObjectManager(temp);
-   		}
-   	}
-   
-   	affichage.setResultats(resultatsAff);
-   }*/
 
    /**
     * Supprimme un Affichage en BDD.
@@ -377,265 +312,6 @@ public class AffichageManagerImpl implements AffichageManager
       affichageDao.removeObject(affichage.getAffichageId());
    }
 
-   /**
-    * Associe un nouveau Résultat à un Affichage en BDD.
-    * @param affichage Affichage dont on veut associer le Résultat.
-    * @param resultat Résultat à créer puis à associer.
-    */
-   @Override
-   public void addResultatManager(final Affichage affichage, final Resultat resultat){
-      //On verifie que ni l'affichage ni le résultat ne sont nuls
-      if(affichage == null){
-         throw new RequiredObjectIsNullException("Affichage", "modification", "Affichage");
-      }else if(resultat == null){
-         throw new RequiredObjectIsNullException("Affichage", "modification", "Résultat");
-      }else{
-         // On enregistre le résultat
-         resultatManager.createObjectManager(resultat, affichage, resultat.getChamp());
-      }
-   }
-
-   /**
-    * Dissocie un Résultat d'un Affichage puis le supprime en BDD.
-    * @param affichage Affichage dont on veut dissocier le Résultat.
-    * @param resultat Résultat à dissocier puis à supprimer.
-    */
-   @Override
-   public void removeResultatManager(final Affichage affichage, final Resultat resultat){
-      //On verifie que ni l'affichage ni le résultat ne sont nuls
-      if(affichage == null){
-         throw new RequiredObjectIsNullException("Affichage", "modification", "Affichage");
-      }else if(resultat == null){
-         throw new RequiredObjectIsNullException("Affichage", "modification", "Résultat");
-      }else{
-         //On déplace les résultats qui ont une position supérieure
-         Iterator<Resultat> it = affichage.getResultats().iterator();
-         while(it.hasNext()){
-            final Resultat temp = it.next();
-            boolean modified = false;
-            // On descend les positions supérieures
-            if(temp.getPosition() > resultat.getPosition()){
-               temp.setPosition(temp.getPosition() - 1);
-               modified = true;
-            }
-            // On descend les ordres de tri supérieurs
-            if(temp.getOrdreTri() > resultat.getOrdreTri()){
-               temp.setOrdreTri(temp.getOrdreTri() - 1);
-               modified = true;
-            }
-            if(modified){
-               resultatManager.updateObjectManager(temp, temp.getAffichage(), temp.getChamp());
-            }
-         }
-
-         //On supprime le résultat de la liste de l'affichage
-         it = affichage.getResultats().iterator();
-         while(it.hasNext()){
-            final Resultat temp = it.next();
-            if(temp.getResultatId().equals(resultat.getResultatId())){
-               affichage.getResultats().remove(temp);
-               break;
-            }
-         }
-
-         // On supprime le résultat
-         resultatManager.removeObjectManager(resultat);
-      }
-   }
-
-   /**
-    * Recherche les Affichages dont l'utilisateur créateur est passé en
-    * paramètre.
-    * @param util Utilisateur qui à créé les Affichages recherchés.
-    * @return la liste de tous les Affichages de l'Utilisateur.
-    */
-   @Override
-   public List<Affichage> findByUtilisateurManager(final Utilisateur util){
-      //On vérifie que l'utilisateur n'est pas nul
-      if(util == null){
-         log.warn("Objet obligatoire Utilisateur manquant lors de la recherche par l'Utilisateur d'un objet Affichage");
-         throw new RequiredObjectIsNullException("Affichage", "recherche par Utilisateur", "Utilisateur");
-      }
-      return affichageDao.findByUtilisateur(util);
-   }
-
-   /**
-    * Recherche les Affichages dont l'intitulé est passé en paramètre.
-    * @param intitilé des Affichages recherchés.
-    * @return la liste de tous les Affichages de l'intitulé.
-    */
-   @Override
-   public List<Affichage> findByIntituleManager(final String intitule){
-      //On vérifie que l'utilisateur n'est pas nul
-      if(intitule == null){
-         log.warn("Objet obligatoire intitule manquant lors de la recherche par l'intitulé d'un objet Affichage");
-         throw new RequiredObjectIsNullException("Affichage", "recherche par Intitulé", "Intitulé");
-      }
-      return affichageDao.findByIntitule(intitule);
-   }
-
-   @Override
-   public List<Affichage> findByIntituleAndUtilisateurManager(final String intitule, final Utilisateur util){
-      if(intitule != null && util != null){
-         return affichageDao.findByIntituleUtilisateur(intitule, util);
-      }
-      return new ArrayList<>();
-   }
-
-   /**
-    * Déplace un Résultat pour un Affichage.
-    * @param affichage Affichage dont les résultats vont changer de position.
-    * @param resultat Résultat à déplacer.
-    * @param nouvellePosition position à atteindre pour le Résultat.
-    */
-   @Override
-   public void moveResultatManager(final Affichage affichage, final Resultat resultat, final int nouvellePosition){
-      if(affichage != null){
-         affichage.setResultats(resultatManager.findByAffichageManager(affichage));
-         //On récupère le résultat dans l'affichage
-         Resultat res = null;
-         for(int i = 0; i < affichage.getResultats().size(); i++){
-            if(affichage.getResultats().get(i).equals(resultat)){
-               res = affichage.getResultats().get(i);
-               break;
-            }
-         }
-         if(resultat != null){
-            //On met à jour le résultat en BDD
-            affichage.deplacerResultat(res, nouvellePosition);
-            updateObjectManager(affichage, affichage.getResultats(), null);
-         }
-      }
-   }
-
-   /**
-    * Recherche les doublons d'un Affichage passé en paramètre.
-    * @param affichage un Affichage pour lequel on cherche des doublons.
-    * @return True s'il existe des doublons.
-    */
-   @Override
-   public Boolean findDoublonManager(final Affichage affichage){
-      //On vérifie que l'affichage n'est pas nul
-      if(affichage == null){
-         log.warn("Objet obligatoire Affichage manquant lors de la recherche de doublon d'un objet Affichage");
-         throw new RequiredObjectIsNullException("Affichage", "recherche de doublon", "Affichage");
-      }
-      if(affichage.getAffichageId() == null){
-         return affichageDao.findAll().contains(affichage);
-      }
-      return affichageDao.findByExcludedId(affichage.getAffichageId()).contains(affichage);
-
-   }
-
-   /**
-    * Méthode qui permet de vérifier que 2 Affichages sont des copies.
-    * @param a Affichage premier Affichage à vérifier.
-    * @param copie deuxième Affichage à vérifier.
-    * @return true si les 2 Affichages sont des copies, false sinon.
-    */
-   @Override
-   public Boolean isCopyManager(Affichage a, final Affichage copie){
-      if(copie == null){
-         return false;
-      }else if(!a.getCreateur().equals(copie.getCreateur())){
-         if(a.getIntitule().equals(copie.getIntitule()) && a.getNbLignes().equals(copie.getNbLignes())){
-            a = findByIdManager(a.getAffichageId());
-            a.getResultats().size();
-            final Iterator<Resultat> itResultats = a.getResultats().iterator();
-            while(itResultats.hasNext()){
-               boolean found = false;
-               final Resultat temp = itResultats.next();
-               final Iterator<Resultat> itTemp = copie.getResultats().iterator();
-               while(itTemp.hasNext()){
-                  final Resultat temp2 = itTemp.next();
-                  if(temp.isCopy(temp2)){
-                     found = true;
-                     break;
-                  }
-               }
-               if(!found){
-                  return false;
-               }
-            }
-            return true;
-         }
-         return false;
-      }else{
-         return false;
-      }
-   }
-
-   /**
-    * Cette méthode met à jour les associations entre un affichage et
-    * une liste de resultats.
-    * @param affichage Affichage pour lequel on veut mettre à jour
-    * les associations.
-    * @param resultats Liste des Resultats que l'on veut associer à l'Affichage.
-    */
-   public void updateResultatsManager2(Affichage affichage, final List<Resultat> resultats){
-
-      affichage = affichageDao.mergeObject(affichage);
-
-      for(int i = 0; i < resultats.size(); i++){
-         resultats.get(i).setAffichage(affichage);
-      }
-
-      final Iterator<Resultat> it = affichage.getResultats().iterator();
-      final List<Resultat> resToRemove = new ArrayList<>();
-
-      // on parcourt les resultats qui sont actuellement associés
-      // à l'affichage
-      while(it.hasNext()){
-         final Resultat tmp = it.next();
-         // si un resultat n'est pas dans la nouvelle liste, on
-         // le conserve afin de le retirer par la suite
-         if(!resultats.contains(tmp)){
-            resToRemove.add(tmp);
-         }
-      }
-
-      // on parcourt la liste des resultats à retirer de
-      // l'association
-      for(int i = 0; i < resToRemove.size(); i++){
-         final Resultat resultat = resultatDao.mergeObject(resToRemove.get(i));
-         // on retire le collab de chaque coté de l'association
-         affichage.getResultats().remove(resultat);
-         log.debug("Suppression de l'association entre le resultat : {} et l'affichage : {}", resultat, affichage);
-         resultatManager.removeObjectManager(resToRemove.get(i));
-      }
-
-      // on parcourt la nouvelle liste de resultats
-      for(int i = 0; i < resultats.size(); i++){
-         // si un resultat n'était pas associé à l'affichage
-         boolean found = false;
-         for(int j = 0; j < affichage.getResultats().size(); j++){
-            if(affichage.getResultats().get(j).isCopy(resultats.get(i))){
-               found = true;
-               break;
-            }
-         }
-         if(!found){
-            // on ajoute le resultat des deux cotés de l'association
-            if(resultats.get(i).getResultatId() == null){
-               resultats.get(i).setAffichage(affichage);
-               resultatManager.createObjectManager(resultats.get(i), affichage, resultats.get(i).getChamp());
-               affichage.getResultats().add(resultatDao.mergeObject(resultats.get(i)));
-            }else{
-               resultats.get(i).setAffichage(affichage);
-               resultatDao.updateObject(resultats.get(i));
-            }
-            log.debug("Ajout de l'association entre l'affichage : {} et le resultat : {}", affichage, resultats.get(i));
-
-         }else{
-            //Si sa position ou son ordre de tri a changé, on l'update
-            final Resultat r = resultats.get(i);
-            final Resultat rdb = resultatManager.findByIdManager(r.getResultatId());
-            if(r.getPosition() != rdb.getPosition() || r.getOrdreTri() != rdb.getOrdreTri()){
-               resultatManager.updateObjectManager(r, r.getAffichage(), r.getChamp());
-            }
-         }
-      }
-   }
 
    public void updateResultatsManager(final Affichage affichage, final List<Resultat> resultats,
       final List<Resultat> resultatsToRemove){
@@ -675,4 +351,35 @@ public class AffichageManagerImpl implements AffichageManager
       }
       return new ArrayList<>();
    }
+
+   @Override
+   public List<Affichage> findByIntituleInPlateformeManager(String intitule, Plateforme plateforme) {
+      if (intitule == null || plateforme == null) {
+         return Collections.emptyList();
+      }
+      return affichageDao.findByIntituleInPlateforme(intitule, plateforme);
+   }
+
+   //Depuis le ticket TK-524, cette méthode remplace la méthode findDoublonManager :
+   //le contrôle de "doublon" est désormais fait sur l'intitulé uniquement pour une plateforme donnée. 
+   //Le nom de la méthode a été modifié pour mieux refléter ce qu'elle fait.
+   @Override
+   public boolean isDoublonIntituleInPlateformeManager(Affichage affichage, Plateforme plateforme) {
+      List<Affichage> intitulesExistants = findByIntituleInPlateformeManager(affichage.getIntitule(), plateforme);
+      
+      // Si la liste n'est pas vide, cela signifie que l'intitulé existe déjà
+      if(!intitulesExistants.isEmpty()) {
+         // Si l'affichage n'a pas d'ID, cela signifie que c'est un nouvel ajout
+         if(affichage.getAffichageId() == null)  {
+            return true;
+         }
+         // Sinon, on modifie l'objet : vérifier si l'intitulé appartient à un **autre** Affichage
+         for(final Affichage affichageCourant : intitulesExistants) {
+            if(!affichage.getAffichageId().equals(affichageCourant.getAffichageId())) return true;
+         }
+      }
+      return false;
+   }
+
+
 }

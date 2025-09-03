@@ -44,12 +44,14 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
  *
- * Appelles le bon MessageSender en fonction du Recepteur
+ * Appelle le bon ExtMessageSender en fonction du type de message attendu par le Recepteur
  *
  * @author Mathieu BARTHELEMY
  * @version 2.2.1-IRELEC
  *
  */
+//TK-697 : ce n'est pas une factory : une factory crée des objets.
+//Aurait dû s'appeler Sender voire sendProcessor
 public interface SenderFactory
 {
 

@@ -168,6 +168,7 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
          //				propDuo.setChampEntite(chpE);
          //			}
       }else{
+         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
          String nomChamp = chpE.getNom().replaceFirst(".", (chpE.getNom().charAt(0) + "").toLowerCase());
          if(nomChamp.endsWith("Id")){
             nomChamp = nomChamp.substring(0, nomChamp.length() - 2);

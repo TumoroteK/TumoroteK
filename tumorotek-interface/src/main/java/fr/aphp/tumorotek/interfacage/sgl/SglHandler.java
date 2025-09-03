@@ -174,6 +174,7 @@ public class SglHandler
                && !StringUtils.isBlank(resourceBundleTumo.getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME)
                   .getString(TkParam.GENNO_DERIVES_NATURES.getKey()))){
                skipMessage = !Arrays.asList(resourceBundleTumo.getResourceBundle(TumorotekProperties.TUMO_PROPERTIES_FILENAME)
+                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   .getString(TkParam.GENNO_DERIVES_NATURES.getKey()).split(",")).contains(prelNature);
             }
          }

@@ -50,6 +50,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+// Tout ce qui concerne la classe PatientLien est du code non utilisé. Confirmé par Mathieu le 17/01/2025
+// Cette notion avait été initiée pour gérer les liens familiaux entre différents patients qui devaient être gérés dans un popup au niveau de la fiche patient
+// mais l'appel dans les écrans n'a jamais été mis en oeuvre. Il faudrait supprimer toutes ces classes (TK-606).
 /**
  *
  * Objet persistant mappant la table PATIENT_LIEN.

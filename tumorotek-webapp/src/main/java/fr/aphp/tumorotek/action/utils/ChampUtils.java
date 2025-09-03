@@ -147,7 +147,7 @@ public abstract class ChampUtils
 
          parent = parent.getChampParent();
       }
-
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       return nomEntiteAncetre.replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
 
    }

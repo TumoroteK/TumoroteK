@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.jdom.Document;
@@ -635,6 +636,8 @@ public class FicheTemplateModale extends AbstractImpressionController
 
       // création du titre
       String titre = null;
+      // titre mis au milieu du bas de page : contient le code de l'objet
+      String titreBasDePage = null;
       if(selectedEntite.getNom().equals("Patient")){
          if(!anonyme){
             final Patient patient = (Patient) objectToPrint;
@@ -647,15 +650,19 @@ public class FicheTemplateModale extends AbstractImpressionController
       }else if(selectedEntite.getNom().equals("Prelevement")){
          final Prelevement prlvt = (Prelevement) objectToPrint;
          titre = ObjectTypesFormatters.getLabel("impression.titre.prelevement", new String[] {prlvt.getCode()});
+         titreBasDePage = prlvt.getCode();
       }else if(selectedEntite.getNom().equals("Echantillon")){
          final Echantillon echan = (Echantillon) objectToPrint;
          titre = ObjectTypesFormatters.getLabel("impression.titre.echantillon", new String[] {echan.getCode()});
+         titreBasDePage = echan.getCode();
       }else if(selectedEntite.getNom().equals("ProdDerive")){
          final ProdDerive prod = (ProdDerive) objectToPrint;
          titre = ObjectTypesFormatters.getLabel("impression.titre.prodDerive", new String[] {prod.getCode()});
+         titreBasDePage = prod.getCode();
       }else if(selectedEntite.getNom().equals("Cession")){
          final Cession cess = (Cession) objectToPrint;
          titre = ObjectTypesFormatters.getLabel("impression.titre.cession", new String[] {String.valueOf(cess.getNumero())});
+         titreBasDePage = cess.getNumero();
       }
 
       pageXML = ManagerLocator.getXmlUtils().addPage(root, titre);
@@ -670,7 +677,7 @@ public class FicheTemplateModale extends AbstractImpressionController
       final String date = new SimpleDateFormat("dd/MM/yyyy").format(cal.getTime());
       sb.append(date);
 
-      ManagerLocator.getXmlUtils().addBasDePage(root, sb.toString());
+      ManagerLocator.getXmlUtils().addBasDePage(root, sb.toString(), titreBasDePage);
       ManagerLocator.getXmlUtils().addHautDePage(root, template.getEnTete(), false, null);
 
       if(selectedEntite.getNom().equals("Patient")){

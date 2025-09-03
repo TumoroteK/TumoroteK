@@ -289,7 +289,7 @@ public class InitServlet extends HttpServlet
       }
 
       final String version = manifest.getProperty("Implementation-Version");
-
+      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       final FilenameFilter contextFileFilter = (f, s) -> {
          return s.matches("^tumorotek##" + version + "\\.xml$");
       };

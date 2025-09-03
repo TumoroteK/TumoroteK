@@ -692,7 +692,14 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       }
 
       if(ok){
-         super.onClick$validate();
+         //TK-427 : on ne passe plus par super.onClick$validate() pour ne pas passer dans le contrôle ajouté
+         //pour gérer les mises à jour des délais de congélation. En effet dans l'écran courant on est toujours
+         //en création d'échantillon => la date de stockage ne peut pas être modifiée donc pas de maj de délai.
+         //super.onClick$validate();
+         Clients.showBusy(Labels.getLabel(getWaitLabel()));
+         //NB : la méthode de l'event s'appelle "onLaterUpdate" car on est dans le cas d'une mise à jour du Prelevement
+         //(3e étape) mais concernant les échantillons il s'agit bien d'une création et non d'une mise à jour
+         Events.echoEvent("onLaterUpdate", self, null);
       }
    }
 
@@ -1666,11 +1673,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
       super.initEditableMode();
 
+      //TG-244 & TG-265
+      initCodePrefixe();
       if(getParentObject() != null){
-         if(getParentObject().getCode() != null){
-            //TG-244
-            initCodePrefixe();
-         }
          if(getParentObject().getOperateur() != null && getCollaborateurs().contains(getParentObject().getOperateur())){
             setSelectedCollaborateur(getParentObject().getOperateur());
             collabBox.setValue(getSelectedCollaborateur().getNomAndPrenom());
@@ -1829,8 +1834,20 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    }
    
    //TG-244 : sera surchargé par Gatsbi pour prendre en compte le paramétrage sur le code échantillon
-   protected void initCodePrefixe() {
-      setCodePrefixe(getParentObject().getCode());
+   protected void initCodePrefixe(){
+      if(getParentObject() != null && getParentObject().getCode() != null){
+         setCodePrefixe(getParentObject().getCode());
+      }else if(getCurrentNumerotation() != null){
+         setCodePrefixe(ManagerLocator.getNumerotationManager().getGeneratedCodeManager(getCurrentNumerotation()));
+      }
+   }
+   
+   //TK-474
+   public void reinitCodePrefixe() {
+      //avant d'appeler initCodePrefixe, codePrefixe est forcé à null. Cela est nécessaire pour Gatsbi (sans paramétrage échantillon)
+      //pour éviter que le code prélèvement soit ajouté à nouveau dans codePrefixe alors qu'il y est déjà.
+      setCodePrefixe(null);
+      initCodePrefixe();
    }
    
    /*********************************************************/
@@ -2171,6 +2188,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                premiereLettre = sValue.toUpperCase();
 
                // si le premier code est invalide
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                if(!premiereLettre.matches("[A-Z]")){
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }
@@ -2280,6 +2298,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
                derniereLettre = sValue.toUpperCase();
 
                // si la derniere lettre n'est pas valide
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                if(!derniereLettre.matches("[A-Z]")){
                   throw new WrongValueException(comp, Labels.getLabel("ficheMultiEchantillons.lettre.invalide"));
                }
@@ -2572,7 +2591,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          setParentObject(ManagerLocator.getPrelevementManager().findByCodeOrNumLaboLikeWithBanqueManager(getCodePrefixe(),
             SessionUtils.getSelectedBanques(sessionScope).get(0), true).get(0));
 
-         calculDelaiCgl();
+         populateDelaiCongelWithTheoriqueOrNull();
          clearConstraints();
 
          initAssociations();
@@ -2614,7 +2633,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          connaissancesBoxEchan.setSelectedIndex(0);
       }
 
-      calculDelaiCgl();
+      populateDelaiCongelWithTheoriqueOrNull();
       clearConstraints();
 
       initAssociations();
@@ -2706,7 +2725,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             }
          }
          getEchantillon().setDateStock(dateStockCalBox.getValue());
-         calculDelaiCgl();
+         populateDelaiCongelWithTheoriqueOrNull();
          dateStockCalBox.setHasChanged(true);
       }else{
          throw new WrongValueException(dateStockCalBox, Labels.getLabel("validation.invalid.date"));
@@ -2885,6 +2904,10 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       if(echan != null){
          clearForm(false);
 
+         //TG-265 : la gestion de la numérotation n'est pas faite lors de l'inject contrairement au cas de la fiche Prélèvement
+         //car : 
+         //- d'une part l'appel de clearForm(false) ci-dessus à supprimer l'initialisation faite dans onClick$numerotation
+         //- d'autre part, une méthode spécifique initCodePrefixe() existe : elle est appelée dans initEditableMode() elle même appelée ci-dessous
          setCodePrefixe(echan.getCode());
          setSelectedType(echan.getEchantillonType());
 

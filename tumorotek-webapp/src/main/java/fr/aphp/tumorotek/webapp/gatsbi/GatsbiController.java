@@ -339,7 +339,7 @@ public class GatsbiController
                   // ListModelList conversion
                   //Dans la recherche avancée, les listes à choix multiple (risques et conformité) ont été faites avec un ListModelList (nom de l'attribut suffixé par Model)
                   //Dans le reste (fiche edition), les listes sont des List. Dans ce cas l'attribut n'a pas de suffixe d'où la règle ci-dessous
-                  if(!((String) div.getAttribute("listmodel")).matches(".*Model")){
+                  if(!((String) div.getAttribute("listmodel")).endsWith("Model")){
                      PropertyUtils.setProperty(controller, (String) div.getAttribute("listmodel"), thesObjs);
                   }else{ // ListModelList conversion -> Recherche avancée prélèvement Risques
                      PropertyUtils.setProperty(controller, (String) div.getAttribute("listmodel"),
@@ -836,6 +836,7 @@ public class GatsbiController
                   if(value.getThesaurusTableNom() != null && value.getThesaurusTableNom().trim().length() != 0 
                      && !contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).isEmpty()){ // thesaurus value check!
                      Optional<ThesaurusValue> thesaurusValueForParamValue = null;
+                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                      for(String defvalue : value.getDefaultValue().split(";")){
                         thesaurusValueForParamValue = contexte.getThesaurusValuesForChampEntiteId(value.getChampEntiteId()).stream()
                            .filter(v -> v.getThesaurusValue().equalsIgnoreCase(defvalue)).findFirst();

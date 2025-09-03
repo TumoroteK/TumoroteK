@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.dao.io.export;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
+import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Recherche;
 import fr.aphp.tumorotek.model.io.export.Requete;
@@ -54,12 +55,7 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 public interface RechercheDao extends GenericDaoJpa<Recherche, Integer>
 {
 
-   /**
-    * Recherche les Recherches d'un utilisateur.
-    * @param utilisateur : utilisateur dont on veut connaître les Recherches.
-    * @return la liste des Recherches de l'utilisateur
-    */
-   List<Recherche> findByUtilisateur(Utilisateur utilisateur);
+
 
    /**
    * Recherche les Recherches d'une banque.
@@ -77,20 +73,9 @@ public interface RechercheDao extends GenericDaoJpa<Recherche, Integer>
    */
    List<Recherche> findByBanqueIdinList(List<Integer> banquesId);
 
-   /**
-   * Recherche les Recherches d'un intitulé.
-   * @param intitule : intitulé dont on veut connaître les Recherches.
-   * @return la liste des Recherches de l'intitulé
-   */
-   List<Recherche> findByIntitule(String intitule);
 
-   /**
-   * Recherche les Recherches d'un utilisateur par intitulé.
-   * @param intitulé : intitulé dont on veut connaître les Recherches.
-   * @param utilisateur : Utilisateur ayant créé les Recherches.
-   * @return la liste des Recherches de l'intitulé
-   */
-   List<Recherche> findByIntituleUtilisateur(String intitule, Utilisateur utilisateur);
+
+
 
    /**
    * Recherche les Recherches à partir d'un Affichage.
@@ -106,13 +91,15 @@ public interface RechercheDao extends GenericDaoJpa<Recherche, Integer>
    */
    List<Recherche> findByRequete(Requete requete);
 
+
+
    /**
-   * Recherche toutes les Recherches, sauf celle dont l'id est passé
-   * en paramètre.
-   * @param rechercheId Identifiant de la Recherche que l'on souhaite
-   * exclure de la liste retournée.
-   * @return une liste de Recherches.
-   */
-   List<Recherche> findByExcludedId(Integer rechercheId);
+    * Recherche les Recherches par intitulé dans une plateforme spécifique.
+    *
+    * @param intitule : L'intitulé de la Recherche à rechercher
+    * @param plateforme : La plateforme dans laquelle rechercher
+    * @return la liste des Recherches correspondantes
+    */
+   List<Recherche> findByIntituleInPlateforme(String intitule, Plateforme plateforme);
 
 }

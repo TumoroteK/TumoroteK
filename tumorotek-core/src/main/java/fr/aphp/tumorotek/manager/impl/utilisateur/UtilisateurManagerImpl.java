@@ -140,11 +140,30 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 			return new ArrayList<>();
 		}
 	}
+	
+	
+	@Override
+   public Utilisateur findByLoginAndArchiveManager(String login, boolean archive) {
+	     if(login != null){
+	         List<Utilisateur> listUtilisateur = utilisateurDao.findByLoginAndArchive(login, archive);
+	         if(listUtilisateur != null && !listUtilisateur.isEmpty()) {
+	            return listUtilisateur.get(0);
+	         }
+	     }
+	     
+	     return null;
+	}
+
+   @Override
+   public Utilisateur findUtilisateurActif(String login) {
+      return findByLoginAndArchiveManager(login, false);
+   }	
+	
 
 	@Override
-	public List<Utilisateur> findByLoginAndArchiveManager(final String login, final boolean archive, final List<Plateforme> pfs){
+	public List<Utilisateur> findByLoginArchiveAndPlateformeExcludedSuperAdminManager(final String login, final boolean archive, final List<Plateforme> pfs){
 		if(login != null){
-			return utilisateurDao.findByLoginAndArchive(login, archive, pfs);
+			return utilisateurDao.findByLoginArchiveAndPlateformeExcludedSuperAdmin(login, archive, pfs);
 		}else{
 			return new ArrayList<>();
 		}
@@ -621,16 +640,6 @@ public class UtilisateurManagerImpl implements UtilisateurManager
 		}
 
 		return banques;
-	}
-
-	@Override
-	public List<Utilisateur> findByLoginPasswordAndArchiveManager(final String login, final String pass, final boolean archive){
-
-		if(login != null && pass != null){
-			return utilisateurDao.findByLoginPassAndArchive(login, pass, archive);
-		}else{
-			return new ArrayList<>();
-		}
 	}
 
 	@Override

@@ -35,6 +35,16 @@
  **/
 package fr.aphp.tumorotek.manager.impl.stockage;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.validation.Validator;
+
 import fr.aphp.tumorotek.dao.contexte.BanqueDao;
 import fr.aphp.tumorotek.dao.contexte.ServiceDao;
 import fr.aphp.tumorotek.dao.qualite.OperationTypeDao;
@@ -67,15 +77,6 @@ import fr.aphp.tumorotek.model.stockage.Incident;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.validation.Validator;
-
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
 
 /**
  * @version 2.2.1-IRELEC
@@ -291,23 +292,70 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    @Override
-   public Boolean findDoublonManager(final Conteneur conteneur, final List<Banque> banques){
-      if(conteneur != null && banques != null){
-         final List<Conteneur> conteneurs = new ArrayList<>();
-         if(conteneur.getConteneurId() == null){
-            for(int i = 0; i < banques.size(); i++){
-               conteneurs.addAll(conteneurDao.findByBanqueIdWithOrder(banques.get(i).getBanqueId()));
-            }
-         }else{
-            for(int i = 0; i < banques.size(); i++){
-               conteneurs
-                  .addAll(conteneurDao.findByBanqueIdWithExcludedId(banques.get(i).getBanqueId(), conteneur.getConteneurId()));
-            }
-         }
-         return conteneurs.contains(conteneur);
+   public boolean findDoublonManager(final Conteneur conteneur) {
+      // Vérification des paramètres obligatoires
+      //todo : il faudrait gérer l'internationalisation des messages définis côté back car ils sont affichés tels quels à l'utilisateur (AbstractController.handleExceptionMessage())
+      //dans le cas présent, l'exception ne doit jamais être rencontrée donc pas prioritaire
+      if (conteneur == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findDoublonManager : le paramètre conteneur ne peut pas être null");
       }
-      return false;
+      if(conteneur.getCode() == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findDoublonManager : le code du paramètre conteneur ne peut pas être null");
+      }
+      if(conteneur.getPlateformeOrig() == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findDoublonManager : la plateforme d'origine du paramètre conteneur ne peut pas être null");
+      }
+
+      List<Conteneur> doublons;
+      if (conteneur.getConteneurId() == null) {
+         log.debug("Vérification des doublons lors de la création du conteneur dont le code est : {}", conteneur.getCode());
+         // Pour les nouveaux conteneurs sans ID, utiliser la requête sans exclusion d'ID
+         doublons = findByCodeAndPlateforme(conteneur.getCode(), conteneur.getPlateformeOrig());
+      } else {
+         log.debug("Vérification des doublons lors de la modification du conteneur dont le code est : {}", conteneur.getCode());
+         // Pour les conteneurs existants avec ID, utiliser la requête avec exclusion d'ID
+         //la requête "findByCodeAndPlateformeExcludedId" n'est appelée que dans cette méthode. On passe directement par l'appel
+         //sur le dao, cela permet de sécuriser que le 3e paramètre conteneurId est bien renseigné
+         //=> pas besoin de définir de méthode findByCodeAndPlateformeExcludedId() dans ce manager
+         doublons = conteneurDao.findByCodeAndPlateformeExcludedId(conteneur.getCode(), conteneur.getPlateformeOrig(), conteneur.getConteneurId());
+      }
+
+      // Vérifier si des doublons ont été trouvés
+      boolean hasDoublons = !doublons.isEmpty();
+      log.debug("Résultat de la vérification des doublons pour le Conteneur {} et la plateforme {} : {}", conteneur.getCode(), conteneur.getPlateformeOrig().getNom(), hasDoublons);
+      return hasDoublons;
    }
+
+   
+   @Override
+   public List<Conteneur> findAutreAvecMemeNomEtMemePlateformeManager(final Conteneur conteneur) {
+      // Vérification des paramètres obligatoires
+      //todo : il faudrait gérer l'internationalisation des messages définis côté back car ils sont affichés tels quels à l'utilisateur (AbstractController.handleExceptionMessage())
+      //dans le cas présent, l'exception ne doit jamais être rencontrée donc pas prioritaire
+      if (conteneur == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findAutreAvecMemeNomEtMemePlateformeManager : le paramètre conteneur ne peut pas être null");
+      }
+      if(conteneur.getNom() == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findAutreAvecMemeNomEtMemePlateformeManager : le nom du paramètre conteneur ne peut pas être null");
+      }
+      if(conteneur.getPlateformeOrig() == null) {
+         throw new IllegalArgumentException("Méthode ConteneurManagerImpl.findAutreAvecMemeNomEtMemePlateformeManager : la plateforme d'origine du paramètre conteneur ne peut pas être null");
+      }
+
+      if (conteneur.getConteneurId() == null) {
+         log.debug("Vérification des doublons lors de la création du conteneur de nom : {}", conteneur.getNom());
+         // Pour les nouveaux conteneurs sans ID, utiliser la requête sans exclusion d'ID
+         return findByNomAndPlateforme(conteneur.getNom(), conteneur.getPlateformeOrig());
+      } else {
+         log.debug("Vérification des doublons lors de la modification du conteneur de nom : {}", conteneur.getNom());
+         //la requête "findByNomAndPlateformeExcludedId" n'est appelée que dans cette méthode. On passe directement par l'appel
+         //sur le dao, cela permet de sécuriser que le 3e paramètre conteneurId est bien renseigné
+         //=> pas besoin de définir de méthode findByNomAndPlateformeExcludedId() dans ce manager
+         return conteneurDao.findByNomAndPlateformeExcludedId(conteneur.getNom(), conteneur.getPlateformeOrig(), conteneur.getConteneurId());
+      }
+   }
+   
+   
 
    @Override
    public Boolean isUsedObjectManager(final Conteneur conteneur){
@@ -348,7 +396,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       conteneur.setConteneurType(conteneurTypeDao.mergeObject(conteneurType));
 
       // Test s'il y a des doublons
-      if(findDoublonManager(conteneur, banques)){
+      if(findDoublonManager(conteneur)){
          log.warn("Doublon lors de la creation de l'objet Conteneur : {}",  conteneur);
          throw new DoublonFoundException("Conteneur", "creation");
       }
@@ -408,7 +456,7 @@ public class ConteneurManagerImpl implements ConteneurManager
       }
 
       // Test s'il y a des doublons
-      if(findDoublonManager(conteneur, banques)){
+      if(findDoublonManager(conteneur)){
          log.warn("Doublon lors de la modification de l'objet Conteneur : {}",  conteneur);
          throw new DoublonFoundException("Conteneur", "modification");
       }
@@ -700,6 +748,11 @@ public class ConteneurManagerImpl implements ConteneurManager
    }
 
    @Override
+   public List<Conteneur> findAllPartagesManager(final Plateforme pf){
+      return conteneurDao.findAllPartages(pf);
+   }
+   
+   @Override
    public Float findTempForEmplacementManager(final Emplacement emplacement){
       if(emplacement != null){
          final List<Float> temps = conteneurDao.findTempForEmplacementId(emplacement.getEmplacementId());
@@ -742,4 +795,16 @@ public class ConteneurManagerImpl implements ConteneurManager
       }
       return null;
    }
+
+   @Override
+   public List<Conteneur> findByCodeAndPlateforme(String code, Plateforme plateforme) {
+      return conteneurDao.findByCodeAndPlateforme(code, plateforme);
+   }
+
+
+   @Override
+   public List<Conteneur> findByNomAndPlateforme(String nom, Plateforme plateforme) {
+      return conteneurDao.findByNomAndPlateforme(nom, plateforme);
+   }
+
 }

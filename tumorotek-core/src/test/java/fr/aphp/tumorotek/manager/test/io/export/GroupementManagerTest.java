@@ -161,56 +161,6 @@ public class GroupementManagerTest extends AbstractManagerTest4
       }
    }
 
-   /**
-    * Test la méthode copyGroupementManager.
-    */
-   @Test
-   public void testCopyGroupement(){
-      // On teste une copie avec des attributs non valides
-      try{
-         manager.copyGroupementManager(null);
-      }catch(final RequiredObjectIsNullException e){
-         assertEquals("RequiredObjectIsNullException", e.getClass().getSimpleName());
-      }
-      /*Groupement groupement = new Groupement();
-      try {
-      	manager.copyGroupementManager(groupement);
-      } catch (ValidationException e) {
-      	assertEquals("ValidationException",
-      			e.getClass().getSimpleName());
-      }*/
-
-      //On recupere un groupement
-      final Groupement groupement = manager.findByIdManager(2);
-      final Groupement copie = manager.copyGroupementManager(groupement);
-      //On verifie que le groupement et la copie sont identiques
-      assertTrue(manager.isCopyManager(groupement, copie));
-
-      //On verifie que la copie est bien en base de donnees
-      final Groupement copie2 = manager.findByIdManager(copie.getGroupementId());
-      assertNotNull(copie2);
-
-      //On supprime les éléments créés
-      manager.removeObjectManager(copie);
-   }
-
-   /*
-   @Test
-   public void testToString() {
-   	// On teste un affichage avec des attributs non valides
-   	try {
-   		manager.toStringManager(null);
-   	} catch (RequiredObjectIsNullException e) {
-   		assertEquals("RequiredObjectIsNullException",
-   				e.getClass().getSimpleName());
-   	}
-   	
-   	Groupement groupement = manager.findByIdManager(2);
-   	String string = manager.toStringManager(groupement);
-   	assertNotNull(string);
-   	assertFalse(string.equals("") || string.equals(" "));
-   }*/
-
    @Test
    public void testCrud(){
       /** On teste une création et une suppression avec des attributs non
