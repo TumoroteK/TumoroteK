@@ -262,6 +262,10 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
    /**
     * 2 maladies sont considérées comme égales si elles ont le même
     * libelle et le même patient et la même date diagnostic.
+    * /!\ depuis Gatsbi, la notion de maladie est utilisée pour la notion de visite (dans les schéma de visites).
+    * L'attribut banque a alors été ajouté et il doit être pris en compte dans la méthode equals
+    * car pour les visites d'un schéma la date de diagnostic n'est jamais renseignée et les libellés sont 
+    * souvent les mêmes (V0, V1 ...).
     * @param obj est la maladie à tester.
     * @return true si les maladie sont égales.
     */
@@ -275,7 +279,8 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
          return false;
       }
       final Maladie test = (Maladie) obj;
-      return (((this.libelle != null && this.libelle.equalsIgnoreCase(test.libelle)) || this.libelle == test.libelle)
+      return (((this.banque != null && this.banque.equals(test.banque)) || this.banque == test.banque)
+         && ((this.libelle != null && this.libelle.equalsIgnoreCase(test.libelle)) || this.libelle == test.libelle)
          && ((this.patient != null && this.patient.equals(test.patient)) || this.patient == test.patient)
          && ((this.dateDiagnostic != null && this.dateDiagnostic.equals(test.dateDiagnostic))
             || this.dateDiagnostic == test.dateDiagnostic));

@@ -454,4 +454,12 @@ public interface PatientManager
     * {@link PatientManagerImpl.removeAllPatientIdentifiantsForBanque}
     */
    void removeAllPatientIdentifiantsForBanque(Banque banque);
+
+   /**
+    * Ajoute un identifiant à un patient pour une collection en créant un nouveau PatientIdentifiant.
+    * Une trace de modification du patient sera ajoutée pour l'utilisateur passé en paramètre
+    * @since 2.3.0-gatsbi
+    * {@link PatientManagerImpl.addPatientIdentifiantToPatient}
+    */
+   void addPatientIdentifiantToPatient(String identifiant, Patient patient, Banque banque, Utilisateur utilisateur);
 }

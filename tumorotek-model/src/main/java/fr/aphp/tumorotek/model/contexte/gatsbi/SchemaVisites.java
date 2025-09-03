@@ -123,6 +123,7 @@ private static final long serialVersionUID = 1L;
             maladie.setDateDebut(Date.from(    
                visiteDate.toLocalDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
             maladies.add(maladie);
+            //gestion de la bidirection du lien patient / maladie (patient est setté un peu plus haut)
             patient.getMaladies().add(maladie);
          }
       }

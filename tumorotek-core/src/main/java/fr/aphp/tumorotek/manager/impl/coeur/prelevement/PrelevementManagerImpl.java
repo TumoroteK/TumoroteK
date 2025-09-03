@@ -45,6 +45,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -388,7 +389,7 @@ public class PrelevementManagerImpl implements PrelevementManager
             throw new DoublonFoundException("Prelevement", "creation", prelevement.getCode(), null);
          }
       }catch(final RuntimeException re){
-         log.error(re);
+         log.error(re.getMessage(), re);
          if(filesCreated != null){
             for(final File f : filesCreated){
                f.delete();
@@ -1090,50 +1091,45 @@ public class PrelevementManagerImpl implements PrelevementManager
          }
       }
 
-      // Maladie non required mais utilise dans validation
       if(maladie != null){
          
-         // @since gatsbi list maladies may be provided
-         List<Maladie> visites =  new ArrayList<Maladie>();
+         Patient patient = maladie.getPatient();
+         // @since gatsbi
+         //TG-255 et TK-711
+         //les maladies existantes et les visites à créer ont été mises dans le patient pour les transporter "facilement" jusqu'au back.
+         //Mais après récupération, il vaut mieux les supprimer du patient puisqu'elles sont gérées à part par une méthode spécifique qui gère également operation
+         //A noter que le fait qu'il y ait un cascadeType MERGE entre Patient et ses Maladies est incohérent avec les méthodes définies dans les managers : ceci pose problème. 
+         //Il faudrait supprimer ce cascade mais il est difficile de sécuriser complètement cette opération ....
+         List<Maladie> maladiesExistantesOuVisites =  new ArrayList<Maladie>(patient.getMaladies());
+         patient.getMaladies().clear();
          
-         // creation patient
-         if(maladie.getPatient().getPatientId() == null){               
-            // les visites sont toutes à créer en même temps que le patient
-            visites.addAll(maladie.getPatient().getMaladies()); 
-            patientManager.createOrUpdateObjectManager(maladie.getPatient(), 
-               visites.isEmpty() ? null : visites, 
+         // creation / maj du patient
+         if(patient.getPatientId() == null){               
+            //A noter que la maladie associée au prélèvement ne fait pas partie de maladie.getPatient().getMaladies() que s'il s'agit d'une visite.
+            //Elle sera créée après les if des particularités liés au patient.
+            patientManager.createOrUpdateObjectManager(patient,null,
                null, null, null, null, null, null,
-               utilisateur, "creation", baseDir, false);              
-         } else if (maladie.getPatient().isNewIdentifiantAdded()) { // update patient existant, ajout gatsbi
-            //TG-255
-            //visites.addAll(maladieManager.findAllByPatientManager(maladie.getPatient()));
-            //Retour arrière (TG-255) pour CLCC de Rennes qui rencontre désormais un bug (TK-711)
-            visites.addAll(maladie.getPatient().getMaladies());
-            patientManager.createOrUpdateObjectManager(maladie.getPatient(), null,
-              // visites.isEmpty() ? null : visites, null 
-               null, null, null, null, null, null,
-               utilisateur, "modification", baseDir, false);
+               utilisateur, "creation", baseDir, false);    
+         } else if (patient.isNewIdentifiantAdded()) { // update patient existant pour lui ajouter son identifiant
+            patientManager.addPatientIdentifiantToPatient(maladie.getPatient().getIdentifiant(), maladie.getPatient(), banque, utilisateur);
          }
          
-         if(maladie.getMaladieId() == null){ // creation maladie conjointe
-            // @since gatsbi, creation de la visite si n'a pas été créé auparavant 
-            // dans la liste de visites
-            //TG-255
-            //if (visites.isEmpty() || visites.stream()
-            //Retour arrière (TG-255) pour CLCC de Rennes qui rencontre désormais un bug (TK-711)
-            if (visites.isEmpty() || maladie.getPatient().getMaladies().stream()
-                  .noneMatch(v -> v.getLibelle().equals(maladie.getLibelle()))) { 
-               maladieManager.createOrUpdateObjectManager(maladie, maladie.getPatient(), null, utilisateur, "creation");
-               maladieManager.getMaladiesManager(maladie.getPatient()).add(maladie);
-               prelevement.setMaladie(maladie);
-            } else { // la maladie a été créée comme une visite
-               prelevement.setMaladie(maladieManager.findVisitesManager(maladie.getPatient(), banque).stream()
-                  .filter(v -> v.getLibelle().equals(maladie.getLibelle())).findFirst().get());
+         //gestion des maladies à créer :
+         // - les éventuelles visites
+         // - la maladie rattachée au prélèvement si elle est nouvelle et n'est pas une visite
+         List<Maladie> listMaladieACreer =  maladiesExistantesOuVisites.stream().filter(m -> m.getMaladieId() == null).collect(Collectors.toList());
+         if(maladie.getMaladieId() == null){
+            if (maladiesExistantesOuVisites.isEmpty() || maladiesExistantesOuVisites.stream()
+               .noneMatch(m -> m.equals(maladie))) { 
+               listMaladieACreer.add(maladie);
             }
-
-         } else { // maladie existante
-            prelevement.setMaladie(maladie);
          }
+         for(Maladie maladieACreer : listMaladieACreer) {
+            maladieManager.createOrUpdateObjectManager(maladieACreer, patient, null, utilisateur, "creation");
+         }
+         
+         prelevement.setMaladie(maladie);
+
       }
       if(laboInters != null){
          prelevement.setLaboInters(new HashSet<>(laboInters));

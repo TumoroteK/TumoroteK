@@ -213,25 +213,15 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       // collections
       super.fetchAndDecorateMaladieForPatient(patient);
       
-      // pour eviter Lazy
-      patient.setMaladies(getMaladies()
-         .stream().map(d -> d.getMaladie()).collect(Collectors.toSet()));
-      
-      patient.setBanque(SessionUtils.getCurrentBanque(sessionScope));
-  
       // si patient n'a pas encore d'identifiant pour la collection, 
-      // ajout du schéma de visites
+      // ajout du schéma de visites - callback : méthode onFromDateProvided
       if (!patient.hasIdentifiant()) {
          if (SessionUtils.getCurrentBanque(sessionScope).getEtude() != null 
          && SessionUtils.getCurrentBanque(sessionScope).getEtude().getSchemaVisites() != null) {
             DateModale.show(Labels.getLabel("gatsbi.schema.visites.title"), 
                Labels.getLabel("gatsbi.schema.visites.label"), null, false, self);
          }
-      } else { // ajout des visites existantes
-         getMaladies().addAll(MaladieDecorator.decorateListe(
-               ManagerLocator.getMaladieManager()
-                  .findVisitesManager(patient, patient.getBanque())));
-      }
+      } 
    }
    
    /**
@@ -241,9 +231,9 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
     */
    public void onFromDateProvided(final Event e){ 
       
-//      getMaladies().clear();
-      
-      // production du schéma de visites
+      //cette méthode complète la liste des maladies à afficher avec les visites du schéma de visites de l'étude associée à la collection
+      // production du schéma de visites : à noter que les maladies (visites) créées sont associées au patient de façon bidirectionnelle
+      //=> la liste des maladies du patient passé en paramètre est mise à jour avec ces visites
       try {
          List<MaladieDecorator> visiteDecos = MaladieDecorator.decorateListe(GatsbiControllerPatient
             .produceSchemaVisitesForPatient(SessionUtils.getCurrentBanque(sessionScope), patient, 
