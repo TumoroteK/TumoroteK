@@ -35,15 +35,12 @@
  **/
 package fr.aphp.tumorotek.utils;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.jsoup.Jsoup;
 import org.jsoup.parser.Tag;
 import org.jsoup.safety.Whitelist;
-
-import java.text.SimpleDateFormat;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Calendar;
 
 
 
@@ -198,5 +195,4 @@ public final class TKStringUtils
    public static String getCurrentDateHeureInIsoFormat() {
       return getCurrentDate(DATE_HEURE_ISO_FORMAT);
    }
-
 }

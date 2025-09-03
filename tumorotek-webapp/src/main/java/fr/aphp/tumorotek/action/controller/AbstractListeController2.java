@@ -2123,8 +2123,8 @@ public abstract class AbstractListeController2 extends AbstractController
 		return exportItemAdv;
 	}
 
-	public void switchToEditMode(final boolean b){
-		disableToolBar(b);
+	public void switchToEditMode(final boolean avecAccesAuxBoutonsAddEtDelete){
+		disableToolBar(avecAccesAuxBoutonsAddEtDelete);
 	}
 
 	/**

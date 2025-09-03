@@ -16,6 +16,7 @@ import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
+import fr.aphp.tumorotek.model.qualite.EOperationTypeId;
 import fr.aphp.tumorotek.model.qualite.Fantome;
 import fr.aphp.tumorotek.model.qualite.Operation;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
@@ -41,6 +42,7 @@ public class HistoriqueUtils
       final StringBuffer type = new StringBuffer();
       
       final String operationNom = operation.getOperationType().getNom();
+      final Integer operationTypeId = operation.getOperationType().getOperationTypeId();
       final String labelOperationType = Labels.getLabel("OperationType." + operationNom);
 
       if(labelOperationType != null){
@@ -48,16 +50,21 @@ public class HistoriqueUtils
       }else{
          type.append(operationNom);
       }
-
-      if(operationNom.equals("Creation")){
+      //Dans le cas d'une création, on complète l'information avec (Import) si la création a eu lieu suite à un import.
+      //NB1 : la création par import passe par exactement le même code que la création manuelle, c'est pour cela que c'est le même type d'opération qui est utilisé dans les 2 cas.
+      //pour faire la distinction, on regarde si un enregistrement existe dans la table IMPORTATION pour le type "NEW".
+      //NB2 : pour le cas des imports en modification des annotations, le traitement est différent de celui de la modification manuelle donc 2 types d'opération différents sont utilisés. A noter que la règle de gestion 
+      //utilisée pour la création n'aurait pas pu être appliquée pour la modification car l'utilisateur peut faire plusieurs modifications dans le temps sur un même objet soit manuellement soit par import
+      //donc il aurait été difficile de rattacher les enregistrements dans importations à la bonne modification
+      if(EOperationTypeId.CREATION.getId().equals(operationTypeId)){
          if(ManagerLocator.getImportHistoriqueManager()
-            .findImportationsByEntiteAndObjectIdManager(operation.getEntite(), operation.getObjetId()).size() > 0){
+            .findImportationsForCreationByEntiteIdAndObjectIdManager(operation.getEntite().getEntiteId(), operation.getObjetId()).size() > 0){
             final String labelSousTypeImport = Labels.getLabel("OperationSousType.Import");
             //on est sûr que la clé est définie car elle n'est pas dynamique => pas besoin de gérer le cas labelSousTypeImport null :
             type.append(" (").append(labelSousTypeImport).append(")");
          }
       }
-
+      
       return type.toString();
    }
    

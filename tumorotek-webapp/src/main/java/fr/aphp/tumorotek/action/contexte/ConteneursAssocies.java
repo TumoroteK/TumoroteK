@@ -114,7 +114,7 @@ public class ConteneursAssocies extends OneToManyComponent<ConteneurDecorator>
    }
 
    @Override
-   public void switchToEditMode(final boolean b){
+   public void switchToEditMode(final boolean avecAccesAuxBoutonsAddEtDelete){
       super.switchToEditMode(SessionUtils.isAdminPF(sessionScope));
    }
 

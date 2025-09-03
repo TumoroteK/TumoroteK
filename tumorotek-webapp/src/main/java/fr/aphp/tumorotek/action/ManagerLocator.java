@@ -112,6 +112,8 @@ import fr.aphp.tumorotek.manager.dto.EchantillonDTOManager;
 import fr.aphp.tumorotek.manager.etiquettes.TumoBarcodePrinter;
 import fr.aphp.tumorotek.manager.etiquettes.TumoPrinterUtilsManager;
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.ImportChampAnnotationBatchProcessor;
+import fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationEntiteStrategyFactory;
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurAvecBoiteExcelGenerator;
 import fr.aphp.tumorotek.manager.impl.stockage.planconteneur.PlanCongelateurSansBoiteExcelGenerator;
 import fr.aphp.tumorotek.manager.impression.BlocImpressionManager;
@@ -799,6 +801,13 @@ public final class ManagerLocator
       return (CompatibiliteEntreImportTemplateEtBanqueValidator) (ContextLoader.getCurrentWebApplicationContext()).getBean("compatibiliteEntreImportTemplateEtBanqueValidator");
    }
    
+   public static ImportChampAnnotationBatchProcessor getImportChampAnnotationBatchProcessor(){
+      return (ImportChampAnnotationBatchProcessor) (ContextLoader.getCurrentWebApplicationContext()).getBean("importChampAnnotationBatchProcessor");
+   }
+   
+   public static ImportChampAnnotationEntiteStrategyFactory getImportChampAnnotationEntiteStrategyFactory(){
+      return (ImportChampAnnotationEntiteStrategyFactory) (ContextLoader.getCurrentWebApplicationContext()).getBean("importChampAnnotationEntiteStrategyFactory");
+   }
    /****************** Imprimante. ************************/
    public static ImprimanteManager getImprimanteManager(){
       return (ImprimanteManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("imprimanteManager");

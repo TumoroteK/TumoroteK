@@ -76,6 +76,8 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
 
    protected Column linkHeader;
 
+   // /!\ le nom de ce champ porte à confusion : en effet, il correspond à la notion "libellé non cliquable" par opposition à linkHeader 
+   // qui correspond à un libellé cliquable. Or le libellé cliquable s'affiche en mode static et le libellé non cliquable en mode édition :-(
    protected Column staticHeader;
 
    protected Label objLinkLabel;
@@ -103,8 +105,8 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
    }
 
    /**
-    * Demande la msie à jour la liste et du
-    * group header associe au composant.
+    * Demande la mise à jour de la liste et du
+    * group header associé au composant.
     */
    public void updateComponent(){
       if(getGroupHeader() != null){
@@ -113,9 +115,9 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
       getBinder().loadAttribute(objectsList, "model");
    }
 
-   public void switchToEditMode(final boolean b){
-      deleteHeader.setVisible(b);
-      addObj.setVisible(b);
+   public void switchToEditMode(final boolean avecAccesAuxBoutonsAddEtDelete){
+      deleteHeader.setVisible(avecAccesAuxBoutonsAddEtDelete);
+      addObj.setVisible(avecAccesAuxBoutonsAddEtDelete);
       linkHeader.setVisible(false);
       staticHeader.setVisible(true);
       getBinder().loadComponent(objectsList);
@@ -184,8 +186,8 @@ public abstract class OneToManyComponent<T extends Object> extends AbstractContr
    }
 
    /**
-    * Ajoute le conteneur selectionné dans la listbox à
-    * la liste des conteneurs.
+    * Ajoute l'objet selectionné dans la listbox à
+    * la liste des objets.
     */
    public void onClick$addSelObj(){
       if(objectsBox.getSelectedItem() != null){

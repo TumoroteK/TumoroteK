@@ -446,4 +446,5 @@ public interface PatientManager
     * @since 2.3.0-gatsbi
     */
    List<PatientIdentifiant> findIdentifiantsByPatientAndBanquesManager(Patient patient, List<Banque> banques);
+   
 }

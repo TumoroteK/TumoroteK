@@ -1,0 +1,1 @@
+UPDATE IMPORT_TEMPLATE set TYPE_CODE = 'NEW_DERIVE' where derive_parent_entite_id is not null;

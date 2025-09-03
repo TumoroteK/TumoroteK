@@ -40,7 +40,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.systeme.Entite;

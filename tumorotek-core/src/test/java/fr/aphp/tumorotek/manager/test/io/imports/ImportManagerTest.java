@@ -100,6 +100,7 @@ import fr.aphp.tumorotek.manager.exception.ErrorsInImportException;
 import fr.aphp.tumorotek.manager.exception.FormulaException;
 import fr.aphp.tumorotek.manager.exception.HeaderException;
 import fr.aphp.tumorotek.manager.exception.WrongImportValueException;
+import fr.aphp.tumorotek.manager.exception.WrongImportValueForThesaurusException;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
 import fr.aphp.tumorotek.manager.impl.io.imports.DerivesImportBatches;
 import fr.aphp.tumorotek.manager.io.TKAnnotableObjectDuo;
@@ -339,7 +340,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode initColumnsHeadersManager().
     */
    @Test
-   public void testInitColumnsHeadersManager(){
+   public void testInitColumnsHeadersManager() throws HeaderException {
       HSSFWorkbook wb;
       HSSFSheet sheet;
       Iterator<Row> rit;
@@ -400,7 +401,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode initImportColonnesManager().
     */
    @Test
-   public void testInitImportColonnesManager(){
+   public void testInitImportColonnesManager() throws BadFileFormatException, HeaderException  {
       File file = new File("src/test/java/fr/aphp/tumorotek/manager/" + "test/io/imports/import1.xls");
       final ImportTemplate it = importTemplateManager.findByIdManager(1);
       HSSFWorkbook wb;
@@ -757,7 +758,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setPropertyForImportColonne().
     */
    @Test
-   public void testSetPropertyForImportColonne(){
+   public void testSetPropertyForImportColonne() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());
@@ -871,7 +872,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setCodeAssigneForEchantillon().
     */
    @Test
-   public void testSetCodeAssigneForEchantillon(){
+   public void testSetCodeAssigneForEchantillon() throws BadFileFormatException, HeaderException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());
@@ -955,7 +956,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setRisquesForPrelevement().
     */
    @Test
-   public void testSetRisquesForPrelevement(){
+   public void testSetRisquesForPrelevement() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());
@@ -1018,7 +1019,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setNonConformites().
     */
    @Test
-   public void testSetNonConformites(){
+   public void testSetNonConformites() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());
@@ -1094,7 +1095,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setPropertyForAnnotationColonne().
     */
    @Test
-   public void testSetPropertyForAnnotationColonne(){
+   public void testSetPropertyForAnnotationColonne() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
 
@@ -1203,7 +1204,7 @@ public class ImportManagerTest extends AbstractManagerTest4
    }
 
    @Test
-   public void testSetAllPropertiesForPatient(){
+   public void testSetAllPropertiesForPatient() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
 
@@ -1262,7 +1263,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setAllPropertiesForMaladie().
     */
    @Test
-   public void testSetAllPropertiesForMaladie(){
+   public void testSetAllPropertiesForMaladie() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
 
@@ -1322,7 +1323,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setAllPropertiesForPrelevement().
     */
    @Test
-   public void testSetAllPropertiesForPrelevement(){
+   public void testSetAllPropertiesForPrelevement() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());
@@ -1405,7 +1406,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setAllPropertiesForEchantillon().
     */
    @Test
-   public void testSetAllPropertiesForEchantillon(){
+   public void testSetAllPropertiesForEchantillon() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());
@@ -1493,7 +1494,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode setAllPropertiesForProdDerive().
     */
    @Test
-   public void testSetAllPropertiesForProdDerive(){
+   public void testSetAllPropertiesForProdDerive() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());
@@ -1557,7 +1558,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * Test de la méthode saveObjectsManager().
     */
    @Test
-   public void testSaveObjectsManager(){
+   public void testSaveObjectsManager() throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());
@@ -1659,7 +1660,7 @@ public class ImportManagerTest extends AbstractManagerTest4
          // assertTrue(importations.size() == 4); // derive non importe
          assertTrue(importations.size() == 3);
          assertNotNull(importations.get(0).getObjetId());
-         assertNotNull(importations.get(0).getEntite());
+         assertNotNull(importations.get(0).getEntiteId());
          importations.clear();
 
          // test sur la 2eme ligne
@@ -1745,7 +1746,7 @@ public class ImportManagerTest extends AbstractManagerTest4
 
          assertTrue(importations.size() == 4);
          assertNotNull(importations.get(0).getObjetId());
-         assertNotNull(importations.get(0).getEntite());
+         assertNotNull(importations.get(0).getEntiteId());
          importations.clear();
 
          // save 2 derives 2 batches
@@ -2118,7 +2119,7 @@ public class ImportManagerTest extends AbstractManagerTest4
    }
 
    @Test
-   public void testImportFileWithErrorsBis(){
+   public void testImportFileWithErrorsBis()  throws BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportTemplate importTemplate = importTemplateManager.findByIdManager(1);
       final Utilisateur utilisateur = utilisateurDao.findById(1);
 
@@ -2312,7 +2313,7 @@ public class ImportManagerTest extends AbstractManagerTest4
     * @throws CannotGetJdbcConnectionException 
     */
    @Test
-   public void testSaveEchantillonsJDBCManager() throws CannotGetJdbcConnectionException, SQLException{
+   public void testSaveEchantillonsJDBCManager() throws CannotGetJdbcConnectionException, SQLException, BadFileFormatException, HeaderException, WrongImportValueForThesaurusException {
       final ImportProperties properties = new ImportProperties();
       final ImportTemplate template = importTemplateManager.findByIdManager(1);
       properties.setBanque(template.getBanque());

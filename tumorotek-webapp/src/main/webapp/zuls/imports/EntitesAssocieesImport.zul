@@ -53,6 +53,7 @@
 					<label value="@{obj.label}" sclass="formValue" />
 					<image id="deleteImage" width="12px" height="12px"
 							src="/images/icones/small_delete.png"
+							visible="@{obj.boutonDeleteVisible}"
 							style="cursor:pointer" />
 				</row>
 			</rows>

@@ -214,24 +214,6 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
 
    }
 
-   /**
-    * Surcharge pour ne pas appliquer clear sur la liste.
-    */
-   @Override
-   public void switchToCreateMode(){
-      getBinder().loadComponent(objectsList);
-      switchToEditMode(true);
-   }
-
-   /**
-    * Surcharge pour imposer que la dernière pf ne puisse jamais
-    * être éffacée laissant une table orpheline.
-    */
-   @Override
-   public void switchToEditMode(final boolean b){
-      super.switchToEditMode(b);
-   }
-
    public List<Plateforme> getPlateformes(){
       final List<Plateforme> pfs = new ArrayList<>();
 

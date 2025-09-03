@@ -162,9 +162,8 @@ public class ImportTemplateManagerImpl implements ImportTemplateManager
       log.debug("Recherche de tous les ImportTemplates de la banque {} qui sont partagés.", banque.getNom());
       if(banque != null){
          return importTemplateDao.findTemplateByStatutPartageAndBanqueWithOrder(eImportTemplateStatutPartage.getImportTemplateStatutPartageCode(), banque);
-      }else{
-         return new ArrayList<>();
-      }      
+      }
+      return new ArrayList<>();
    }
    
    @Override

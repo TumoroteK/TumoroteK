@@ -118,7 +118,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  * 'system.tk.unknownExistingValue' qui indique que la combineBox
  * a été cochée mais qu'aucune valeur n'a été spécifiée.
  * <p>
- * Le composant se base sur quatre liste de AnnotatioValeur:
+ * Le composant se base sur quatre liste de AnnotationValeur:
  * - valeurs: qui sert a l'affichage
  * - valeursToCreate: valeurs qui seront créées
  * - valeursToUpdate: valeurs qui seront modifiées

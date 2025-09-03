@@ -35,16 +35,19 @@
  **/
 package fr.aphp.tumorotek.manager.exception;
 
+import fr.aphp.tumorotek.manager.exception.uimessage.UIMessage;
+
 /**
  * Classe gérant les exceptions lancées pour tout problème lors de
  * récupération des headers d'un fichier d'import.
  * Classe créée le 15/05/2013.
+ * Mise à jour en juin 2025 (2.3.1.0) pour TK-538 (import pour modification des annotations)
  *
  * @author Mathieu BARTHELEMY
  * @version 2.0.10
  *
  */
-public class HeaderException extends TKException
+public class HeaderException extends ImportPrerequisitesException
 {
 
    private static final long serialVersionUID = 8174774359484499209L;
@@ -52,7 +55,7 @@ public class HeaderException extends TKException
    private int col = 0;
 
    public HeaderException(){
-      super();
+      super("Import : au moins une valeur de la ligne d'entête est inexploitable");
    }
 
    public HeaderException(final int c){
@@ -66,5 +69,20 @@ public class HeaderException extends TKException
 
    public void setCol(final int col){
       this.col = col;
+   }
+   
+   @Override
+   protected String getI18nKey() {
+      return "importTemplate.header.illegal";
+   }
+   
+   @Override
+   public UIMessage buildUIMessage() {
+      String[] params = null;
+      if(col != 0) {
+         params = new String[] {String.valueOf(col)};
+      }
+   
+      return buildUIMessage(params);
    }
 }

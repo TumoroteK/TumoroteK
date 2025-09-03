@@ -48,7 +48,6 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * @version 2.3.0-gatsbi

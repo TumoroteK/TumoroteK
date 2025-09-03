@@ -38,9 +38,7 @@ package fr.aphp.tumorotek.dao.io.imports;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.Importation;
-import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  *
@@ -56,24 +54,34 @@ public interface ImportationDao extends GenericDaoJpa<Importation, Integer>
 
    /**
     * Recherche les Importations d'un ImportHistorique.
-    * @param importHistorique ImportHistorique.
+    * @param importHistoriqueId id de l'importHistorique concerné par la recherche.
     * @return Liste d'Importation.
     */
-   List<Importation> findByHistorique(ImportHistorique importHistorique);
+   List<Importation> findByHistoriqueId(Integer importHistoriqueId);
 
    /**
     * Recherche les Importations d'un ImportHistorique et d'une Entité.
-    * @param importHistorique ImportHistorique.
-    * @param entite Entite.
+    * @param importHistoriqueId id de l'importHistorique concerné.
+    * @param entiteId id de l'entité concernée.
     * @return Liste d'Importation.
     */
-   List<Importation> findByHistoriqueAndEntite(ImportHistorique importHistorique, Entite entite);
+   List<Importation> findByHistoriqueIdAndEntiteId(Integer importHistoriqueId, Integer entiteId);
 
    /**
-    * Recherche les Importations d'une Entité et pour un id.
-    * @param entite Entite.
-    * @param objetId Identifiant.
+    * Recherche les Importations pour un objet matériel (Patient, Prélèvement, Echantillon....) caractérisé par son entité et son id.
+    * @param entiteId id de l'entité concernée.
+    * @param objetId Identifiant de l'objet.
     * @return Liste d'Importation.
     */
-   List<Importation> findByEntiteAndObjetId(Entite entite, Integer objetId);
+   List<Importation> findByEntiteIdAndObjetId(Integer entiteId, Integer objetId);
+   
+   /**
+    * Recherche les Importations d'un type particulier pour un objet matériel (Patient, Prélèvement, Echantillon....) caractérisé par son entité et son id.
+    * @param entiteId id de l'entité concernée.
+    * @param objetId Identifiant de l'objet.
+    * @param typeCode type des importations recherchées
+    * @return Liste d'Importation.
+    */
+   List<Importation> findByEntiteIdObjetIdAndTypeCode(Integer entiteId, Integer objetId, String typeCode);
+   
 }

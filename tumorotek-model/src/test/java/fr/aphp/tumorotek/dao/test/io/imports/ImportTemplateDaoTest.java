@@ -146,7 +146,6 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
       it.setBanque(b);
       it.setNom(nom);
       it.setDescription("DESC");
-      it.setIsEditable(true);
       entites.add(e1);
       entites.add(e2);
       it.setEntites(entites);
@@ -162,7 +161,6 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
       assertNotNull(it2.getBanque());
       assertTrue(it2.getNom().equals(nom));
       assertTrue(it2.getDescription().equals("DESC"));
-      assertTrue(it2.getIsEditable());
       assertTrue(it2.getEntites().size() == 2);
       assertNull(it2.getDeriveParentEntite());
 
@@ -324,12 +322,6 @@ public class ImportTemplateDaoTest extends AbstractDaoTest
          assertTrue(t1.getDescription().equals(t2.getDescription()));
       }else{
          assertNull(t2.getDescription());
-      }
-
-      if(t1.getIsEditable() != null){
-         assertTrue(t1.getIsEditable().equals(t2.getIsEditable()));
-      }else{
-         assertNull(t2.getIsEditable());
       }
 
       if(t1.getEntites() != null){

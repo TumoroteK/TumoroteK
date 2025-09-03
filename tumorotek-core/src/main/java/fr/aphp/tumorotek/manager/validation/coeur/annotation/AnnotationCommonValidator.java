@@ -84,7 +84,7 @@ public class AnnotationCommonValidator implements Validator
                   errs.rejectValue("alphanum", "anno.alphanum.illegal");
                }
             }else if(anno.getChampAnnotation().getDataType().getType().equals("num")){
-               if(!anno.getAlphanum().matches("-?[0-9]+(\\.|,)?[0-9]*E?[0-9]*")
+               if(!anno.getAlphanum().matches(ValidationUtilities.NOMBREREGEX)
                   && !anno.getAlphanum().equals("system.tk.unknownExistingValue")){
                   errs.rejectValue("alphanum", "anno.num.illegal");
                }

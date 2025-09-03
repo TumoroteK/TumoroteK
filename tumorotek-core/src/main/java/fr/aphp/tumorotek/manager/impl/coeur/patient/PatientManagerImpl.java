@@ -1222,4 +1222,5 @@ public class PatientManagerImpl implements PatientManager
       }
       return new ArrayList<PatientIdentifiant>();
    }
+
 }

@@ -129,6 +129,12 @@ public class EntiteManagerImpl implements EntiteManager
          log.debug("Recherche l'objet correspondant au couple Entite : {} - ObjetId : {}", entite, objectId);
          final String nomTable = entite.getNom();
 
+         //NB : le nom de l'attribut "id" des objets mappant une table est construit avec le nom de la classe avec
+         //la 1ere lettre en minuscule suivi de Id. Ex : prelevementId
+         //SAUF pour les 3 classes ChampAnnotation, ChampDelegue, ChampEntite pour lesquels le nom de l'attribut est simplement "id" pour faire du polymorphisme avec ces 3 champs.
+         //Mais seul l'objet ChampEntite est défini dans la table ENTITE donc dans le test ci-dessous on ne devrait tester que ChampEntite
+         //Toutefois cela permet de sécuriser si un jour ChampAnnotation et ChampDelegue étaient ajoutés dans la table ENTITE (ce qui devrait être le cas)
+         //Ainsi, initialisation avec cette valeur avant surcharge si on n'est pas dans ce cas:
          String nomAttribut = "id";
 
          if(!entite.getNom().matches("ChampAnnotation|ChampDelegue|ChampEntite")){

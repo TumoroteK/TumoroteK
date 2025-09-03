@@ -58,6 +58,7 @@ import fr.aphp.tumorotek.action.MainWindow;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.historique.FicheHistoriqueModale;
 import fr.aphp.tumorotek.action.imports.ResultatsImportModale;
+import fr.aphp.tumorotek.action.imports.strategy.ImportTemplateStrategy;
 import fr.aphp.tumorotek.action.impression.FicheBonLivraisonModale;
 import fr.aphp.tumorotek.action.impression.FicheTemplateModale;
 import fr.aphp.tumorotek.action.interfacage.SelectDossierExterneModale;
@@ -78,6 +79,8 @@ import fr.aphp.tumorotek.action.stockage.ChangeNumerotationModale;
 import fr.aphp.tumorotek.action.stockage.ChangeTailleEnceinteModale;
 import fr.aphp.tumorotek.action.thesaurus.FicheChampThesaurus;
 import fr.aphp.tumorotek.decorator.CederObjetDecorator;
+import fr.aphp.tumorotek.manager.exception.AbstractImportFileScopeException;
+import fr.aphp.tumorotek.manager.exception.ImportException;
 import fr.aphp.tumorotek.manager.io.imports.ImportError;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -1158,8 +1161,13 @@ public abstract class AbstractFicheController extends AbstractController
       return ua;
    }
 
+   //utilisé dans le cas d'un import pour la création d'objets.
+   ///!\ il existe une autre méthode openResultatsImportWindow (pour l'import des modifications d'annotation) qui ressemble beaucoup mais elle prend en paramètre
+   //une exception au lieu de List<ImportError>
+   //A factoriser : cf TK-717
    /**
-    * PopUp window appelée pour afficher les résultats de l'import.
+    * crée et ouvre la PopUp window appelée pour afficher les résultats de l'import (dans le cas de la création d'objets)
+    * si elle n'est pas déjà ouverte et retourne l'info "ouverte" ou "non".
     * @param page
     * @param importOk
     * @param histo
@@ -1170,8 +1178,10 @@ public abstract class AbstractFicheController extends AbstractController
     * @version 2.0.10.6
     */
    public boolean openResultatsImportWindow(final Page page, final Boolean importOk, final ImportHistorique histo,
-      final List<ImportError> errs, final InputStream is, final Workbook wb, final String currSheetName, final Component parent){
+      final List<ImportError> errs, final InputStream is, final Workbook wb, final String currSheetName, final Component parent, 
+      final ImportTemplateStrategy importTemplateStrategy){
 
+      //si la modale n'est pas déjà ouverte, on la créé
       if(!isBlockModal()){
 
          setBlockModal(true);
@@ -1185,9 +1195,8 @@ public abstract class AbstractFicheController extends AbstractController
          win.setSizable(true);
          win.setTitle(Labels.getLabel("message.import.title"));
          win.setBorder("normal");
-         win.setWidth("420px");
-         final int height = 340;
-         win.setHeight(String.valueOf(height) + "px");
+         win.setWidth(ResultatsImportModale.MODALE_WIDTH);
+         win.setHeight(ResultatsImportModale.MODALE_DEFAULT_HEIGHT);
          win.setClosable(true);
 
          final HtmlMacroComponent ua;
@@ -1199,7 +1208,84 @@ public abstract class AbstractFicheController extends AbstractController
 
          ((ResultatsImportModale) ua.getFellow("fwinResultatsImportModale")
             .getAttributeOrFellow("fwinResultatsImportModale$composer", true)).init(importOk, histo, errs, is, wb, currSheetName,
-               height, parent);
+               parent, importTemplateStrategy);
+         ua.setVisible(false);
+
+         win.addEventListener("onTimed", new EventListener<Event>()
+         {
+            @Override
+            public void onEvent(final Event event) throws Exception{
+               //progress.detach();
+               ua.setVisible(true);
+            }
+         });
+
+         final Timer timer = new Timer();//
+         timer.setDelay(500);
+         timer.setRepeats(false);
+         timer.addForward("onTimer", timer.getParent(), "onTimed");
+         win.appendChild(timer);
+         timer.start();
+
+         try{
+            win.onModal();//permet d'afficher la fenêtre et en type modale
+            setBlockModal(false);
+         }catch(final SuspendNotAllowedException e){
+             log.error(e.getMessage(), e); 
+         }
+      }
+
+      return isBlockModal();
+   }
+
+   //TK-538 : utilisé dans le cas d'un import pour modification d'un champ d'annotation. Cette méthode ressemble beaucoup à l'autre méthode openResultatsImportWindow mais 
+   //prend en paramètre une ImportException au lieu d'une liste de ImportError
+   //A factoriser : cf TK-717
+   /**
+    * crée et ouvre la PopUp window appelée pour afficher les résultats de l'import (dans le cas de la modification de valeurs de champs d'annotation)
+    * si elle n'est pas déjà ouverte et retourne l'info "ouverte" ou "non".
+    * gère différemment les cas d'erreur par rapport à l'import en création
+    * @param page
+    * @param importOk
+    * @param histo
+    * @param importException
+    * @param is
+    * @param wb
+    * @param currSheetName
+    * @version 2.0.10.6
+    */
+   public boolean openResultatsImportWindow(final Page page, final Boolean importOk, final ImportHistorique histo,
+      final AbstractImportFileScopeException importException, final InputStream is, final Workbook wb, final String currSheetName, 
+      final Component parent, final ImportTemplateStrategy importTemplateStrategy){
+
+      //si la modale n'est pas déjà ouverte, on la créé
+      if(!isBlockModal()){
+
+         setBlockModal(true);
+
+         // nouvelle fenêtre
+         final Window win = new Window();
+         win.setVisible(false);
+         win.setId("resultsImportWindow");
+         win.setPage(page);
+         win.setMaximizable(true);
+         win.setSizable(true);
+         win.setTitle(Labels.getLabel("message.import.title"));
+         win.setBorder("normal");
+         win.setWidth(ResultatsImportModale.MODALE_WIDTH);
+         win.setHeight(ResultatsImportModale.MODALE_DEFAULT_HEIGHT);
+         win.setClosable(true);
+
+         final HtmlMacroComponent ua;
+         ua = (HtmlMacroComponent) page.getComponentDefinition("resultatsImportModale", false).newInstance(page, null);
+         ua.setParent(win);
+         ua.setId("resultatsImportModaleComponent");
+         ua.applyProperties();
+         ua.afterCompose();
+
+         ((ResultatsImportModale) ua.getFellow("fwinResultatsImportModale")
+            .getAttributeOrFellow("fwinResultatsImportModale$composer", true)).init(importOk, histo, importException, is, wb, currSheetName,
+               parent, importTemplateStrategy);
          ua.setVisible(false);
 
          win.addEventListener("onTimed", new EventListener<Event>()
@@ -1219,7 +1305,7 @@ public abstract class AbstractFicheController extends AbstractController
          timer.start();
 
          try{
-            win.onModal();
+            win.onModal();//permet d'afficher la fenêtre et en type modale
             setBlockModal(false);
          }catch(final SuspendNotAllowedException e){
              log.error(e.getMessage(), e); 
@@ -1229,6 +1315,8 @@ public abstract class AbstractFicheController extends AbstractController
       return isBlockModal();
    }
 
+   
+   
    /**
     * Méthode appelée lorsque l'utilisateur clique sur le menu item
     * pour changer la numérotations de terminales.

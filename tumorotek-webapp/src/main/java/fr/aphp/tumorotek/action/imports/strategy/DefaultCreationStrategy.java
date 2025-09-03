@@ -1,0 +1,111 @@
+/**
+ * Copyright ou © ou Copr. SESAN
+ * projet-tk@sesan.fr
+ *
+ * Ce logiciel est un programme informatique servant à la gestion de
+ * l'activité de biobanques.
+ *
+ * Ce logiciel est régi par la licence CeCILL soumise au droit français
+ * et respectant les principes de diffusion des logiciels libres. Vous
+ * pouvez utiliser, modifier et/ou redistribuer ce programme sous les
+ * conditions de la licence CeCILL telle que diffusée par le CEA, le
+ * CNRS et l'INRIA sur le site "http://www.cecill.info".
+ * En contrepartie de l'accessibilité au code source et des droits de
+ * copie, de modification et de redistribution accordés par cette
+ * licence, il n'est offert aux utilisateurs qu'une garantie limitée.
+ * Pour les mêmes raisons, seule une responsabilité restreinte pèse sur
+ * l'auteur du programme, le titulaire des droits patrimoniaux et les
+ * concédants successifs.
+ *
+ * A cet égard  l'attention de l'utilisateur est attirée sur les
+ * risques associés au chargement,  à l'utilisation,  à la modification
+ * et/ou au  développement et à la reproduction du logiciel par
+ * l'utilisateur étant donné sa spécificité de logiciel libre, qui peut
+ * le rendre complexe à manipuler et qui le réserve donc à des
+ * développeurs et des professionnels  avertis possédant  des
+ * connaissances  informatiques approfondies.  Les utilisateurs sont
+ * donc invités à charger  et  tester  l'adéquation  du logiciel à leurs
+ * besoins dans des conditions permettant d'assurer la sécurité de leurs
+ * systèmes et ou de leurs données et, plus généralement, à l'utiliser
+ * et l'exploiter dans les mêmes conditions de sécurité.
+ *
+ * Le fait que vous puissiez accéder à cet en-tête signifie que vous
+ * avez pris connaissance de la licence CeCILL, et que vous en avez
+ * accepté les termes.
+ **/
+package fr.aphp.tumorotek.action.imports.strategy;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
+import fr.aphp.tumorotek.decorator.EntiteDecoratorForOneToManyComponent;
+import fr.aphp.tumorotek.decorator.factory.EntiteDecoratorFactory;
+import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
+import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
+import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.contexte.EContexte;
+import fr.aphp.tumorotek.model.io.export.Champ;
+import fr.aphp.tumorotek.model.io.export.ChampDelegue;
+import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.model.io.imports.EImportTemplateType;
+import fr.aphp.tumorotek.model.io.imports.ImportColonne;
+import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
+import fr.aphp.tumorotek.model.systeme.Entite;
+import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
+
+/**
+ * stratégie liée à l'import de création multi entité 
+ * 
+ * @since 2.3.1.0 (TK-538) 
+ * @author chuet
+ *
+ */
+public class DefaultCreationStrategy extends AbstractImportTemplateStrategy
+{
+   private EContexte eContexte;
+
+   //visibilité private pour obliger à instancier avec un EContexte
+   private DefaultCreationStrategy() {}
+   public DefaultCreationStrategy(EContexte eContexte) {
+      this.eContexte = eContexte;
+   }
+   
+   @Override
+   public EImportTemplateType getEImportTemplateType() {
+      return EImportTemplateType.CREATION_MULTI_ENTITE;
+   }
+   
+   @Override
+   public String defineKeyI18nForTitle() {
+      return "importTemplate.fiche.title";
+   }
+
+   @Override   
+   public List<EntiteDecoratorForOneToManyComponent> defineAddableEntites(){
+      List<EntiteDecoratorForOneToManyComponent> entitesDecorator = new ArrayList<EntiteDecoratorForOneToManyComponent>();
+      entitesDecorator.add(EntiteDecoratorFactory.decorateForOneToManyComponent(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0)));
+      entitesDecorator.add(EntiteDecoratorFactory.decorateForOneToManyComponent(ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0)));
+      entitesDecorator.add(EntiteDecoratorFactory.decorateForOneToManyComponent(ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0)));
+      entitesDecorator.add(EntiteDecoratorFactory.decorateForOneToManyComponent(ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0)));
+
+      return entitesDecorator;
+   }
+   
+
+   //Dans ce cas, pas d'entête fixe
+   @Override
+   public Integer defineNbLigneEnteteFixe() {
+      return 0;
+   }
+
+   @Override
+   public EContexte getEContexte(){
+      return eContexte;
+   }
+   
+}

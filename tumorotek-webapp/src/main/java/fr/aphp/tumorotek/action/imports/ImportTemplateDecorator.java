@@ -239,6 +239,14 @@ public class ImportTemplateDecorator implements TKdataObject
    public void setStatutPartageCode(Integer statutPartageCode){
       getImportTemplate().setStatutPartageCode(statutPartageCode);
    }
+   
+   public String getTypeCode(){
+      return getImportTemplate().getTypeCode();
+   }
+
+   public void setTypeCode(String typeCode){
+      getImportTemplate().setTypeCode(typeCode);
+   }
  //------- FIN  getters et setters provenant du template. 
    
    public EImportTemplateStatutPartage getStatutPartage() {
@@ -276,7 +284,11 @@ public class ImportTemplateDecorator implements TKdataObject
       return hash;
    }   
    
-   
+   //TK-538
+   //retourne le libellé internationalisé du type
+   public String getLibelleType() {
+      return Labels.getLabel(new StringBuilder("importTemplate.type.").append(getTypeCode()).toString());
+   }
    
    
    //classe qui permet de regrouper les éléments d'affichage d'un icône

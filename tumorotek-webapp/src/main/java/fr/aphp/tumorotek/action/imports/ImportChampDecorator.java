@@ -47,7 +47,9 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 //Decorator utilisé pour afficher les objet Champ dans la liste déroulante "Champ à importer" sur le modèle d'import 
-//en création ou modification 
+//en création ou modification
+// /!\ cette classe est aussi utilisée pour les lignes des étiquettes (dans FicheLigneEtiquetteModale). Le nom de la classe ne
+//devrait donc pas être lié aux imports...
 public class ImportChampDecorator
 {
 

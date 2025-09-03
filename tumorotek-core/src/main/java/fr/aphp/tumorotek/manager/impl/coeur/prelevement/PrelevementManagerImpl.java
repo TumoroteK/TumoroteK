@@ -96,6 +96,7 @@ import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.prelevement.gastbi.PrelevementGatsbiValidator;
+import fr.aphp.tumorotek.model.CodeIdPair;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -199,7 +200,6 @@ public class PrelevementManagerImpl implements PrelevementManager
    private DossierExterneDao dossierExterneDao;
 
    private ObjetNonConformeManager objetNonConformeManager;
-   //   private PrelevementDelegateDao prelevementDelegateDao;
 
    public PrelevementManagerImpl(){}
 
@@ -1776,4 +1776,5 @@ public class PrelevementManagerImpl implements PrelevementManager
 
       return res;   
    }
+   
 }

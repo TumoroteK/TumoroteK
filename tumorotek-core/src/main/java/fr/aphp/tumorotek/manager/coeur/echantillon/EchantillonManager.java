@@ -47,6 +47,7 @@ import java.util.Set;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
+import fr.aphp.tumorotek.model.CodeIdPair;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -845,4 +846,5 @@ public interface EchantillonManager
     *         une liste vide est renvoyée.
     */
    List<Echantillon> findEchantillonsWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId);
+
 }

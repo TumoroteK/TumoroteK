@@ -437,5 +437,19 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
       }
    }
 
+   @Override
+   public ChampEntite findCleFonctionelleForEntite(final Entite entite) {
+      List<ChampEntite> champsEntite = champEntiteDao.findByEntiteAndObligatoireGatsbi(entite, true);
+      if(champsEntite != null) {
+         if(champsEntite.size() == 1) {
+            return champsEntite.get(0);
+         }
+         else {
+            throw new IllegalArgumentException("L'entité " + entite.getNom() + " n'a pas un champ unique pour sa clé fonctionnelle mais " + String.valueOf(champsEntite.size()));
+         }
+      }
+      
+      return null;
+   }
 
 }

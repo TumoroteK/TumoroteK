@@ -1434,6 +1434,13 @@
 			</bean>
 		</property>
 	</bean>
+	<!--  TK-538  -->
+	<!-- un bean lié à ChampEntiteManagerImpl sans gestion de la transaction est défini pour résoudre le problème rencontré sinon
+	avec l'utilisation de ce bean encapsulé dans le proxy pour la transaction : en effet, une classe encapsulée dans txProxyTemplate ne peut pas héritée d'une autre classe
+	cf commentaire au niveau de importChampAnnotationPatientStrategy -->
+	<bean id="champEntiteManagerWithoutTransaction" class="fr.aphp.tumorotek.manager.impl.io.ChampEntiteManagerImpl">
+		<property name="champEntiteDao" ref="champEntiteDao" />
+	</bean>
 
 	<bean id="champDelegueManager" parent="txProxyTemplate">
 		<property name="target">
@@ -2302,6 +2309,49 @@
 			</bean>
 		</property>
 	</bean>
+
+	<!-- TK-538 : modification des champs d'annotation par import -->
+	<!-- transaction gérée manuellement => pas de définition du parent txProxyTemplate -->
+	<bean id="importChampAnnotationBatchProcessor" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.ImportChampAnnotationBatchProcessor">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="importTemplateManager" ref="importTemplateManager" />
+		<property name="importHistoriqueManager" ref="importHistoriqueManager" />
+		<property name="importChampAnnotationEntiteStrategyFactory" ref="importChampAnnotationEntiteStrategyFactory" />
+	</bean>
+	<!-- ATTENTION, les strategy ne gèrent pas de transaction (ce n'est pas nécessaire car les requêtes ne sont que des select) 
+	     mais cela est indispensable pour éviter un problème d'incompatibilité de l'utilisation du proxy pour la transaction avec
+	     le fait que ces classes héritent d'une classe abstraite. Erreur rencontrée : https://stackoverflow.com/questions/14937516/spring-aop-illegalargumentexception-cannot-convert-value-of-type-proxy12 
+	     une bean, "instance" de ChampEntiteManagerImpl a donc été défini sans la transaction pour être utilisé dans ce cas
+	     -->	
+	<bean id="importChampAnnotationPatientStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationPatientStrategy">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+	</bean>
+	<bean id="importChampAnnotationPatientGatsbiStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationPatientGatsbiStrategy">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+	</bean>
+	<bean id="importChampAnnotationPrelevementStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationPrelevementStrategy">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+	</bean>
+	<bean id="importChampAnnotationEchantillonStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationEchantillonStrategy">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+	</bean>
+	<bean id="importChampAnnotationProdDeriveStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationProdDeriveStrategy">
+		<property name="entityManagerFactory" ref="entityManagerFactory" />
+		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+	</bean>
+
+	<bean id="importChampAnnotationEntiteStrategyFactory" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationEntiteStrategyFactory">
+		<property name="importChampAnnotationPatientStrategy" ref="importChampAnnotationPatientStrategy" />
+		<property name="importChampAnnotationPatientGatsbiStrategy" ref="importChampAnnotationPatientGatsbiStrategy" />
+		<property name="importChampAnnotationPrelevementStrategy" ref="importChampAnnotationPrelevementStrategy" />
+		<property name="importChampAnnotationEchantillonStrategy" ref="importChampAnnotationEchantillonStrategy" />
+		<property name="importChampAnnotationProdDeriveStrategy" ref="importChampAnnotationProdDeriveStrategy" />
+	</bean>
+	<!--  fin TK-538 -->
 
 	<!-- Package imprimante -->
 	<bean id="imprimanteApiManager" parent="txProxyTemplate">

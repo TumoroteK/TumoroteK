@@ -35,20 +35,16 @@
  **/
 package fr.aphp.tumorotek.model.io.imports;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
-import fr.aphp.tumorotek.model.systeme.Entite;
+import org.hibernate.annotations.Parameter;
 
 /**
  *
@@ -62,11 +58,14 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 @Entity
 @Table(name = "IMPORTATION")
 @NamedQueries(value = {
-   @NamedQuery(name = "Importation.findByHistorique", query = "SELECT i FROM Importation i " + "WHERE i.importHistorique = ?1"),
-   @NamedQuery(name = "Importation.findByHistoriqueAndEntite",
-      query = "SELECT i FROM Importation i " + "WHERE i.importHistorique = ?1 " + "AND i.entite = ?2 ORDER BY i.objetId"),
-   @NamedQuery(name = "Importation.findByEntiteAndObjetId",
-      query = "SELECT i FROM Importation i " + "WHERE i.entite = ?1 " + "AND i.objetId = ?2")})
+   @NamedQuery(name = "Importation.findByHistoriqueId", query = "SELECT i FROM Importation i " + "WHERE i.importHistoriqueId = ?1"),
+   @NamedQuery(name = "Importation.findByHistoriqueIdAndEntiteId",
+      query = "SELECT i FROM Importation i " + "WHERE i.importHistoriqueId = ?1 " + "AND i.entiteId = ?2 ORDER BY i.objetId"),
+   @NamedQuery(name = "Importation.findByEntiteIdAndObjetId",
+      query = "SELECT i FROM Importation i " + "WHERE i.entiteId = ?1 " + "AND i.objetId = ?2"),
+   @NamedQuery(name = "Importation.findByEntiteIdObjetIdAndTypeCode",
+   query = "SELECT i FROM Importation i " + "WHERE i.entiteId = ?1 AND i.objetId = ?2 AND i.typeCode = ?3")
+   })
 public class Importation implements java.io.Serializable
 {
 
@@ -76,11 +75,15 @@ public class Importation implements java.io.Serializable
 
    private Integer objetId;
 
-   private Entite entite;
+   private Integer entiteId;
 
-   private ImportHistorique importHistorique;
-
+   private Integer importHistoriqueId;
+   
+   //fait doublon avec le type : utilisation à revoir - le front n'a jamais été fait pour la mise à jour donc code mort dans l'absolu
    private Boolean isUpdate = false;
+   
+   //TK-538 : défini le type du modèle : création, modification d'annotation ...
+   private String typeCode;
 
    public Importation(){
 
@@ -89,7 +92,8 @@ public class Importation implements java.io.Serializable
    @Id
    @Column(name = "IMPORTATION_ID", unique = true, nullable = false)
    @GeneratedValue(generator = "autoincrement")
-   @GenericGenerator(name = "autoincrement", strategy = "increment")
+   @GenericGenerator(name = "autoincrement", strategy = "native",
+   parameters = {@Parameter(name = "sequence", value = "importationSeq")})
    public Integer getImportationId(){
       return importationId;
    }
@@ -107,26 +111,25 @@ public class Importation implements java.io.Serializable
       this.objetId = id;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "ENTITE_ID", nullable = false)
-   public Entite getEntite(){
-      return entite;
+   @Column(name = "ENTITE_ID", nullable = false)
+   public Integer getEntiteId(){
+      return entiteId;
    }
 
-   public void setEntite(final Entite e){
-      this.entite = e;
+   public void setEntiteId(final Integer id){
+      this.entiteId = id;
+   }
+   
+   @Column(name = "IMPORT_HISTORIQUE_ID", nullable = false)
+   public Integer getImportHistoriqueId(){
+      return importHistoriqueId;
    }
 
-   @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-   @JoinColumn(name = "IMPORT_HISTORIQUE_ID", nullable = true)
-   public ImportHistorique getImportHistorique(){
-      return importHistorique;
+   public void setImportHistoriqueId(final Integer id){
+      this.importHistoriqueId = id;
    }
-
-   public void setImportHistorique(final ImportHistorique iHistorique){
-      this.importHistorique = iHistorique;
-   }
-
+   
+   
    @Column(name = "IS_UPDATE", nullable = false)
    public Boolean getIsUpdate(){
       return isUpdate;
@@ -135,13 +138,16 @@ public class Importation implements java.io.Serializable
    public void setIsUpdate(final Boolean isUpdate){
       this.isUpdate = isUpdate;
    }
+   
+   @Column(name = "TYPE_CODE", nullable = false)
+   public String getTypeCode(){
+      return typeCode;
+   }
 
-   /**
-    * 2 templates sont considérées comme égales s'ils ont le même nom
-    * et la même reference vers la banque.
-    * @param obj à tester.
-    * @return true si les objs sont égaux.
-    */
+   public void setTypeCode(String typeCode){
+      this.typeCode = typeCode;
+   }
+   
    @Override
    public boolean equals(final Object obj){
 
@@ -153,14 +159,13 @@ public class Importation implements java.io.Serializable
       }
       final Importation test = (Importation) obj;
       return ((this.objetId == test.objetId || (this.objetId != null && this.objetId.equals(test.objetId)))
-         && (this.entite == test.entite || (this.entite != null && this.entite.equals(test.entite)))
-         && (this.importHistorique == test.importHistorique
-            || (this.importHistorique != null && this.importHistorique.equals(test.importHistorique))));
+         && (this.entiteId == test.entiteId || (this.entiteId != null && this.entiteId.equals(test.entiteId)))
+         && (this.importHistoriqueId == test.importHistoriqueId
+            || (this.importHistoriqueId != null && this.importHistoriqueId.equals(test.importHistoriqueId))));
    }
 
    /**
-    * Le hashcode est calculé sur l'attribut nom et la reference
-    * vers la banque.
+    * Le hashcode est calculé sur les attributs importHistoriqueId, entiteId et objetId caractérisant l'unicité fonctionnelle
     * @return la valeur du hashcode.
     */
    @Override
@@ -173,11 +178,11 @@ public class Importation implements java.io.Serializable
       if(this.objetId != null){
          hashObjetId = this.objetId.hashCode();
       }
-      if(this.entite != null){
-         hashEntite = this.entite.hashCode();
+      if(this.entiteId != null){
+         hashEntite = this.entiteId.hashCode();
       }
-      if(this.importHistorique != null){
-         hashHistorique = this.importHistorique.hashCode();
+      if(this.importHistoriqueId != null){
+         hashHistorique = this.importHistoriqueId.hashCode();
       }
 
       hash = 31 * hash + hashObjetId;
@@ -193,8 +198,9 @@ public class Importation implements java.io.Serializable
 
       clone.setImportationId(this.importationId);
       clone.setObjetId(this.objetId);
-      clone.setEntite(this.entite);
-      clone.setImportHistorique(this.importHistorique);
+      clone.setEntiteId(this.entiteId);
+      clone.setImportHistoriqueId(this.importHistoriqueId);
+      clone.setTypeCode(this.getTypeCode());
 
       return clone;
    }
@@ -204,8 +210,8 @@ public class Importation implements java.io.Serializable
     */
    @Override
    public String toString(){
-      if(this.objetId != null && this.entite != null && this.importHistorique != null){
-         return "{" + this.objetId + ", " + this.entite.getNom() + "(Entite) " + this.importHistorique.toString() + "}";
+      if(this.objetId != null && this.entiteId != null && this.importHistoriqueId != null){
+         return "{" + this.objetId + " (objetId), " + this.entiteId + "(entiteId), " + this.importHistoriqueId + " (importHistoriqueId), " + this.typeCode + " (typeCode) }";
       }else{
          return "{Empty Importation}";
       }

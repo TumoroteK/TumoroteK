@@ -47,7 +47,9 @@ import org.apache.poi.ss.usermodel.FormulaEvaluator;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 
+import fr.aphp.tumorotek.manager.exception.BadFileFormatException;
 import fr.aphp.tumorotek.manager.exception.HeaderException;
+import fr.aphp.tumorotek.manager.exception.WrongImportValueForThesaurusException;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
 import fr.aphp.tumorotek.manager.impl.io.imports.DerivesImportBatches;
 import fr.aphp.tumorotek.manager.io.TKAnnotableObjectDuo;
@@ -106,7 +108,7 @@ public interface ImportManager
     * @return Hashtable<Entite, List<ImportColonne>>.
     */
    Hashtable<Entite, List<ImportColonne>> initImportColonnesManager(Hashtable<String, Integer> colonnes,
-      ImportTemplate importTemplate);
+      ImportTemplate importTemplate) throws BadFileFormatException;
 
    /**
     * Extrait toutes les valeurs d'un thésaurus et les met dans 1
@@ -150,6 +152,8 @@ public interface ImportManager
     * @param attibut Attribut à remplir.
     * @param obj Objet.
     */
+   //NB : cette méthode ne renvoie pas de WrongImportValueForThesaurusException car il s'agit de la méthode de bas niveau
+   //qui valorise le champ : les contrôles ont été faits en amont. Ainsi, dans le cas d'un champ thesaurus, value est l'item du thesaurus
    void setPropertyValueForObject(Object value, ChampEntite attribut, Object obj, ImportColonne colonne);
 
    /**
@@ -158,6 +162,8 @@ public interface ImportManager
     * @param annotation ChampAnnotation à remplir.
     * @param annoValeur AnnotationValeur.
     */
+   //NB : cette méthode ne renvoie pas de WrongImportValueForThesaurusException car il s'agit de la méthode qui valorise le champ : 
+   //les contrôles ont été faits en amont. Ainsi, dans le cas d'un champ thesaurus, value est l'item du thesaurus
    void setPropertyValueForAnnotationValeur(Object value, ChampAnnotation annotation, AnnotationValeur annoValeur,
       ImportColonne colonne);
 
@@ -170,7 +176,7 @@ public interface ImportManager
     * @param properties Objet contenant les variables globales
     * de l'import.
     */
-   void setPropertyForImportColonne(Object obj, ImportColonne colonne, Row row, ImportProperties properties);
+   void setPropertyForImportColonne(Object obj, ImportColonne colonne, Row row, ImportProperties properties) throws WrongImportValueForThesaurusException;
 
    /**
     * Extrait la valeur d'un code et l'assigne en tant que code lésionnel
@@ -194,7 +200,7 @@ public interface ImportManager
     * de l'import.
     * @return True si des risques ont été assignés.
     */
-   boolean setRisquesForPrelevement(Prelevement prlvt, ImportColonne colonne, Row row, ImportProperties properties);
+   boolean setRisquesForPrelevement(Prelevement prlvt, ImportColonne colonne, Row row, ImportProperties properties) throws WrongImportValueForThesaurusException;
 
    /**
     * Récupère la ou les valeur(s) (thesaurusM depuis 2.0.13)
@@ -207,7 +213,7 @@ public interface ImportManager
     * @return List<AnnotationValeur>
     * @version 2.0.13.2
     */
-   List<AnnotationValeur> setPropertyForAnnotationColonne(ImportColonne colonne, Row row, ImportProperties properties);
+   List<AnnotationValeur> setPropertyForAnnotationColonne(ImportColonne colonne, Row row, ImportProperties properties) throws WrongImportValueForThesaurusException;
 
    /**
     * Set tous les attributs d'un patient.
@@ -216,7 +222,7 @@ public interface ImportManager
     * de l'import.
     * @return TKAnnotableObjectDuo duos de patients.
     */
-   TKAnnotableObjectDuo setAllPropertiesForPatient(Row row, ImportProperties properties);
+   TKAnnotableObjectDuo setAllPropertiesForPatient(Row row, ImportProperties properties) throws WrongImportValueForThesaurusException;
 
    /**
     * Set tous les attributs d'une maladie.
@@ -226,7 +232,7 @@ public interface ImportManager
     * @param patient Patient de la maladie.
     * @return Maladie.
     */
-   Maladie setAllPropertiesForMaladie(Row row, ImportProperties properties, Patient patient);
+   Maladie setAllPropertiesForMaladie(Row row, ImportProperties properties, Patient patient) throws WrongImportValueForThesaurusException;
 
    /**
     * Set tous les attributs d'un prélèvement.
@@ -236,7 +242,7 @@ public interface ImportManager
     * @param maladie Maladie du prélèvement.
     * @return TKAnnotableObjectDuo duos de prelevement.
     */
-   TKAnnotableObjectDuo setAllPropertiesForPrelevement(Row row, ImportProperties properties, Maladie maladie);
+   TKAnnotableObjectDuo setAllPropertiesForPrelevement(Row row, ImportProperties properties, Maladie maladie) throws WrongImportValueForThesaurusException;
 
    /**
     * Set tous les attributs d'un échantillon.
@@ -246,7 +252,7 @@ public interface ImportManager
     * @param prlvt Prélèvement de l'échantillon.
     * @return Echantillon.
     */
-   Echantillon setAllPropertiesForEchantillon(Row row, ImportProperties properties, Prelevement prlvt);
+   Echantillon setAllPropertiesForEchantillon(Row row, ImportProperties properties, Prelevement prlvt) throws WrongImportValueForThesaurusException;
 
    /**
     * Set tous les attributs d'un produit dérivé.
@@ -255,7 +261,7 @@ public interface ImportManager
     * de l'import.
     * @return ProdDerive.
     */
-   ProdDerive setAllPropertiesForProdDerive(Row row, ImportProperties properties);
+   ProdDerive setAllPropertiesForProdDerive(Row row, ImportProperties properties) throws WrongImportValueForThesaurusException;
 
    /**
     * Sauvegarde les objets issus de l'import pour la ligne du fichier tabulé
@@ -317,7 +323,7 @@ public interface ImportManager
     * @return les non conformites
     */
    List<NonConformite> setNonConformites(TKAnnotableObject obj, ImportColonne colonne, Row row, ImportProperties properties,
-      Map<TKAnnotableObject, List<NonConformite>> ncfsList);
+      Map<TKAnnotableObject, List<NonConformite>> ncfsList) throws WrongImportValueForThesaurusException;
 
    Map<TKAnnotableObject, List<NonConformite>> getNcfsPrelevement();
 
@@ -381,5 +387,5 @@ public interface ImportManager
     */
    void saveDeriveBatchesManager(List<DerivesImportBatches> batches, ImportProperties properties, List<Importation> importations,
       Utilisateur utilisateur, String baseDir, List<ImportError> errors);
-
+   
 }

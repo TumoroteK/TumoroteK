@@ -53,7 +53,7 @@ import fr.aphp.tumorotek.model.systeme.Unite;
 
 /**
  * Classe utilitaire permettant la création de lots de dérivés à partir de la lecture
- * d'un fichier d'import. Le lot est charactérisé par le parent d'origine de la transformation,
+ * d'un fichier d'import. Le lot est caractérisé par le parent d'origine de la transformation,
  * la quantité utilisée et la date qualifiant l'évènement de stockage (quand le parent est un
  * TKStockableObjet echantillon/dérivé)
  *

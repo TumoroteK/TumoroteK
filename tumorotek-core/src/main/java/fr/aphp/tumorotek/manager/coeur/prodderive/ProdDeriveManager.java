@@ -680,5 +680,5 @@ public interface ProdDeriveManager
      * une liste vide est renvoyée.
      */
     List<ProdDerive> findProdDerivesWithStatusFromCederObject(List<CederObjet> cederObjets, Integer statusId);   
-   
+    
 }

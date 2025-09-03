@@ -38,18 +38,20 @@ package fr.aphp.tumorotek.manager.exception;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.aphp.tumorotek.manager.exception.uimessage.UIMessage;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 
 /**
  * Classe gérant les exceptions lancées si le fichier d'import est
  * corrompu.
- * Classe créée le 02/02/2011.
+ * Classe créée le 02/02/2011
+ * Mise à jour en juin 2025 (2.3.1.0) pour TK-538 (import pour modification des annotations)
  *
  * @author Pierre Ventadour
  * @version 2.0
  *
  */
-public class BadFileFormatException extends TKException
+public class BadFileFormatException extends ImportPrerequisitesException
 {
 
    private static final long serialVersionUID = 8174774359484499209L;
@@ -57,9 +59,14 @@ public class BadFileFormatException extends TKException
    private List<ImportColonne> colonnes = new ArrayList<>();
 
    public BadFileFormatException(){
-      super();
+      super("Import : Format de fichier incorrect");
    }
 
+   //défini principalement pour permettre d'appeler un contructeur avec message sur les classes filles.
+   protected BadFileFormatException(String message){
+      super(message);
+   }
+   
    public BadFileFormatException(final List<ImportColonne> cols){
       super();
       this.colonnes = cols;
@@ -72,10 +79,30 @@ public class BadFileFormatException extends TKException
    public void setColonnes(final List<ImportColonne> cols){
       this.colonnes = cols;
    }
-
+   
    @Override
-   public String getMessage(){
-      return "fichier.corrompu";
+   protected String getI18nKey() {
+      return "importTemplate.statistiques.errors.colonnes";
    }
 
+   @Override
+   public UIMessage buildUIMessage() {
+      String[] params = null;
+      if(colonnes != null) {
+         int nbColonne = colonnes.size();
+         if(nbColonne > 0){
+            StringBuffer listColonneAsString = new StringBuffer();
+            for(int i = 0; i < nbColonne; i++){
+               listColonneAsString.append(colonnes.get(i).getNom());
+   
+               if(i < nbColonne - 1){
+                  listColonneAsString.append(", ");
+               }
+            }
+            params = new String[] {listColonneAsString.toString()};
+         }
+      }
+   
+      return buildUIMessage(params);
+   }
 }

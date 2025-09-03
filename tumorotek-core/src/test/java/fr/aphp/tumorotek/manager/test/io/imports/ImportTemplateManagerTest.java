@@ -284,7 +284,6 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       // insertion valide avec les assos à null
       it1.setNom("Template de test");
       it1.setDescription("DESC");
-      it1.setIsEditable(true);
       importTemplateManager.createObjectManager(it1, b1, null, null, loggedUser);
       assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
       assertTrue(importColonneManager.findAllObjectsManager().size() == cTots);
@@ -295,7 +294,6 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       assertNotNull(itTest);
       assertTrue(itTest.getNom().equals("Template de test"));
       assertTrue(itTest.getDescription().equals("DESC"));
-      assertTrue(itTest.getIsEditable());
       assertNotNull(itTest.getBanque());
 
       // insertion valide avec les assos
@@ -332,7 +330,6 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       assertNotNull(itTest2);
       assertTrue(itTest2.getNom().equals("Autre template"));
       assertNull(itTest2.getDescription());
-      assertNull(itTest2.getIsEditable());
       assertNotNull(itTest2.getBanque());
       assertTrue(importTemplateManager.getEntiteManager(itTest2).size() == 2);
       final List<ImportColonne> cols = importColonneManager.findByImportTemplateManager(itTest2);
@@ -473,7 +470,6 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       // update valide avec les assos à null
       itUp.setNom("Template de test");
       itUp.setDescription("DESC");
-      itUp.setIsEditable(true);
       importTemplateManager.updateObjectManager(itUp, b1, null, null, null, loggedUser);
       assertTrue(importTemplateManager.findAllObjectsManager().size() == tots + 1);
 
@@ -482,7 +478,6 @@ public class ImportTemplateManagerTest extends AbstractManagerTest4
       assertNotNull(itTest);
       assertTrue(itTest.getNom().equals("Template de test"));
       assertTrue(itTest.getDescription().equals("DESC"));
-      assertTrue(itTest.getIsEditable());
       assertNotNull(itTest.getBanque());
 
       // update valide avec les assos

@@ -114,10 +114,13 @@ public final class ObjectTypesFormatters
     */
    public static String getLabel(final String key, final String[] parameters){
       String label = org.zkoss.util.resource.Labels.getLabel(key);
-      for(int i = 0; i < parameters.length; i++){
-         final String parameter = parameters[i];
-         label = label.replaceAll("\\{" + (i + 1) + "\\}", parameter);
+      if(parameters != null) {
+         for(int i = 0; i < parameters.length; i++){
+            final String parameter = parameters[i];
+            label = label.replaceAll("\\{" + (i + 1) + "\\}", parameter);
+         }
       }
+      
       return label;
    }
 

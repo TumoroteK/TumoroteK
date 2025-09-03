@@ -47,24 +47,27 @@ import org.apache.poi.ss.usermodel.Row;
 public class ImportError
 {
 
-   private RuntimeException exception;
+   private Exception exception;
 
+   //ligne de l'erreur :
    private Row row;
 
+   //CHT : porte mal son nom : correspond au numéro de la ligne => devrait s'appeler rowNum
+   //mais dans l'absolu cet attribut est inutile car l'info est directement récupérable de l'attribut row
    private Integer nbRow;
 
    public ImportError(){
 
    }
 
-   public RuntimeException getException(){
+   public Exception getException(){
       return exception;
    }
 
-   public void setException(final RuntimeException e){
+   public void setException(final Exception e){
       this.exception = e;
    }
-
+   
    public Row getRow(){
       return row;
    }

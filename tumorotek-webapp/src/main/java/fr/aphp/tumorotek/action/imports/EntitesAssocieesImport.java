@@ -40,33 +40,35 @@ import java.util.List;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.ForwardEvent;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 
-import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
+import fr.aphp.tumorotek.action.imports.strategy.ImportTemplateStrategy;
 import fr.aphp.tumorotek.component.OneToManyComponent;
 import fr.aphp.tumorotek.decorator.EntiteDecorator;
+import fr.aphp.tumorotek.decorator.EntiteDecoratorForOneToManyComponent;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 
 /**
  * @version 2.0.13.2
  * @author Mathieu BARTHELEMY
  */
-public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
+public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecoratorForOneToManyComponent>
 {
 
    private static final long serialVersionUID = -8965931524670323917L;
 
-   private List<EntiteDecorator> objects = new ArrayList<>();
+   private List<EntiteDecoratorForOneToManyComponent> objects = new ArrayList<>();
 
    private String pathToRespond;
    
    private boolean gatsbi = false;
+
+   //TK-538 : permet de gérer les particularités liées au modèle d'import associé à ce composant
+   private ImportTemplateStrategy importTemplateStrategy;
 
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
@@ -75,12 +77,12 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    }
 
    @Override
-   public List<EntiteDecorator> getObjects(){
+   public List<EntiteDecoratorForOneToManyComponent> getObjects(){
       return this.objects;
    }
 
    @Override
-   public void setObjects(final List<EntiteDecorator> objs){
+   public void setObjects(final List<EntiteDecoratorForOneToManyComponent> objs){
       this.objects = objs;
       updateComponent();
    }
@@ -98,20 +100,20 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    }
 
    @Override
-   public void addToListObjects(final EntiteDecorator obj){
-      getObjects().add(obj);
-
-      if(Path.getComponent(pathToRespond) != null){
-         Events.postEvent(new Event("onGetAddedObject", Path.getComponent(pathToRespond), obj));
-      }
+   public void addToListObjects(final EntiteDecoratorForOneToManyComponent obj){
+      ImportUtils.addEntiteDecoratorToEntitesAssociees(obj,getObjects(), pathToRespond);
    }
 
    @Override
+   public void deleteObj(final Object obj){
+      //hack pour gérer la maladie avec le prélèvement
+      MaladieSpecificiteForEntitesAssocieesImport.manageDeleting((EntiteDecoratorForOneToManyComponent)obj, getObjects(), pathToRespond);
+      super.deleteObj(obj);
+   }
+   
+   @Override
    public void removeFromListObjects(final Object obj){
-      getObjects().remove(obj);
-      if(Path.getComponent(pathToRespond) != null){
-         Events.postEvent(new Event("onGetRemovedObject", Path.getComponent(pathToRespond), obj));
-      }
+      ImportUtils.removeEntiteDecoratorFromEntitesAssociees((EntiteDecoratorForOneToManyComponent)obj, getObjects(), pathToRespond);
    }
 
    @Override
@@ -128,12 +130,9 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    public List<? extends Object> findObjectsAddable(){
       // Enités ajoutables
       final List<EntiteDecorator> entites = new ArrayList<>();
-      entites.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0)));
-      // entites.add(ManagerLocator.getEntiteManager()
-      //		.findByNomManager("Maladie").get(0));
-      entites.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0)));
-      entites.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Echantillon").get(0)));
-      entites.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("ProdDerive").get(0)));
+      if(importTemplateStrategy != null) {
+         entites.addAll(importTemplateStrategy.defineAddableEntites());
+      }
 
       // retire les Entités deja assignés
       for(int i = 0; i < getObjects().size(); i++){
@@ -150,7 +149,7 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    public void onClick$objLinkLabel(final Event event){}
 
    /**
-    * Ajout warning.
+    * Ajout warning 
     */
    @Override
    public void onClick$deleteImage(final Event event){
@@ -165,6 +164,11 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
       if(Messagebox.show(phrase, Labels.getLabel("general.warning"), Messagebox.YES | Messagebox.NO,
          Messagebox.QUESTION) == Messagebox.YES){
          super.onClick$deleteImage(event);
+         //TK-538 :
+         if(importTemplateStrategy != null) {
+            Integer nbMaxEntiteSelectionnable = importTemplateStrategy.defineNbMaxEntiteSelectionnable();
+            addObj.setVisible(nbMaxEntiteSelectionnable == null || getObjects().size() < nbMaxEntiteSelectionnable);
+         }
          return;
       }
 
@@ -181,15 +185,19 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    }
 
    /**
-    * Surcharge pour imposer que la dernière banque ne puisse jamais
-    * être éffacée laissant une table orpheline.
+    * Surcharge pour :
+    *  - imposer que la dernière entité ne puisse jamais
+    * être effacée car au moins une entité est considérée comme obligatoire 
+    * dans l'objet lié.
+    *  - et bloquer l'ajout d'un entite si il y a une limite 
     */
    @Override
-   public void switchToEditMode(final boolean b){
-      super.switchToEditMode(b);
+   public void switchToEditMode(final boolean avecAccesAuxBoutonsAddEtDelete){
+      super.switchToEditMode(avecAccesAuxBoutonsAddEtDelete);
       deleteHeader.setVisible(getObjects().size() > 1);
+      manageVisbilityForAddObj();
    }
-
+   
    public String getPathToRespond(){
       return pathToRespond;
    }
@@ -202,24 +210,23 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    public void onClick$addSelObj(){
       getFicheImportTemplate().showCopyFieldsButton();
       if(objectsBox.getSelectedIndex() > -1){
-         addToListObjects((EntiteDecorator) objectsBox.getModel().getElementAt(objectsBox.getSelectedIndex()));
+         addToListObjects((EntiteDecoratorForOneToManyComponent) objectsBox.getModel().getElementAt(objectsBox.getSelectedIndex()));
       }else{ // selectionne le premier de la liste
          if(objectsBox.getItemCount() > 0){
-            addToListObjects((EntiteDecorator) objectsBox.getModel().getElementAt(0));
+            addToListObjects((EntiteDecoratorForOneToManyComponent) objectsBox.getModel().getElementAt(0));
          }
       }
 
-      // Patient-Maladie-Prelevement Hack pour import
-      if(getObjects().contains(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0)))
-         && getObjects().contains(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0)))
-         && !getObjects().contains(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Maladie").get(0)))){
-         addToListObjects(new EntiteDecorator(ManagerLocator.getEntiteManager().findByNomManager("Maladie").get(0), gatsbi));
-      }
-
+      // Patient-Maladie-Prelevement Hack pour import : ajout de la maladie si non présent et Patient et Prélèvement ajoutés en bloquant la suppression 
+      MaladieSpecificiteForEntitesAssocieesImport.manageAdding(getObjects(), gatsbi, pathToRespond);
       updateComponent();
 
       // affiche les composants
       onClick$cancelSelObj();
+      //TK-538 : modification des annotations d'un objet :
+      //surcharge de la visibilité du bouton "ajouter" faite dans onClick$cancelSelObj(), dans le cas où le nombre max
+      //d'entités ajoutables est atteint, il ne doit plus être visible
+      manageVisbilityForAddObj();
    }
 
    public FicheImportTemplate getFicheImportTemplate(){
@@ -232,4 +239,20 @@ public class EntitesAssocieesImport extends OneToManyComponent<EntiteDecorator>
    public void setGatsbi(boolean gatsbi){
       this.gatsbi = gatsbi;
    }
+   
+   public ImportTemplateStrategy getImportTemplateStrategy(){
+      return importTemplateStrategy;
+   }
+
+   public void setImportTemplateStrategy(ImportTemplateStrategy importTemplateStrategy){
+      this.importTemplateStrategy = importTemplateStrategy;
+   }
+
+   private void manageVisbilityForAddObj() {
+      if(importTemplateStrategy != null) {
+         Integer nbMaxEntiteSelectionnable = importTemplateStrategy.defineNbMaxEntiteSelectionnable();
+         addObj.setVisible(nbMaxEntiteSelectionnable == null || getObjects().size() < nbMaxEntiteSelectionnable);
+      }
+   }
+   
 }
