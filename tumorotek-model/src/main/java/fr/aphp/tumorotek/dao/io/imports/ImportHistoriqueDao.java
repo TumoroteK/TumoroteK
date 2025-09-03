@@ -74,10 +74,10 @@ public interface ImportHistoriqueDao extends GenericDaoJpa<ImportHistorique, Int
    /**
     * Recherche les prélevements importés pour une opération d'import dont
     * l'historique est passé en paramètre.
-    * @param hist ImportHistorique
+    * @param importHistoriqueId, id de l'importHistorique à prendre en compte
     * @return liste de Prelevement
     * @since 2.0.10.3
     */
-   List<Prelevement> findPrelevementByImportHistorique(ImportHistorique hist);
+   List<Prelevement> findPrelevementByImportHistoriqueId(Integer importHistoriqueId);
 
 }

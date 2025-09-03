@@ -74,9 +74,9 @@ import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
       query = "SELECT i FROM ImportHistorique i " + "WHERE i.importTemplateId = ?1 and i.importBanqueId = ?2 ORDER BY i.date desc"),
    @NamedQuery(name = "ImportHistorique.findByExcludedId",
       query = "SELECT i FROM ImportHistorique i " + "WHERE i.importHistoriqueId != ?1"),
-   @NamedQuery(name = "ImportHistorique.findPrelevementByImportHistorique",
-      query = "SELECT p FROM Prelevement p, Importation i " + " WHERE i.objetId = p.prelevementId" + " AND i.entite.entiteId = 2"
-         + " AND i.importHistorique = ?1" + " ORDER BY p.prelevementId"),})
+   @NamedQuery(name = "ImportHistorique.findPrelevementByImportHistoriqueId",
+      query = "SELECT p FROM Prelevement p, Importation i " + " WHERE i.objetId = p.prelevementId" 
+         + " AND i.entiteId = 2" + " AND i.importHistoriqueId = ?1" + " ORDER BY p.prelevementId"),})
 public class ImportHistorique implements java.io.Serializable, TKdataObject
 {
 
@@ -91,8 +91,6 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
    private Utilisateur utilisateur;
 
    private Calendar date;
-
-   private Set<Importation> importations = new HashSet<>();
    
    //TK-537 : l'objet Banque n'est pas utile dans cet objet. Mais ce champ sera utilisé pour des requêtes
    private Integer importBanqueId;
@@ -154,15 +152,6 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
       }
    }
 
-   @OneToMany(mappedBy = "importHistorique", cascade = {CascadeType.ALL})
-   public Set<Importation> getImportations(){
-      return importations;
-   }
-
-   public void setImportations(final Set<Importation> i){
-      this.importations = i;
-   }
-
    @Column(name = "IMPORT_BANQUE_ID", nullable = false)
    public Integer getImportBanqueId(){
       return importBanqueId;
@@ -217,7 +206,6 @@ public class ImportHistorique implements java.io.Serializable, TKdataObject
       clone.setImportTemplateId(importTemplateId);
       clone.setUtilisateur(this.utilisateur);
       clone.setDate(this.date);
-      clone.setImportations(this.importations);
       clone.setImportBanqueId(importBanqueId);
 
       return clone;

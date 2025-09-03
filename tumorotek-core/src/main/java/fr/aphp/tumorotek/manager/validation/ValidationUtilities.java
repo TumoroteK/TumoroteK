@@ -62,6 +62,8 @@ public final class ValidationUtilities
    //le dernier + veut dire qu'il faut au moins un de ces caractères
    // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String CODEREGEXP = "[a-zA-Z0-9_\\s\\.\\-\\+\\/]+";
+   
+   public static final String NOMBREREGEX = "-?[0-9]+(\\.|,)?[0-9]*E?[0-9]*";
 
    // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
    public static final String ONLYSPACESREGEXP = "\\s*";

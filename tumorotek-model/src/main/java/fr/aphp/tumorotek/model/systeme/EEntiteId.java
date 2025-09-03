@@ -115,4 +115,12 @@ public enum EEntiteId
       return id;
    }
 
+   public static EEntiteId findById(Integer id) {
+      for (EEntiteId entiteId : values()) {
+         if (entiteId.getId().equals(id)) {
+            return entiteId;
+         }
+      }
+      return null;
+   }
 }

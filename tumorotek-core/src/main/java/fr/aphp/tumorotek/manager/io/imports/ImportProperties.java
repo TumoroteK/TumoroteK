@@ -53,6 +53,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public class ImportProperties
 {
 
+   //ce champ ne semble pas utilisé. A supprimer ??!
    /**
     * Template de l'import.
     */
@@ -85,6 +86,8 @@ public class ImportProperties
     * Hashtable contenant les AnnotationsValeurs à enregistrer en fct
     * de l'entité.
     */
+   // /!\ contrairement aux autres attributs de la classe, celui-ci correspond à une ligne du fichier :-(
+   // Le champ est en effet réinitialisé à chaque ligne - cf appel dans ImportManagerImpl.importFileManager() : properties.setAnnotationsEntite(new Hashtable<Entite, List<AnnotationValeur>>());
    private Hashtable<Entite, List<AnnotationValeur>> annotationsEntite = new Hashtable<>();
 
    private Banque banque;

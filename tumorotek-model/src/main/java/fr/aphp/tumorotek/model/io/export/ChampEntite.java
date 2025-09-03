@@ -83,7 +83,10 @@ import fr.aphp.tumorotek.model.systeme.Entite;
       query = "SELECT c.champEntite FROM ImportColonne i " + "JOIN i.champ c WHERE i.importTemplate = ?1 "
          + "AND c.champEntite.entite = ?2"),
    @NamedQuery(name = "ChampEntite.findByEntiteAndImportAndDataType",
-      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.dataType in ?3")})
+      query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.canImport = ?2 " + "AND c.dataType in ?3"),
+   @NamedQuery(name = "ChampEntite.findByEntiteAndObligatoireGatsbi",
+   query = "SELECT c FROM ChampEntite c " + "WHERE c.entite = ?1 " + "AND c.obligatoireGatsbi = ?2 "),   
+})
 
 public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEntite>
 {
@@ -107,6 +110,9 @@ public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEnti
    private Set<ChampEntiteBloc> champEntiteBlocs = new HashSet<>();
 
    private Set<Champ> champs = new HashSet<>();
+   
+   //utile pour les imports car permet de retrouver le code fonctionnel
+   private Boolean obligatoireGatsbi;
 
    public ChampEntite(){
       super();
@@ -241,6 +247,15 @@ public class ChampEntite extends AbstractTKChamp implements Comparable<ChampEnti
       this.champs = cs;
    }
 
+   @Column(name = "OBLIGATOIRE_GATSBI", nullable = false)
+   public Boolean getObligatoireGatsbi(){
+      return obligatoireGatsbi;
+   }
+
+   public void setObligatoireGatsbi(Boolean obligatoireGatsbi){
+      this.obligatoireGatsbi = obligatoireGatsbi;
+   }
+   
    /**
     * 2 champEntites sont considérées comme égaux s'ils ont la même entité
     * et le même nom.

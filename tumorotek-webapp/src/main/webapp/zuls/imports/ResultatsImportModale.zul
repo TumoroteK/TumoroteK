@@ -40,12 +40,13 @@
 	<window id="fwinResultatsImportModale" border="none" apply="fr.aphp.tumorotek.action.imports.ResultatsImportModale">
 		<vlayout height="100%" width="100%">
 			<hlayout valign="middle">
+				<!-- flèche affichée quand plusieurs onglets d'un fichier ont été importés : elle permet de naviguer dans la synthèse d'import liée à chaque onglet -->
 				<image id="leftArrow" src="/images/1leftarrow.png" visible="false" 
 					style="cursor: pointer"/>
 				<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvt"
 					hflex="1">
 					<columns>
-						<column  width="40px"/>
+						<column  width="45px"/>
 						<column  />
 					</columns>
 					<rows>
@@ -61,16 +62,23 @@
 						</row>
 						
 						<row><separator/></row>
+						<!-- titre du paragraphe "Données disponibles sur cet import" ou "Détails" en cas d'erreur: -->
 						<row spans="2">
 							<vbox width="100%">
 								<label id="detailsLabel" value="${c:l('importTemplate.statistiques')}" sclass="formSubTitle"/>
 								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</vbox>
 						</row>
+						<!-- fin titre -->
+					<!-- ||   DETAIL DU RESULTAT DE L'IMPORT - DEBUT     ||  -->	
+					<!-- |||| PARTIE AFFICHEE EN CAS DE SUCCES - DEBUT ||||  -->
+						<!-- message introduisant le détail du tableau des objets TK importés -->
 						<row spans="2" id="okStatsPresentationRow">
 							<html id="okStatsLabel" sclass="formValue"/>
 						</row>
-						<row spans="2" id="okStatsRow" align="center">
+						
+						<!-- tableau listant les types d'objet pouvant être importés avec le nombre d'imports réalisés -->
+						<row spans="2" id="okStatsRow" align="center" >
 							<grid id="historiquesGrid"
 								fixedLayout="true" 
 								height="100%"
@@ -107,21 +115,47 @@
 								</rows>
 							</grid>
 						</row>
+						<!-- fin du tableau -->
+					<!-- |||| PARTIE AFFICHEE EN CAS DE SUCCES - FIN ||||  -->
+					
+					<!-- |||| PARTIE AFFICHEE EN CAS D'ERREUR - DEBUT ||||  -->	
+						<!-- message indiquant que des erreurs ont été détectées et qu'il faut les corriger-->
 						<row spans="2" id="warnStatsRow">
 							<label id="warnStatsLabel" 
 								sclass="formValue"/>
 						</row>
+						
+						<!-- affichage de boutons dans le cas d'avertissement sur l''écrasement de données pour continuer ou non-->
+						<row id="confirmationRow">
+							<separator/>
+							<hlayout width="100%" height="24px" spacing="25px" style="text-align:center">
+								<button id="continuer" 
+									height="24px"
+									image="/images/icones/export.png" sclass="buttonv2" />
+								<button id="close" 
+									height="24px"
+									image="/images/icones/export.png" sclass="buttonv2" />
+							</hlayout>
+						</row>
+						
+						
+						<!-- message indiquant que le fichier de détail des erreurs peut être téléchargé. Visible ou non selon le type d'erreur -->
 						<row spans="2" id="warnHelpRow">
 							<label value="${c:l('importTemplate.dl.correctif')}" 
 								sclass="formErrorValue" id="warnHelpLabel"/>
 						</row>
+						<!-- affichage du bouton pour télécharger le fichier des erreurs. Visible ou non selon le type d'erreur -->
+						 <!-- label du bouton dynamique -->
 						<row spans="2" id="warnDlRow" align="center">
-							<button id="dlFile" label="${c:l('importTemplate.dl.correctif.button')}" 
+							<button id="dlFile" 
 								height="24px"
 								image="/images/icones/export.png" sclass="buttonv2" />
 						</row>
 					</rows>
+					<!-- |||| PARTIE AFFICHEE EN CAS D'ERREUR - FIN ||||  -->
+					<!-- ||   DETAIL DU RESULTAT DE L'IMPORT - FIN    ||  -->	
 				</grid>
+				<!-- flèche affichée quand plusieurs onglets d'un fichier ont été importés : elle permet de naviguer dans la synthèse d'import liée à chaque onglet -->
 				<image id="rightArrow" src="/images/1rightarrow.png" visible="false" 
 					style="cursor: pointer"/>
 			</hlayout>

@@ -177,6 +177,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		this.binder = b;
 	}
 
+	//utilisé pour indiquer que la modale est déjà ouverte (et qu'il ne faut pas la rouvrir car ZK génèrerait une erreur sur un doublon d'id lié au composant)
 	public boolean isBlockModal(){
 		return blockModal;
 	}

@@ -36,6 +36,11 @@
  **/
 package fr.aphp.tumorotek.model.io.imports;
 
+/**
+ * @since 2.3.1.0 (TK-538)
+ * @author chuet
+ *
+ */
 public enum EImportTemplateStatutPartage
 {
    JAMAIS_PARTAGE(1, "JAMAIS_PARTAGE"),

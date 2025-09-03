@@ -151,8 +151,8 @@ public class BanquesAssocieesContrats extends OneToManyComponent<Banque>
     * être éffacée laissant une table orpheline.
     */
    @Override
-   public void switchToEditMode(final boolean b){
-      super.switchToEditMode(b);
+   public void switchToEditMode(final boolean avecAccesAuxBoutonsAddEtDelete){
+      super.switchToEditMode(avecAccesAuxBoutonsAddEtDelete);
       deleteHeader.setVisible(getObjects().size() > 1);
    }
 }

@@ -353,8 +353,9 @@ public interface PrelevementDao extends GenericDaoJpa<Prelevement, Integer>
    /**
     * Recherche les prélèvements dont le code et la banque sont présents
     * dans les listes passées en paramètres.
+    * attention, le code passé en paramètre est pris en tant que code ou numéro de labo
     * @param banques Banques des prlvts.
-    * @param codes Codes des prlvts.
+    * @param codes Codes ou numéro de labo des prlvts.
     * @return Liste de prélèvements.
     */
    List<Prelevement> findByCodesAndBanquesInList(List<String> codes, List<Banque> banques);

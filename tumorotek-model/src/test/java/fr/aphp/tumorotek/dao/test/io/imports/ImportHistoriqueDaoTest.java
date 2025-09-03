@@ -46,15 +46,14 @@ import org.springframework.test.annotation.Rollback;
 import fr.aphp.tumorotek.dao.io.imports.ImportHistoriqueDao;
 import fr.aphp.tumorotek.dao.io.imports.ImportTemplateDao;
 import fr.aphp.tumorotek.dao.io.imports.ImportationDao;
-import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.test.AbstractDaoTest;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Categorie;
+import fr.aphp.tumorotek.model.io.imports.EImportationType;
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
-import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
 /**
@@ -73,7 +72,6 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
    private ImportHistoriqueDao importHistoriqueDao;
    private ImportTemplateDao importTemplateDao;
    private ImportationDao importationDao;
-   private EntiteDao entiteDao;
    private UtilisateurDao utilisateurDao;
 
    public ImportHistoriqueDaoTest(){
@@ -90,10 +88,6 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
 
    public void setImportationDao(final ImportationDao iDao){
       this.importationDao = iDao;
-   }
-
-   public void setEntiteDao(final EntiteDao eDao){
-      this.entiteDao = eDao;
    }
 
    public void setUtilisateurDao(final UtilisateurDao uDao){
@@ -127,28 +121,26 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
    @Rollback(false)
    public void testCrud() throws Exception{
 
-      final Entite e3 = entiteDao.findById(3);
-      final ImportTemplate it = importTemplateDao.findById(1);
+      final Integer entiteId3 = 3;
+      final Integer importTemplate1 = 1;
       final Utilisateur u = utilisateurDao.findById(1);
       final Calendar cal = Calendar.getInstance();
 
       final ImportHistorique ih1 = new ImportHistorique();
-      ih1.setImportTemplateId(it.getImportTemplateId());
+      ih1.setImportTemplateId(importTemplate1);
       ih1.setUtilisateur(u);
       ih1.setDate(cal);
 
       final Importation i1 = new Importation();
       i1.setObjetId(1);
-      i1.setEntite(e3);
-      i1.setImportHistorique(ih1);
+      i1.setEntiteId(entiteId3);
+      i1.setImportHistoriqueId(ih1.getImportHistoriqueId());
+      i1.setTypeCode(EImportationType.CREATION.getCode());
       final Importation i2 = new Importation();
       i2.setObjetId(2);
-      i2.setEntite(e3);
-      i2.setImportHistorique(ih1);
-      final Set<Importation> imports = new HashSet<>();
-      imports.add(i1);
-      imports.add(i2);
-      ih1.setImportations(imports);
+      i2.setEntiteId(entiteId3);
+      i2.setImportHistoriqueId(ih1.getImportHistoriqueId());
+      i2.setTypeCode(EImportationType.CREATION.getCode());
 
       // Test de l'insertion
       importHistoriqueDao.createObject(ih1);
@@ -161,13 +153,11 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
       assertNotNull(ih2.getImportTemplateId());
       assertNotNull(ih2.getUtilisateur());
       assertTrue(ih2.getDate().equals(cal));
-      assertTrue(ih2.getImportations().size() == 2);
 
       final Calendar cal2 = Calendar.getInstance();
       ih2.setDate(cal2);
       importHistoriqueDao.updateObject(ih2);
       assertTrue(importHistoriqueDao.findById(new Integer(4)).getDate().equals(cal2));
-      assertTrue(importHistoriqueDao.findById(new Integer(4)).getImportations().size() == 2);
 
       // Test de la délétion
       importHistoriqueDao.removeObject(new Integer(4));
@@ -306,26 +296,22 @@ public class ImportHistoriqueDaoTest extends AbstractDaoTest
          assertNull(ih2.getDate());
       }
 
-      if(ih1.getImportations() != null){
-         assertTrue(ih1.getImportations().equals(ih2.getImportations()));
-      }else{
-         assertNull(ih2.getImportations());
-      }
    }
 
    public void testFindPrelevementByImportHistorique(){
-      final ImportHistorique ih1 = importHistoriqueDao.findById(1);
+      final Integer importHistoriqueId1 = 1;
+      final Integer importHistoriqueId2 = 2;
       final List<Prelevement> prels = new ArrayList<>();
-      prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(ih1));
+      prels.addAll(importHistoriqueDao.findPrelevementByImportHistoriqueId(importHistoriqueId1));
       assertTrue(prels.size() == 1);
       assertTrue(prels.get(0).getPrelevementId() == 4);
 
       prels.clear();
 
-      prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(importHistoriqueDao.findById(2)));
+      prels.addAll(importHistoriqueDao.findPrelevementByImportHistoriqueId(importHistoriqueId2));
       assertTrue(prels.isEmpty());
 
-      prels.addAll(importHistoriqueDao.findPrelevementByImportHistorique(null));
+      prels.addAll(importHistoriqueDao.findPrelevementByImportHistoriqueId(null));
       assertTrue(prels.isEmpty());
 
    }

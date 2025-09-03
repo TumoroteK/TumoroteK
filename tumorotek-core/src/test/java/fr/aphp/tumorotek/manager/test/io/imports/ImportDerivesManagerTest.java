@@ -181,8 +181,6 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
 
       final File file = new File("src/test/java/fr/aphp/tumorotek/manager/test/io/imports/importDerivesBatches.xls");
 
-      template.setIsUpdate(false);
-
       List<ImportError> errors = new ArrayList<>();
       try( FileInputStream fis = new FileInputStream(file)){
          ih = importManager.importFileManager(template, u, null, fis);
@@ -223,7 +221,6 @@ public class ImportDerivesManagerTest extends AbstractManagerTest4
       assertTrue(importHistoriqueManager.findImportationsByHistoriqueManager(ih).size() == 12);
 
       // restaure le statut du template
-      template.setIsUpdate(true);
       importTemplateManager.updateObjectManager(template, template.getBanque(), null, null, null, u);
 
       // Removes

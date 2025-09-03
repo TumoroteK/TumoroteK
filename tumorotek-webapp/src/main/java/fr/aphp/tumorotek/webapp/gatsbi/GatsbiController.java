@@ -51,10 +51,10 @@ import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.ResourceAccessException;
@@ -63,7 +63,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.Sessions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
@@ -92,7 +91,6 @@ import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantite;
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantiteInit;
-import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.manager.exception.TKException;
@@ -117,7 +115,6 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.ThesaurusValue;
 import fr.aphp.tumorotek.model.interfacage.BlocExterne;
 import fr.aphp.tumorotek.model.interfacage.ValeurExterne;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
-import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.param.TkParam;
@@ -564,7 +561,7 @@ public class GatsbiController
       Contexte gatsbiContexte = null;
       
       if(banqueAPrendreEnCompte == null) {
-         //on laisse EContexte à null on ne s'intéresse qu'à la partie Gatsbi en prenant la banque ne session, comme c'était fait avant la TK-587
+         //on laisse EContexte à null on ne s'intéresse qu'à la partie Gatsbi en prenant la banque en session, comme c'était fait avant la TK-587
          gatsbiContexte = SessionUtils.getCurrentGatsbiContexteForEntiteId(entite.getEntiteId());
       }
       //sinon on s'appuie sur la banque transmise pour récupérer le contexte de la collection et l'éventuelle contexte Gatsbi :
@@ -579,35 +576,6 @@ public class GatsbiController
       return ManagerLocator.getChampEntiteManager().findByEntiteImportAndIsNullableManager(entite, canImport, isNullable, banqueContexte, gatsbiContexte);
    }
    
-
-   public static List<ImportColonneDecorator> decorateImportColonnes(final List<ImportColonne> cols, EContexte templateContexte, final boolean isSubderive){
-
-      List<ImportColonneDecorator> decos = ImportColonneDecorator.decorateListe(cols, templateContexte, isSubderive);
-
-      //Bug TG-168 : actuellement, l'entité produit dérivé n'est pas gérée dans Gatsbi => on ne peut jamais passer 
-      //dans ce bloc spécifique à Gatsbi => test pour corriger "facilement" le bug
-      //Quand les produits dérivés seront gérés dans Gatsbi, il faudra traiter le NullPointerException généré par deco.getColonne() dans le bloc ci-dessous.
-      //Cela est dû au fait que ImportColonneDecorator.decorateListe() instancie des ImportColonneDecorator incomplets pour les colonnes d'entête des produits dérivés liées aux transformations qui les a générés.
-      if(!isSubderive) {
-         // surcharge la propriété deletable suivant le contexte gastbi
-         Contexte c;
-         for(ImportColonneDecorator deco : decos){
-            //TG-197 : dans le cas d'une annotation : deco.getColonne().getChamp().getChampEntite() est null 
-            // mais le champ n'est pas concerné par le contexte Gatsbi donc les valeurs par défaut de ImportColonneDecorator ne sont pas à surcharger
-            //=> test ci-dessous
-            if (deco.getColonne().getChamp() != null && deco.getColonne().getChamp().getChampEntite() != null) {
-               c = SessionUtils
-                  .getCurrentGatsbiContexteForEntiteId(deco.getColonne().getChamp().getChampEntite().getEntite().getEntiteId());
-               if(c != null){
-                  deco.setCanDelete(
-                     !ManagerLocator.getChampEntiteManager().retrieveRequiredChampEntiteIdsForGatsbiContexte(c).contains(deco.getColonne().getChamp().getChampEntite().getId()));
-               }
-            }
-         }
-      }
-      return decos;
-   }
-
    /**
     * Vérifie la visibilité d'un champ entité en - retrouvant le contexte - puis la
     * visibilité du champ
@@ -719,7 +687,7 @@ public class GatsbiController
     * @param sessionScp
     * @return banque enrichie des contextes GATSBI
     */
-   //CHT : c'est surprenant de renvoie un objet passé en paramètre. Puisque l'objet passé en paramètre est modifié
+   //CHT : c'est surprenant de renvoyer un objet passé en paramètre. Puisque l'objet passé en paramètre est modifié
    //dans l'absolu ce n'est pas nécessaire de le renvoyé : l'appel de la méthode le modifie automatique
    //ceci est sans doute fait pour "simplifier" les appels de cette méthode notamment lorsque la banque doit être enrichie
    //avant d'être passée en paramètre d'une méthode...

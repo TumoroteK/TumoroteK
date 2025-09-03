@@ -35,7 +35,10 @@
  **/
 package fr.aphp.tumorotek.manager.test.io.imports;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -73,6 +76,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.model.io.imports.EImportationType;
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
@@ -231,26 +235,26 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
    }
 
    /**
-    * Test la méthode findImportationsByEntiteAndObjectIdManager.
+    * Test la méthode findImportationsForCreationByEntiteIdAndObjectIdManager.
     */
    @Test
-   public void testFindImportationsByEntiteAndObjectIdManager(){
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e3 = entiteDao.findById(3);
+   public void testFindImportationsForCreationByEntiteIdAndObjectIdManager(){
+      final Integer entiteId1 = 1;
+      final Integer entiteId3 = 3;
 
-      List<Importation> list = importHistoriqueManager.findImportationsByEntiteAndObjectIdManager(e1, 1);
+      List<Importation> list = importHistoriqueManager.findImportationsForCreationByEntiteIdAndObjectIdManager(entiteId1, 1);
       assertTrue(list.size() == 1);
 
-      list = importHistoriqueManager.findImportationsByEntiteAndObjectIdManager(e1, 15);
+      list = importHistoriqueManager.findImportationsForCreationByEntiteIdAndObjectIdManager(entiteId1, 15);
       assertTrue(list.size() == 0);
 
-      list = importHistoriqueManager.findImportationsByEntiteAndObjectIdManager(e3, 1);
+      list = importHistoriqueManager.findImportationsForCreationByEntiteIdAndObjectIdManager(entiteId3, 1);
       assertTrue(list.size() == 0);
 
-      list = importHistoriqueManager.findImportationsByEntiteAndObjectIdManager(e1, null);
+      list = importHistoriqueManager.findImportationsForCreationByEntiteIdAndObjectIdManager(entiteId1, null);
       assertTrue(list.size() == 0);
 
-      list = importHistoriqueManager.findImportationsByEntiteAndObjectIdManager(null, 15);
+      list = importHistoriqueManager.findImportationsForCreationByEntiteIdAndObjectIdManager(null, 15);
       assertTrue(list.size() == 0);
    }
 
@@ -264,7 +268,7 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       final ImportTemplate it1 = importTemplateDao.findById(1);
       final Utilisateur u = utilisateurDao.findById(1);
       final Calendar cal = Calendar.getInstance();
-      final Entite e3 = entiteDao.findById(3);
+      final Integer entiteId3 = 3;
 
       final ImportHistorique ih1 = new ImportHistorique();
       ih1.setImportTemplateId(it1.getImportTemplateId());
@@ -310,51 +314,6 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       assertNotNull(ihTest.getUtilisateur());
       assertTrue(importHistoriqueManager.findImportationsByHistoriqueManager(ihTest).size() == 0);
 
-      // insertion valide avec les assos
-      final ImportHistorique ih2 = new ImportHistorique();
-      ih2.setImportTemplateId(it1.getImportTemplateId());
-      ih2.setUtilisateur(u);
-      final Calendar cal2 = Calendar.getInstance();
-      cal2.add(Calendar.MONTH, 2);
-      ih2.setDate(cal2);
-
-      final Importation i1 = new Importation();
-      i1.setObjetId(1);
-      i1.setEntite(e3);
-      i1.setImportHistorique(ih2);
-      final Importation i2 = new Importation();
-      i2.setObjetId(2);
-      i2.setEntite(e3);
-      i2.setImportHistorique(ih2);
-      final List<Importation> importations = new ArrayList<>();
-      importations.add(i1);
-      importations.add(i2);
-
-      importHistoriqueManager.createObjectManager(ih2, u, importations);
-      assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 5);
-      assertTrue(importationDao.findAll().size() == 4);
-      final Integer idH2 = ih2.getImportHistoriqueId();
-
-      // Vérification
-      final ImportHistorique ihTest2 = importHistoriqueManager.findByIdManager(idH2);
-      assertNotNull(ihTest2);
-      assertNotNull(ihTest2.getDate());
-      assertNotNull(ihTest2.getImportTemplateId());
-      assertNotNull(ihTest2.getUtilisateur());
-      assertTrue(importHistoriqueManager.findImportationsByHistoriqueManager(ihTest2).size() == 2);
-
-      importHistoriqueManager
-         .removeImportationManager(importHistoriqueManager.findImportationsByHistoriqueManager(ihTest2).get(0));
-      assertTrue(importationDao.findAll().size() == 3);
-      importHistoriqueManager.removeObjectManager(ihTest);
-      importHistoriqueManager.removeObjectManager(ihTest2);
-      assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
-      assertTrue(importationDao.findAll().size() == 2);
-
-      importHistoriqueManager.removeImportationManager(null);
-      importHistoriqueManager.removeObjectManager(null);
-      assertTrue(importHistoriqueManager.findAllObjectsManager().size() == 3);
-      assertTrue(importationDao.findAll().size() == 2);
    }
 
    /**
@@ -367,10 +326,10 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       final ImportTemplate it1 = importTemplateDao.findById(1);
       final Utilisateur u = utilisateurDao.findById(1);
       final Calendar cal = Calendar.getInstance();
-      final Entite e1 = entiteDao.findById(1);
-      final Entite e2 = entiteDao.findById(2);
-      final Entite e3 = entiteDao.findById(3);
-      final Entite e8 = entiteDao.findById(8);
+      final Integer entiteId1 = 1;
+      final Integer entiteId2 = 2;
+      final Integer entiteId3 = 3;
+      final Integer entiteId8 = 8;
       final List<Importation> importations = new ArrayList<>();
 
       final Banque banque = banqueDao.findById(1);
@@ -396,9 +355,11 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
       patientManager.createOrUpdateObjectManager(pat, null, null, null, null, null, null, null, u, "creation", null, false);
       assertEquals(6, patientManager.findAllObjectsManager().size());
       final Importation i1 = new Importation();
-      i1.setImportHistorique(ih1);
-      i1.setEntite(e1);
+      //le rattachement de l'importation à l'importHistorique est fait dans la méthode importHistoriqueManager.createObjectManager(ih, u, importations);
+      //i1.setImportHistorique(ih1);
+      i1.setEntiteId(entiteId1);
       i1.setObjetId(pat.getPatientId());
+      i1.setTypeCode(EImportationType.CREATION.getCode());
       importations.add(i1);
 
       // Prelevement
@@ -408,9 +369,11 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
          null, null, null, null, u, false, null, false);
       assertEquals(6, prelevementManager.findAllObjectsManager().size());
       final Importation i2 = new Importation();
-      i2.setImportHistorique(ih1);
-      i2.setEntite(e2);
+      //le rattachement de l'importation à l'importHistorique est fait dans la méthode importHistoriqueManager.createObjectManager(ih, u, importations);
+      //i2.setImportHistoriqueId(ih1);
+      i2.setEntiteId(entiteId2);
       i2.setObjetId(prlvt.getPrelevementId());
+      i2.setTypeCode(EImportationType.CREATION.getCode());
       importations.add(i2);
 
       // Echantillon
@@ -420,9 +383,11 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
          null, null, null, u, false, null, false);
       assertEquals(5, echantillonManager.findAllObjectsManager().size());
       final Importation i3 = new Importation();
-      i3.setImportHistorique(ih1);
-      i3.setEntite(e3);
+      //le rattachement de l'importation à l'importHistorique est fait dans la méthode importHistoriqueManager.createObjectManager(ih, u, importations);
+      //i3.setImportHistoriqueId(ih1);
+      i3.setEntiteId(entiteId3);
       i3.setObjetId(echan.getEchantillonId());
+      i3.setTypeCode(EImportationType.CREATION.getCode());
       importations.add(i3);
 
       // ProdDerive
@@ -432,9 +397,11 @@ public class ImportHistoriqueManagerTest extends AbstractManagerTest4
          null, null, null, null, u, false, null, false);
       assertEquals(5, prodDeriveManager.findAllObjectsManager().size());
       final Importation i4 = new Importation();
-      i4.setImportHistorique(ih1);
-      i4.setEntite(e8);
+      //le rattachement de l'importation à l'importHistorique est fait dans la méthode importHistoriqueManager.createObjectManager(ih, u, importations);
+      //i4.setImportHistoriqueId(ih1);
+      i4.setEntiteId(entiteId8);
       i4.setObjetId(derive.getProdDeriveId());
+      i4.setTypeCode(EImportationType.CREATION.getCode());
       importations.add(i4);
 
       // Historique

@@ -107,9 +107,9 @@ public final class CreateOrUpdateUtilities
     */
    public static void removeAssociateImportations(final Object obj, final ImportHistoriqueManager manager){
 
-      final List<Importation> ops = manager.findImportationsByObjectManager(obj);
-      for(int i = 0; i < ops.size(); i++){
-         manager.removeImportationManager(ops.get(i));
+      final List<Importation> importations = manager.findImportationsByObjectManager(obj);
+      for(int i = 0; i < importations.size(); i++){
+         manager.removeImportationManager(importations.get(i));
       }
    }
 

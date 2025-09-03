@@ -129,7 +129,7 @@ public interface ChampEntiteManager
     * une entité pour un contexte de collection et un contexte Gatsbi si collection Gatsbi.
     * @param entite
     * @param canImport
-    * @param isNullable peut être null dans ce champ, ne prend pas en compte ce critère
+    * @param isNullable peut être null dans ce cas, ne prend pas en compte ce critère
     * @param banqueContexte de type EContexte :  le contexte de collection à considérer (celle de l'import)
     * @param gatsbiContexte : dans le cas d'un modèle d'import d'une collection Gatsbi, le contexte Gatsbi à prendre en compte
     * @return Liste de ChampEntites.
@@ -154,4 +154,12 @@ public interface ChampEntiteManager
     * @return Valeur du champ (en String).
     */
    Object getValueForObjectManager(final ChampEntite champ, final Object obj, final boolean prettyFormat);
+   
+   /**
+    * Renvoie le champ correspondant à la clé fonctionnelle de l'entité passée en paramètre. Si l'entité a une clé composée, une IllegalArgumentException est lancée
+    * @param entite.
+      @throws IllegalArgumentException
+    * @return ChampEntite.
+    */
+   ChampEntite findCleFonctionelleForEntite(final Entite entite);
 }

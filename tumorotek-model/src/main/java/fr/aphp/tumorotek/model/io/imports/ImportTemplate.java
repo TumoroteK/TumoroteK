@@ -92,21 +92,20 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject, Compa
 
    private String description;
 
-   private Boolean isEditable;
-
    private Entite deriveParentEntite;
-
-   private Boolean isUpdate = false;
 
    private Set<Entite> entites = new HashSet<>();
 
    //TK-537 : un modèle d'import peut être partagé => l'historique sera lié à la collection d'exécution de l'import
-   //et non à la collection d'origine du modèle => on sort l'historique de l'objet. Il sera récupéré au besoin
+   //et non à la collection d'origine du modèle => on sort l'historique de l'objet. Il sera récupéré au moment du besoin
 //   private Set<ImportHistorique> importHistoriques = new HashSet<>();
    
    private Boolean archive = false;
    
    private Integer statutPartageCode = EImportTemplateStatutPartage.JAMAIS_PARTAGE.getImportTemplateStatutPartageCode();
+   
+   //TK-538 : défini le type du modèle : création, modification d'annotation ...
+   private String typeCode;
 
    public ImportTemplate(){
 
@@ -152,15 +151,6 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject, Compa
       this.description = d;
    }
 
-   @Column(name = "IS_EDITABLE", nullable = true)
-   public Boolean getIsEditable(){
-      return isEditable;
-   }
-
-   public void setIsEditable(final Boolean e){
-      this.isEditable = e;
-   }
-
    @ManyToOne
    @JoinColumn(name = "DERIVE_PARENT_ENTITE_ID", nullable = true)
    public Entite getDeriveParentEntite(){
@@ -178,15 +168,6 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject, Compa
 
    public void setEntites(final Set<Entite> e){
       this.entites = e;
-   }
-
-   @Column(name = "IS_UPDATE", nullable = false)
-   public Boolean getIsUpdate(){
-      return isUpdate;
-   }
-
-   public void setIsUpdate(final Boolean isUpdate){
-      this.isUpdate = isUpdate;
    }
 
    @Column(name = "ARCHIVE", nullable = false)
@@ -207,10 +188,25 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject, Compa
       this.statutPartageCode = statutPartageCode;
    }
    
+   @Column(name = "TYPE_CODE", nullable = false)
+   public String getTypeCode(){
+      return typeCode;
+   }
+
+   public void setTypeCode(String typeCode){
+      this.typeCode = typeCode;
+   }
+   
+   
    @Transient
    public EImportTemplateStatutPartage getStatutPartage() {
       return EImportTemplateStatutPartage.findByCode(statutPartageCode);
    }   
+   
+   @Transient
+   public EImportTemplateType getType() {
+      return EImportTemplateType.findByCode(typeCode);
+   } 
    
    /**
     * 2 templates sont considérées comme égales s'ils ont le même nom
@@ -264,11 +260,10 @@ public class ImportTemplate implements java.io.Serializable, TKdataObject, Compa
       clone.setBanque(this.banque);
       clone.setNom(this.nom);
       clone.setDescription(this.description);
-      clone.setIsEditable(this.isEditable);
       clone.setEntites(this.entites);
       clone.setDeriveParentEntite(this.getDeriveParentEntite());
-      clone.setIsUpdate(getIsUpdate());
       clone.setStatutPartageCode(statutPartageCode);
+      clone.setTypeCode(typeCode);
       clone.setArchive(archive);
 
       return clone;

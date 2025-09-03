@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -48,6 +49,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -60,6 +62,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
@@ -67,8 +70,6 @@ import fr.aphp.tumorotek.utils.NonConformiteUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellType;
@@ -78,6 +79,11 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.hibernate.Session;
+import org.hibernate.StatelessSession;
+import org.hibernate.jdbc.Work;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
 
 import fr.aphp.tumorotek.dao.coeur.echantillon.EchantillonDao;
@@ -100,6 +106,8 @@ import fr.aphp.tumorotek.manager.exception.FormulaException;
 import fr.aphp.tumorotek.manager.exception.HeaderException;
 import fr.aphp.tumorotek.manager.exception.UsedPositionException;
 import fr.aphp.tumorotek.manager.exception.WrongImportValueException;
+import fr.aphp.tumorotek.manager.exception.WrongImportValueForThesaurusException;
+import fr.aphp.tumorotek.manager.exception.WrongImportValueForThesaurusMException;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.EchantillonJdbcSuite;
 import fr.aphp.tumorotek.manager.io.TKAnnotableObjectDuo;
 import fr.aphp.tumorotek.manager.io.imports.ImportColonneManager;
@@ -133,12 +141,14 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
+import fr.aphp.tumorotek.model.io.imports.EImportationType;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
+import fr.aphp.tumorotek.model.systeme.EEntiteId;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 import fr.aphp.tumorotek.utils.Utils;
@@ -206,7 +216,7 @@ public class ImportManagerImpl implements ImportManager
    private Map<TKAnnotableObject, List<NonConformite>> ncfsDeriveTrait = null;
 
    private Map<TKAnnotableObject, List<NonConformite>> ncfsDeriveCess = null;
-
+   
    public void setImportTemplateManager(final ImportTemplateManager iManager){
       this.importTemplateManager = iManager;
    }
@@ -367,12 +377,12 @@ public class ImportManagerImpl implements ImportManager
    public Hashtable<String, Integer> initColumnsHeadersManager(final Row row) throws HeaderException{
       final Hashtable<String, Integer> headers = new Hashtable<>();
 
-      final int nbRow = row.getLastCellNum();
+      final int nbColonnes = row.getLastCellNum();
       int i = 0;
 
       try{
          // pour chaque cellule
-         for(i = 0; i < nbRow; ++i){
+         for(i = 0; i < nbColonnes; ++i){
             // on extrait le nom de la colonne
             final String nomColonne = getCellContent(row.getCell(i), false, null);
             // ajout dans la hashtable
@@ -389,7 +399,7 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public Hashtable<Entite, List<ImportColonne>> initImportColonnesManager(final Hashtable<String, Integer> colonnes,
-      final ImportTemplate importTemplate){
+      final ImportTemplate importTemplate) throws BadFileFormatException {
       final Hashtable<Entite, List<ImportColonne>> entitesColonnes = new Hashtable<>();
 
       if(importTemplate != null && colonnes != null){
@@ -842,7 +852,7 @@ public class ImportManagerImpl implements ImportManager
             }else if(dt.getType().equals("texte")){
                annoValeur.setTexte((String) value);
             }
-         }else{ // Thesaurus Item
+         }else{ // Thesaurus Item : les contrôles ont été faits en amont puisque l'item a été trouvé
             annoValeur.setItem((Item) value);
          }
       }
@@ -850,7 +860,7 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public void setPropertyForImportColonne(final Object obj, final ImportColonne colonne, final Row row,
-      final ImportProperties properties){
+      final ImportProperties properties) throws WrongImportValueForThesaurusException {
       if(obj != null && colonne != null && row != null && properties != null){
          int ind = -1;
          // on récupère l'indice de la colonne dans le fichier
@@ -912,7 +922,7 @@ public class ImportManagerImpl implements ImportManager
                   if(thesValues.containsKey(value)){
                      value = thesValues.get(value);
                   }else{
-                     throw new WrongImportValueException(colonne, e.getNom());
+                     throw new WrongImportValueForThesaurusException(colonne, thesValues.keySet());
                   }
                }else{
                   throw new WrongImportValueException(colonne, e.getNom());
@@ -920,7 +930,7 @@ public class ImportManagerImpl implements ImportManager
             }else if(colonne.getChamp().getChampEntite().getNom().equals("EmplacementId")){
                final Emplacement empl = emplacementManager.findByEmplacementAdrlManager((String) value, properties.getBanque());
                if(empl == null){
-                  throw new WrongImportValueException(colonne, "Emplacement");
+                  throw new WrongImportValueException(colonne, "Emplacement");//CHT Emplacement
                }
                value = empl;
             }
@@ -934,7 +944,7 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public boolean setRisquesForPrelevement(final Prelevement prlvt, final ImportColonne colonne, final Row row,
-      final ImportProperties properties){
+      final ImportProperties properties) throws WrongImportValueForThesaurusException {
       boolean addedRisque = false;
       if(prlvt != null && colonne != null && row != null && properties != null){
          ChampEntite champAImporter = colonne.getChamp().getChampEntite();
@@ -965,16 +975,21 @@ public class ImportManagerImpl implements ImportManager
                // risques peuvent être séparés par des virgules
                final Set<Risque> risques = new HashSet<>();
                if(((String) value).contains(";")){
+                  List<String> listValeurNonAutorisee = new ArrayList<String>();
                   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String[] split = ((String) value).split(";");
                   for(int i = 0; i < split.length; i++){
                      // on récupère l'objet correspondant à la valeur
                      // présente dans le fichier
-                     if(thesValues.containsKey(split[i].trim())){
-                        risques.add((Risque) thesValues.get(split[i].trim()));
+                     String valeurCourante = split[i].trim();
+                     if(thesValues.containsKey(valeurCourante)){
+                        risques.add((Risque) thesValues.get(valeurCourante));
                      }else{
-                        throw new WrongImportValueException(colonne, champAImporter.getQueryChamp().getEntite().getNom());
+                        listValeurNonAutorisee.add(valeurCourante);
                      }
+                  }
+                  if(!listValeurNonAutorisee.isEmpty()) {
+                     throw new WrongImportValueForThesaurusMException(colonne, listValeurNonAutorisee, thesValues.keySet());
                   }
                }else{
                   // on récupère l'objet correspondant à la valeur
@@ -982,7 +997,7 @@ public class ImportManagerImpl implements ImportManager
                   if(thesValues.containsKey((value))){
                      risques.add((Risque) thesValues.get(((String) value).trim()));
                   }else{
-                     throw new WrongImportValueException(colonne, champAImporter.getQueryChamp().getEntite().getNom());
+                     throw new WrongImportValueForThesaurusException(colonne, thesValues.keySet());
                   }
                }
 
@@ -997,7 +1012,7 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public List<NonConformite> setNonConformites(final TKAnnotableObject obj, final ImportColonne colonne, final Row row,
-      final ImportProperties properties, final Map<TKAnnotableObject, List<NonConformite>> ncfsList){
+      final ImportProperties properties, final Map<TKAnnotableObject, List<NonConformite>> ncfsList) throws WrongImportValueForThesaurusException {
 
       final List<NonConformite> ncfs = new ArrayList<>();
 
@@ -1029,24 +1044,29 @@ public class ImportManagerImpl implements ImportManager
             // on va spliter la valeur de la colonne : les
             // non conformites peuvent être séparés par des points-virgules
             if(((String) value).contains(";")){
+               List<String> listValeurNonAutorisee = new ArrayList<String>();
                // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                final String[] split = ((String) value).split(";");
                for(int i = 0; i < split.length; i++){
                   // on récupère l'objet correspondant à la valeur
                   // présente dans le fichier
-                  if(thesValues.containsKey(split[i].trim())){
-                     ncfs.add((NonConformite) thesValues.get(split[i].trim()));
+                  String valeurCourante = split[i].trim();
+                  if(thesValues.containsKey(valeurCourante)){
+                     ncfs.add((NonConformite) thesValues.get(valeurCourante));
                   }else{
-                     throw new WrongImportValueException(colonne, champAImporter.getNom());
+                     listValeurNonAutorisee.add(valeurCourante);
                   }
                }
+               if(!listValeurNonAutorisee.isEmpty()) {
+                  throw new WrongImportValueForThesaurusMException(colonne, listValeurNonAutorisee, thesValues.keySet());
+               }               
             }else{
                // on récupère l'objet correspondant à la valeur
                // présente dans le fichier
                if(thesValues.containsKey(((String) value).trim().toLowerCase())){
                   ncfs.add((NonConformite) thesValues.get(((String) value).trim().toLowerCase()));
                }else{
-                  throw new WrongImportValueException(colonne, champAImporter.getNom());
+                  throw new WrongImportValueForThesaurusException(colonne, thesValues.keySet());
                }
             }
          }
@@ -1117,7 +1137,7 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public List<AnnotationValeur> setPropertyForAnnotationColonne(final ImportColonne colonne, final Row row,
-      final ImportProperties properties){
+      final ImportProperties properties) throws WrongImportValueForThesaurusException{
 
       final List<AnnotationValeur> annoVals = new ArrayList<>();
 
@@ -1162,7 +1182,8 @@ public class ImportManagerImpl implements ImportManager
                   if(itemVal != null){
                      value = itemVal;
                   }else{ // annot value not found!
-                     throw new WrongImportValueException(colonne, colonne.getChamp().getChampAnnotation().getNom());
+                     //throw new WrongImportValueException(colonne, colonne.getChamp().getChampAnnotation().getNom());
+                     throw new WrongImportValueForThesaurusException(colonne, thesValues.keySet());
                   }
                }else{ // annot champ items not found!
                   throw new WrongImportValueException(colonne, colonne.getChamp().getChampAnnotation().getNom());
@@ -1178,19 +1199,24 @@ public class ImportManagerImpl implements ImportManager
                   // on va spliter la valeur de la colonne : les
                   // valeurs peuvent être séparés par des points-virgules
                   Object itemVal = null;
+                  List<String> listValeurNonAutorisee = new ArrayList<String>();
                   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   final String[] split = ((String) value).split(";");
                   for(int i = 0; i < split.length; i++){
+                     String valeurCourante = split[i].trim();
                      // on récupère l'item correspondant à la valeur présente dans le fichier
-                     itemVal = thesValues.get(split[i].trim());
+                     itemVal = thesValues.get(valeurCourante);
                      // found in keyset
                      if(itemVal != null){
                         final AnnotationValeur av = new AnnotationValeur();
                         setPropertyValueForAnnotationValeur(itemVal, colonne.getChamp().getChampAnnotation(), av, colonne);
                         annoVals.add(av);
                      }else{ // annot value not found!
-                        throw new WrongImportValueException(colonne, colonne.getChamp().getChampAnnotation().getNom());
+                        listValeurNonAutorisee.add(valeurCourante);
                      }
+                  }
+                  if(!listValeurNonAutorisee.isEmpty()) {
+                     throw new WrongImportValueForThesaurusMException(colonne, listValeurNonAutorisee, thesValues.keySet());
                   }
                }else{ // annot champ items not found!
                   throw new WrongImportValueException(colonne, colonne.getChamp().getChampAnnotation().getNom());
@@ -1227,7 +1253,7 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public TKAnnotableObjectDuo setAllPropertiesForPatient(final Row row, final ImportProperties properties){
+   public TKAnnotableObjectDuo setAllPropertiesForPatient(final Row row, final ImportProperties properties) throws WrongImportValueForThesaurusException {
 
       /*****************/
       final TKAnnotableObjectDuo duo = new TKAnnotableObjectDuo();
@@ -1275,10 +1301,13 @@ public class ImportManagerImpl implements ImportManager
                }
             }
          }
+         
+         ///////////////////: A REVOIR - la MODIFiCATIOB n'est pas gérée !!!!!!!!
+         
          // on regarde si le patient existe deja en base
          if(patientManager.findDoublonManager(patient).isPresent()){
 
-            final Patient existingPat = patientManager.getExistingPatientManager(patient);
+            final Patient existingPat = patientManager.getExistingPatientManager(patient);//récupère l'existant pour le cas de la modification...
 
             if(patient.equals(existingPat)){
                patient = existingPat;
@@ -1287,7 +1316,7 @@ public class ImportManagerImpl implements ImportManager
             duo.setSecondObj(existingPat);
 
             for(final ChampAnnotation chpA : duo.getFirstAnnoValsMap().keySet()){
-               duo.getSecondAnnoValsMap().put(chpA, annotationValeurManager.findByChampAndObjetManager(chpA, existingPat));
+               duo.getSecondAnnoValsMap().put(chpA, annotationValeurManager.findByChampAndObjetManager(chpA, existingPat));//va récupérer les annotations existantes
             }
          }
       }
@@ -1298,7 +1327,7 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public Maladie setAllPropertiesForMaladie(final Row row, final ImportProperties properties, final Patient patient){
+   public Maladie setAllPropertiesForMaladie(final Row row, final ImportProperties properties, final Patient patient) throws WrongImportValueForThesaurusException {
       Maladie maladie = null;
       if(row != null && properties != null){
          // nouvealle maladie
@@ -1336,7 +1365,7 @@ public class ImportManagerImpl implements ImportManager
 
    @Override
    public TKAnnotableObjectDuo setAllPropertiesForPrelevement(final Row row, final ImportProperties properties,
-      final Maladie maladie){
+      final Maladie maladie) throws WrongImportValueForThesaurusException {
 
       final TKAnnotableObjectDuo duo = new TKAnnotableObjectDuo();
       duo.setEntite(entiteManager.findByIdManager(2));
@@ -1415,7 +1444,7 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public Echantillon setAllPropertiesForEchantillon(final Row row, final ImportProperties properties, final Prelevement prlvt){
+   public Echantillon setAllPropertiesForEchantillon(final Row row, final ImportProperties properties, final Prelevement prlvt) throws WrongImportValueForThesaurusException {
       Echantillon echan = null;
       if(row != null && properties != null){
          // nouvel échantillon
@@ -1508,7 +1537,7 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public ProdDerive setAllPropertiesForProdDerive(final Row row, final ImportProperties properties){
+   public ProdDerive setAllPropertiesForProdDerive(final Row row, final ImportProperties properties) throws WrongImportValueForThesaurusException {
       ProdDerive derive = null;
 
       if(row != null && properties != null){
@@ -1607,8 +1636,8 @@ public class ImportManagerImpl implements ImportManager
             }
 
             final List<AnnotationValeur> avs = new ArrayList<>();
-            final List<AnnotationValeur> toDelete = new ArrayList<>();
-            final List<AnnotationValeur> toUpdate = new ArrayList<>();
+            final List<AnnotationValeur> toDelete = new ArrayList<>();//MAJ non implémentée côté front ... !!!!!
+            final List<AnnotationValeur> toUpdate = new ArrayList<>();//MAJ non implémentée côté front ...
 
             TKAnnotableObject parent = null;
             for(int i = 0; i < objects.size(); i++){
@@ -1628,16 +1657,19 @@ public class ImportManagerImpl implements ImportManager
                      parent = patDuo.getSecondObj();
                   }
 
-                  // import modification
-                  if(properties.getImportTemplate().getIsUpdate() && patDuo.getSecondObj() != null){
-                     if(tkAnnotableDuoManager.mergeDuoObjectsManager(patDuo,
-                        tkAnnotableDuoManager.compareObjectsDuoManager(patDuo,
-                           champEntiteDao.findByImportTemplateAndEntite(properties.getImportTemplate(), patDuo.getEntite()),
-                           champAnnotationManager.findByImportTemplateAndEntiteManager(properties.getImportTemplate(),
-                              patDuo.getEntite())))){
-                        pat = (Patient) patDuo.getSecondObj();
-                     }
-                  }
+                  // import modification - on ne passe jamais dans ce code car le front qui permettrait de valoriser isUpdate à true
+                  //n'a jamais été fait ....
+//TEMP !!
+//                  // import modification
+//                  if(properties.getImportTemplate().getIsUpdate() && patDuo.getSecondObj() != null){
+//                     if(tkAnnotableDuoManager.mergeDuoObjectsManager(patDuo,
+//                        tkAnnotableDuoManager.compareObjectsDuoManager(patDuo,
+//                           champEntiteDao.findByImportTemplateAndEntite(properties.getImportTemplate(), patDuo.getEntite()),
+//                           champAnnotationManager.findByImportTemplateAndEntiteManager(properties.getImportTemplate(),
+//                              patDuo.getEntite())))){
+//                        pat = (Patient) patDuo.getSecondObj();
+//                     }
+//                  }
 
                   if(pat != null){
                      toUpdate.addAll(patDuo.getFirstAnnoVals());
@@ -1646,8 +1678,9 @@ public class ImportManagerImpl implements ImportManager
                      // Préparation de l'opération d'importation
                      // en attente de l'id
                      final Importation imp = new Importation();
-                     imp.setEntite(patDuo.getEntite());
-                     imp.setIsUpdate(pat.getPatientId() != null);
+                     imp.setTypeCode(EImportationType.CREATION.getCode());//on est forcément en création car le mode modification n'est pas implémenté côté front.... Par conséquent, à nettoyer côté back;
+                     imp.setEntiteId(patDuo.getEntite().getEntiteId());
+                     imp.setIsUpdate(pat.getPatientId() != null);/////////////////////// A REVOIR !!
 
                      patientManager.createOrUpdateObjectManager(pat, null, null, null, !toUpdate.isEmpty() ? toUpdate : null,
                         !toDelete.isEmpty() ? toDelete : null, null, null, utilisateur,
@@ -1675,17 +1708,17 @@ public class ImportManagerImpl implements ImportManager
                   }else{
                      parent = prlvtDuo.getSecondObj();
                   }
-
+//TEMP !!!
                   // import modification
-                  if(properties.getImportTemplate().getIsUpdate() && prlvtDuo.getSecondObj() != null){
-                     if(tkAnnotableDuoManager.mergeDuoObjectsManager(prlvtDuo,
-                        tkAnnotableDuoManager.compareObjectsDuoManager(prlvtDuo,
-                           champEntiteDao.findByImportTemplateAndEntite(properties.getImportTemplate(), prlvtDuo.getEntite()),
-                           champAnnotationManager.findByImportTemplateAndEntiteManager(properties.getImportTemplate(),
-                              prlvtDuo.getEntite())))){
-                        prlvt = (Prelevement) prlvtDuo.getSecondObj();
-                     }
-                  }
+//                  if(properties.getImportTemplate().getIsUpdate() && prlvtDuo.getSecondObj() != null){
+//                     if(tkAnnotableDuoManager.mergeDuoObjectsManager(prlvtDuo,
+//                        tkAnnotableDuoManager.compareObjectsDuoManager(prlvtDuo,
+//                           champEntiteDao.findByImportTemplateAndEntite(properties.getImportTemplate(), prlvtDuo.getEntite()),
+//                           champAnnotationManager.findByImportTemplateAndEntiteManager(properties.getImportTemplate(),
+//                              prlvtDuo.getEntite())))){
+//                        prlvt = (Prelevement) prlvtDuo.getSecondObj();
+//                     }
+//                  }
 
                   if(prlvt != null){
                      toUpdate.addAll(prlvtDuo.getFirstAnnoVals());
@@ -1693,8 +1726,9 @@ public class ImportManagerImpl implements ImportManager
                      // Préparation de l'opération d'importation
                      // en attente de l'id
                      final Importation imp = new Importation();
-                     imp.setEntite(prlvtDuo.getEntite());
-                     imp.setIsUpdate(prlvt.getPrelevementId() != null);
+                     imp.setTypeCode(EImportationType.CREATION.getCode());
+                     imp.setEntiteId(prlvtDuo.getEntite().getEntiteId());
+                     imp.setIsUpdate(prlvt.getPrelevementId() != null);/////////////////////////////////
 
                      // create
                      if(prlvt.getPrelevementId() == null){
@@ -1800,8 +1834,9 @@ public class ImportManagerImpl implements ImportManager
 
                      // Création de l'opération d'importation
                      final Importation imp = new Importation();
+                     imp.setTypeCode(EImportationType.CREATION.getCode());
                      imp.setObjetId(echanId == null ? echan.getEchantillonId() : echanId);
-                     imp.setEntite(eEchan);
+                     imp.setEntiteId(eEchan.getEntiteId());
                      importations.add(imp);
                   }
                }else if(objects.get(i).getClass().getSimpleName().equals("ProdDerive")){
@@ -1904,7 +1939,6 @@ public class ImportManagerImpl implements ImportManager
       final List<Importation> importations, final Utilisateur utilisateur, final String baseDir, final List<ImportError> errors){
 
       if(batches != null){
-         final Entite deriveEntite = entiteManager.findByNomManager("ProdDerive").get(0);
          DerivesImportBatches currBatch = null;
          for(final DerivesImportBatches batch : batches){
             try{
@@ -1918,7 +1952,8 @@ public class ImportManagerImpl implements ImportManager
                   // Création des opération d'importations
                   final Importation imp = new Importation();
                   imp.setObjetId(derive.getProdDeriveId());
-                  imp.setEntite(deriveEntite);
+                  imp.setEntiteId(EEntiteId.PROD_DERIVE.getId());
+                  imp.setTypeCode(EImportationType.CREATION.getCode());
                   importations.add(imp);
                }
             }catch(final DeriveBatchSaveException re){
@@ -2182,7 +2217,10 @@ public class ImportManagerImpl implements ImportManager
                      objectsToSave.add(derive);
                   }
                }
-            }catch(final WrongImportValueException wve){
+            }//le catch ne devrait pas être global mais fait autour de chaque appel de setAllPropertiesForXxx pour cumuler les erreurs détectées afin
+            //de les afficher toutes à l'utilisateur : actuellement seules celles remontées par le 1er setAllPropertiesForXxx qui renvoie des erreurs sont affichées
+            //à l'utilisateur : c'est dommage vu que le traitement les a toutes gérées...
+            catch(final WrongImportValueException | WrongImportValueForThesaurusException wve){
                final ImportError error = new ImportError();
                error.setException(wve);
                error.setRow(row);
@@ -2370,7 +2408,7 @@ public class ImportManagerImpl implements ImportManager
                            transfoQuantite = Float.parseFloat(cellContent);
                            transfoQuantite = Utils.floor(transfoQuantite, 3);
                         }catch(final NumberFormatException n){
-                           throw new WrongImportValueException(properties.getSubDerivesCols().get(1), "Float");
+                           throw new WrongImportValueException(properties.getSubDerivesCols().get(1), "Float"); 
                         }
                      }
                      cellContent = getCellContent(row.getCell(2), true, properties.getEvaluator());
@@ -2448,7 +2486,7 @@ public class ImportManagerImpl implements ImportManager
 
       return historique;
    }
-
+   
    /**
     * Extrait le code parent derive 'fixé' par la première colonnes selon 
     * les specifications  de l'import de dérivé de dérivé afin de trouver 
@@ -2478,4 +2516,5 @@ public class ImportManagerImpl implements ImportManager
          new DeriveImportParentNotFoundException(props.getSubDerivesCols().get(0), code, props.getBanque());
       throw dpnfe;
    }
+
 }

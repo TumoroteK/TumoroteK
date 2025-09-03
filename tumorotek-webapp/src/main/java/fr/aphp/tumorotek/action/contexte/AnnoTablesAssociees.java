@@ -108,8 +108,8 @@ public class AnnoTablesAssociees extends OneToManyComponent<TableAnnotation>
    }
 
    @Override
-   public void switchToEditMode(final boolean b){
-      super.switchToEditMode(b);
+   public void switchToEditMode(final boolean avecAccesAuxBoutonsAddEtDelete){
+      super.switchToEditMode(avecAccesAuxBoutonsAddEtDelete);
       upHeader.setVisible(true);
       downHeader.setVisible(true);
    }

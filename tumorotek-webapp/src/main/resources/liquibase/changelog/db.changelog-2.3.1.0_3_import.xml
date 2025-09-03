@@ -105,5 +105,93 @@
             <column name="NOM" value="SuppressionPartage"/>
              <column name="PROFILABLE" value="0" />
         </insert>
-    </changeSet>                 
+    </changeSet>
+    
+    <changeSet id="setValue_OPERATION_TYPE_IMP_ANNOTATION" author="TK-538" context="*"> 
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM OPERATION_TYPE
+                WHERE NOM = 'ImportAnnotation'
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout de la valeur Partage pour l'historique des modèles d'import</comment>
+        <insert tableName="OPERATION_TYPE">
+            <column name="OPERATION_TYPE_ID" value="26"/>
+            <column name="NOM" value="ImportAnnotation"/>
+             <column name="PROFILABLE" value="1" />
+        </insert>
+    </changeSet>
+    
+    <changeSet id="updateTable_IMPORT_TEMPLATE-3" author="TK-538" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="IMPORT_TEMPLATE" columnName="TYPE_CODE" />
+            </not>
+        </preConditions>
+        <comment>Ajout d'un champ pour gérer le type d''un modèle</comment>
+        <addColumn tableName="IMPORT_TEMPLATE">
+            <column name="TYPE_CODE" type="VARCHAR(20)" defaultValue="NEW_MULTI" remarks="Les valeurs possibles sont NEW_MULTI, NEW_DERIVE et MODIF_ANNO.">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet id="setValue_TYPE_CODE" author="TK-538" context="*">
+        <preConditions onFail="MARK_RAN">
+        	<columnExists tableName="IMPORT_TEMPLATE" columnName="TYPE_CODE" />
+        </preConditions>
+        <comment>Alimentation du nouveau champ IMPORT_TEMPLATE.TYPE_CODE</comment>
+        <!-- script identique pour Oracle donc le fichier est mis dans le répertoire mysql mais il peut aussi être lancé avec Oracle  -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-538--setValue_TYPE_CODE.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    <!-- il faudrait faire cette suppression mais ça nécessite de nettoyer tout le code java qui s'appuie sur ces champs mais qui n'est pas appelé car le front n'a pas été fait 
+    <changeSet id="drop_cols_obsoletes" author="TK-538" runAlways="false" context="*">
+    	<preConditions onFail="MARK_RAN">
+    		<columnExists tableName="IMPORT_TEMPLATE" columnName="IS_EDITABLE"/>
+    		<columnExists tableName="IMPORT_TEMPLATE" columnName="IS_UPDATE"/>
+    	</preConditions>
+    	<comment>Suppression des colonnes non utilisées</comment>
+    	<dropColumn tableName="IMPORT_TEMPLATE" columnName="IS_EDITABLE"/>
+    	<dropColumn tableName="IMPORT_TEMPLATE" columnName="IS_UPDATE"/>
+    </changeSet>
+    <changeSet id="drop_cols_obsoletes-2" author="TK-538" runAlways="false" context="*">
+    	<preConditions onFail="MARK_RAN">
+    		<columnExists tableName="IMPORTATION" columnName="IS_UPDATE"/>
+    	</preConditions>
+    	<comment>Suppression des colonnes non utilisées</comment>
+    	<dropColumn tableName="IMPORTATION" columnName="IS_UPDATE"/>
+    </changeSet>
+    -->
+    
+    <changeSet id="updateTable_IMPORTATION" author="TK-538" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="IMPORTATION" columnName="TYPE_CODE" />
+            </not>
+        </preConditions>
+        <comment>Ajout d'un champ pour gérer le type d''import fait</comment>
+        <addColumn tableName="IMPORTATION">
+            <column name="TYPE_CODE" type="VARCHAR(20)" defaultValue="NEW" remarks="les valeurs possibles sont NEW et MODIF_ANNO.">
+                <constraints nullable="false" />
+            </column>
+        </addColumn>
+    </changeSet>
+    <!-- suppression de l'index sur  IMPORTATION (OBJET_ID, ENTITE_ID) pour le remplacer par  IMPORTATION (OBJET_ID, ENTITE_ID, TYPE_CODE) -->
+	<changeSet id="drop_index_IMPORTATION_Objet_Entite" author="TK-538" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	    	<indexExists indexName="OBJET_ENTITE_IDX" tableName="IMPORTATION" />
+    	</preConditions>
+        <dropIndex indexName="OBJET_ENTITE_IDX" tableName="IMPORTATION"></dropIndex>
+    </changeSet>
+    <changeSet id="create_index_IMPORTATION_Objet_Entite_Type" author="TK-538" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="OBJET_ENTITE_TYPE_IDX" tableName="IMPORTATION" />
+	        </not>
+    	</preConditions>
+        <createIndex indexName="OBJET_ENTITE_TYPE_IDX" tableName="IMPORTATION" unique="false">  
+        	<column name="OBJET_ID"/>
+        	<column name="ENTITE_ID"/>
+        	<column name="TYPE_CODE"/>  
+    	</createIndex>
+    </changeSet>
+       
 </databaseChangeLog>

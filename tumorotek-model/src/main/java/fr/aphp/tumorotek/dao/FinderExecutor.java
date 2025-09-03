@@ -50,7 +50,7 @@ public interface FinderExecutor
 {
 
    /**
-    * Méthode exécutant une requête de type findBy.
+    * Méthode exécutant une requête dont le nom commence par "find" mais qui n'est pas findById ou findAll
     * @param m est la requête à exécuter.
     * @param arguments sont les arguments passés à la requête.
     * @return les résultats.

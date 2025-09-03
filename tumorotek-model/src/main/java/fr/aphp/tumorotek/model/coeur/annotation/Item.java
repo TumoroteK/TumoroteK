@@ -68,6 +68,7 @@ import fr.aphp.tumorotek.model.contexte.Plateforme;
 @Table(name = "ITEM")
 @NamedQueries(value = {
    @NamedQuery(name = "Item.findByChamp", query = "SELECT i FROM Item i WHERE i.champAnnotation = ?1" + " ORDER BY i.label"),
+   @NamedQuery(name = "Item.findByChampAnnotationId", query = "SELECT i FROM Item i WHERE i.champAnnotation.id = ?1"),
    @NamedQuery(name = "Item.findByChampAndPlateforme",
       query = "SELECT i FROM Item i WHERE i.champAnnotation = ?1 " + "AND (i.plateforme = ?2 OR i.plateforme is null) "
          + "ORDER BY i.itemId"),

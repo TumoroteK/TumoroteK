@@ -111,4 +111,14 @@ public interface ChampEntiteDao extends GenericDaoJpa<ChampEntite, Integer>
     * @since 2.0.12
     */
    List<ChampEntite> findByImportTemplateAndEntite(ImportTemplate template, Entite e);
+   
+   /**
+    * Recherche les champs d'une entité avec la caractéristique "obligatoire pour Gatsbi". Si vaut true correspond à la clé fonctionnelle
+    * d'importation pour une entité.
+    * @param template
+    * @param entite
+    * @return List ChampEntite
+    * @since 2.3.1.0
+    */
+   List<ChampEntite> findByEntiteAndObligatoireGatsbi(Entite e, boolean obligatoireGatsbi);
 }

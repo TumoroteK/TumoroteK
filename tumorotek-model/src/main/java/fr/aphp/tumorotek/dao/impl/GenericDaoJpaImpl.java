@@ -217,7 +217,8 @@ public class GenericDaoJpaImpl<T, PK extends Serializable> extends JpaDaoSupport
    }
 
    /**
-    * Exécute une méthode de type findBy qui correspond à une requête SELECT
+    * Exécute une méthode dont le nom commence par "find" mais qui n'est pas findById ou findAll
+    * elle correspond à une requête SELECT
     * avec paramètres sur la base de données.
     * @param method est la requête à exécuter.
     * @param queryArgs sont les arguments de a requête.

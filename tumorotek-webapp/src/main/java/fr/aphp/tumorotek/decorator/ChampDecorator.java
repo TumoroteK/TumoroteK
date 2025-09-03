@@ -148,6 +148,7 @@ public class ChampDecorator implements Comparable<Object>
       return label;
    }
 
+   //CHT : ne semble pas / plus appelée... 
    /**
     * Decore une liste d'Champs.
     * @param champs

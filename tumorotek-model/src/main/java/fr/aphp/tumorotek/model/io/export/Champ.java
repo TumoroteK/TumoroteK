@@ -82,6 +82,8 @@ public class Champ implements Comparable<Champ>
 
    private ChampDelegue champDelegue;
 
+   //La notion parent est utilisée par exemple pour le nom de l'opérateur : opérateur est le parent du champ nom.
+   //exemple dans la création des critères d'une requête : FicheAddCritere.onSelect$champsBox()
    private Champ champParent;
 
    private Set<ChampLigneEtiquette> champLigneEtiquettes = new HashSet<>();

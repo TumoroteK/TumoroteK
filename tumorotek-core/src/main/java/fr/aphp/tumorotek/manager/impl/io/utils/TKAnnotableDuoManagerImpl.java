@@ -65,6 +65,7 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
       this.prelevementManager = pM;
    }
 
+   //CHT : Méthode appelée que dans les tests :-(
    @Override
    public List<TKAnnotableObjectPropertyDuo> compareObjectsDuoManager(final TKAnnotableObjectDuo duo,
       final List<ChampEntite> chpEntites, final List<ChampAnnotation> chpAnnos){
@@ -118,7 +119,7 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
     * @throws InvocationTargetException
     * @throws IllegalAccessException
     */
-
+   //CHT : appelé par du code mort :-(..
    private void populateTKPropDuo(final ChampEntite chpE, final TKAnnotableObjectDuo duo,
       final TKAnnotableObjectPropertyDuo propDuo) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException{
 
@@ -250,6 +251,7 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
       }
    }
 
+   //CHT : code non appelé !!!!!
    @Override
    public Boolean mergeDuoObjectsManager(final TKAnnotableObjectDuo duo, final List<TKAnnotableObjectPropertyDuo> propDuos){
 
@@ -279,6 +281,7 @@ public class TKAnnotableDuoManagerImpl implements TKAnnotableDuoManager
       return merged;
    }
 
+   //CHT: Cette méthode ne semble pas terminée : des blocs sont vide ... Elle n'est appelée que par une méthode, elle-même non appelée ... à supprimer !
    /**
     * Applique la valeur du firstObj nouvellement composé à l'objet existant,
     * Implémente les exceptions à l'assignation générique par PropertyUtils à partir de champEntite (ex:

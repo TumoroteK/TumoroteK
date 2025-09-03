@@ -93,6 +93,7 @@ public class LargeCessionManagerImpl implements LargeCessionManager
       this.entityManagerFactory = _e;
    }
 
+   //CHT : methode non appelée
    @Override
    public LargeCessionHelper addObjectsAndValidateCession(final Cession cession, final List<String> codes, final Integer entiteId,
       final List<Banque> bks, final Utilisateur utilisateur){

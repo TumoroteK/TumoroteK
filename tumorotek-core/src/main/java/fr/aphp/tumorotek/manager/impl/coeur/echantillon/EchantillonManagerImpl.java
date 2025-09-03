@@ -100,6 +100,7 @@ import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.systeme.FichierManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.echantillon.gatsbi.EchantillonGatsbiValidator;
+import fr.aphp.tumorotek.model.CodeIdPair;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.Retour;
@@ -2155,4 +2156,5 @@ public class EchantillonManagerImpl implements EchantillonManager
       }
       return findByIdsInListAndStatusManager(echantillonsIds, statusId);
    }   
+
 }

@@ -43,6 +43,7 @@ import java.util.Set;
 
 import fr.aphp.tumorotek.dto.MajDelaiCongelFromPrelevementDTO;
 import fr.aphp.tumorotek.manager.impl.systeme.MvFichier;
+import fr.aphp.tumorotek.model.CodeIdPair;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -730,4 +731,5 @@ public interface PrelevementManager
     * @since 2.3.0-gatsbi
     */
    List<Integer> findByPatientIdentifiantOrNomOrNipReturnIdsManager(String search, List<Banque> banks, boolean exactMatch);
+   
 }

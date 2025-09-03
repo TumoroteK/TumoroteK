@@ -42,8 +42,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -89,18 +87,21 @@ import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.action.echantillon.EchantillonController;
+import fr.aphp.tumorotek.action.imports.strategy.ImportTemplateStrategy;
+import fr.aphp.tumorotek.action.imports.strategy.ImportTemplateStrategyFactory;
 import fr.aphp.tumorotek.action.patient.PatientController;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
-import fr.aphp.tumorotek.decorator.EntiteDecorator;
+import fr.aphp.tumorotek.decorator.EntiteDecoratorForOneToManyComponent;
 import fr.aphp.tumorotek.decorator.I3listBoxItemRenderer;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.decorator.factory.EntiteDecoratorFactory;
+import fr.aphp.tumorotek.manager.exception.AbstractImportFileScopeException;
 import fr.aphp.tumorotek.manager.exception.ErrorsInImportException;
 import fr.aphp.tumorotek.manager.io.imports.ImportError;
 import fr.aphp.tumorotek.manager.io.imports.IncompatibiliteEntreImportTemplateEtBanqueResult;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
@@ -110,13 +111,15 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.EImportTemplateStatutPartage;
+import fr.aphp.tumorotek.model.io.imports.EImportTemplateType;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
+import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
+import fr.aphp.tumorotek.model.systeme.EEntiteId;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.utils.ItemForErrorResult;
 import fr.aphp.tumorotek.utils.MessagesUtils;
@@ -125,7 +128,9 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 public class FicheImportTemplate extends AbstractFicheCombineController
 {
-
+   public static final String EVENT_DATA__SHEET_NAME = "sheetName";
+   public static final String EVENT_DATA__MODE_SOUS_SURVEILLANCE = "modeSousSurveillance";
+   
    private final Logger log = LoggerFactory.getLogger(FicheImportTemplate.class);
 
    private static final long serialVersionUID = 3330210719922132352L;
@@ -152,6 +157,13 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    private Menuitem menuReactiver;
    //fin TK-537
 
+   //TK-538
+   //NB : La fonctionalité d'import de données est accessible aux profils ayant accès 
+   //à l'administration et possédant les droits de création et de modification des annotations 
+   //pour les onglets Patient, Prélèvement, Echantillon et Produits Dérivés.
+   //=> pas de droits particuliers à gérer pour ce bouton
+   private Button addNewForModificationAnnotationC;
+   
    // Editable components
    private Label nomRequired;
 
@@ -185,14 +197,15 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    // Objets Principaux.
    //TK-537
    private ImportTemplateDecorator importTemplateDecorator;
-   
-   private Set<EntiteDecorator> entites = new HashSet<>();
 
-   private EntiteDecorator selectedEntite;
+   //entité sélectionnée dans la liste déroulante "Entité" pour sélection des champs à ajouter au modèle
+   private EntiteDecoratorForOneToManyComponent selectedEntite;
 
-   private List<EntiteDecorator> entitesAssociees = new ArrayList<>();
+   //entités sélectionnées dans l'écran EntitesAssocieesImport.zul et alimentant la liste déroulante "entités
+   //du modèle", en mode création ou édition : cette liste est alimentée lors de la sélection d'entité dans EntitesAssocieesImport.zul
+   //ces entités alimentent également la liste déroulante "Entité" pour sélection des champs à ajouter au modèle
+   private List<EntiteDecoratorForOneToManyComponent> entitesAssociees = new ArrayList<>();
 
-   private List<ImportColonne> importColonnes = new ArrayList<>();
 
    private List<ImportColonne> importColonnesToRemove = new ArrayList<>();
 
@@ -207,21 +220,15 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    private List<ImportHistorique> historiques = new ArrayList<>();
 
    private Integer nbHistorique;
-
+   //
+   
    private ImportHistoriqueRowRenderer historiquesRenderer = new ImportHistoriqueRowRenderer();
 
-   //	private BufferedInputStream fileInputStream;
    private Workbook uploadedWb;
-   //	private InputStream fileInputStreamCorrectif;
 
    private Event currentEvent;
 
-   // isSubDerive pour appliquer un mode éditable
-   // restreint aux imports subderive (colonnes entêtes parent dérivé,
-   // liste entité réduite à dérivé)
-   private Boolean isSubderive = false;
-
-   //TK-537
+   //TK-537 : partage des modèles
    private IncompatibiliteEntreImportTemplateEtBanqueResult incompatibiliteTemplateBanque;
    private Row rowAlerteExecution;
    private Label labelAlerteExecutionError;
@@ -231,6 +238,12 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    private Row rowAlerteArchive;
    private Row rowModifiedAfterLastExecution;
    //fin TK-537
+   
+   //TK-538 : modèle de modification des annotations
+   //la strategie permet de gérer les particulatités liées aux différents types de modèles possibles
+   //pour la modification, elle est initialisée par le type du modèle
+   //pour la création, elle est initialisée selon le bouton utilisé
+   private ImportTemplateStrategy importTemplateStrategy;
    
    private static I3listBoxItemRenderer entiteRenderer = new I3listBoxItemRenderer("nom");
 
@@ -245,11 +258,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
       // Initialisation des listes de composants
       setObjLabelsComponents(new Component[] {this.nomLabel, this.descriptionLabel, this.colonnesGrid, this.groupHistorique,
-         this.historiquesGrid, this.subderiveParentLabel});//
+         this.historiquesGrid, this.subderiveParentLabel});
 
-//      setObjBoxsComponents(new Component[] {this.nomBox, this.descriptionBox, this.colonnesGridEdit, this.helpAddColumnRow,
-//         this.rowAddChamp, this.updateTemplateCheckbox, this.subderiveParentListbox});
-      //TK-537 en attendant TK-538 : import en modification des annotations
       setObjBoxsComponents(new Component[] {this.nomBox, this.descriptionBox, this.colonnesGridEdit, this.helpAddColumnRow,
          this.rowAddChamp, this.subderiveParentListbox});
       
@@ -283,6 +293,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
       //TK-537 : modèle partagé
       getEntitesAssocieesImport().setGatsbi(isGatsbiTemplate());
+      
       colonnesRenderer.initContexte(retrieveImportTemplateContexte(), retrieveImportTemplateBanque().getEtude());
       
       //TK-537 : modèle partagé
@@ -292,20 +303,20 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       manageAffichageBoutons();
       //fin TK-537
 
+      //en création on passe aussi par cette méthode ...., gestion ici du cas particulier de la modification :
       if(importTemplateDecorator != null && importTemplateDecorator.getImportTemplateId() != null){
-         entites.clear();
-         entites
-            .addAll(EntiteDecorator.decorateListe(ManagerLocator.getImportTemplateManager().getEntiteManager(importTemplateDecorator.getImportTemplate()), 
+         //entites correspond aux entités définies sur le template :
+         entitesAssociees.clear();
+         entitesAssociees
+            .addAll(EntiteDecoratorFactory.decorateListe(ManagerLocator.getImportTemplateManager().getEntiteManager(importTemplateDecorator.getImportTemplate()), 
                isGatsbiTemplate()));
 
-         importColonnes.clear();
-         // subderive
-         isSubderive = importTemplateDecorator.getDeriveParentEntite() != null;
-         if(isSubderive){
-            importColonnes.addAll(makeSubderiveHeaderCols(importTemplateDecorator.getImportTemplate()));
-         }
+         importColonnesDecorator.clear();
 
-         importColonnes.addAll(ManagerLocator.getImportColonneManager().findByImportTemplateManager(importTemplateDecorator.getImportTemplate()));
+         ImportTemplate importTemplate = importTemplateDecorator.getImportTemplate();
+         importTemplateStrategy = ImportTemplateStrategyFactory.createImportTemplateStrategy(EImportTemplateType.findByCode(importTemplate.getTypeCode()), retrieveImportTemplateContexte());
+         importColonnesDecorator.addAll(importTemplateStrategy.defineColonnesDecoratorForImportTemplate(importTemplateDecorator.getImportTemplate()));
+         
          if(importTemplateDecorator.getImportTemplateId() != null){
             historiques = ManagerLocator.getImportHistoriqueManager().findByTemplateIdAndImportBanqueIdWithOrderManager(
                importTemplateDecorator.getImportTemplateId(), SessionUtils.getCurrentBanque(sessionScope).getBanqueId());
@@ -315,15 +326,17 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          }
       }
 
-      entitesAssociees.clear();
-      final Iterator<EntiteDecorator> it = entites.iterator();
-      while(it.hasNext()){
-         entitesAssociees.add(it.next());
-      }
       getEntitesAssocieesImport().setObjects(entitesAssociees);
+      //TK-538 : modèle de modification d'annotation
+      //importTemplateStrategy peut être null à la création du composant "onglet" :
+      if(importTemplateStrategy != null) {
+         getEntitesAssocieesImport().setImportTemplateStrategy(importTemplateStrategy);
+         //getEntitesAssocieesImport().setNbMaxEntiteSelectionnable(importTemplateStrategy.defineNbMaxEntiteSelectionnable());
+      }
+
       
       // TK-537 : l'appel du super.setObject() pose problème car il empêche que les boutons
-      // Modifier et Supprimer soit "disabled" dans le cas où aucun objet n'est sélectionné
+      // Modifier et Supprimer soient "disabled" dans le cas où aucun objet n'est sélectionné
       // En effet elle passe false à disableToolBar sans regarder si l'objet transmis contient un id
       // Pour contourner ce problème, avant il y avait un super.setNewObject(); appelé dans setNewObject()
       // pour forcer le disabled à true sur Modifier et Supprimer dans le cas où aucun modèle n'est sélectionné
@@ -360,32 +373,16 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    public void setNewObject(){
       final ImportTemplate it = new ImportTemplate();
       it.setBanque(SessionUtils.getSelectedBanques(sessionScope).get(0));
-      importColonnes.clear();
       importColonnesDecorator.clear();
-      // entitesAssociees.clear();
-      entites.clear();
+      entitesAssociees.clear();
       
-      if(isSubderive){
-         final Entite deriveE = ManagerLocator.getEntiteManager().findByIdManager(8);
-         entites.add(new EntiteDecorator(deriveE));
-         it.setDeriveParentEntite(ManagerLocator.getEntiteManager().findByIdManager(8));
-
-         importColonnes.addAll(makeSubderiveHeaderCols(it));
-         // ajout des colonnes obligatoires derives
-         // on récupère les champs obligatoires que l'on va ajouter
-         // @since 2.3.0-gatsbi surcharge
-         final List<ChampEntite> ces = GatsbiController.findByEntiteImportAndIsNullableManager(deriveE, true, false, SessionUtils.getCurrentBanque(sessionScope));
-
-         for(int i = ces.size() - 1; i > -1; i--){
-            final ImportColonne ic = new ImportColonne();
-            ic.setImportTemplate(it);
-            ic.setChamp(new Champ(ces.get(i)));
-            ic.setImportTemplate(it);
-            importColonnes.add(ic);
-         }
-
-      }
-
+      //à l'affichage de l'onglet, un setNewObject est fait (AbstractObjectTabController.doAfterCompose())
+      //importTemplateStrategy est alors null donc on teste non null
+      //à noter que ce cas ne correspond pas vraiment à un affichage normal puisque c'est le cas d'un new mais en mode static...
+      if(importTemplateStrategy!=null) {
+         importTemplateStrategy.doActionsSpecifiquesForInitNewObject(entitesAssociees, it, importColonnesDecorator, SessionUtils.getCurrentBanque(sessionScope));
+         it.setTypeCode(importTemplateStrategy.getEImportTemplateType().getCode());      }
+      
       setObject(new ImportTemplateDecorator(it, false, false));
 
    }
@@ -394,12 +391,15 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    @Override
    public void switchToStaticMode(){
       super.switchToStaticMode(this.importTemplateDecorator.equals(new ImportTemplateDecorator()));
-      this.addNewSubderiveC.setVisible(true);
-      addNewSubderiveC.setDisabled(!isCanNew());
+      addNewSubderiveC.setVisible(true);
+      addNewSubderiveC.setDisabled(!isCanNew()); 
       //TK-537 : la méthode super.switchToStaticMode gère l'affichage des boutons Modifier et Supprimer
       //sans prendre en compte le partage de modèle => gestion de la désactivation des boutons
       editC.setDisabled(isEditCDisabled());
       deleteC.setDisabled(isDeleteCDisabled());
+      //TK-538
+      addNewForModificationAnnotationC.setVisible(true);
+      addNewForModificationAnnotationC.setDisabled(!isCanNew());
       
       copyEmptyFields.setVisible(false);
 
@@ -420,6 +420,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    public void disableToolBar(final boolean b){
       super.disableToolBar(b);
       addNewSubderiveC.setDisabled(b || !isCanNew());
+      addNewForModificationAnnotationC.setDisabled(b || !isCanNew());
    }
 
    @Override
@@ -443,7 +444,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          super.switchToCreateMode();
       }
 
+      //NB : addNewC.setVisible(false) est géré par super.switchToCreateMode()
       addNewSubderiveC.setVisible(false);
+      addNewForModificationAnnotationC.setVisible(false);
 
       // Initialisation du mode edition (listes, valeurs...)
       //cette méthode initialise notamment les colonnes => traitement différent en fonction
@@ -452,8 +455,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       //non fait par super.switchToCreateMode
       initEditableMode(fromExisting);
 
-      //dans le cas de l'import dérivé, on ne peut pas ajouter d'entité
-      if(!isSubderive) {
+      //si le passage en mode édit est autorisé (généralement le cas sauf quand le modèle est spécifique à une entite comme pour la création de dérivé avec un parent)
+      if(!importTemplateStrategy.forbidEditableModeForEntitesAssociees()) {
          if(fromExisting) {
             getEntitesAssocieesImport().switchToEditMode(true);
          }
@@ -474,8 +477,11 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       super.switchToEditMode();
 
       addNewSubderiveC.setVisible(false);
+      addNewForModificationAnnotationC.setVisible(false);
 
-      getEntitesAssocieesImport().switchToEditMode(true);
+      if(!importTemplateStrategy.forbidEditableModeForEntitesAssociees()) {
+         getEntitesAssocieesImport().switchToEditMode(true);
+      }
 
       getBinder().loadComponent(self);
 
@@ -488,12 +494,12 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
    @Override
    public void onClick$addNewC(){
-      isSubderive = false;
+      importTemplateStrategy = ImportTemplateStrategyFactory.createImportTemplateStrategy(EImportTemplateType.CREATION_MULTI_ENTITE, retrieveImportTemplateContexte());
       switchToCreateMode();
    }
    
    public void onClick$menuAddNewFrom(){
-      //TK-537 : on garde la valeur courante pour isSubderive car elle a été alimentée par le setObject => on ne fait rien pour ce cas ici.
+      //TK-537 et TK-538 : la strategy a été alimentée par le setObject...
       switchToCreateMode(true);
    }
    
@@ -545,18 +551,14 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    }
    
    private void doOnclickEditC() {
-      if(this.importTemplateDecorator.getDeriveParentEntite() == null){
-         switchToEditMode();
-      }else{ // subderive edit mode
-         switchToEditModeSubderive();
-      }
+      switchToEditMode();
       //on cache l'éventuelle alerte sur la dernière date d'exécution
       rowModifiedAfterLastExecution.setVisible(false);
    }
     
    @Override
    public void onClick$cancelC(){
-      isSubderive = false;
+      importTemplateStrategy=null;
       clearData();
    }
 
@@ -577,8 +579,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    @Override
    public void clearData(){
       importColonnesDecorator.clear();
-      importColonnes.clear();
-      entites.clear();
+      entitesAssociees.clear();
       clearConstraints();
       super.clearData();
    }
@@ -667,13 +668,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       // on remplit l'utilisateur en fonction des champs nulls
       setEmptyToNulls();
 
-      // si subderive import, retire les 3 premières colonnes entêtes
-      if(isSubderive){
-         importColonnesDecorator.remove(0);
-         importColonnesDecorator.remove(0);
-         importColonnesDecorator.remove(0);
-      }
-
+      importTemplateStrategy.doActionsSpecifiquesBeforeCreatingOrUpdatingObject(importColonnesDecorator);
+      
       final List<ImportColonne> ics = ImportColonneDecorator.extractListe(importColonnesDecorator);
       for(int i = 0; i < ics.size(); i++){
          ics.get(i).setOrdre(i + 1);
@@ -681,7 +677,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
       // update de l'objet
       ManagerLocator.getImportTemplateManager().createObjectManager(importTemplateDecorator.getImportTemplate(), importTemplateDecorator.getBanque(),
-         EntiteDecorator.extractListe(entitesAssociees), ics, SessionUtils.getLoggedUser(sessionScope));
+         EntiteDecoratorFactory.undecorateListe(entitesAssociees), ics, SessionUtils.getLoggedUser(sessionScope));
 
       if(getListeImportTemplate() != null){
          // ajout du importTemplateDecorator à la liste
@@ -717,12 +713,8 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       // on remplit l'utilisateur en fonction des champs nulls
       setEmptyToNulls();
 
-      // si subderive import, retire les 3 premières colonnes entêtes
-      if(this.importTemplateDecorator.getDeriveParentEntite() != null){
-         importColonnesDecorator.remove(0);
-         importColonnesDecorator.remove(0);
-         importColonnesDecorator.remove(0);
-      }
+      // appel de l'eventuel traitement spécifique (comme par exemple pour l'import des produits dérivés, suppression des 3 premières colonnes entêtes qui correspondent au parent et ne sont pas stockées en base
+      importTemplateStrategy.doActionsSpecifiquesBeforeCreatingOrUpdatingObject(importColonnesDecorator);
 
       final List<ImportColonne> ics = ImportColonneDecorator.extractListe(importColonnesDecorator);
       for(int i = 0; i < ics.size(); i++){
@@ -731,7 +723,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
       // update de l'objet
       ManagerLocator.getImportTemplateManager().updateObjectManager(importTemplateDecorator.getImportTemplate(), importTemplateDecorator.getBanque(),
-         EntiteDecorator.extractListe(entitesAssociees), ics, importColonnesToRemove, SessionUtils.getLoggedUser(sessionScope));
+         EntiteDecoratorFactory.undecorateListe(entitesAssociees), ics, importColonnesToRemove, SessionUtils.getLoggedUser(sessionScope));
 
       if(getListeImportTemplate() != null){
          getListeImportTemplate().updateObjectGridList(importTemplateDecorator);
@@ -755,7 +747,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       if(this.importTemplateDecorator.getDescription().equals("")){
          this.importTemplateDecorator.setDescription(null);
       }
-      this.importTemplateDecorator.getImportTemplate().setIsEditable(true);//A SUPPRIMER
    }
 
    @Override
@@ -776,24 +767,24 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       return getObjectTabController().getListe();
    }
 
-   //méthode qui : 
-   //- initialise le tableau des colonnes de l'import avec les champs obligatoires après ajout d'une entité (EntitesAssocieesImport.java)
+   //méthode appelée lors de la sélection d'une entité (EntitesAssocieesImport.java). Elle :
+   //- initialise le tableau des colonnes de l'import avec les champs obligatoires de l'entité sélectionnée (dépend de la strategy)
    //- si c'est la première entité ajoutée, sélection de celle-ci dans la liste "Entité" du bloc "Colonnes présentes dans le fichier"
    // et chargement des champs ajoutables au modèle pour cette entité.
    //NB : après la sélection des entités suivantes, la liste Entité du bloc "Colonnes présentes ..." reste à sa valeur courante
-   //=> c'est lors de la sélection de l'entité dans ce bloc que les champs non obligatoire de la nouvelle entité sélectionnée sont récupérés
+   //=> c'est lors de la sélection de l'entité dans ce bloc que les champs non obligatoires de la nouvelle entité sélectionnée sont récupérés
    //via onSelect$entitesBox (appel de getAndDecorateNullableChampForEntite())
    public void onGetAddedObject(final Event e){
       if(e.getData() != null){
-         final EntiteDecorator entiteDeco = (EntiteDecorator) e.getData();
-         if(!entitesAssociees.contains(entiteDeco)){
-            entitesAssociees.add(entiteDeco);
+         final EntiteDecoratorForOneToManyComponent entiteDecorator = (EntiteDecoratorForOneToManyComponent) e.getData();
+         if(!entitesAssociees.contains(entiteDecorator)){
+            entitesAssociees.add(entiteDecorator);
          }
 
-         // on récupère les champs obligatoires que l'on va ajouter
-         final List<ChampEntite> ces =
-            GatsbiController.findByEntiteImportAndIsNullableManager(entiteDeco.getEntite(), true, false, retrieveImportTemplateBanque());
 
+         // on récupère les champs obligatoires que l'on va ajouter
+         final List<ChampEntite> ces = importTemplateStrategy.retrieveAllChampObligatoire(entiteDecorator.getEntite(), retrieveImportTemplateBanque());
+         
          /*
           * @since 2.3.0 les labels des lignes Maladie deviennent Visite 
           * pour les contextes Gatsbi
@@ -801,16 +792,16 @@ public class FicheImportTemplate extends AbstractFicheCombineController
           */
          EContexte templateContexte = retrieveImportTemplateContexte();
          for(int i = 0; i < ces.size(); i++){
-            final ImportColonne ic = new ImportColonne();
-            ic.setImportTemplate(importTemplateDecorator.getImportTemplate());
-            ic.setChamp(new Champ(ces.get(i)));
-            importColonnesDecorator.add(new ImportColonneDecorator(ic, templateContexte));
+            ImportColonneDecorator importColonneDecorator = ImportColonneDecoratorFactory.createForImportTemplateFromChampEntite(importTemplateDecorator.getImportTemplate(), ces.get(i), templateContexte, true);
+            if(importColonneDecorator != null) {
+               importColonnesDecorator.add(importColonneDecorator);
+            }
          }
 
          if(entitesAssociees.size() == 1){
-            selectedEntite = entiteDeco;
+            selectedEntite = entiteDecorator;
 
-            getAndDecorateNullableChampForEntite();
+            populateChampsBoxForSelectedEntite();
          }
 
          getBinder().loadAttribute(colonnesGridEdit, "model");
@@ -821,7 +812,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
    public void onGetRemovedObject(final Event e){
       if(e.getData() != null){
-         final EntiteDecorator entiteDeco = (EntiteDecorator) e.getData();
+         final EntiteDecoratorForOneToManyComponent entiteDeco = (EntiteDecoratorForOneToManyComponent) e.getData();
          if(entitesAssociees.contains(entiteDeco)){
             entitesAssociees.remove(entiteDeco);
          }
@@ -833,70 +824,24 @@ public class FicheImportTemplate extends AbstractFicheCombineController
                selectedEntite = null;
             }
 
-            if(selectedEntite != null){
-               final List<Champ> tmp = new ArrayList<>();
-               final List<ChampEntite> ces =
-                  GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true, retrieveImportTemplateBanque());
-               final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
-                  .findByEntiteAndBanqueManager(selectedEntite.getEntite(), importTemplateDecorator.getBanque());
-               final List<ChampAnnotation> cas = new ArrayList<>();
-               for(int i = 0; i < tas.size(); i++){
-                  cas.addAll(ManagerLocator.getChampAnnotationManager().findByTableManager(tas.get(i)));
-               }
+            populateChampsBoxForSelectedEntite();
+         }
 
-               for(int i = 0; i < ces.size(); i++){
-                  tmp.add(new Champ(ces.get(i)));
-               }
-               for(int i = 0; i < cas.size(); i++){
-                  tmp.add(new Champ(cas.get(i)));
-               }
-
-               for(int i = 0; i < importColonnesDecorator.size(); i++){
-                  if(tmp.contains(importColonnesDecorator.get(i).getColonne().getChamp())){
-                     tmp.remove(importColonnesDecorator.get(i).getColonne().getChamp());
+         if(entiteDeco != null) {
+            Entite entiteSupprimee = entiteDeco.getEntite();
+            if(entiteSupprimee != null) {
+               //suppression des colonnes de cette entité au niveau de l'affichage (importColonnesDecorator) 
+               //et en base de données en cas de modification du modèle (importColonnesToRemove).
+               List<ImportColonneDecorator> importColonnesDecoratorASupprimer = new ArrayList<ImportColonneDecorator>();
+               for(ImportColonneDecorator importColonneDecorator : importColonnesDecorator) {
+                  if(entiteSupprimee.equals(getEntiteForImportColonneDecorator(importColonneDecorator))) {
+                     importColonnesDecoratorASupprimer.add(importColonneDecorator);
+                     importColonnesToRemove.add(importColonneDecorator.getColonne());
                   }
                }
-               champs = ImportChampDecorator.decorateListe(tmp);
-               champs.add(0, null);
-            }else{
-               champs = new ArrayList<>();
-            }
-            final ListModel<ImportChampDecorator> list = new ListModelList<>(champs);
-            champsBox.setModel(list);
-         }
-
-         final List<Champ> tmp = new ArrayList<>();
-         final List<ChampEntite> ces =
-            GatsbiController.findByEntiteImportAndIsNullableManager(entiteDeco.getEntite(), true, null, retrieveImportTemplateBanque());
-         final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
-            .findByEntiteAndBanqueManager(entiteDeco.getEntite(), importTemplateDecorator.getBanque());
-         final List<ChampAnnotation> cas = new ArrayList<>();
-         for(int i = 0; i < tas.size(); i++){
-            cas.addAll(ManagerLocator.getChampAnnotationManager().findByTableManager(tas.get(i)));
-         }
-
-         for(int i = 0; i < ces.size(); i++){
-            tmp.add(new Champ(ces.get(i)));
-         }
-         for(int i = 0; i < cas.size(); i++){
-            tmp.add(new Champ(cas.get(i)));
-         }
-
-         final List<Integer> indexes = new ArrayList<>();
-         for(int i = 0; i < importColonnesDecorator.size(); i++){
-            if(tmp.contains(importColonnesDecorator.get(i).getColonne().getChamp())){
-               indexes.add(i);
+               importColonnesDecorator.removeAll(importColonnesDecoratorASupprimer);
             }
          }
-         for(int i = 0; i < indexes.size(); i++){
-            final ImportColonneDecorator icd = importColonnesDecorator.get(indexes.get(i) - i);
-            importColonnesDecorator.remove(indexes.get(i).intValue() - i);
-
-            if(icd.getColonne().getImportColonneId() != null){
-               importColonnesToRemove.add(icd.getColonne());
-            }
-         }
-         champs = ImportChampDecorator.decorateListe(tmp);
       }
 
       getBinder().loadAttribute(colonnesGridEdit, "model");
@@ -938,8 +883,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    private void upObject(final ImportColonneDecorator obj){
       final int tabIndex = importColonnesDecorator.indexOf(obj);
       ImportColonneDecorator supObjectInList = null;
-      final int limit = isSubderive ? 2 : -1;
-      if(tabIndex - 1 > limit){
+      //index limite au-dessus duquel l'objet ne peut pas être déplacé
+      int indexLimite = importTemplateStrategy.defineNbLigneEnteteFixe();
+      if(tabIndex - 1 > indexLimite){
          supObjectInList = importColonnesDecorator.get(tabIndex - 1);
          importColonnesDecorator.set(tabIndex, supObjectInList);
          importColonnesDecorator.set(tabIndex - 1, obj);
@@ -970,19 +916,17 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    }
    
    /**
-    * Prépare le formulaire, en peuplant les listes de choix,
+    * Prépare le formulaire en peuplant les listes de choix,
     * les composants, en fonction de l'objet ImportTemplate.
+    * on passe dans cette mééthode après avec fait le setObject ou le setNewObject() : le template est donc initialisé
     * @version 2.0.12
     */
    public void initEditableMode(){
 
-      importColonnesDecorator.clear();
-
-      importColonnesDecorator.addAll(GatsbiController.decorateImportColonnes(importColonnes, SessionUtils.getCurrentContexte(), isSubderive));
-
       manageEntitesAssocieesForEditMode();
       
-      manageImportChampsForEditMode();
+      //initialisation de la liste déroulante "champ à importer" à partir de selectedEntite : éventuellement valorisée par manageEntitesAssocieesForEditMode
+      populateChampsBoxForSelectedEntite();
       
       importColonnesToRemove = new ArrayList<>();
        
@@ -991,18 +935,17 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    /**
     * Prépare le formulaire, en peuplant les listes de choix,
     * les composants, en fonction de l'objet ImportTemplate.
-    * @version 2.3.1 (TK-53
+    * @version 2.3.1 (TK-538)
     */
    public void initEditableModeFromCurrentTemplate(){
 
       final ImportTemplate it = new ImportTemplate();
       it.setBanque(SessionUtils.getCurrentBanque(sessionScope));
-      //si modèle dérivé, on récupère le parent du modèle "from" :
-      if(isSubderive) {
-         it.setDeriveParentEntite(importTemplateDecorator.getDeriveParentEntite());
-      }
+      it.setDeriveParentEntite(importTemplateDecorator.getDeriveParentEntite());
+      it.setTypeCode(importTemplateDecorator.getTypeCode());
+
       this.importTemplateDecorator = new ImportTemplateDecorator(it, false, false);
-      //TK-537 : au lieu d'appeler ces 2 méthodes (la 2e écrase l'affichage des boutons fait fait la 1ere), 
+      //TK-537 : au lieu d'appeler les 2 méthodes ci-dessous mises en commentaire (la 2e écrase l'affichage des boutons fait par la 1ere), 
       //appel d'une méthode qui fait juste ce qu'il faut sans gérer l'affichage des boutons fait dans manageAffichageBoutons
       //super.setObject(importTemplateDecorator);
       //super.setNewObject();
@@ -1010,13 +953,11 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       
       List<ImportColonneDecorator> listImportColonneDecoratorForNewTemplate = initImportColonneWithExisting();
       
-      importColonnesDecorator = listImportColonneDecoratorForNewTemplate;
+      importColonnesDecorator.clear();
+      importColonnesDecorator.addAll(listImportColonneDecoratorForNewTemplate);
       
-      manageEntitesAssocieesForEditMode();
-      
-      manageImportChampsForEditMode();
-      
-      importColonnesToRemove = new ArrayList<>();
+      //appel de l'initialisation standard
+      initEditableMode();
       
       //TK-537
       //une fois l'initialisation des colonnes faites à partir du modèle précédent, nettoyage de l'objet lié au contrôle de cohérence du modèle précédent :
@@ -1027,28 +968,22 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    //Copie les ImportColonneDecorator courants et supprime les incohérences
    private List<ImportColonneDecorator> initImportColonneWithExisting(){
       List<ImportColonne> listImportColonneAExclure = new ArrayList<ImportColonne>();
-      //List<ImportColonne> listImportColonneForNewTemplate = new ArrayList<ImportColonne>();
-      List<ImportColonneDecorator> listImportColonneDecoratorForNewTemplate = new ArrayList<ImportColonneDecorator>();
       if (incompatibiliteTemplateBanque != null) {
          listImportColonneAExclure = incompatibiliteTemplateBanque.retrieveAllImportColonnesKO();
       }
-      EContexte banqueContexte = SessionUtils.getCurrentContexte();
       
       //Génération des imports colonnes du nouveau modèle :
-      //1 - Création de nouveaux importColonne pour chaque import colonne du modèle de référence compatible avec la banque :
-      List<ImportColonne> listImportColonneForNewTemplate = new ArrayList<ImportColonne>();
-      for(ImportColonne importColonne : importColonnes) {
-         if(!listImportColonneAExclure.contains(importColonne)) {
-            listImportColonneForNewTemplate.add(createNewImportColonneFromExisting(importColonne));
- //           ImportColonneDecorator importColonneDecoratorForNewTemplate = new ImportColonneDecorator(createNewFromExisting(importColonne));
- //           importColonneDecoratorForNewTemplate.setImportTemplateContexte(banqueContexte);
- //           listImportColonneDecoratorForNewTemplate.add(importColonneDecoratorForNewTemplate);
+      //1 - Création de nouveaux importColonneDecorator pour chaque import colonne du modèle de référence compatible avec la banque :
+      List<ImportColonneDecorator> listImportColonneDecoratorForNewTemplate = new ArrayList<ImportColonneDecorator>();
+      for(ImportColonneDecorator importColonneDecorator : importColonnesDecorator) {
+         if(!listImportColonneAExclure.contains(importColonneDecorator.getColonne())) {
+            listImportColonneDecoratorForNewTemplate.add(createNewImportColonneDecoratorFromExisting(importColonneDecorator));
          }
       }
       //tri de la liste par ordre :
-      Collections.sort(listImportColonneForNewTemplate, Comparator.comparing(ImportColonne::getOrdre));
+      Collections.sort(listImportColonneDecoratorForNewTemplate, Comparator.comparing(ImportColonneDecorator::getOrdre));
       //récupération de la dernière valeur de l'ordre
-      int lastOrdre = listImportColonneForNewTemplate.get(listImportColonneForNewTemplate.size()-1).getOrdre();;
+      int lastOrdre = listImportColonneDecoratorForNewTemplate.get(listImportColonneDecoratorForNewTemplate.size()-1).getOrdre();
       
       //2 - Gestion des champs obligatoires non présents dans le modèle => il faut les ajouter au nouveau modèle
       //on les met à la fin comme c'est fait actuellement lorsqu'on modifie un modèle
@@ -1057,66 +992,31 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       if(incompatibiliteTemplateBanque != null && incompatibiliteTemplateBanque.getListChampObligatoirePourBanqueMaisNonPresentDansModele() != null) {
          List<ChampEntite> listChampObligatoireManquant = incompatibiliteTemplateBanque.getListChampObligatoirePourBanqueMaisNonPresentDansModele();
          int nbChampObligatoireManquant = listChampObligatoireManquant.size();
+         List<ImportColonne> listColonneForChampObligatoireManquant = new ArrayList<ImportColonne>(nbChampObligatoireManquant);
          for(int i=0; i< nbChampObligatoireManquant; i++) {
-            listImportColonneForNewTemplate.add(createNewImportColonneFromChampEntite(listChampObligatoireManquant.get(i), lastOrdre+1+i));
+            ImportColonne newImportColonne = createNewImportColonneFromChampEntite(listChampObligatoireManquant.get(i), lastOrdre+1+i);
+            listColonneForChampObligatoireManquant.add(newImportColonne);
          }
+         //ajout de ces colonnes à l'ensemble des colonnes du template, après les avoir décorées
+         listImportColonneDecoratorForNewTemplate.addAll(importTemplateStrategy.decorateImportColonnes(listColonneForChampObligatoireManquant, SessionUtils.getCurrentBanque(sessionScope)));
       }
       
       //création des decorators
-      return GatsbiController.decorateImportColonnes(listImportColonneForNewTemplate, banqueContexte, isSubderive);
+      return listImportColonneDecoratorForNewTemplate;
    }
-
+   
+   //NB : cette méthode est appelée lors du passage en mode édition (création ou modification).
    private void manageEntitesAssocieesForEditMode(){
-      if(entitesAssociees.size() > 0){
+      //gestion de la particularité lui à l'entité Maladie
+      MaladieSpecificiteForEntitesAssocieesImport.manageVisibilityOfBoutonDelete(entitesAssociees);
+      
+      //sélection de l'entité pour laquelle on ira chercher les champs ajoutables
+      if(entitesAssociees.size() > 0){// cas de la modification : selectedEntite est valorisé avec la 1ere entité pour charger ensuite la liste déroulante "champ à importer"
          selectedEntite = entitesAssociees.get(0);
-      }else{
-         // seule entite derive est utile
-         if(isSubderive){
-            entitesAssociees.add(new EntiteDecorator(ManagerLocator.getEntiteManager().findByIdManager(8)));
-            selectedEntite = entitesAssociees.get(0);
-         }else{
-            selectedEntite = null;
-         }
+      }else{//cas de la création
+         selectedEntite = null;
       }
    }
-
-   private void manageImportChampsForEditMode(){
-      if(selectedEntite != null){
-         final List<Champ> tmp = new ArrayList<>();
-         final List<ChampEntite> ces =
-            GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true, importTemplateDecorator.getBanque());
-         final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
-            .findByEntiteAndBanqueManager(selectedEntite.getEntite(), importTemplateDecorator.getBanque());
-         final List<ChampAnnotation> cas = new ArrayList<>();
-         for(int i = 0; i < tas.size(); i++){
-            cas.addAll(ManagerLocator.getChampAnnotationManager().findByTableManager(tas.get(i)));
-         }
-
-         for(int i = 0; i < ces.size(); i++){
-            tmp.add(new Champ(ces.get(i)));
-         }
-         for(int i = 0; i < cas.size(); i++){
-            tmp.add(new Champ(cas.get(i)));
-         }
-
-         for(int i = 0; i < importColonnesDecorator.size(); i++){
-            if(tmp.contains(importColonnesDecorator.get(i).getColonne().getChamp())){
-               tmp.remove(importColonnesDecorator.get(i).getColonne().getChamp());
-            }
-         }
-         champs = ImportChampDecorator.decorateListe(tmp);
-      }else{
-         champs = new ArrayList<>();
-      }
-      champs.add(0, null);
-
-      final ListModel<ImportChampDecorator> list = new ListModelList<>(champs);
-      champsBox.setModel(list);
-
-   }
-
-   
-   
    
    public void onClick$addChamp(){
       if(selectedChamp != null){
@@ -1153,6 +1053,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          final ImportColonneDecorator icd =
             (ImportColonneDecorator) AbstractListeController2.getBindingData((ForwardEvent) event, false);
 
+         //suppression de la ligne de la colonne dans le tableau
          importColonnesDecorator.remove(icd);
 
          Entite e = null;
@@ -1162,12 +1063,15 @@ public class FicheImportTemplate extends AbstractFicheCombineController
             e = icd.getColonne().getChamp().getChampAnnotation().getTableAnnotation().getEntite();
          }
 
-         if(e != null && e.equals(selectedEntite)){
+         //ajout du champ dans la liste des champs ajoutables
+         if(e != null && selectedEntite != null && e.equals(selectedEntite.getEntite())){
             champs.add(new ImportChampDecorator(icd.getColonne().getChamp()));
             final ListModel<ImportChampDecorator> list = new ListModelList<>(champs);
             champsBox.setModel(list);
          }
 
+         //dans le cas d'une mise à jour de modèle d'import : ajout de l'imporColonne supprimé dans une liste qui sera passée au back 
+         //pour la mise à jour du modèle en bdd
          if(icd.getColonne().getImportColonneId() != null){
             importColonnesToRemove.add(icd.getColonne());
          }
@@ -1198,7 +1102,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
     */
    public void onSelect$entitesBox(final Event event) throws Exception{
 
-      getAndDecorateNullableChampForEntite();
+      populateChampsBoxForSelectedEntite();
 
       if(!champs.contains(selectedChamp)){
          selectedChamp = null;
@@ -1207,39 +1111,22 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    }
 
    /**
-    * Collecte tous les champs non obligatoires pouvant être
-    * ajoutés à un import pour l'entité selectionnée par l'utilisateur, et les décore :
+    * Alimente la liste déroulante des champs à importer si une entité a été sélectionnée :
+    * collecte tous les champs non obligatoires pouvant être ajoutés à un import pour l'entité selectionnée et les décore
+    * Si aucune entité n'est sélectionnée (cas du chargement de la page de création, la liste sera initialisée à vide.
     * @since 2.2.1 ajout champ delegue contextuels
     */
-   private void getAndDecorateNullableChampForEntite(){
-
-      if(selectedEntite != null){
+   private void populateChampsBoxForSelectedEntite(){
+      if(selectedEntite == null){
+         champs = new ArrayList<>();
+      }
+      else {
          final List<Champ> tmp = new ArrayList<>();
-         final List<ChampEntite> ces = GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite.getEntite(), true, true, retrieveImportTemplateBanque());
          
-         final List<ChampDelegue> dels = ManagerLocator.getChampDelegueManager()
-            .findByEntiteAndContexte(selectedEntite.getEntite(), SessionUtils.getCurrentContexte());
-
-         final List<TableAnnotation> tas = ManagerLocator.getTableAnnotationManager()
-            .findByEntiteAndBanqueManager(selectedEntite.getEntite(), importTemplateDecorator.getBanque());
-         final List<ChampAnnotation> cas = new ArrayList<>();
-         for(int i = 0; i < tas.size(); i++){
-            cas.addAll(ManagerLocator.getChampAnnotationManager().findByTableManager(tas.get(i)));
-         }
-
-         for(int i = 0; i < ces.size(); i++){
-            tmp.add(new Champ(ces.get(i)));
-         }
-
-         for(int i = 0; i < dels.size(); i++){
-            tmp.add(new Champ(dels.get(i)));
-         }
-
-         // les champs calculés ne sont pas concernés par l'import
-         for(int i = 0; i < cas.size(); i++){
-            if(!"calcule".equals(cas.get(i).getDataType().getType())){
-               tmp.add(new Champ(cas.get(i)));
-            }
+         //banque du template ou banque de la session si le template est null 
+         Banque banque = retrieveImportTemplateBanque();
+         if(importTemplateStrategy != null) {
+            tmp.addAll(importTemplateStrategy.retrieveAllForEntite(selectedEntite.getEntite(), banque));
          }
 
          // retire les champs déja associés
@@ -1251,11 +1138,11 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
          champs.clear();
          champs.addAll(ImportChampDecorator.decorateListe(tmp));
-         champs.add(0, null);
+      }      
+      champs.add(0, null);
 
-         // update model
-         champsBox.setModel(new ListModelList<>(champs));
-      }
+      // update model
+      champsBox.setModel(new ListModelList<>(champs));
    }
 
    /**
@@ -1286,16 +1173,17 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    public void onLaterAffichagePatients(){
       if(currentEvent != null && currentEvent.getData() != null){
          final ImportHistorique hist = (ImportHistorique) currentEvent.getData();
-         final Entite ePatient = ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0);
+         
          // on récupère les importations
          final List<Importation> importations =
-            ManagerLocator.getImportHistoriqueManager().findImportationsByHistoriqueAndEntiteManager(hist, ePatient);
+            ManagerLocator.getImportHistoriqueManager().findImportationsByHistoriqueAndEEntiteIdManager(hist, EEntiteId.PATIENT);
 
+         final Entite ePatient = ManagerLocator.getEntiteManager().findByNomManager("Patient").get(0);
          // on récupère les patients
-         final List<Patient> patients = new ArrayList<>();
+         final List<Patient> patients = new ArrayList<>();//faire par un requête globale et non une boucle !!!!!!!!
          for(int i = 0; i < importations.size(); i++){
             patients.add((Patient) ManagerLocator.getEntiteManager()
-               .findObjectByEntiteAndIdManager(importations.get(i).getEntite(), importations.get(i).getObjetId()));
+               .findObjectByEntiteAndIdManager(ePatient, importations.get(i).getObjetId()));
          }
 
          // on met a jour la liste des patients
@@ -1326,23 +1214,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          final ImportHistorique hist = (ImportHistorique) currentEvent.getData();
          final List<Prelevement> prelevements =
             ManagerLocator.getImportHistoriqueManager().findPrelevementByImportHistoriqueManager(hist);
-         //
-         //			Entite ePrlvt = ManagerLocator.getEntiteManager()
-         //				.findByNomManager("Prelevement").get(0);
-         //			// on récupère les importations
-         //			List<Importation> importations = ManagerLocator
-         //				.getImportHistoriqueManager()
-         //				.findImportationsByHistoriqueAndEntiteManager(
-         //						hist, ePrlvt);
-         //
-         //			// on récupère les prlvts
-         //			List<Prelevement> prelevements = new ArrayList<Prelevement>();
-         //			for (int i = 0; i < importations.size(); i++) {
-         //				prelevements.add((Prelevement) ManagerLocator.getEntiteManager()
-         //						.findObjectByEntiteAndIdManager(
-         //								importations.get(i).getEntite(),
-         //								importations.get(i).getObjetId()));
-         //			}
 
          // on met a jour la liste des prlvts
          final PrelevementController tabController =
@@ -1388,7 +1259,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          final List<Echantillon> echantillons = new ArrayList<>();
          for(int i = 0; i < importations.size(); i++){
             echantillons.add((Echantillon) ManagerLocator.getEntiteManager()
-               .findObjectByEntiteAndIdManager(importations.get(i).getEntite(), importations.get(i).getObjetId()));
+               .findObjectByEntiteAndIdManager(eEchan, importations.get(i).getObjetId()));
          }
 
          // on met a jour la liste des echantillons
@@ -1427,7 +1298,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          final List<ProdDerive> prodDerives = new ArrayList<>();
          for(int i = 0; i < importations.size(); i++){
             prodDerives.add((ProdDerive) ManagerLocator.getEntiteManager()
-               .findObjectByEntiteAndIdManager(importations.get(i).getEntite(), importations.get(i).getObjetId()));
+               .findObjectByEntiteAndIdManager(eDerive, importations.get(i).getObjetId()));
          }
 
          // on met a jour la liste des prodDerives
@@ -1462,12 +1333,13 @@ public class FicheImportTemplate extends AbstractFicheCombineController
                final HashMap<String, Object> map = new HashMap<>();
                map.put("sheets", sheets);
                map.put("parent", self);
+               map.put("strategy", importTemplateStrategy);
 
                final Window dialog = (Window) Executions.createComponents("/zuls/imports/ChooseSheetWindow.zul", self, map);
                dialog.doModal();
             }else{ // sheet = 1
                Clients.showBusy(Labels.getLabel("importTemplate.wait.import"));
-               Events.echoEvent("onLaterImport", self, null);
+               Events.echoEvent(importTemplateStrategy.defineNomMethodePourExecuterImport(), self, null);
             }
          }catch(final IOException ex){
             log.error(ex.getMessage(), ex);
@@ -1487,27 +1359,103 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       }
    }
 
+   public void onLaterImportForModificationAnnotation(final Event e){
+      //ressemble à onLaterImport... adaptation / factorisation à faire
+      if(uploadedWb != null){
+         Boolean ok = false;
+         Sheet sheet = uploadedWb.getSheetAt(0);
+         String sheetName = sheet.getSheetName();
+         //récupération des données de l'event :
+         Boolean modeSousSurveillance = true;
+         @SuppressWarnings("unchecked")
+         Map<String, Object> eventData = (Map<String, Object>)e.getData();
+         if(eventData != null) {
+            Object sheetNameFromEvent = eventData.get(EVENT_DATA__SHEET_NAME);
+            if(sheetNameFromEvent != null) {
+               sheetName = (String)sheetNameFromEvent;
+               sheet = uploadedWb.getSheet(sheetName);
+            }
+            Object modeSousSurveillanceNameFromEvent = eventData.get(EVENT_DATA__MODE_SOUS_SURVEILLANCE) ;
+            if(modeSousSurveillanceNameFromEvent != null) {
+               modeSousSurveillance = (Boolean)modeSousSurveillanceNameFromEvent;
+            }
+         }
+         ImportHistorique historique = null;
+         AbstractImportFileScopeException importException = null;
+         //sheetName = e.getData() == null ? uploadedWb.getSheetAt(0).getSheetName() : (String) e.getData();
+         try{
+            historique = ManagerLocator.getImportChampAnnotationBatchProcessor().process(this.importTemplateDecorator.getImportTemplate(),
+               SessionUtils.getLoggedUser(sessionScope), SessionUtils.getCurrentBanque(sessionScope), importTemplateStrategy.getEContexte(),
+               sheet, modeSousSurveillance);
+
+            // Maj de la fiche
+            setObject(this.importTemplateDecorator);
+            switchToStaticMode();
+            if(importTemplateDecorator.isFromNotUsedTemplates()) {
+               refreshListesModele();
+            }
+            ok = true;
+         }catch(final AbstractImportFileScopeException  importExcp){
+            importException = importExcp;
+            ok = false;
+         }
+         catch(final Exception exception){
+            log.error(exception.getMessage(), exception);
+            //volontairement on renvoie l'exception pour qu'elle s'affiche à l'utilisateur. Ce n'est
+            //pas très propre mais très courant dans TK et permet d'avoir un message clair pour avoir une idée du problème sans 
+            //avoir à se connecter sur la machine TK
+            Clients.clearBusy();
+            throw exception;
+         }
+
+         Clients.clearBusy();
+         // si la modale resultats n'est pas initialisée, on la créé avec les paramètres, sinon on la met à jour avec ceux-ci
+         if(openResultatsImportWindow(page, ok, historique, importException, null, uploadedWb, sheetName, self, importTemplateStrategy)){
+            ((ResultatsImportModale) page.getFellow("resultsImportWindow").getFirstChild().getFellow("fwinResultatsImportModale")
+               .getAttributeOrFellow("fwinResultatsImportModale$composer", true)).update(ok, sheetName, historique, importException);
+         }
+      }
+
+      Clients.clearBusy();
+      
+   }
+   
+   
    public void onLaterImport(final Event e){
-      Boolean ok = false;
-      String sheetName = "";
       // if (fileInputStream != null) {
       if(uploadedWb != null){
+         Boolean ok = false;
+         String sheetName = null;
+         Sheet sheet = null;
+         //récupération des données de l'event :
+         @SuppressWarnings("unchecked")
+         Map<String, Object> eventData = (Map<String, Object>)e.getData();
+         if(eventData != null) {
+            Object sheetNameFromEvent = eventData.get(EVENT_DATA__SHEET_NAME);
+            if(sheetNameFromEvent != null) {
+               sheetName = (String)sheetNameFromEvent;
+               sheet = uploadedWb.getSheet(sheetName);
+            }
+            else {//on prend la première feuille
+               sheet = uploadedWb.getSheetAt(0);
+               sheetName = sheet.getSheetName();
+            }
+         }
          ImportHistorique historique = null;
          List<ImportError> errors = new ArrayList<>();
-         // Workbook wb = null;
-         sheetName = e.getData() == null ? uploadedWb.getSheetAt(0).getSheetName() : (String) e.getData();
          try{
 
             GatsbiController.enrichesBanqueWithEtudeContextes(importTemplateDecorator.getBanque(), sessionScope);
             
+            //il faudrait passer par la strategy qui aurait une méthode import
+            //mais à faire quand la gestion des erreurs aura été amélioré pour la création (affichage de toutes les erreurs et non de la 
+            //première uniquement - passage par une ImportException au lieu de ) 
             if(importTemplateDecorator.getDeriveParentEntite() == null){
                historique = ManagerLocator.getImportManager().importFileManager(this.importTemplateDecorator.getImportTemplate(),
-                  SessionUtils.getLoggedUser(sessionScope), SessionUtils.getCurrentBanque(sessionScope),
-                  e.getData() == null ? uploadedWb.getSheetAt(0) : uploadedWb.getSheet((String) e.getData()));
+                  SessionUtils.getLoggedUser(sessionScope), SessionUtils.getCurrentBanque(sessionScope), sheet);
             }else{ // import sub derive
                historique = ManagerLocator.getImportManager().importSubDeriveFileManager(this.importTemplateDecorator.getImportTemplate(),
-                  SessionUtils.getLoggedUser(sessionScope), SessionUtils.getCurrentBanque(sessionScope),
-                  e.getData() == null ? uploadedWb.getSheetAt(0) : uploadedWb.getSheet((String) e.getData()), null);
+                  SessionUtils.getLoggedUser(sessionScope), SessionUtils.getCurrentBanque(sessionScope), sheet, null);
             }
 
             // Maj de la fiche
@@ -1517,21 +1465,34 @@ public class FicheImportTemplate extends AbstractFicheCombineController
                refreshListesModele();
             }
             ok = true;
-         }catch(final RuntimeException re){
-            errors = ((ErrorsInImportException) re).getErrors();
+         }
+         catch(ErrorsInImportException errorsInImportException) {
+            errors = errorsInImportException.getErrors();
             ok = false;
          }
+         catch(Exception exception){
+            log.error(exception.getMessage(), exception);
+            throw exception;
+         }
 
-         // si import s'est déroulé correctement
+         //si import s'est déroulé correctement et qu'un interfacage avec un SGL est en place
+         //avec acquittement, un lien vers le prélèvement est envoyé
+         //A optimiser car avant de lancer la requête qui peut ramener beaucoup d'éléments
+         //il faudrait vérifier qu'il y a bien au moins un récepteur
          if(ok){
             try{
                // Prelevements
-               final List<TKAnnotableObject> tkObjs = new ArrayList<>();
-               tkObjs.addAll(ManagerLocator.getImportHistoriqueManager().findPrelevementByImportHistoriqueManager(historique));
-               // Recepteurs
-               for(final Recepteur recept : SessionUtils.getRecepteursInterfacages(sessionScope)){
-                  ManagerLocator.getSenderFactory().sendMessages(recept, tkObjs, null);
+               List<TKAnnotableObject> listPrelevement = new ArrayList<>();
+               List<Recepteur> listRecepteur = SessionUtils.getRecepteursInterfacages(sessionScope);
+               int nbRecepteur = listRecepteur.size();
+               for(int i=0; i<nbRecepteur; i++) {
+                  //lors du traitement du 1er récepteur, on alimente la liste des prélèvements traités et ensuite on l'ajoute à tous les récepteurs
+                  if(i == 0) {
+                     listPrelevement.addAll(ManagerLocator.getImportHistoriqueManager().findPrelevementByImportHistoriqueManager(historique));
+                  }
+                  ManagerLocator.getSenderFactory().sendMessages(listRecepteur.get(i), listPrelevement, null);
                }
+               
             }catch(final Exception ex){
                Clients.clearBusy();
                throw new RuntimeException(ex);
@@ -1540,7 +1501,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
 
          Clients.clearBusy();
          // si la modale resultats n'est pas initialisée
-         if(openResultatsImportWindow(page, ok, historique, errors, null, uploadedWb, sheetName, self)){
+         if(openResultatsImportWindow(page, ok, historique, errors, null, uploadedWb, sheetName, self, importTemplateStrategy)){
             ((ResultatsImportModale) page.getFellow("resultsImportWindow").getFirstChild().getFellow("fwinResultatsImportModale")
                .getAttributeOrFellow("fwinResultatsImportModale$composer", true)).update(ok, sheetName, historique, errors);
          }
@@ -1555,8 +1516,9 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       final HSSFSheet sheet = wb.getSheetAt(0);
 
       final List<String> tmp = new ArrayList<>();
-      for(int i = 0; i < importColonnes.size(); i++){
-         tmp.add(importColonnes.get(i).getNom());
+      int nbColonne = importColonnesDecorator.size();
+      for(int i = 0; i < nbColonne; i++){
+         tmp.add(importColonnesDecorator.get(i).getColonne().getNom());
       }
       ManagerLocator.getExportUtils().addDataToRow(sheet, 0, 0, tmp);
       ByteArrayOutputStream out = null;
@@ -1686,14 +1648,17 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       subderiveParentEntites.add(ManagerLocator.getEntiteManager().findByIdManager(8));
    }
 
-   public Boolean getSubderive(){
-      return isSubderive;
-   }
+//   public Boolean getSubderive(){
+//      return isSubderive;
+//   }
 
-   public Boolean getNonSubderive(){
-      return !isSubderive;
+   public boolean isBlocDeriveParentVisible() {
+      if(importTemplateStrategy != null) {
+         return importTemplateStrategy.isBlocDeriveParentVisible();
+      }
+      return false;
    }
-
+   
    public String getDeriveParentEntiteNom(){
       if(importTemplateDecorator != null && importTemplateDecorator.getDeriveParentEntite() != null
          && importTemplateDecorator.getDeriveParentEntite().getNom() != null){
@@ -1707,19 +1672,33 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    }
 
    public void onClick$addNewSubderiveC(){
-      isSubderive = true;
-      Clients.showBusy(Labels.getLabel("general.display.wait"));
-      Events.echoEvent("onLaterAddNewSubderive", self, null);
-   }
-
-   public void onLaterAddNewSubderive(){
-      switchToCreateModeSubderive();
-      // Rend le bouton copyEmptyFields cliquable et visible
+      //isSubderive = true;
+      importTemplateStrategy = ImportTemplateStrategyFactory.createImportTemplateStrategy(EImportTemplateType.CREATION_DERIVE, retrieveImportTemplateContexte());
+      switchToCreateMode();
+//      //initialisation du type de l'import (la méthode setNewObjet() a été appelé par switchToCreateMode() dont le decorator est initialisé
+//      importTemplateDecorator.setTypeCode(EImportTemplateType.CREATION_DERIVE.getCode());
+      // Rend le bouton copyEmptyFields cliquable et visible car des colonneDecorator sont présents dans la liste
       showCopyFieldsButton();
-      // ferme wait message
-      Clients.clearBusy();
+      //Clients.showBusy(Labels.getLabel("general.display.wait"));
+      //Events.echoEvent("onLaterAddNewSubderive", self, null);
    }
 
+//   //TODO : pourquoi showCopy ? pourquoi timer ????
+//   public void onLaterAddNewSubderive(){
+//      //switchToCreateModeSubderive();
+//      switchToCreateMode();
+//      // Rend le bouton copyEmptyFields cliquable et visible
+//      showCopyFieldsButton();
+//      // ferme wait message
+//      Clients.clearBusy();
+//   }
+
+   //TK-538
+   public void onClick$addNewForModificationAnnotationC(){
+      importTemplateStrategy = ImportTemplateStrategyFactory.createImportTemplateStrategy(EImportTemplateType.MODIFICATION_ANNOTATION, retrieveImportTemplateContexte());
+      switchToCreateMode();
+   }
+   
    /**
     *
     * Active le bouton de copie des champs vides en le rendant cliquable et visible.
@@ -1728,11 +1707,13 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       copyEmptyFields.setDisabled(false);
       copyEmptyFields.setVisible(true);
    }
+   
    public void switchToCreateModeSubderive(){
 
       super.switchToCreateMode();
 
       addNewSubderiveC.setVisible(false);
+      addNewForModificationAnnotationC.setVisible(false);
 
       // Initialisation du mode (listes, valeurs...)
       initEditableMode();
@@ -1749,31 +1730,12 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       super.switchToEditMode();
 
       addNewSubderiveC.setVisible(false);
+      addNewForModificationAnnotationC.setVisible(false);
 
       // getEntitesAssocieesImport().switchToEditMode(true);
 
       getBinder().loadComponent(self);
 
-   }
-
-   private List<ImportColonne> makeSubderiveHeaderCols(final ImportTemplate it){
-      final List<ImportColonne> ics = new ArrayList<>();
-      final ImportColonne icCodeParent = new ImportColonne();
-      icCodeParent.setNom("code.parent");
-      icCodeParent.setOrdre(0);
-      icCodeParent.setImportTemplate(it);
-      ics.add(icCodeParent);
-      final ImportColonne icTrQte = new ImportColonne();
-      icTrQte.setNom("qte.transf");
-      icTrQte.setOrdre(0);
-      icTrQte.setImportTemplate(it);
-      ics.add(icTrQte);
-      final ImportColonne icDs = new ImportColonne();
-      icDs.setNom("evt.date");
-      icDs.setOrdre(0);
-      icDs.setImportTemplate(it);
-      ics.add(icDs);
-      return ics;
    }
 
    public I3listBoxItemRenderer getEntiteRenderer(){
@@ -1792,33 +1754,11 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       this.importTemplateDecorator = iTemplateDecorator;
    }
    
-   public Set<EntiteDecorator> getEntites(){
-      return entites;
-   }
-
-   public void setEntites(final Set<EntiteDecorator> e){
-      this.entites = e;
-   }
-
    public List<ImportColonne> getImportColonnes(){
-      return importColonnes;
-   }
-
-   public void setImportColonnes(final List<ImportColonne> iColonnes){
-      this.importColonnes = iColonnes;
-   }
-
-   public String getEntitesFormatted(){
-      final StringBuffer sb = new StringBuffer();
-      final Iterator<EntiteDecorator> it = entites.iterator();
-
-      while(it.hasNext()){
-         sb.append(it.next().getLabel());
-         if(it.hasNext()){
-            sb.append(", ");
-         }
+      if(importColonnesDecorator != null) {
+         return importColonnesDecorator.stream().map(decorator -> decorator.getColonne()).collect(Collectors.toList());
       }
-      return sb.toString();
+      return new ArrayList<ImportColonne>();
    }
 
    public ImportColonneRowRenderer getColonnesRenderer(){
@@ -1837,11 +1777,11 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       return ImportConstraints.getDescriptionConstraint();
    }
 
-   public List<EntiteDecorator> getEntitesAssociees(){
+   public List<EntiteDecoratorForOneToManyComponent> getEntitesAssociees(){
       return entitesAssociees;
    }
 
-   public void setEntitesAssociees(final List<EntiteDecorator> e){
+   public void setEntitesAssociees(final List<EntiteDecoratorForOneToManyComponent> e){
       this.entitesAssociees = e;
    }
 
@@ -1850,8 +1790,10 @@ public class FicheImportTemplate extends AbstractFicheCombineController
     * des associations one-to-many avec les banques.
     */
    public EntitesAssocieesImport getEntitesAssocieesImport(){
-      return (EntitesAssocieesImport) self.getFellow("entitesAssocieesImport").getFellow("winEntitesAssocieesImport")
+      EntitesAssocieesImport result = (EntitesAssocieesImport) self.getFellow("entitesAssocieesImport").getFellow("winEntitesAssocieesImport")
          .getAttributeOrFellow("winEntitesAssocieesImport$composer", true);
+      
+      return result;
    }
 
    public List<ImportColonneDecorator> getImportColonnesDecorator(){
@@ -1862,11 +1804,11 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       this.importColonnesDecorator = i;
    }
 
-   public EntiteDecorator getSelectedEntite(){
+   public EntiteDecoratorForOneToManyComponent getSelectedEntite(){
       return selectedEntite;
    }
 
-   public void setSelectedEntite(final EntiteDecorator sEntite){
+   public void setSelectedEntite(final EntiteDecoratorForOneToManyComponent sEntite){
       this.selectedEntite = sEntite;
    }
 
@@ -1927,10 +1869,10 @@ public class FicheImportTemplate extends AbstractFicheCombineController
    }
 
    public String getTitle(){
-      if(!isSubderive){
-         return Labels.getLabel("importTemplate.fiche.title");
+      if(importTemplateStrategy != null) {
+         return Labels.getLabel(importTemplateStrategy.defineKeyI18nForTitle());
       }
-      return Labels.getLabel("importTemplate.subderive.fiche.title");
+      return null;
    }
 
    private void refreshListesModele () {          
@@ -2093,32 +2035,66 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          .map(entite -> entite.getNom()).collect(Collectors.joining (", ")));
    }
    
+//   //TK-548 : création d'un modèle à partir d'un autre
+//   //Création des colonnes du nouveau modèle à partir de celles compatibles passées en paramètres
+//   private ImportColonne createNewImportColonneFromExisting(ImportColonne existing) {
+//      ImportColonne newImportColonne = new ImportColonne();
+//      newImportColonne.setImportTemplate(importTemplateDecorator.getImportTemplate());
+//      Champ newChamp = null;
+//      // /!\ dans le cas des dérivés, pour les colonnes du parent du dérivé, les importColonnes sont construits
+//      //"manuellement" (méthode makeSubderiveHeaderCols()) donc getChamp() est null ....
+//      if(existing.getChamp() != null) {
+//         if(existing.getChamp().getChampEntite() != null) {
+//            newChamp = new Champ(existing.getChamp().getChampEntite());
+//         }
+//         else if(existing.getChamp().getChampDelegue() != null) {
+//            newChamp = new Champ(existing.getChamp().getChampDelegue());
+//         }
+//         else if(existing.getChamp().getChampAnnotation() != null) {
+//            newChamp = new Champ(existing.getChamp().getChampAnnotation());
+//         }
+//         newImportColonne.setChamp(newChamp);
+//      }
+//      newImportColonne.setNom(existing.getNom());
+//      newImportColonne.setOrdre(existing.getOrdre());
+//      
+//      return newImportColonne;
+//   }
+
    //TK-548 : création d'un modèle à partir d'un autre
-   //Création des colonnes du nouveau modèle à partir de celles compatibles passées en paramètres
-   private ImportColonne createNewImportColonneFromExisting(ImportColonne existing) {
+   //Création des ImportColonneDecorator du nouveau modèle à partir de ceux compatibles passées en paramètres
+   private ImportColonneDecorator createNewImportColonneDecoratorFromExisting(ImportColonneDecorator existing) {
       ImportColonne newImportColonne = new ImportColonne();
       newImportColonne.setImportTemplate(importTemplateDecorator.getImportTemplate());
       Champ newChamp = null;
+      ImportColonne importColonneExisting = existing.getColonne();
+      Champ champExisting = importColonneExisting.getChamp();
       // /!\ dans le cas des dérivés, pour les colonnes du parent du dérivé, les importColonnes sont construits
       //"manuellement" (méthode makeSubderiveHeaderCols()) donc getChamp() est null ....
-      if(existing.getChamp() != null) {
-         if(existing.getChamp().getChampEntite() != null) {
-            newChamp = new Champ(existing.getChamp().getChampEntite());
+      if(importColonneExisting.getChamp() != null) {
+         if(champExisting.getChampEntite() != null) {
+            newChamp = new Champ(champExisting.getChampEntite());
          }
-         else if(existing.getChamp().getChampDelegue() != null) {
-            newChamp = new Champ(existing.getChamp().getChampDelegue());
+         else if(champExisting.getChampDelegue() != null) {
+            newChamp = new Champ(champExisting.getChampDelegue());
          }
-         else if(existing.getChamp().getChampAnnotation() != null) {
-            newChamp = new Champ(existing.getChamp().getChampAnnotation());
+         else if(champExisting.getChampAnnotation() != null) {
+            newChamp = new Champ(champExisting.getChampAnnotation());
          }
          newImportColonne.setChamp(newChamp);
       }
-      newImportColonne.setNom(existing.getNom());
-      newImportColonne.setOrdre(existing.getOrdre());
+      newImportColonne.setNom(importColonneExisting.getNom());
+      newImportColonne.setOrdre(importColonneExisting.getOrdre());
       
-      return newImportColonne;
+      //on reporte les caractéristique du decorator existant dans le nouveau decorator car on est forcément dans le même "cadre"
+      ImportColonneDecorator newImportColonneDecorator = new ImportColonneDecorator(newImportColonne, existing.getImportTemplateContexte());
+      newImportColonneDecorator.setCanDelete(existing.getCanDelete());
+      newImportColonneDecorator.setCanMove(existing.getCanMove());
+      newImportColonneDecorator.setDisableEditLabel(existing.getDisableEditLabel());
+      
+      return newImportColonneDecorator;
    }
-
+   
    //TK-548 : création d'un modèle à partir d'un autre
    //création d'une colonne à partir d'un champ
    private ImportColonne createNewImportColonneFromChampEntite(ChampEntite champEntite, int ordre) {
@@ -2225,4 +2201,17 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       return isImportTemplateNonNull() && importTemplateDecorator.getImportTemplate().getBanque().equals(SessionUtils.getCurrentBanque(sessionScope));
    }
    //fin TK-537
+
+   private Entite getEntiteForImportColonneDecorator(ImportColonneDecorator importColonneDecorator) {
+      Entite entite = null;
+      if(importColonneDecorator != null) {
+         if(importColonneDecorator.getColonne().getChamp().getChampEntite() != null){
+            entite = importColonneDecorator.getColonne().getChamp().getChampEntite().getEntite();
+         }else if(importColonneDecorator.getColonne().getChamp().getChampAnnotation() != null){
+            entite = importColonneDecorator.getColonne().getChamp().getChampAnnotation().getTableAnnotation().getEntite();
+         }
+      }
+      
+      return entite;
+   }
 }

@@ -102,20 +102,18 @@
 						</div>
 						</hbox> 
 					</row>
-					<!-- Modification !!!! à supprimer !
-					
-					<row visible="false">
-						<div />
-						<hlayout>
-							<checkbox id="updateTemplateCheckbox" visible="false"
-								checked="@{fwinImportTemplate$composer.importTemplateDecorator.importTemplate.isUpdate}"/>
-							<label id="updateTemplateLabel" sclass="formValueItalics" 
-								value="${c:l('importTemplate.is.update')}" 
-								visible="@{fwinImportTemplate$composer.updateTemplateLabelVisible}" />
-						</hlayout>
-					</row>-->
+					<!-- Type -->
+					<row>
+						<label value="${c:l('importTemplate.type')}" 
+							sclass="formLabel"/>
+						<label id="typeLabel" 
+							value="@{fwinImportTemplate$composer.importTemplateDecorator.libelleType}" 
+							sclass="formValue" 
+						/>
+					</row>
+
 					<!-- Subderive -->
-					<row visible="@{fwinImportTemplate$composer.subderive}">
+					<row visible="@{fwinImportTemplate$composer.blocDeriveParentVisible}">
 						<label value="${c:l('importTemplate.subderive.entite.parent')}" 
 							sclass="formLabel"/>
 						<div>
@@ -336,6 +334,8 @@
 					image="/images/icones/new.png" sclass="buttonv2"/>
 				<button id="addNewSubderiveC" label="${c:l('importTemplate.new.subderive')}" height="24px" visible="true"
 						image="/images/icones/new.png" sclass="buttonv2"/>
+				<button id="addNewForModificationAnnotationC" label="${c:l('importTemplate.new.modification.annotation')}" height="24px" visible="true"
+						image="/images/icones/new.png" sclass="buttonv2"/>						
 				<button id="editC" label="${c:l('general.edit')}" height="24px" visible="true"
 					image="/images/icones/edit.png" sclass="buttonv2"/>
 				<button id="deleteC" label="${c:l('general.delete')}" height="24px" visible="true"

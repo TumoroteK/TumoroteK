@@ -40,8 +40,8 @@ import java.util.List;
 
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
-import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
+import fr.aphp.tumorotek.model.systeme.EEntiteId;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -95,6 +95,14 @@ public interface ImportHistoriqueManager
    List<Importation> findImportationsByHistoriqueAndEntiteManager(ImportHistorique importHistorique, Entite entite);
 
    /**
+    * Recherche les Importations d'un ImportHistorique et d'une EEntiteId.
+    * @param importHistorique ImportHistorique.
+    * @param entite Entite.
+    * @return Liste d'Importation.
+    */
+   List<Importation> findImportationsByHistoriqueAndEEntiteIdManager(ImportHistorique importHistorique, EEntiteId eEntiteId);
+   
+   /**
     * Recherche les Importations d'une Entité pour un id.
     * @param entite Entite.
     * @param objetId Identifiant.
@@ -102,13 +110,14 @@ public interface ImportHistoriqueManager
     */
    List<Importation> findImportationsByObjectManager(Object object);
 
+ 
    /**
-    * Recherche les Importations d'une Entité pour un id.
-    * @param entite Entite.
+    * Recherche les Importations de type "NEW" d'un objet "materiel" caractérisé par son id associé à un entiteId.
+    * @param entiteId id de l'entité.
     * @param objetId Identifiant.
     * @return Liste d'Importation.
     */
-   List<Importation> findImportationsByEntiteAndObjectIdManager(Entite entite, Integer objetId);
+   List<Importation> findImportationsForCreationByEntiteIdAndObjectIdManager(Integer entiteId, Integer objetId);
 
    /**
     * Persist une instance d'ImportHistorique dans la base de données.

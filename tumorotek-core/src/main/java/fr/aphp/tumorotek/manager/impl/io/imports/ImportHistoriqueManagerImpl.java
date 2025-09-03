@@ -37,7 +37,6 @@ package fr.aphp.tumorotek.manager.impl.io.imports;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
 
 import javax.persistence.EntityManager;
@@ -49,7 +48,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.io.imports.ImportHistoriqueDao;
-import fr.aphp.tumorotek.dao.io.imports.ImportTemplateDao;
 import fr.aphp.tumorotek.dao.io.imports.ImportationDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
@@ -59,9 +57,10 @@ import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
+import fr.aphp.tumorotek.model.io.imports.EImportationType;
 import fr.aphp.tumorotek.model.io.imports.ImportHistorique;
-import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.io.imports.Importation;
+import fr.aphp.tumorotek.model.systeme.EEntiteId;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -120,7 +119,7 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    @Override
    public List<Importation> findImportationsByHistoriqueManager(final ImportHistorique importHistorique){
       if(importHistorique != null){
-         return importationDao.findByHistorique(importHistorique);
+         return importationDao.findByHistoriqueId(importHistorique.getImportHistoriqueId());
       }else{
          return new ArrayList<>();
       }
@@ -130,12 +129,19 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    public List<Importation> findImportationsByHistoriqueAndEntiteManager(final ImportHistorique importHistorique,
       final Entite entite){
       if(importHistorique != null && entite != null){
-         return importationDao.findByHistoriqueAndEntite(importHistorique, entite);
+         return importationDao.findByHistoriqueIdAndEntiteId(importHistorique.getImportHistoriqueId(), entite.getEntiteId());
       }else{
          return new ArrayList<>();
       }
    }
 
+   @Override
+   public List<Importation> findImportationsByHistoriqueAndEEntiteIdManager(final ImportHistorique importHistorique,
+      final EEntiteId eEntiteId){
+      return findImportationsByHistoriqueAndEntiteManager(importHistorique, entiteDao.findById(eEntiteId.getId()));
+
+   }   
+   
    @Override
    public List<Importation> findImportationsByObjectManager(final Object object){
 
@@ -158,21 +164,23 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
       }
 
       if(e != null && id > 0){
-         return importationDao.findByEntiteAndObjetId(e, id);
+         return importationDao.findByEntiteIdAndObjetId(e.getEntiteId(), id);
       }else{
          return new ArrayList<>();
       }
    }
 
+ 
    @Override
-   public List<Importation> findImportationsByEntiteAndObjectIdManager(final Entite entite, final Integer objetId){
-      if(entite != null && objetId != null){
-         return importationDao.findByEntiteAndObjetId(entite, objetId);
+   public List<Importation> findImportationsForCreationByEntiteIdAndObjectIdManager(final Integer entiteId, final Integer objetId){
+      if(entiteId != null && objetId != null){
+         return importationDao.findByEntiteIdObjetIdAndTypeCode(entiteId, objetId, EImportationType.CREATION.getCode());
       }else{
          return new ArrayList<>();
       }
    }
-
+   
+   
    @Override
    public void createObjectManager(final ImportHistorique importHistorique, final Utilisateur utilisateur, final List<Importation> importations){
       // utilisateur required
@@ -183,18 +191,17 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
          throw new RequiredObjectIsNullException("Utilisateur", "creation", "importTemplate");
       }
 
+      importHistoriqueDao.createObject(importHistorique);
+
       if(importations != null){
-         importHistorique.setImportations(new HashSet<Importation>());
          for(int i = 0; i < importations.size(); i++){
             final Importation imp = importations.get(i);
-            imp.setImportHistorique(importHistorique);
-            imp.setEntite(entiteDao.mergeObject(imp.getEntite()));
-            importHistorique.getImportations().add(imp);
+            imp.setImportHistoriqueId(importHistorique.getImportHistoriqueId());
+            importationDao.createObject(imp);
          }
       }
-
-      importHistoriqueDao.createObject(importHistorique);
-      log.info("Enregistrement objet ImportHistorique {}",  importHistorique);
+      
+      log.info("Enregistrement objet ImportHistorique {} et les objets importations liés ",  importHistorique);
    }
    
    
@@ -202,6 +209,14 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
    public void removeObjectManager(final ImportHistorique importHistorique){
       if(importHistorique != null){
          importHistoriqueDao.removeObject(importHistorique.getImportHistoriqueId());
+         //TK-538 : lien importHistorique / Importation supprimé pour optimiser.
+         //Le lien était en delete cascade donc gestion ici du delete cascade supprimé
+         //mais sans chercher à optimiser puisque la fonctionnalité n'est pas possible depuis l'applicaiton
+         //la méthode est appelée uniquement par les tests :-(
+         List<Importation> importations = importationDao.findByHistoriqueId(importHistorique.getImportHistoriqueId());
+         for(Importation importation : importations) {
+            importationDao.removeObject(importation.getImportationId());
+         }
          log.info("Suppression de l'objet ImportHistorique : {}",  importHistorique);
       }else{
          log.warn("Suppression d'un ImportHistorique null");
@@ -220,7 +235,10 @@ public class ImportHistoriqueManagerImpl implements ImportHistoriqueManager
 
    @Override
    public List<Prelevement> findPrelevementByImportHistoriqueManager(final ImportHistorique ih){
-      return importHistoriqueDao.findPrelevementByImportHistorique(ih);
+      if(ih != null) {
+         return importHistoriqueDao.findPrelevementByImportHistoriqueId(ih.getImportHistoriqueId());
+      }
+      return new ArrayList<Prelevement>();
    }
    
    @Override

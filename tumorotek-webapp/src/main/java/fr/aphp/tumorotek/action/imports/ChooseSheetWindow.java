@@ -36,7 +36,9 @@
 package fr.aphp.tumorotek.action.imports;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.poi.ss.usermodel.Sheet;
 import org.zkoss.bind.annotation.AfterCompose;
@@ -57,6 +59,8 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Hlayout;
 import org.zkoss.zul.Window;
 
+import fr.aphp.tumorotek.action.imports.strategy.ImportTemplateStrategy;
+
 /**
  *
  * @author Mathieu BARTHELEMY
@@ -74,8 +78,15 @@ public class ChooseSheetWindow
 
    private Component parent;
 
+   private ImportTemplateStrategy importTemplateStrategy;
+   
+   //liste des onglets (du fichier importé) ayant des données
+   //l'utilisateur va sélectionner dans cette liste l'onglet à traiter
+   //L'utilisateur pouvant demander le traitement successif des différents onglets,
+   //les onglets précédemment traités ne seront pas sélectionnables
    private final List<TabFileSheet> sheets = new ArrayList<>();
 
+   //onglet en 
    private TabFileSheet selectedSheet = null;
 
    private Boolean embed = false;
@@ -92,11 +103,14 @@ public class ChooseSheetWindow
    }
 
    @Init
+   //"selSheets" est la liste des onglets déjà traités
+   //"sheets" est la liste de tous les onglets du fichier
    public void init(@ExecutionArgParam("selSheets") final List<TabFileSheet> selTbs,
       @ExecutionArgParam("sheets") final List<Sheet> shs, @ExecutionArgParam("parent") final Component p,
-      @ExecutionArgParam("embedded") final Boolean emb){
+      @ExecutionArgParam("strategy") final ImportTemplateStrategy importTemplateStrategy, @ExecutionArgParam("embedded") final Boolean emb){
 
       parent = p;
+      this.importTemplateStrategy = importTemplateStrategy;
       if(emb != null){
          embed = emb;
       }
@@ -122,6 +136,7 @@ public class ChooseSheetWindow
       updateSelSheets(selTbs);
    }
 
+   //rend non sélectionnables les onglets déjà traités
    private void updateSelSheets(final List<TabFileSheet> selTbs){
       // disable
       if(selTbs != null){
@@ -150,7 +165,9 @@ public class ChooseSheetWindow
          if(!embed){
             Events.echoEvent("onClose", fwinChooseSheetWindow, null);
          }
-         Events.echoEvent("onLaterImport", parent, getSelectedSheet().getName());
+         Map<String, Object> eventData = new HashMap<String, Object>();
+         eventData.put(FicheImportTemplate.EVENT_DATA__SHEET_NAME, getSelectedSheet().getName());
+         Events.echoEvent(importTemplateStrategy.defineNomMethodePourExecuterImport(), parent, eventData);
       }
    }
 

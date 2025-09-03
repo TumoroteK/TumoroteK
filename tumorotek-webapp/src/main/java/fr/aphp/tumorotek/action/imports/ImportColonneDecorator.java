@@ -46,6 +46,7 @@ import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 
 /**
  * Decorateur ImportColonne pour affichage ImportTemplate.
+ * Par défaut, les actions possibles pour la colonne rattachée sont : la suppression, le déplacement et la définition du libellé associé.
  *
  * @version 2.3.0-gatsbi
  * @author Mathieu BARTHELEMY
@@ -56,11 +57,11 @@ public class ImportColonneDecorator
 
    private ImportColonne colonne;
 
-   private Boolean canDelete = null;
+   private boolean canDelete = true;
 
-   private Boolean canMove = true;
-
-   private Boolean disableEditLabel = false;
+   private boolean canMove = true;
+   
+   private boolean disableEditLabel = false;
    
    // decorateur s'applique dans un contexte gatsbi?
    //la maladie doit être considérée comme une visite => date de début est en fait la date de la visite
@@ -142,14 +143,9 @@ public class ImportColonneDecorator
    }
 
    public boolean getCanDelete(){
-      if(canDelete != null){
-         return canDelete;
-      }else if(colonne.getChamp() != null && colonne.getChamp().getChampEntite() != null){
-         return colonne.getChamp().getChampEntite().isNullable();
-      }
-      return true;
+      return canDelete;
    }
-
+   
    public boolean getCanMove(){
       return canMove;
    }
@@ -166,7 +162,19 @@ public class ImportColonneDecorator
       this.disableEditLabel = d;
    }
 
+   //indique que la colonne fait partie de la clé fonctionnelle => la colonne ne peut pas être supprimée ni déplacée
+   public void defineAsElementOfCleFonctionnelle() {
+      canDelete = false;
+      canMove = false;
+   }
 
+   public Integer getOrdre() {
+      if(getColonne() != null) {
+         return getColonne().getOrdre();
+      }
+      
+      return null; 
+   }
 
    /**
     * Decore une liste de ImportColonne.
@@ -244,6 +252,10 @@ public class ImportColonneDecorator
       this.canDelete = canDelete;
    }
 
+   public EContexte getImportTemplateContexte(){
+      return importTemplateContexte;
+   }
+   
    public void setImportTemplateContexte(EContexte importTemplateContexte){
       this.importTemplateContexte = importTemplateContexte;
    }

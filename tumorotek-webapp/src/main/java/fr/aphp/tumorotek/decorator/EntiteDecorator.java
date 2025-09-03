@@ -93,35 +93,11 @@ public class EntiteDecorator
       return label;
    }
 
-   /**
-    * Decore une liste d'Entites.
-    * @param entites
-    * @return Entites décorés.
-    * @since 2.3.0-gatsbi, modifie Maladie -> Visite dans la décoration
-    */
-   public static List<EntiteDecorator> decorateListe(final Collection<Entite> entites, final boolean gatsbi){
-      final List<EntiteDecorator> liste = new ArrayList<>();
-      final Iterator<Entite> it = entites.iterator();
-      while(it.hasNext()){
-         liste.add(new EntiteDecorator(it.next(), gatsbi));
-      }
-      return liste;
-   }
 
-   /**
-    * Extrait les Contrats d'une liste de Decorator.
-    * @param Contrats
-    * @return Contrats décorés.
-    */
-   public static List<Entite> extractListe(final List<EntiteDecorator> entites){
-      final List<Entite> liste = new ArrayList<>();
-      final Iterator<EntiteDecorator> it = entites.iterator();
-      while(it.hasNext()){
-         liste.add(it.next().getEntite());
-      }
-      return liste;
+   protected boolean isGatsbi(){
+      return gatsbi;
    }
-
+   
    @Override
    public boolean equals(final Object obj){
 

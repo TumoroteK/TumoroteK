@@ -36,8 +36,15 @@
  **/
 package fr.aphp.tumorotek.model.qualite;
 
+// /!\ l'ajout d'une valeur dans cette énumération nécessite de définir le label internationalisé associé dans historique_fr.properties et historique.properties
 public enum EOperationTypeId
 {
+   //NB : au 10/07/2025, le type Import qui devait correspondre à la création par import n'est jamais utilisé. 
+   //C'est OperationType.Creation qui l'est, complété par (Import) si un enregistrement existe dans la table IMPORTATION pour l'objet considéré. 
+   //Ceci est dû au fait que le traitement d'import passe dans exactement le même code que la création des objets via l'interface
+   //Pour l'import en modification des annotations, un type est par contre nécessaire car plusieurs modifications des annotations peuvent être
+   //faites sur un même objet donc la recherche dans IMPORTATION ne peut être utilisée de façon fiable - à moins de regarder la date heure mais 
+   //ce n'est pas simple.Le traitement d'import en modification des annotations étant spécifique, cela se justifie d'autant plus
    CONSULTATION(1),
    EXPORT(2),
    CREATION(3),
@@ -62,7 +69,8 @@ public enum EOperationTypeId
    EXPORT_INCA(22),
    EXPORT_BIOCAP(23),
    PARTAGE(24),
-   SUPPRESSION_PARTAGE(25);
+   SUPPRESSION_PARTAGE(25),
+   IMPORT_ANNOTATION(26);
    
    private EOperationTypeId(Integer id) {
       this.id = id;
