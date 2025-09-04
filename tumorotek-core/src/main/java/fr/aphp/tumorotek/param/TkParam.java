@@ -42,7 +42,6 @@ package fr.aphp.tumorotek.param;
  */
 public enum TkParam
 {
-
 	FILESYSTEM("tk.filesystem"),
 	CONF_DIR("tk.conf.dir"),
 	MBIO_CONF_DIR("tk.mbio.system"),
@@ -92,6 +91,10 @@ public enum TkParam
 	GATSBI_API_URL_CONTEXTE_PATH("gatsbi.api.url.contexte.path"),
 	GATSBI_API_URL_PARAMETRAGE_PATH("gatsbi.api.url.parametrage.path"),
 	GATSBI_API_URL_SCHEMAVISITES_PATH("gatsbi.api.url.schema.visite.path"),
+   //TK-623 : permet de définir le domaine de la requête initiale quand le tomcat est appelé par une redirection sur localhost 
+   //(cas par exemple avec la mise en place du HTTPs). Cette information est utilisée pour construire la requête
+   //d'accès direct à la fiche prélèvement dans le cas d'un interfaçage avec DIAMIC (ack activé)
+   REQUEST_ORIGIN("request.origin", false),
 	//durée de vie en millisecondes - la clé est facultative : une valeur par défaut est gérée dans le code
 	GATSBI_JWT_EXPIRATION("gatsbi.jwt.expiration", false);
 
