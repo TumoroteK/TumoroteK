@@ -36,8 +36,12 @@
 package fr.aphp.tumorotek.action.prelevement;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
@@ -70,6 +74,7 @@ import fr.aphp.tumorotek.manager.coeur.prelevement.RisqueManager;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.interfacage.PatientSipSejour;
 import fr.aphp.tumorotek.model.qualite.OperationType;
@@ -391,7 +396,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
    /**
     * Composante de la methode onSelect$patientsBox() qui permet la selection
-    * automatique du premier patient quand eppelée hors de cette methode.
+    * automatique du premier patient quand appelée hors de cette methode.
     *
     * @param selected
     * @since 2.0.13 fixs System Maladie defaut existant/non existant
@@ -399,10 +404,18 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    private void selectPatientAuto(final Patient selected){
 
       final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+      //initialisation des maladies du patient avec les maladies existantes. Permettra ensuite de gérer les
+      //maladies à transmettre au back directement au niveau du patient :
+      Set<Maladie> patientSelectedMaladies = new HashSet<Maladie>(ManagerLocator.getMaladieManager().findAllByPatientManager(selected));
+      selected.setMaladies(patientSelectedMaladies);
 
       if(this.banqueDefMaladies){
 
-         fetchAndDecorateMaladieForPatient(selected);
+         //gestion des maladies à afficher :
+         //filtre sur les maladies du patient pour ne garder que celles gérées par l'utilisateur :
+         //suppression a minima des "maladies defaut" et des visites dans le cas de Gatsbi
+         //Ensuite décoration des maladies gardées
+         filterAndDecorateMaladieForPatient(selected);
          
          //selectionne automatiquement la premiere maladie
          if(maladies.size() > 0){
@@ -422,7 +435,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
          Components.removeAllChildren(embeddedFicheMaladieDiv);
          setEmbeddedMaladieVisible(false);
       }
-      // selectionne la maladie sous-jacente ou la cree
+      // si collection sans le niveau maladie, crée la maladie par défaut si elle n'existe pas
+      // A noter que pour le moment, un schéma de visite défini sur une collection sans niveau maladie n'est pas exploité ...
       else{
 
          final List<Maladie> res =
@@ -438,6 +452,11 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
             maladie.setLibelle(SessionUtils.getSelectedBanques(sessionScope).get(0).getNom() + "-defaut");
             maladie.setSystemeDefaut(true);
          }
+         else {
+            //TK-711 : il faut affecter le patient sélectionné à la maladie existante pour éviter une "lazy initialize exception"
+            //lors de l'utilisation de la maladie côté back (création du prélèvement)
+            maladie.setPatient(selected);
+         }
 
          fichePrelevementEdit.setMaladie(maladie);
 
@@ -450,15 +469,18 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    }
    
    // @since 2.3.0-gatsbi, sera surchargée
-   protected void fetchAndDecorateMaladieForPatient(Patient patient) {
+   protected void filterAndDecorateMaladieForPatient(Patient patient) {
  
       maladies.clear();
       
-      maladies.addAll(MaladieDecorator.decorateListe(
-         new ArrayList<Maladie>(ManagerLocator.getMaladieManager()
-            .findByPatientNoSystemNorVisiteManager(patient))));
-      
-      maladies.forEach(m -> m.getMaladie().setPatient(patient));
+      //on ne garde que les maladies (banque est alors null) qui ne sont pas celles par défaut et les visites de la collection courante
+      patient.setBanque(SessionUtils.getCurrentBanque(sessionScope));
+      List<Maladie> listMaladieAAfficher =  
+         patient.getMaladies().stream()
+         .filter(m -> !m.getSystemeDefaut() && (m.getBanque() == null || m.getBanque().equals(patient.getBanque())))
+         .map(m -> {m.setPatient(patient); return m;})
+         .collect(Collectors.toList());
+      maladies.addAll(MaladieDecorator.decorateListe(listMaladieAAfficher));
    }
 
    /**

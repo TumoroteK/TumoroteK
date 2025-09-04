@@ -198,7 +198,7 @@ public class MaladieManagerImpl implements MaladieManager
                return maladie.getMaladieId() != mals.get(mals.indexOf(maladie)).getMaladieId();
             }
          }
-      }else{ // ancienne recherche de doublons ne reposant pas sur le patient
+      }else{ // ancienne recherche de doublons. A noter que malgré les apparences, Maladie ayant le patient comme attribut et la méthode equals de Maladie s'appuyant sur Patient, ce code utilise bien Patient
          if(maladie.getMaladieId() == null){
             return maladieDao.findByLibelle(maladie.getLibelle()).contains(maladie);
          }else{

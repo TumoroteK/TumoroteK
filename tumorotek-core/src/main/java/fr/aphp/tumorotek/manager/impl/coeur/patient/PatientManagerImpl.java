@@ -63,6 +63,7 @@ import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.dao.coeur.patient.MaladieDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientDao;
+import fr.aphp.tumorotek.dao.coeur.patient.PatientIdentifiantDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientLienDao;
 import fr.aphp.tumorotek.dao.coeur.patient.PatientMedecinDao;
 import fr.aphp.tumorotek.dao.coeur.prelevement.PrelevementDao;
@@ -114,6 +115,8 @@ public class PatientManagerImpl implements PatientManager
    /* Beans injectes par Spring*/
    private PatientDao patientDao;
 
+   private PatientIdentifiantDao patientIdentifiantDao;
+
    private MaladieDao maladieDao;
 
    private MaladieManager maladieManager;
@@ -145,7 +148,11 @@ public class PatientManagerImpl implements PatientManager
    public void setPatientDao(final PatientDao pDao){
       this.patientDao = pDao;
    }
-
+   
+   public void setPatientIdentifiantDao(PatientIdentifiantDao patientIdentifiantDao){
+      this.patientIdentifiantDao = patientIdentifiantDao;
+   }
+   
    public void setMaladieDao(final MaladieDao mDao){
       this.maladieDao = mDao;
    }
@@ -268,6 +275,7 @@ public class PatientManagerImpl implements PatientManager
 
             CreateOrUpdateUtilities.createAssociateOperation(patient, operationManager, oType, utilisateur);
 
+            //////////////////// CHT : ces appels sont surprenant vu que ces relations de Patient sont de type "CASCADE.MERGE" a minima ...
             // ajout association vers maladies
             if(maladies != null){
                updateMaladies(patient, maladies);
@@ -280,7 +288,8 @@ public class PatientManagerImpl implements PatientManager
             if(patientLiens != null){
                updateLiens(patient, patientLiens);
             }
-
+            ///////////////////////
+            
             try{
                // Annotations
                // suppr les annotations
@@ -1256,5 +1265,13 @@ public class PatientManagerImpl implements PatientManager
       Query queryDelete = em.createNamedQuery("PatientIdentifiant.removeAllForBanque");
       queryDelete.setParameter(1, banque);
       queryDelete.executeUpdate(); 
+   }
+
+   @Override
+   public void addPatientIdentifiantToPatient(String identifiant, Patient patient, Banque banque, Utilisateur utilisateur){
+      patientIdentifiantDao.createObject(new PatientIdentifiant(patient, banque, identifiant));
+      
+      OperationType oType = operationTypeDao.findByNom("Modification").get(0);
+      CreateOrUpdateUtilities.createAssociateOperation(patient, operationManager, oType, utilisateur);
    }
 }

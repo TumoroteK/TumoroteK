@@ -375,8 +375,7 @@ public class GatsbiControllerPatient
          
          return visites;
       } catch (Exception e) {
-         log.error(e.getMessage());
-         log.debug(e.getMessage(), e);
+         log.error(e.getMessage(), e);
          throw new GatsbiException("gatsbi.schema.visites.error");
       }
    }

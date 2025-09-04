@@ -476,6 +476,21 @@
 		</property>
 	</bean>
 
+	<bean id="patientIdentifiantDao" parent="abstractDao">
+		<property name="proxyInterfaces">
+			<value>fr.aphp.tumorotek.dao.coeur.patient.PatientIdentifiantDao
+			</value>
+		</property>
+		<property name="target">
+			<bean parent="abstractDaoTarget">
+				<constructor-arg>
+					<value>fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant
+					</value>
+				</constructor-arg>
+			</bean>
+		</property>
+	</bean>
+
 	<bean id="lienFamilialDao" parent="abstractDao">
 		<property name="proxyInterfaces">
 			<value>fr.aphp.tumorotek.dao.coeur.patient.LienFamilialDao
