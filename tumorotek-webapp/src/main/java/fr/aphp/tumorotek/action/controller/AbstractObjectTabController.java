@@ -81,13 +81,13 @@ import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Recepteur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 import fr.aphp.tumorotek.webapp.general.export.Export;
 
@@ -1177,23 +1177,30 @@ public abstract class AbstractObjectTabController extends AbstractController
 	private String makeResourceURL(Recepteur recept, Prelevement prel, String dosExtId) {
 
 		String url = null;
-
+      final HttpServletRequest req = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
 		if (recept != null && prel != null && dosExtId != null) {
-			final HttpServletRequest req = (HttpServletRequest) Executions.getCurrent().getNativeRequest();
-			url = req.getScheme() + "://" + req.getServerName();
-			if(req.getServerPort() > -1){
-				url = url + ":" + req.getServerPort();
-			}
-
-			// since 2.2.2-diamic
+		   //la clé REQUEST_ORIGIN est renseignée notamment dans le cas de https qui redirige vers tomcat en localhost
+		   //car cela pose problème si l'url est contruite dynamiquement
+		   String requestOrigin = TkParam.REQUEST_ORIGIN.getValue();
+		   if(requestOrigin != null && requestOrigin.trim().length() > 0) {
+		      url = requestOrigin.trim();
+		   }
+		   else {
+   			url = req.getScheme() + "://" + req.getServerName();
+   			if(req.getServerPort() > -1){
+   				url = url + ":" + req.getServerPort();
+   			}
+		   }
+         //Dans les 2 cas, on ajoute le contextPath :
+		   url = url + req.getContextPath();
+		   // since 2.2.2-diamic
 			// url peut représenter plusieurs prélèvements
 			if (recept.getLogiciel().getNom().contains("DIAMIC")) {
-				url = url.concat(req.getContextPath())
-						.concat("/ext/prelevement?bId=").concat(prel.getBanque().getBanqueId().toString())
+				url = url.concat("/ext/prelevement?bId=").concat(prel.getBanque().getBanqueId().toString())
 						.concat("&pCode=").concat(dosExtId.matches(".*-[0-9]+") ? 
 								dosExtId.substring(0, dosExtId.lastIndexOf("-")) : dosExtId);
-			} else {
-				url = url + req.getContextPath() + "/ext/prelevement?id=" + prel.getPrelevementId();
+			} else {//cas par exemple d'Hopital Manager qui est un SIP et non un SGL mais peut recevoir un flux lorsqu'un prélèvement est créé. Il "suffit" de le déclarer dans la table RECEPTEUR
+				url = url + "/ext/prelevement?id=" + prel.getPrelevementId();
 			}
 		}
 

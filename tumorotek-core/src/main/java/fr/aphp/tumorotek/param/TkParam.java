@@ -42,7 +42,10 @@ package fr.aphp.tumorotek.param;
  */
 public enum TkParam
 {
-
+   //TK-623 : permet de définir le domaine de la requête initiale quand le tomcat est appelé par une redirection sur localhost 
+   //(cas par exemple avec la mise en place du HTTPs). Cette information est utilisée pour construire la requête
+   //d'accès direct à la fiche prélèvement dans le cas d'un interfaçage avec DIAMIC (ack activé)
+   REQUEST_ORIGIN("request.origin"),
    FILESYSTEM("tk.filesystem"),
    CONF_DIR("tk.conf.dir"),
    MBIO_CONF_DIR("tk.mbio.system"),
@@ -82,7 +85,7 @@ public enum TkParam
    SIP_MAX_TABLE_SIZE("sip.max.table.size"),
    SGL_MAX_TABLE_SIZE("sgl.max.table.size"),
    CONNEXION_CRF("CONNEXION_CRF"),
-	
+   	
 	// @since 2.2.3-genno
 	GENNO_DERIVES_NATURES("genno.derives.natures");
    
