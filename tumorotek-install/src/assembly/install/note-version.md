@@ -178,6 +178,10 @@
 
 
 ***
+##### Version 2.2.12 - Publiée le 04/09/2025
+###### Spécifique aux installations en HTTPs avec transmission des url TK (à DIAMIC par exemple)
+- YouTrack [TK-623](https://tumorotek.myjetbrains.com/youtrack/issue/TK-623) : prise en compte du paramétrage HTTPs dans la construction des url des fiches prélèvements transmises aux SGL 
+
 ##### Version 2.2.11 - Publiée le 14/10/2024
 ###### Correction
 - YouTrack [TK-568](https://tumorotek.myjetbrains.com/youtrack/issue/TK-568) : Interfaçage VisionMate : erreur lors du scan des boîtes avec mysql v8
