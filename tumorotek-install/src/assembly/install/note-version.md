@@ -2,6 +2,9 @@
 
 ##### Version 2.3.1.0-SNAPSHOT - Publiée le ??? (en cours)
 
+##### Version 2.3.0.18 - Publiée le ??? (en cours)
+###### Corrections dans TK
+- YouTrack [TK-711](https://tumorotek.myjetbrains.com/youtrack/issue/TK-711) : Saisie ${prelevement} : correction pour que tous les cas concernant la création / récupération d'un patient avec ou sans le niveau maladie fonctionnent
 
 ##### Version 2.3.0.17 - Publiée le 22/07/2025 pour le CLCC de Rennes
 - Retour arrière sur la modification faite pour TG-255 : correction OK dans le cas d'utilisation concerné mais régression pour un autre [TK-711](https://tumorotek.myjetbrains.com/youtrack/issue/TK-711)
