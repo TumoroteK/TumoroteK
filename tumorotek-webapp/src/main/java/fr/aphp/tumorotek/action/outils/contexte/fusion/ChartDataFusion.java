@@ -42,9 +42,9 @@ import org.zkoss.zul.SimpleCategoryModel;
 public class ChartDataFusion
 {
 
-   static CategoryModel model = new SimpleCategoryModel();
+   private CategoryModel model = new SimpleCategoryModel();
 
-   static CategoryModel model2 = new SimpleCategoryModel();
+   private CategoryModel model2 = new SimpleCategoryModel();
 
    public void emptyIt(){
       model.clear();
@@ -59,11 +59,11 @@ public class ChartDataFusion
       model2.setValue(s1, s2, (int) l);
    }
 
-   public static CategoryModel getModel(){
+   public CategoryModel getModel(){
       return model;
    }
 
-   public static CategoryModel getModel2(){
+   public CategoryModel getModel2(){
       return model2;
    }
 }

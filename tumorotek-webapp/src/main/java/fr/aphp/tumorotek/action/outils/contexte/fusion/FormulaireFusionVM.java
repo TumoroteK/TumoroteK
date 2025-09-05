@@ -79,10 +79,6 @@ public class FormulaireFusionVM
 
    FusionDetailsBarChartEngine engine2;
 
-   CategoryModel model;
-
-   CategoryModel model2;
-
    ChartDataFusion cdf = new ChartDataFusion();
 
    @Wire
@@ -353,8 +349,6 @@ public class FormulaireFusionVM
       // prepare chart data
       engine1 = new FusionDetailsBarChartEngine(Color.BLUE);
       engine2 = new FusionDetailsBarChartEngine(Color.RED);
-      model = ChartDataFusion.getModel();
-      model2 = ChartDataFusion.getModel2();
    }
 
    public void fillGenericData(final Object objA, final Object objB){
@@ -641,15 +635,14 @@ public class FormulaireFusionVM
       this.dateCreationB = dateCreationB;
    }
 
-   /*
-    * public BarChartEngine getEngine() { return engine; }
-    */
    public CategoryModel getModel(){
-      return model;
+      //TK-440 :
+      return cdf.getModel();
    }
 
    public CategoryModel getModel2(){
-      return model2;
+      //TK-440 :
+      return cdf.getModel2();
    }
 
    public String getDateLastModificationA(){
