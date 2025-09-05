@@ -227,7 +227,7 @@
 				</rows>
 			</grid>
 		</panelchildren>
-	<toolbar hflex="max" height="50px" id="toolbar" >
+		<toolbar hflex="max" height="50px" id="toolbar" >
 			<hlayout sclass="buttonsBox" height="30px" width="100%">						
 				<button id="createC" sclass="buttonv2" label="${c:l('general.create')}" 
 					image="/images/icones/save.png"  height="24px" visible="false"/>
