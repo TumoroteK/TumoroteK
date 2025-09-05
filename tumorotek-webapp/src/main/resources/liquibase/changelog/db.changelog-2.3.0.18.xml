@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+    <changeSet id="tag-version-2.3.0.18" author="TK-729" context="*">
+        <tagDatabase tag="${project.parent.version}"/>
+    </changeSet>
+    <changeSet id="export-proc-TK-729" author="CH" runAlways="false" context="*">
+        <comment>Modification de la taille du champ CODE_LABO dans la proc stock d'export des dérivés</comment>
+        <!-- MySQL procedures -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+    </changeSet>
+</databaseChangeLog>
