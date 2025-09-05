@@ -972,7 +972,7 @@ CREATE PROCEDURE `create_tmp_derive_table`()
       DATE_TRANSFORMATION     datetime,
       QUANTITE_UTILISEE       decimal(12, 3),
       QUANTITE_UTILISEE_UNITE varchar(30),
-      CODE_LABO               varchar(10),
+      CODE_LABO               varchar(50),
       VOLUME                  decimal(12, 3),
       VOLUME_INIT             decimal(12, 3),
       VOLUME_UNITE            varchar(20),
