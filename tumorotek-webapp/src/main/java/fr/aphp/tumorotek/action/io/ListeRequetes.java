@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.io.export.Requete;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
-public class ListeRequetes extends ListeOngletRequete
+public class ListeRequetes extends ListeOngletRecherche
 {
 
    private static final long serialVersionUID = 1L;

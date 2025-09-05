@@ -4,8 +4,9 @@ import fr.aphp.tumorotek.action.controller.*;
 import org.zkoss.zk.ui.*;
 import org.zkoss.zul.*;
 
-public abstract class ListeOngletRequete extends AbstractListeController2
+public abstract class ListeOngletRecherche extends AbstractListeController2
 {
+   private static final long serialVersionUID = 1L;
    private Column collection;
 
 
