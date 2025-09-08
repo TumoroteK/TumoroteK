@@ -110,12 +110,22 @@ public interface MaladieDao extends GenericDaoJpa<Maladie, Integer>
     * Recherche les maladies assignées au patient uniquement
     * par l'utilisateur: excluant celles définies pas par le systeme dans le cadre
     * de collection de prélèvements qui ne définissent pas de maladies, 
-    * et les visites gatsbi.
+    * et celles correspondant aux visites gatsbi.
     * @param patient
     * @return une liste de Maladie.
     */
    List<Maladie> findByPatientNoSystemNorVisite(Patient patient);
 
+   /**
+    * Recherche les maladies assignées au patient uniquement
+    * par l'utilisateur: excluant celles définies pas par le systeme dans le cadre
+    * de collection de prélèvements qui ne définissent pas de maladies. 
+    * A noter que les visites pour les collections Gatsbi sont également ramenées
+    * @param patient
+    * @return une liste de Maladie.
+    */
+   List<Maladie> findByPatientNoSystem(Patient patient);
+   
    List<Maladie> findByCollaborateurId(Integer collaborateurId);
 
    /**

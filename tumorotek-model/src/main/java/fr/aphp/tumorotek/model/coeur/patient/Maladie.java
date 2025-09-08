@@ -87,6 +87,9 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Visite;
    @NamedQuery(name = "Maladie.findByPatientNoSystemNorVisite",
       query = "SELECT m FROM Maladie m WHERE m.patient = ?1 AND m.systemeDefaut = 0 AND m.banque is null "
          + "ORDER BY m.dateDebut, m.dateDiagnostic, m.maladieId"),
+   @NamedQuery(name = "Maladie.findByPatientNoSystem",
+   query = "SELECT m FROM Maladie m WHERE m.patient = ?1 AND m.systemeDefaut = 0 "
+      + "ORDER BY m.dateDebut, m.dateDiagnostic, m.maladieId"),   
    @NamedQuery(name = "Maladie.findByCollaborateurId",
       query = "SELECT m FROM Maladie m LEFT JOIN m.collaborateurs o  WHERE o.collaborateurId = ?1"),
    @NamedQuery(name = "Maladie.findCountByReferent",

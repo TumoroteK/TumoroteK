@@ -382,6 +382,11 @@ public class MaladieManagerImpl implements MaladieManager
    }
 
    @Override
+   public List<Maladie> findByPatientNoSystemManager(final Patient patient){
+      return maladieDao.findByPatientNoSystem(patient);
+   }
+   
+   @Override
    public List<Maladie> findAllByPatientManager(final Patient patient){
       return maladieDao.findAllByPatient(patient);
    }

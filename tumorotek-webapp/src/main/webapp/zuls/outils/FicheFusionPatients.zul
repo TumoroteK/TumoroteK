@@ -108,6 +108,15 @@
 								<label value="${c:l('fusion.patient.conserver.title')}" 
 									sclass="formBlueLabel" style="text-decoration:underline;"/>
 							</box>
+							<!-- identifiant patient (à afficher dans le cas de patient concerné par au moins une collection Gatsbi)-->
+							<hbox id="patientAConserverIdentifiantsHbox" visible="false">
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('patient.identifiants')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientAConserverIdentifiantsDiv"/>									
+							</hbox>							
 							<!-- Nip -->
 							<hbox>
 								<separator width="5px"/>
@@ -187,6 +196,15 @@
 								</div>
 								<div id="patientAConserverMaladiesDiv"/>
 							</hbox>
+							<!-- Visites -->
+							<hbox id="patientAConserverVisitesHbox" visible="false">
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('patient.visites')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientAConserverVisitesDiv"/>
+							</hbox>							
 							<!-- Prelevements -->
 							<hbox>
 								<separator width="5px"/>
@@ -206,6 +224,15 @@
 								<label value="${c:l('fusion.patient.supprimer.title')}" 
 									sclass="formBlueLabel" style="text-decoration : underline;"/>
 							</hbox>
+							<!-- identifiant patient (à afficher dans le cas de patient concerné par au moins une collection Gatsbi)-->
+							<hbox id="patientASupprimerIdentifiantsHbox" visible="false">
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('patient.identifiants')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientASupprimerIdentifiantsDiv"/>									
+							</hbox>								
 							<!-- Nip -->
 							<hbox>
 								<separator width="5px"/>
@@ -284,6 +311,15 @@
 								</div>
 								<div id="patientASupprimerMaladiesDiv"/>
 							</hbox>
+							<!-- Visites -->
+							<hbox id="patientASupprimerVisitesHbox" visible="false">
+								<separator width="5px"/>
+								<div width="125px">
+									<label value="${c:l('patient.visites')}" 
+										sclass="formLabel"/>
+								</div>
+								<div id="patientASupprimerVisitesDiv"/>
+							</hbox>								
 							<!-- Prelevements -->
 							<hbox>
 								<separator width="5px"/>

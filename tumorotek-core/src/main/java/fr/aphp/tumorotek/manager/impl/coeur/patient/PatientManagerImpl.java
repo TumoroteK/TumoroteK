@@ -49,6 +49,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -1106,6 +1107,14 @@ public class PatientManagerImpl implements PatientManager
             }else{
                valeursAConserver.add(valeursPassives.get(i));
             }
+         }
+
+         // TK-723 : réattribution de l'identifiant patient du patient passif au patient à garder :
+         // A noter qu'un contrôle a été fait en amont pour empêcher la fusion si les 2 patients concernés appartiennent à la même 
+         //collection Gatsbi avec un identifiant différent. En effet, sur une collection Gatsbi, l'identifiant est l'élément discriminant du patient donc la fusion n'a pas de sens.
+         Set<PatientIdentifiant> listPatientIdentifiantAMigrer = passif.getPatientIdentifiants();
+         for(PatientIdentifiant patientIdentifiantAMigrer : listPatientIdentifiantAMigrer) {
+            patient.getPatientIdentifiants().add(new PatientIdentifiant(patient, patientIdentifiantAMigrer.getBanque(), patientIdentifiantAMigrer.getIdentifiant()));
          }
 
          // mise a jour du Patient actif

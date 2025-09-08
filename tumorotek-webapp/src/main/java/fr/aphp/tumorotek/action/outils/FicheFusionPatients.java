@@ -38,7 +38,14 @@ package fr.aphp.tumorotek.action.outils;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -71,8 +78,11 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
+import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -104,6 +114,20 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    private Div patientAConserverPrelevementsDiv;
 
    private Div patientASupprimerPrelevementsDiv;
+   
+   //TK-723 : gestion des données Gatsbi
+   private Div patientAConserverIdentifiantsDiv;
+   private Div patientASupprimerIdentifiantsDiv;
+   
+   private Div patientAConserverVisitesDiv;
+   private Div patientASupprimerVisitesDiv;
+   
+   private Hbox patientAConserverIdentifiantsHbox;
+   private Hbox patientASupprimerIdentifiantsHbox;
+   
+   private Hbox patientAConserverVisitesHbox;
+   private Hbox patientASupprimerVisitesHbox;
+   //fin TK-723
 
    private Button fusionButton;
 
@@ -150,8 +174,6 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    public void onClick$searchFirstPatient(){
       final String critereValue = nomFirstBox.getValue();
       
-      // TODO gatsbi contexte HERE
-      
       openSelectPatientWindow(Path.getPath(self), "onGetFirstPatientFromSelection", true, critereValue, patientASupprimer, null, null);
    }
 
@@ -164,24 +186,43 @@ public class FicheFusionPatients extends AbstractFicheCombineController
       if(e.getData() != null){
 
          patientAConserver = (Patient) e.getData();
-
-         // on dessine les maladies
-         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patientAConserver);
-         List<String> values = new ArrayList<>();
+         
+         // TK-723 : on dessine les éventuels identifiants patients
+         List<String> valuesForIdentifiants = buildIdentifiantsAsListOfString(patientAConserver);
+         drawLabelWithPopup(valuesForIdentifiants, patientAConserverIdentifiantsDiv);
+         patientAConserverIdentifiantsHbox.setVisible(!valuesForIdentifiants.isEmpty());
+         
+         // on dessine les maladies et les éventuelles visites
+         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patientAConserver);
+         List<String> valuesForMaladies = new ArrayList<>();
+         List<String> valuesForVisites = new ArrayList<>();
+         Maladie currentMaladie = null;
          for(int i = 0; i < maladies.size(); i++){
+            currentMaladie = maladies.get(i);
             final StringBuffer sb = new StringBuffer();
-            sb.append(maladies.get(i).getLibelle());
-            if(maladies.get(i).getCode() != null){
+            //si la maladie est une visite, on affiche le nom de la collection devant pour éviter d'avoir plusieurs V0,V1 ...
+            if(currentMaladie.getBanque() != null) {//on est sur une visite
+               sb.append(currentMaladie.getBanque().getNom()).append(" - ");
+            }
+            sb.append(currentMaladie.getLibelle());
+            if(currentMaladie.getCode() != null){
                sb.append(" [");
-               sb.append(maladies.get(i).getCode());
+               sb.append(currentMaladie.getCode());
                sb.append("]");
             }
-            values.add(sb.toString());
+            if(currentMaladie.getBanque() == null) {
+               valuesForMaladies.add(sb.toString());
+            }
+            else {
+               valuesForVisites.add(sb.toString());
+            }
          }
-         drawLabelWithPopup(values, patientAConserverMaladiesDiv);
+         drawLabelWithPopup(valuesForMaladies, patientAConserverMaladiesDiv);
+         drawLabelWithPopup(valuesForVisites, patientAConserverVisitesDiv);
+         patientAConserverVisitesHbox.setVisible(!valuesForVisites.isEmpty());
 
          // on dessine les prlvts
-         values = new ArrayList<>();
+         List<String> values = new ArrayList<>();
          for(int i = 0; i < maladies.size(); i++){
             final Iterator<Prelevement> it =
                ManagerLocator.getMaladieManager().getPrelevementsManager(maladies.get(i)).iterator();
@@ -208,6 +249,12 @@ public class FicheFusionPatients extends AbstractFicheCombineController
             fusionButton.setDisabled(false);
          }
       }
+   }
+
+   private List<String> buildIdentifiantsAsListOfString(Patient patient){
+      List<String> valuesForIdentifiants = patient.getPatientIdentifiants().stream()
+               .map(pi -> new StringBuilder(pi.getBanque().getNom()).append(" - ").append(pi.getIdentifiant()).toString()).collect(Collectors.toList());
+      return valuesForIdentifiants;
    }
 
    /**
@@ -243,24 +290,43 @@ public class FicheFusionPatients extends AbstractFicheCombineController
       if(e.getData() != null){
 
          patientASupprimer = (Patient) e.getData();
+         
+         // TK-723 : on dessine les éventuels identifiants patients
+         List<String> valuesForIdentifiants = buildIdentifiantsAsListOfString(patientASupprimer);
+         drawLabelWithPopup(valuesForIdentifiants, patientASupprimerIdentifiantsDiv);
+         patientASupprimerIdentifiantsHbox.setVisible(!valuesForIdentifiants.isEmpty());
 
-         // on dessine les maladies
-         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemNorVisiteManager(patientASupprimer);
-         List<String> values = new ArrayList<>();
+         // on dessine les maladies et les éventuelles visites
+         final List<Maladie> maladies = ManagerLocator.getMaladieManager().findByPatientNoSystemManager(patientASupprimer);
+         List<String> valuesForMaladies = new ArrayList<>();
+         List<String> valuesForVisites = new ArrayList<>();
+         Maladie currentMaladie = null;
          for(int i = 0; i < maladies.size(); i++){
+            currentMaladie = maladies.get(i);
             final StringBuffer sb = new StringBuffer();
-            sb.append(maladies.get(i).getLibelle());
-            if(maladies.get(i).getCode() != null){
+            //si la maladie est une visite, on affiche le nom de la collection devant pour éviter d'avoir plusieurs V0,V1 ...
+            if(currentMaladie.getBanque() != null) {//on est sur une visite
+               sb.append(currentMaladie.getBanque().getNom()).append(" - ");
+            }
+            sb.append(currentMaladie.getLibelle());
+            if(currentMaladie.getCode() != null){
                sb.append(" [");
-               sb.append(maladies.get(i).getCode());
+               sb.append(currentMaladie.getCode());
                sb.append("]");
             }
-            values.add(sb.toString());
+            if(currentMaladie.getBanque() == null) {
+               valuesForMaladies.add(sb.toString());
+            }
+            else {
+               valuesForVisites.add(sb.toString());
+            }
          }
-         drawLabelWithPopup(values, patientASupprimerMaladiesDiv);
+         drawLabelWithPopup(valuesForMaladies, patientASupprimerMaladiesDiv);
+         drawLabelWithPopup(valuesForVisites, patientASupprimerVisitesDiv);
+         patientASupprimerVisitesHbox.setVisible(!valuesForVisites.isEmpty());
 
          // on dessine les prlvts
-         values = new ArrayList<>();
+         List<String> values = new ArrayList<>();
          for(int i = 0; i < maladies.size(); i++){
             final Iterator<Prelevement> it =
                ManagerLocator.getMaladieManager().getPrelevementsManager(maladies.get(i)).iterator();
@@ -306,7 +372,40 @@ public class FicheFusionPatients extends AbstractFicheCombineController
     * Fusion des deux patients.
     */
    public void onClick$fusionButton(){
-      openFusionWindow(page, Labels.getLabel("message.fusion.label"));
+      //@since Gatsbi, vérification que les 2 patients n'appartiennent pas à la même collection Gatsbi. En effet, dans ce cas, ils ne pourraient avoir
+      //que des identifiants différents (puisque l'identifiant est unique sur une collection Gatsbi). Or pour une étude, l'identifiant est l'élément qui 
+      //caractérise le patient. La fusion n'est donc pas permise.
+
+      Set<PatientIdentifiant> listPatientIdentifiantForPatientAConserver = patientAConserver.getPatientIdentifiants();
+      Set<PatientIdentifiant> listPatientIdentifiantForPatientASupprimer = patientASupprimer.getPatientIdentifiants();
+      
+      //map qui contient en clés les noms des banques rattachées aux 2 patients et en valeurs les 2 identifiants :  
+      Map<String, String[]> mapNomBanqueIdentifiants = new HashedMap();
+      Optional<PatientIdentifiant> temp;
+      for(PatientIdentifiant patientIdentifiantForPatientAConserver : listPatientIdentifiantForPatientAConserver) {
+         temp = listPatientIdentifiantForPatientASupprimer.stream().filter(pi -> pi.getBanque().equals(patientIdentifiantForPatientAConserver.getBanque())).findFirst(); 
+         if(temp.isPresent()) {
+            mapNomBanqueIdentifiants.put(patientIdentifiantForPatientAConserver.getBanque().getNom(), 
+                     new String[] {patientIdentifiantForPatientAConserver.getIdentifiant(), temp.get().getIdentifiant()});
+         }
+      }
+      
+      if(mapNomBanqueIdentifiants.isEmpty()) {
+         openFusionWindow(page, Labels.getLabel("message.fusion.label"));
+      }
+      else {
+         //on affiche à l'utilisateur les banques avec les identifiants : banque1 : identifiant1, identifiant2; banque2 : identifiant21, identifiant22
+         Set<Entry<String, String[]>> entries = mapNomBanqueIdentifiants.entrySet();
+         String detailMessage = entries.stream()
+         .map(entry -> new StringBuilder(entry.getKey()).append(" : ").append(entry.getValue()[0]).append(", ").append(entry.getValue()[1]))
+         .collect(Collectors.joining("; "));
+         
+         MessagesUtils.openErrorModal(
+            Labels.getLabel("importTemplate.suppressionPartage.modale.title"), 
+            ObjectTypesFormatters.getLabel(
+               mapNomBanqueIdentifiants.size() == 1 ? "gatsbi.error.fusionPatient.uneCollection" : "gatsbi.error.fusionPatient.plusieursCollections", 
+               new String[] { detailMessage }));
+      }
    }
 
    /**
@@ -687,4 +786,5 @@ public class FicheFusionPatients extends AbstractFicheCombineController
    public void setCommentaires(final String c){
       this.commentaires = c;
    }
+   
 }

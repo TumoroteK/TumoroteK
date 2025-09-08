@@ -162,12 +162,23 @@ public interface MaladieManager
 
    /**
     * Recherche les maladies assignées au patient uniquement
-    * par l'utilisateur, et non pas par le systeme dans le cadre
-    * de collection de prélèvements qui ne définissent pas de maladies.
+    * par l'utilisateur: excluant celles définies pas par le systeme dans le cadre
+    * de collection de prélèvements qui ne définissent pas de maladies, 
+    * et celles correspondant aux visites gatsbi.
     * @param patient
     * @return une liste de Maladie.
     */
    List<Maladie> findByPatientNoSystemNorVisiteManager(Patient patient);
+   
+   /**
+    * Recherche les maladies assignées au patient uniquement
+    * par l'utilisateur: excluant celles définies pas par le systeme dans le cadre
+    * de collection de prélèvements qui ne définissent pas de maladies. 
+    * A noter que les visites pour les collections Gatsbi sont également ramenées
+    * @param patient
+    * @return une liste de Maladie.
+    */
+   List<Maladie> findByPatientNoSystemManager(Patient patient);
 
    /**
     * Recherche toutes les maladies/visites assignées au patient.
