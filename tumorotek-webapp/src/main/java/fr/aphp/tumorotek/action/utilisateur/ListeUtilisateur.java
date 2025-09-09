@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.ForwardEvent;
@@ -47,6 +48,7 @@ import org.zkoss.zul.Column;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
+import org.zkoss.zul.West;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
@@ -60,6 +62,8 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
 public class ListeUtilisateur extends AbstractListeController2
 {
 
+   public final static String TITRE_LISTE = "liste.utilisateur.titre";
+   
    private static final long serialVersionUID = 295074764171509054L;
 
    private List<Utilisateur> listObjects = new ArrayList<>();
@@ -138,6 +142,13 @@ public class ListeUtilisateur extends AbstractListeController2
       setCurrentRow(null);
       setCurrentObject(null);
 
+      //TK-731 :
+      //la ligne de code ci-dessous (méthode générique) ne marche pas dans le cas présent car elle s'appuie sur getObjectTabController()
+      //qui n'est pas initialisée à ce moment du traitement. On passe donc par les composants :
+      //updateListResultsLabel(listObjects.size(), TITRE_LISTE);
+      ((West)this.self.getParent().getParent()).setTitle(Labels.getLabel(TITRE_LISTE) + " ("
+               + getListObjects().size() + ")");
+      
       getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
    }
 
@@ -174,6 +185,8 @@ public class ListeUtilisateur extends AbstractListeController2
       setCurrentObject(null);
 
       getObjectTabController().getFicheCombine().clearData();
+      
+      updateListResultsLabel(listObjects.size(), TITRE_LISTE);
 
       getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
    }
@@ -369,6 +382,8 @@ public class ListeUtilisateur extends AbstractListeController2
          listObjects = utilisateurs;
          setCurrentRow(null);
          setCurrentObject(null);
+         
+         updateListResultsLabel(listObjects.size(), TITRE_LISTE);
 
          getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
       }

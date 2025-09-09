@@ -2433,12 +2433,16 @@ public abstract class AbstractListeController2 extends AbstractController
 	}
 
 	public void updateListResultsLabel(final Integer nbResults){
-		if(getObjectTabController() != null && getObjectTabController().getListeRegion() != null){
-			getObjectTabController().getListeRegion()
-			//.getCaption().setLabel
-			.setTitle(Labels.getLabel("general.recherche") + " ("
-					+ (nbResults != null ? nbResults : getListObjects() != null ? getListObjects().size() : 0) + ")");
-		}
+	   updateListResultsLabel(nbResults, "general.recherche");
+	}
+	
+	//TK-731
+	public void updateListResultsLabel(final Integer nbResults, final String titleKeyI18n){
+	   if(getObjectTabController() != null && getObjectTabController().getListeRegion() != null){
+         getObjectTabController().getListeRegion()
+         .setTitle(Labels.getLabel(titleKeyI18n) + " ("
+               + (nbResults != null ? nbResults : getListObjects() != null ? getListObjects().size() : 0) + ")");
+      }
 	}
 	
 	public void updateListResultsLabel(){
