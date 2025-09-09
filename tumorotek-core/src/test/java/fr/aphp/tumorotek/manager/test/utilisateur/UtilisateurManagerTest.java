@@ -160,8 +160,11 @@ public class UtilisateurManagerTest extends AbstractManagerTest4
       list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("USER1", true, pfs);
       assertTrue(list.size() == 0);
 
-      list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("USER", true, pfs);
+      list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("USER", false, pfs);
       assertTrue(list.size() == 0);
+      
+      list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("USER%", false, pfs);
+      assertTrue(list.size() >= 1);
 
       list = utilisateurManager.findByLoginArchiveAndPlateformeExcludedSuperAdminManager("", false, pfs);
       assertTrue(list.size() == 0);

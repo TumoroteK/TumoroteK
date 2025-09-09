@@ -98,7 +98,7 @@ public interface UtilisateurManager
 
    /**
     * Recherche un Utilisateur, non super admin, dont le login est passé en paramètre pour une liste de plateformes donnée.
-    * A noter que le login étant unique pour toutes les plateformes et quelque soit le statut archivé ou non, cette méthode ne peut renvoyer plus d'un élément...
+    * A noter que la recherche peut est lancée sur une partie du login en utilisant le % (%texte% pour contient, texte% pour commence par)
     * @param login Login de l'Utilisateur que l'on recherche.
     * @param archive statut de l'utilisateur recherché
     * @param pfs liste des plateformes d'origine d'un utilisateur.

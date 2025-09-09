@@ -85,7 +85,7 @@ import fr.aphp.tumorotek.model.imprimante.AffectationImprimante;
    @NamedQuery(name = "Utilisateur.findByLoginAndArchive",
    query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 "),
    @NamedQuery(name = "Utilisateur.findByLoginArchiveAndPlateformeExcludedSuperAdmin",
-      query = "SELECT u FROM Utilisateur u " + "WHERE u.login = ?1 AND u.archive = ?2 AND u.superAdmin = 0 "
+      query = "SELECT u FROM Utilisateur u " + "WHERE u.login like ?1 AND u.archive = ?2 AND u.superAdmin = 0 "
          + "AND u.plateformeOrig in (?3)"),
    @NamedQuery(name = "Utilisateur.findByArchive",
       query = "SELECT u FROM Utilisateur u " + "WHERE u.archive = ?1 AND u.superAdmin = 0 " + "AND u.plateformeOrig in (?2)"),
