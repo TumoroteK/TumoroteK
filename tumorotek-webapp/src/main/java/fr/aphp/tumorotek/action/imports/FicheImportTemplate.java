@@ -1436,10 +1436,10 @@ public class FicheImportTemplate extends AbstractFicheCombineController
                sheetName = (String)sheetNameFromEvent;
                sheet = uploadedWb.getSheet(sheetName);
             }
-            else {//on prend la première feuille
-               sheet = uploadedWb.getSheetAt(0);
-               sheetName = sheet.getSheetName();
-            }
+         }
+         if(sheet == null) {
+            sheet = uploadedWb.getSheetAt(0);
+            sheetName = sheet.getSheetName();
          }
          ImportHistorique historique = null;
          List<ImportError> errors = new ArrayList<>();
