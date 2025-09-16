@@ -43,6 +43,7 @@ import org.zkoss.util.resource.Labels;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.imports.EImportTemplateStatutPartage;
+import fr.aphp.tumorotek.model.io.imports.EImportationType;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
@@ -61,6 +62,8 @@ public class ImportTemplateDecorator implements TKdataObject
       new IconDisplayElement("fa fa-share-alt-square fa-lg tumo-fa-orange", "importTemplate.tooltip.partageParBanqueCourante");
    private final IconDisplayElement FLAG_PARTAGE_PAR_AUTRE_BANQUE = 
       new IconDisplayElement("fa fa-lock fa-lg tumo-fa-orange", "importTemplate.tooltip.partageParAutreBanque");
+   private final IconDisplayElement FLAG_MODIFICATION_ANNOTATION = 
+      new IconDisplayElement("fa fa-pencil-square-o fa-lg tumo-fa-blue", "importTemplate.tooltip.modificationAnnotation");
 
    /**
     * boolean qui permet d'indiquer que le template n'appartient pas à la collection courante. Intrinsèquement, il a la valeur partage "ENCOURS"
@@ -165,10 +168,43 @@ public class ImportTemplateDecorator implements TKdataObject
       return "";
    }
 
+   
+   //Si le modèle est de type "MODIFICATION_ANNOTATION", affichage d'une icône.
+   //Sinon, on n'affiche rien (cas standard).
+   private IconDisplayElement getInfoForIconeType() {
+      if(isModificationAnnotation()) {
+         return FLAG_MODIFICATION_ANNOTATION;
+      }
+      return null;
+   }
+
+   public String getClassForIconeType () {
+      IconDisplayElement infoForIconeType = getInfoForIconeType();
+      if(infoForIconeType != null) {
+         return infoForIconeType.getCss();
+      }
+      
+      return null;
+   }
+   
+   public String getTooltiptextForIconeType () {
+      IconDisplayElement infoForIconeType = getInfoForIconeType();
+      if(infoForIconeType != null) {
+         return Labels.getLabel(infoForIconeType.getTooltiptext());
+      }
+      
+      return "";
+   }
+   
+   
    public boolean isPartage() {
       return getStatutPartage() == EImportTemplateStatutPartage.PARTAGE_ENCOURS;
    }
   
+   public boolean isModificationAnnotation() {
+      return EImportationType.MODIFICATION_ANNOTATION.getCode().equals(getTypeCode());
+   }
+   
    private String defineSclassForList() {
       String sclassForList = "formLink";
       if(isArchive()) {

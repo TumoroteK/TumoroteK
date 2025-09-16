@@ -54,6 +54,10 @@
 							<label id="viewObject" value="@{currImportTemplate.nom}" sclass="@{currImportTemplate.sclassForList}"/>
 						</div>
 						<separator width="5px"/>
+						<div sclass="@{currImportTemplate.classForIconeType}" 
+							tooltiptext="@{currImportTemplate.tooltiptextForIconeType}"
+							visible="@{currImportTemplate.modificationAnnotation}">
+						</div>						
 						<div sclass="@{currImportTemplate.classForIconePartage}" 
 							tooltiptext="@{currImportTemplate.tooltiptextForIconePartage}"
 							visible="@{currImportTemplate.partage}">
