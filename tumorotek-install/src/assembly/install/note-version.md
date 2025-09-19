@@ -1,8 +1,64 @@
 #### Notes
 
-##### Version 2.3.1.0-SNAPSHOT - Publiée le ??? (en cours)
+##### Version 2.3.1.0 - Publiée le 19/09/2025
+###### Nouveautés
+- YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
+- YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
+- YouTrack [TK-537](https://tumorotek.myjetbrains.com/youtrack/issue/TK-537) : ${import} Partage d'un modèle d'import pour l'utiliser avec une autre collection
+- YouTrack [TK-548](https://tumorotek.myjetbrains.com/youtrack/issue/TK-548) : ${import} Création d'un modèle d'import à partir d'un modèle existant
+- YouTrack [TK-538](https://tumorotek.myjetbrains.com/youtrack/issue/TK-538) : ${import} Mettre à jour des champs d'annotation 
+- YouTrack [TK-370](https://tumorotek.myjetbrains.com/youtrack/issue/TK-370) : Lors de la définition de l'${import}, pouvoir recopier en automatique les valeurs de "champ associé" dans "nom de la colonne"
+- YouTrack [TK-102](https://tumorotek.myjetbrains.com/youtrack/issue/TK-102) : ${stockage} Pouvoir éditer un plan du congélateur pour faciliter la visualisation
+- YouTrack [TK-331](https://tumorotek.myjetbrains.com/youtrack/issue/TK-331) : ${stockage} Déplacement d'enceintes : améliorer le message concernant les collections non accessibles par le conteneur cible
+- YouTrack [TK-642](https://tumorotek.myjetbrains.com/youtrack/issue/TK-642) : Fiche ${stockage}: dans le tableau des échantillons ajouter des colonnes
+- YouTrack [TK-649](https://tumorotek.myjetbrains.com/youtrack/issue/TK-649) : ${stockage} Fiche Conteneur : ajouter un contrôle de doublon à la sortie du champ code
+- YouTrack [TK-414](https://tumorotek.myjetbrains.com/youtrack/issue/TK-414) : Lors d'une ${cession}, proposer le déplacement automatique des échantillons dans de nouvelles boites
+- YouTrack [TK-592](https://tumorotek.myjetbrains.com/youtrack/issue/TK-592) : Impression d'une ${cession} Ajouter le nombre total de pages en pied de page
+- YouTrack [TK-371](https://tumorotek.myjetbrains.com/youtrack/issue/TK-371) : Impression d'une ${cession} Ajouter le numéro de la cession en pied de page
+- YouTrack [TK-636](https://tumorotek.myjetbrains.com/youtrack/issue/TK-636) : ${administration} Fiche Collection : améliorer l'affichage dans la liste des conteneurs à ajouter pour distinguer les conteneurs de même nom
+- YouTrack [TK-435](https://tumorotek.myjetbrains.com/youtrack/issue/TK-435) : ${administration} Paramètres : gestion de paramètres fonctionnels plateforme dépendants
+- YouTrack [TK-730](https://tumorotek.myjetbrains.com/youtrack/issue/TK-730) : ${administration} Comptes : permettre de rechercher sur une partie du login
+- YouTrack [TK-731](https://tumorotek.myjetbrains.com/youtrack/issue/TK-731) : ${administration} Comptes : afficher le nombre d'éléments dans la liste
+- YouTrack [TK-340](https://tumorotek.myjetbrains.com/youtrack/issue/TK-340) : Pouvoir passer d'une plateforme à l'autre sans se déconnecter / reconnecter
+- YouTrack [TK-526](https://tumorotek.myjetbrains.com/youtrack/issue/TK-526) : Afficher en haut des écrans, le nom de la plateforme en cours
+- YouTrack [TK-430](https://tumorotek.myjetbrains.com/youtrack/issue/TK-430) : Fiche ${prelevement} : affichage des dérivés des échantillons
+- YouTrack [TK-406](https://tumorotek.myjetbrains.com/youtrack/issue/TK-406) : Fiche ${echantillon} en lecture : pour les contextes anapat', ouvrir par défaut le paragraphe "informations complémentaires"
+- YouTrack [TK-499](https://tumorotek.myjetbrains.com/youtrack/issue/TK-499) : Fiche ${echantillon} : dans la liste des ${stockage-evenement}, ajouter un drapeau rouge si l'évènement a engendré une dégradation probable du matériel
+- YouTrack [TK-499](https://tumorotek.myjetbrains.com/youtrack/issue/TK-499) : Fiche ${produit-derive} : dans la liste des ${stockage-evenement}, ajouter un drapeau rouge si l'évènement a engendré une dégradation probable du matériel
+- YouTrack [TK-434](https://tumorotek.myjetbrains.com/youtrack/issue/TK-434) : Création de ${produit-derive} : sécuriser la saisie de la quantité utilisée
+- YouTrack [TK-426](https://tumorotek.myjetbrains.com/youtrack/issue/TK-426) : ${produit-derive} Mettre à jour les codes dérivé en cas de modification du code parent
+- YouTrack [TK-403](https://tumorotek.myjetbrains.com/youtrack/issue/TK-403) : ${recherche} rapide : expliciter les critères
+- YouTrack [TK-413](https://tumorotek.myjetbrains.com/youtrack/issue/TK-413) : ${recherche-complexe} Ajouter la collection d'appartenance en mode Toutes collections
+- YouTrack [TK-524](https://tumorotek.myjetbrains.com/youtrack/issue/TK-524) : ${recherche-complexe} Ajouter des contrôles de doublon à la plateforme 
 
-##### Version 2.3.0.18 - Publiée le ??? (en cours)
+
+###### Corrections
+- YouTrack [TK-715](https://tumorotek.myjetbrains.com/youtrack/issue/TK-715) : Gatsbi > Fiche ${patient} : modification d'un patient existant pour l'ajouter à une collection Gatsbi => plantage FK_PRELEVEMENT_MALADIE_ID
+- YouTrack [TK-696](https://tumorotek.myjetbrains.com/youtrack/issue/TK-696) : Création d'un ${prelevement} avec échantillons : erreur "TransientObjectException" lors de la validation
+- YouTrack [TK-474](https://tumorotek.myjetbrains.com/youtrack/issue/TK-474) : Création d'un ${prelevement} : la modification du code prélèvement après utilisation du bouton "Retour" n'est pas appliquée sur les écrans des étape 2 (site inter) et étape 3 (saisie échantillon)
+- YouTrack [TK-449](https://tumorotek.myjetbrains.com/youtrack/issue/TK-449) : Fiche ${prelevement} en collection sérologie : affichage stérilité du site intermédiaire non formaté
+- YouTrack [TK-427](https://tumorotek.myjetbrains.com/youtrack/issue/TK-427) : ${echantillon} Mettre à jour le délai de congélation des échantillons lorsque la date de prélèvement est renseignée (après la création des échantillons) ou modifiée
+- YouTrack [TK-309](https://tumorotek.myjetbrains.com/youtrack/issue/TK-309) : ${echantillon} Problème de renommage du code
+- YouTrack [TK-729](https://tumorotek.myjetbrains.com/youtrack/issue/TK-729) : ${export} de ${produit-derive} : plantage 
+- YouTrack [TK-669](https://tumorotek.myjetbrains.com/youtrack/issue/TK-669) : Modification d'un ${produit-derive} : Améliorer le contrôle de longueur du code
+- YouTrack [TK-668](https://tumorotek.myjetbrains.com/youtrack/issue/TK-668) : Création d'un ${produit-derive} : Améliorer les contrôles de longueur du code
+- YouTrack [TK-656](https://tumorotek.myjetbrains.com/youtrack/issue/TK-656) : Fiche ${produit-derive} : la date de stockage est remise à blanc lors du clic sur Valider
+- YouTrack [TK-429](https://tumorotek.myjetbrains.com/youtrack/issue/TK-429) : Liste des ${produit-derive} : recherche rapide "les 30 derniers" ne fait rien
+- YouTrack [TK-531](https://tumorotek.myjetbrains.com/youtrack/issue/TK-531) : ${cession} En mode modification, si l'utilisateur va dans le champ numéro, un message intempestif de doublon apparaît et bloque la validation
+- YouTrack [TK-463](https://tumorotek.myjetbrains.com/youtrack/issue/TK-463) : ${cession} Impression : retirer le nom du patient dans les champs à imprimer par défaut
+- YouTrack [TK-421](https://tumorotek.myjetbrains.com/youtrack/issue/TK-421) : ${stockage} Au niveau du nom des conteneurs partagés, ajouter le nom de la plateforme d'appartenance 
+- YouTrack [TK-369](https://tumorotek.myjetbrains.com/youtrack/issue/TK-369) : ${stockage} Déplacement échantillon : fiche d'impression affiche 2 fois la boîte cible
+- YouTrack [TK-723](https://tumorotek.myjetbrains.com/youtrack/issue/TK-723) : ${administration} Fusion de patient "Gatsbi" : l'identifiant du patient supprimé n'est pas reporté sur le patient gardé
+- YouTrack [TK-440](https://tumorotek.myjetbrains.com/youtrack/issue/TK-440) : ${administration} Fusion de collaborateur - plantage aléatoire
+- YouTrack [TK-635](https://tumorotek.myjetbrains.com/youtrack/issue/TK-635) : ${administration} Impression Fiche Collection > liste des conteneurs : ajouter la colonne plateforme si au moins un conteneur est partagé
+- YouTrack [TK-627](https://tumorotek.myjetbrains.com/youtrack/issue/TK-627) : ${administration} Collections : ajouter un tri sur toutes les entêtes de colonne
+- YouTrack [TK-625](https://tumorotek.myjetbrains.com/youtrack/issue/TK-625) : ${administration} Impression > sélection d'un modèle existant : les blocs apparaissent en double
+- YouTrack [TK-460](https://tumorotek.myjetbrains.com/youtrack/issue/TK-460) : ${statistiques} : plantage lors du tri sur le résultat d'un indicateur
+
+
+
+
+##### Version 2.3.0.18 - Publiée le le 05/09/2025
 ###### Corrections dans TK
 - YouTrack [TK-711](https://tumorotek.myjetbrains.com/youtrack/issue/TK-711) : Saisie ${prelevement} : correction pour que tous les cas concernant la création / récupération d'un patient avec ou sans le niveau maladie fonctionnent
 
@@ -57,14 +113,14 @@
 
 ###### Corrections ano tous contextes
 - YouTrack [TG-266](https://tumorotek.myjetbrains.com/youtrack/issue/TG-266) : Fiche ${prelevement} en édition : le n° de dossier patient (nda) n'est plus modifiable (régression)
-- YouTrack [TK-539](https://tumorotek.myjetbrains.com/youtrack/issue/TK-539) : Historique (d'un objet ou dans l'admin) : l'information "import" n'est pas précisée lorsque la création a été effectuée par un import
+- YouTrack [TK-539](https://tumorotek.myjetbrains.com/youtrack/issue/TK-539) : Historique (d'un objet ou dans l'admin) : l'information "import" n'est pas précisée lorsque la création a été effectuée par un ${import}
 - YouTrack [TK-552](https://tumorotek.myjetbrains.com/youtrack/issue/TK-552) : Liste ${prelevement} en contexte sérologie : les informations patient ne sont pas cachées si le profil a Anonymisation est à Oui (régression)
 - YouTrack [TK-553](https://tumorotek.myjetbrains.com/youtrack/issue/TK-553) : Fiche Profil : ne pas proposer l'export nominatif si anonymisation est coché
 
 
 ###### Corrections ano pour un contexte Gatsbi
 - YouTrack [TG-235](https://tumorotek.myjetbrains.com/youtrack/issue/TG-235) : [TK] - Contexte Gatsbi : Plantage lors de la modification multiple sur des patients
-- YouTrack [TG-256](https://tumorotek.myjetbrains.com/youtrack/issue/TG-256) : [TK] - Contexte Gatsbi : import prélèvement : erreur IndexOutOfBoundException pour certaines lignes
+- YouTrack [TG-256](https://tumorotek.myjetbrains.com/youtrack/issue/TG-256) : [TK] - Contexte Gatsbi : ${import} ${prelevement} : erreur IndexOutOfBoundException pour certaines lignes
 - YouTrack [TG-265](https://tumorotek.myjetbrains.com/youtrack/issue/TG-265) : [TK] - Contexte Gatsbi, création ${prelevement} avec utilisation de la numérotation : incrémentation de 2 au lieu de 1 quand un paramétrage Gatsbi est défini
 
 
