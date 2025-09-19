@@ -33,7 +33,7 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez 
  * accepté les termes. 
 -->
-<?page id="Page Accueil" title="Prelevement Page" contentType="text/html;charset=UTF-8" ?>
+<?page id="Page Accueil" title="Page Accueil" contentType="text/html;charset=UTF-8" ?>
 
 <?taglib uri="http://www.zkoss.org/dsp/web/core" prefix="c"?>
 <zk>
@@ -69,7 +69,7 @@
                 <panelchildren>
                 	<hlayout style="overflow-y: scroll;" hflex="1"  vflex="1" >
 	                	<vbox pack="center" align="center" vflex="1" hflex="1">
-	               			<image src="/images/portail/logo-tk.png" width="150px" height="150px"/>
+	               			<image src="/images/portail/logo-tk.png" width="125px" height="125px"/>
 	           				<hlayout style="margin: 5px">
 	           					<label sclass="formLabel" value="${c:l('accueil.principal.site')}"/>
 	           					<separator width="10px"/>
@@ -87,8 +87,8 @@
 	           				</hlayout>
 	             			<label sclass="formLabel" value="${c:l('accueil.principal.rights')}"/>
 	             			<hlayout>
-	             				<div class="mns" width="160px" height="80px" onClick='Executions.getCurrent().sendRedirect("http://www.sante.gouv.fr","_new");'/>
-	             				<div class="zkpow" width="100px" height="80px" onClick='Executions.getCurrent().sendRedirect("http://www.zkoss.org","_new");'/>
+	             				<image src="/images/portail/ministere-sante.jpg" width="117px" height="70px" onClick='Executions.getCurrent().sendRedirect("http://www.sante.gouv.fr","_new");'/>
+	             				<image src="/images/portail/zkpowered_l.png" width="70px" height="70px" onClick='Executions.getCurrent().sendRedirect("http://www.zkoss.org","_new");'/>
 	             			</hlayout>
 	                	</vbox>
 	                </hlayout>
@@ -96,9 +96,13 @@
             </panel>
             <panel id="documentationPanel"  border="normal" 
             	title="${c:l('documentations')}"
-            	 sclass="portalPanel" height="100px">
+            	 sclass="portalPanel" height="130px">
                 <panelchildren>
                     <vlayout height="100px" style="margin: 10px" spacing="10px">
+                    	<!-- pour faciliter la mise à jour et le partage, la FAQ est un word mis dans nextcloud -->
+                    	<a href="https://nextcloud.sesan.fr/index.php/s/sbsqREQ36NqwrXB" style="text-decoration:none" target='_blank'>
+							<label sclass="formLink" value="${c:l('main.faq')}" />
+						</a>                    
                     	<a href="../../../tumorotek-site-static/TumoroteK-Manuel.pdf" style="text-decoration:none" target='_blank'>
 							<label sclass="formLink" value="${c:l('main.userguide')}" />
 						</a>
@@ -120,32 +124,21 @@
             	maximizable="true" sclass="portalPanel"
             	vflex="2">
                 <panelchildren>
-                	<grid vflex="1" sclass="gridForm1">
-                		<columns>
-                			<column/>
-                		</columns>
-                		<rows>
-                			<row>
-			                	<image src="/images/portail/header-site.png"/>
-		                	</row>
-		                	
-		                	<row style="cellpadding : 0px;">
-			                	<html content="${c:l('accueil.site.texte.liste')}" 
+                	<vlayout>
+                		<image src="/images/portail/header-site.png"/>
+                		<div align="center">
+                			<html content="${c:l('accueil.site.texte.liste')}" 
 			                		style="FONT-WEIGHT: normal;FONT-SIZE: 12px;
 			                			LINE-HEIGHT: normal;FONT-STYLE: normal;
 			                			FONT-FAMILY: Verdana, Arial, Helvetica, sans-serif;
 			                			padding : 0px;"/>
-		                	</row>
-		                	<row align="center">
-			                	<html style="align:center;"><![CDATA[
-									<A HREF="https://www.sesan.fr/services/tumorotek" target="_blank"
-										style="background-image :none;background-color:#FFFFFF;border-style:none;">
-									<img src="../../images/portail/go-site.png"/>
-									</A>
-			                        ]]></html>
-                       		</row>
-                       </rows>
-					</grid>
+			            </div>
+			            <separator height="30px"/>
+						<div align="center">
+							<image src="/images/portail/LOGO SESAN GIP_Coul_PNG_260.png" width="200" height="64" 
+								onClick='Executions.getCurrent().sendRedirect("https://www.sesan.fr/services/tumorotek","_blank");'/>
+						</div>			                			
+                	</vlayout>
                 </panelchildren>
             </panel>
             <panel id="partenairesPanel" vflex="1" border="normal" 

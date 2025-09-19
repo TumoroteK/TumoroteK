@@ -546,16 +546,6 @@ tr.z-group.grpPelican .z-group-inner .z-group-cnt {
 	background-repeat: no-repeat;
 }
 
-div.mns {
-	background: url(${c:encodeURL('/images/portail/ministere-sante.jpg')});
-	cursor:pointer;
-}
-
-div.zkpow {
-	background: url(${c:encodeURL('/images/portail/zkpowered_l.png')});
-	cursor:pointer;
-}
-
 div.bulb {
 	background: url(${c:encodeURL('/images/icones/bulb.png')});
 	cursor: help;
