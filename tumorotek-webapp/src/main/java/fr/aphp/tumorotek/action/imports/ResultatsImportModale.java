@@ -415,7 +415,10 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
                ((Window) self.getParent().getParent()).setHeight(MODALE_GREATER_HEIGHT);
                resized = true;
             }
-
+            //TK-538 : confirmationRow n'est visible que dans le cas de ma mise à jour d'une annotation quand il y a une demande d'écrasement
+            //on est alors dans l'autre méthode update. On ne passe ici que pour la création
+            confirmationRow.setVisible(false);
+            
             try{
                if(fileStream != null && fileStream.available() == 0 && workbook == null){
                   warnDlRow.setVisible(false);
@@ -478,7 +481,7 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
             chooseSheetRow.detach();
             ((Window) self.getParent().getParent()).setHeight(MODALE_DEFAULT_HEIGHT);
          }
-      }else{/// il faut adapter le else pour faire le cas du warning ....
+      }else{
          UIMessage mainMessage = importFileScopeException.retrieveUIMessageForMainMessage();
          // /!\ ajout du nom de la sheet en dernière position des paramètres :
          String[] mainMessageParams = mainMessage.getParams();
