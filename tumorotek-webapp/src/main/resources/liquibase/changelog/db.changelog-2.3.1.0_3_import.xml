@@ -161,7 +161,15 @@
     </changeSet>
     -->
     
-    <changeSet id="updateTable_IMPORTATION" author="TK-538" runAlways="false" context="*">
+    <!-- /!\ ce changeSet n'est pas compatible avec Oracle. A
+    		 A noter qu'Oracle a introduit la notion d'IDENTITY (équivalent à l'auto incrément) dans la version 12c -->
+    <changeSet id="updateTable_IMPORTATION_AUTO_INCREMENT" author="TK-538" runAlways="false" context="*">
+        <comment>Passage de la gestion de IMPORTATION_ID en AUTO_INCREMENT</comment>
+        <sql>
+            ALTER TABLE IMPORTATION MODIFY IMPORTATION_ID INT(10) NOT NULL AUTO_INCREMENT;
+        </sql>
+    </changeSet>
+    <changeSet id="updateTable_IMPORTATION_TYPE_CODE" author="TK-538" runAlways="false" context="*">
         <preConditions onFail="MARK_RAN">
             <not>
                 <columnExists tableName="IMPORTATION" columnName="TYPE_CODE" />
