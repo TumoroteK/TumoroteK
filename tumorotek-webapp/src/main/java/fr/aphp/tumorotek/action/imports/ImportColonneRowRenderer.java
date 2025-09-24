@@ -133,6 +133,11 @@ public class ImportColonneRowRenderer implements RowRenderer<ImportColonne>
       final Html entiteLabel = new Html(entite);
       entiteLabel.setParent(row);
 
+      // TK-745 : la cause du bug est ici car le côté obligatoire est récupéré d'une caractéristique du champ associé.
+      // Cette propriété de la colonne ne peut donc pas être adaptée au contexte de l'import comme cela est nécessaire avec la mise
+      // en oeuvre de la mise à jour des annotations. En effet le champ NIP, non obligatoire dans l'absolu, devient obligatoire 
+      // dans ce cas puisque c'est la clé fonctionnelle de l'objet à mettre à jour.
+      // La correction est compliquée donc code non modifié (et bug gardé) pour le moment ...
       // obligatoire
       Boolean ob = false;
       if(colonne.getChamp() != null){
