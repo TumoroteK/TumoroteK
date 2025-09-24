@@ -39,6 +39,7 @@ import org.apache.poi.ss.usermodel.Sheet;
 
 import fr.aphp.tumorotek.manager.exception.ImportCleFonctionnelleIncoherenteException;
 import fr.aphp.tumorotek.manager.exception.ImportCleFonctionnelleInexploitableException;
+import fr.aphp.tumorotek.manager.exception.ImportCleFonctionnelleManquanteException;
 import fr.aphp.tumorotek.manager.exception.ImportDataControleInexploitableException;
 import fr.aphp.tumorotek.manager.exception.ImportDataRowException;
 import fr.aphp.tumorotek.manager.exception.ImportDoublonInFileException;
@@ -81,5 +82,5 @@ public interface ImportBatchProcessor
     * @throws ImportTransactionKOException
     */
    ImportHistorique process(ImportTemplate importTemplate, Utilisateur utilisateur, Banque banque, EContexte eContexte, Sheet sheet, boolean modeSousControle) throws ImportPrerequisitesException, ImportDoublonInFileException, ImportKeyNotFoundException, 
-      ImportDataRowException, ImportEcrasementDonneeWarningForFileException, ImportCleFonctionnelleInexploitableException, ImportCleFonctionnelleIncoherenteException, ImportDataControleInexploitableException, ImportTransactionKOException;
+      ImportDataRowException, ImportEcrasementDonneeWarningForFileException, ImportCleFonctionnelleInexploitableException, ImportCleFonctionnelleManquanteException, ImportCleFonctionnelleIncoherenteException, ImportDataControleInexploitableException, ImportTransactionKOException;
 }

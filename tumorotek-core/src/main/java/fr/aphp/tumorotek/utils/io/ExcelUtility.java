@@ -124,7 +124,7 @@ public class ExcelUtility
       return styleForColor;
    }
 
-   private static boolean isEmpty(Cell cell) {
+   public static boolean isEmpty(Cell cell) {
       return cell == null || cell.getCellTypeEnum() == CellType.BLANK;
    }
    

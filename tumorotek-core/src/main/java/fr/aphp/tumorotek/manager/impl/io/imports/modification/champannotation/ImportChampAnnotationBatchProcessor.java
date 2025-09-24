@@ -68,6 +68,7 @@ import fr.aphp.tumorotek.manager.exception.BadFileFormatException;
 import fr.aphp.tumorotek.manager.exception.HeaderException;
 import fr.aphp.tumorotek.manager.exception.ImportCleFonctionnelleIncoherenteException;
 import fr.aphp.tumorotek.manager.exception.ImportCleFonctionnelleInexploitableException;
+import fr.aphp.tumorotek.manager.exception.ImportCleFonctionnelleManquanteException;
 import fr.aphp.tumorotek.manager.exception.ImportDataControleInexploitableException;
 import fr.aphp.tumorotek.manager.exception.ImportDataRowException;
 import fr.aphp.tumorotek.manager.exception.ImportDoublonColonneException;
@@ -160,7 +161,7 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
     */
    @Override
    public ImportHistorique process(ImportTemplate importTemplate, Utilisateur utilisateur, Banque banque, EContexte eContexte, Sheet sheet, boolean modeSousControle) throws ImportPrerequisitesException, ImportDoublonInFileException, ImportKeyNotFoundException, ImportDataRowException, ImportEcrasementDonneeWarningForFileException, 
-            ImportCleFonctionnelleInexploitableException, ImportCleFonctionnelleIncoherenteException, ImportDataControleInexploitableException, ImportTransactionKOException {
+            ImportCleFonctionnelleInexploitableException, ImportCleFonctionnelleManquanteException, ImportCleFonctionnelleIncoherenteException, ImportDataControleInexploitableException, ImportTransactionKOException {
       log.debug("Début du traitement de mise à jour des annotation (méthode process) pour l'importTemplate {} de la banque {}", importTemplate, banque);
       ImportHistorique historique = null;
       int nbLotsTraites = 0;
@@ -475,10 +476,12 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
 
    
    //1ere lecture des lignes de données du fichier (1ere colonne uniquement à partir de la 2e ligne) pour vérifier les codes :
+   //    - les codes doivent être renseignés
    //    - les codes doivent être des alphanumeriques
    //    - il ne faut pas de doublon dans le fichier
-   //    - et il faut que le code existe en base
-   private List<CodeIdPair> checkClesFonctionnelles(InfoColonnes infoColonnes, Iterator<Row> iteratorDataRow, Integer firstRowNum, EEntiteId entiteIdOfImport, Banque banque, EContexte eContexte) throws ImportCleFonctionnelleInexploitableException, ImportDoublonInFileException, ImportKeyNotFoundException, ImportCleFonctionnelleIncoherenteException, ImportDataControleInexploitableException {
+   //    - il faut que le code existe en base
+   //    - et il faut que si une colonne de contrôle est définie, que le code soit bien associé à la valeur de cette colonne de contrôle 
+   private List<CodeIdPair> checkClesFonctionnelles(InfoColonnes infoColonnes, Iterator<Row> iteratorDataRow, Integer firstRowNum, EEntiteId entiteIdOfImport, Banque banque, EContexte eContexte) throws ImportCleFonctionnelleInexploitableException, ImportCleFonctionnelleManquanteException, ImportDoublonInFileException, ImportKeyNotFoundException, ImportCleFonctionnelleIncoherenteException, ImportDataControleInexploitableException {
       log.debug("Contrôle des clés fonctionnelles");
       DataForControles dataForControle = checkDoublon(infoColonnes, iteratorDataRow, firstRowNum, entiteIdOfImport, eContexte);
       //check si les codes du fichier existent bien en base de données. Si ils existent tous les renvoie associés à leur Id sinon lance une exception :
@@ -496,10 +499,11 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
    //si non retourne DataForControles contenant la liste des codes contenus dans le fichier ainsi que les éventuelles valeurs renseignées pour les contrôles des codes
    //private DataForControles checkDoublon(String nomKeyColonne, Iterator<Row> iteratorDataRow, Integer firstRowNum, EEntiteId entiteIdOfImport, EContexte eContexte)
    private DataForControles checkDoublon(InfoColonnes infoColonnes, Iterator<Row> iteratorDataRow, Integer firstRowNum, EEntiteId entiteIdOfImport, EContexte eContexte)
-      throws ImportCleFonctionnelleInexploitableException, ImportDataControleInexploitableException, ImportDoublonInFileException{
+      throws ImportCleFonctionnelleInexploitableException, ImportCleFonctionnelleManquanteException, ImportDataControleInexploitableException, ImportDoublonInFileException{
       log.debug("Contrôle si plusieurs lignes sont définies avec la même clé fonctionnelle");
       String nomKeyColonne = infoColonnes.getListNomColonne().get(0);
       String nomChampForControle = infoColonnes.getNomChampForControle();
+      int nbColonne = infoColonnes.getListNomColonne().size();
       //Pour le traitement de contrôle des doublons, utilisation de 2 maps alimentées au fur et à mesure des contrôles:
       // - la 1ere (mapCodeRowNum) garde le 1er numéro de ligne de tous les codes lus : la clé de la map est la clé fonctionnelle (le code), la valeur le numéro de la ligne de la 1ere occurence du code
       // - la 2e (mapDoublon) stocke uniquement les codes en doublons : la clé est le code en doublon et les valeurs les numéros des lignes contenant ce code (le numéro commence à 1)
@@ -509,7 +513,7 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
       //liste des numeros de ligne des codes inexploitables : si lors de la lecture des codes, une erreur est rencontrée, 
       //le numéro de ligne correspondant sera ajouté à cette liste pour renvoyer l'information
       List<Integer> listRowNumForCleFonctionnelleInexploitable = new ArrayList<Integer>();
-      //ImportDataControleInexploitableException importDataControleInexploitableException = null;
+      List<Integer> listRowNumForCleFonctionnelleManquante = new ArrayList<Integer>();
       List<Integer> listRowNumForDataForControleInexploitable = new ArrayList<Integer>();
       
       List<String> listValueForControle = null;
@@ -524,9 +528,21 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
          rowNum++;
          //code de l'objet à mettre à jour : récupéré de la 1ere colonne
          String code = null;
-         //si code non récupéré, on considère qu'il n'y a plus de ligne à traiter : parfois l'iterator ramène des lignes non significative
-         if(row.getCell(0) == null) {
-            break;
+         //si code non récupéré on regarde si toute la ligne est vide : si oui on considère qu'il n'y a plus de ligne à traiter : parfois l'iterator ramène des lignes non significative
+         if(ExcelUtility.isEmpty(row.getCell(0))) {
+            boolean emptyRow = true;
+            int indexCell = 1;
+            while (emptyRow && indexCell < nbColonne) {
+               emptyRow = ExcelUtility.isEmpty(row.getCell(indexCell));
+               indexCell++;
+            }
+            if(emptyRow) {
+               break;
+            }
+            else {
+               listRowNumForCleFonctionnelleManquante.add(rowNum);
+               continue;
+            }
          }
          try {
             code = ExcelUtility.readAlphanumContent(row.getCell(0));
@@ -534,9 +550,6 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
          catch (ExcelIllegalContentTypeException e) {
             listRowNumForCleFonctionnelleInexploitable.add(rowNum);
             continue;
-         }
-         if(code == null) {
-            break;
          }
          
          Integer rowNumEventuelDoublon = mapCodeRowNum.get(code);
@@ -570,6 +583,9 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
       
       if(!listRowNumForCleFonctionnelleInexploitable.isEmpty()) {
          throw new ImportCleFonctionnelleInexploitableException(nomKeyColonne, listRowNumForCleFonctionnelleInexploitable);
+      }
+      if(!listRowNumForCleFonctionnelleManquante.isEmpty()) {
+         throw new ImportCleFonctionnelleManquanteException(nomKeyColonne, listRowNumForCleFonctionnelleManquante);
       }
       if(!listRowNumForDataForControleInexploitable.isEmpty()) {
          throw new ImportDataControleInexploitableException(infoColonnes.getListNomColonne().get(1), listRowNumForDataForControleInexploitable);
