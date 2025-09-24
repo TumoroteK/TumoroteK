@@ -33,74 +33,28 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-
 package fr.aphp.tumorotek.manager.exception;
 
 import java.util.List;
-import java.util.stream.Collectors;
-
-import fr.aphp.tumorotek.manager.exception.uimessage.UIMessage;
 
 /**
  * exception lancée quand la clé fonctionnelle pour une ou plusieurs lignes du fichier d'un import de modification
- * ne seront pas trouvées en base de données. 
- * A noter qu'une classe spécifique existe pour l'entité Patient pour personnaliser un peu le libellé
+ * ne seront pas trouvées en base de données dans le cas du traitement de l'entité Patient. 
  * 
  * @since 2.3.1.0 (TK-538)
  * @author chuet
  *
  */
-public class ImportKeyNotFoundException extends ImportDataException
+public class ImportKeyPatientNotFoundException extends ImportKeyNotFoundException
 {
    private static final long serialVersionUID = 1L;
    
-   //nom de la colonne contenant la clé (1ere colonne du fichier d'import)
-   private String nomKeyColonne;
-
-   private List<String> listKeyNotFound;
-
-   public ImportKeyNotFoundException(String nomKeyColonne, List<String> listKeyNotFound) {
-      super();
-      this.nomKeyColonne = nomKeyColonne;
-      this.listKeyNotFound = listKeyNotFound;
+   public ImportKeyPatientNotFoundException(String nomKeyColonne, List<String> listKeyNotFound){
+      super(nomKeyColonne, listKeyNotFound);
    }
-   
-   public List<String> getListKeyNotFound(){
-      return listKeyNotFound;
-   }
-   
+
    @Override
-   public String getMessage() {
-      StringBuilder message = new StringBuilder("Import : les codes suivants n'existent pas en base de données : ");
-      if(listKeyNotFound != null) {
-         message.append(listKeyNotFound.stream().collect(Collectors.joining(", ")));
-      }
-      
-      return message.toString();
-   }
-
-   public UIMessage retrieveMessageForHeaderOfFichierCorrections() {
-      String[] params = null;
-      if(nomKeyColonne != null) {
-         params = new String[] {nomKeyColonne};
-      }
-      return new UIMessage(getI18nKeyForUIMessage(), params);
-   }
-   
-   @Override
-   public int getNbErrors() {
-      return listKeyNotFound.size();
-   }   
-
-   //pour les exceptions liées aux données, le message par défaut à afficher est le téléchargement du fichier de correction.
-   //surcharge du message par défaut (téléchargement du fichier de correction) car le fichier à télécharger est différent 
-   //il ne contient que les codes inexistants
-   @Override
-   protected String getI18nKey() {
-      return "importTemplate.dl.correctif.codesInexistants";
-   }
-   
    protected String getI18nKeyForUIMessage() {
-      return "importTemplate.correctif.error.codeInexistant";
+      return "importTemplate.correctif.error.codeInexistant.patient";
    }
 }

@@ -74,6 +74,7 @@ import fr.aphp.tumorotek.manager.exception.ImportDoublonColonneException;
 import fr.aphp.tumorotek.manager.exception.ImportDoublonInFileException;
 import fr.aphp.tumorotek.manager.exception.ImportEcrasementDonneeWarningForFileException;
 import fr.aphp.tumorotek.manager.exception.ImportKeyNotFoundException;
+import fr.aphp.tumorotek.manager.exception.ImportKeyPatientNotFoundException;
 import fr.aphp.tumorotek.manager.exception.ImportPrerequisitesException;
 import fr.aphp.tumorotek.manager.exception.ImportTransactionKOException;
 import fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationEntiteStrategyFactory;
@@ -623,6 +624,9 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
       listCodeInexistant.removeIf(code -> listCodeExistantFinal.contains(new CodeIdPair(code)));
 
       if(!listCodeInexistant.isEmpty()) {
+         if(entiteIdOfImport == EEntiteId.PATIENT) {
+            throw new ImportKeyPatientNotFoundException(nomKeyColonne, listCodeInexistant);
+         }
          throw new ImportKeyNotFoundException(nomKeyColonne, listCodeInexistant);
       }
 
