@@ -529,6 +529,8 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
          //code de l'objet à mettre à jour : récupéré de la 1ere colonne
          String code = null;
          //si code non récupéré on regarde si toute la ligne est vide : si oui on considère qu'il n'y a plus de ligne à traiter : parfois l'iterator ramène des lignes non significative
+         //A noter que le mode debug montre que si une ligne est vide dans le fichier, POI ne la met pas dans l'iterator des lignes...
+         //la boucle lisant toutes les cellules de la ligne est tout de même laissé par sécurité
          if(ExcelUtility.isEmpty(row.getCell(0))) {
             boolean emptyRow = true;
             int indexCell = 1;
