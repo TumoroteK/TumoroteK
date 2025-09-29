@@ -39,7 +39,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 /**
- * cette classe contient toutes les informations nécessaires pour gérer une cellule d'un fichier d'import
+ * cette classe contient toutes les informations nécessaires pour gérer une cellule d'un fichier d'import pour modifier des annotations
  * 
  * @since 2.3.1.0 (TK-538)
  * @author chuet
