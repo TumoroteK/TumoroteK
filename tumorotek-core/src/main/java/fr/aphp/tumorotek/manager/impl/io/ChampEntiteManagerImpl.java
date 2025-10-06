@@ -74,9 +74,8 @@ import fr.aphp.tumorotek.model.systeme.Fichier;
 public class ChampEntiteManagerImpl implements ChampEntiteManager
 {
 
-   private final Logger log = LoggerFactory.getLogger(AffichageManager.class);
+   private final Logger log = LoggerFactory.getLogger(ChampEntiteManagerImpl.class);
 
-   /** Bean Dao AffichageDao. */
    private ChampEntiteDao champEntiteDao = null;
 
    public ChampEntiteManagerImpl(){
@@ -438,20 +437,4 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
          }
       }
    }
-
-   @Override
-   public ChampEntite findCleFonctionelleForEntite(final Entite entite) {
-      List<ChampEntite> champsEntite = champEntiteDao.findByEntiteAndObligatoireGatsbi(entite, true);
-      if(champsEntite != null) {
-         if(champsEntite.size() == 1) {
-            return champsEntite.get(0);
-         }
-         else {
-            throw new IllegalArgumentException("L'entité " + entite.getNom() + " n'a pas un champ unique pour sa clé fonctionnelle mais " + String.valueOf(champsEntite.size()));
-         }
-      }
-      
-      return null;
-   }
-
 }

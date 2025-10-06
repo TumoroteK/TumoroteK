@@ -33,46 +33,58 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.io.imports.modification.champannotation;
+package fr.aphp.tumorotek.manager.impl.io;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import fr.aphp.tumorotek.model.CodeIdPair;
-import fr.aphp.tumorotek.model.contexte.Banque;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
+import fr.aphp.tumorotek.manager.io.ChampEntiteFindManager;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
- * cette interface définit les méthodes implémentées dans les strategy, classe dédiées aux règles différentes selon les entités 
- * dans le cadre de l'import pour modifier des annotations. 
- * Ces spécificités concernent la création du modèle et les contrôles en amont du traitement de mise à jour des annotations, qui lui ne dépend pas de l'entité concerné
  * 
+ * {@link ChampEntiteFindManager}
  * @since 2.3.1.0 (TK-538)
  * @author chuet
  *
  */
-public interface ImportChampAnnotationEntiteStrategy
+public class ChampEntiteFindManagerImpl implements ChampEntiteFindManager
 {
-   /**
-    * méthode qui récupère le champ correspondant à la clé fonctionnelle de l'objet à modifier
-    * @param entite
-    * @return ChampEntite
-    */
-   ChampEntite retrieveChampForCleFonctionnelle(Entite entite);
+   private final Logger log = LoggerFactory.getLogger(ChampEntiteFindManagerImpl.class);
    
-   /**
-    * retourne l'éventuel champ utilisé pour contrôler la valeur de la clé fonctionnelle. Utilisé à date uniquement pour le Patient
-    * @param entite
-    * @return
-    */
-   ChampEntite retrieveChampForControle(Entite entite);
+   private ChampEntiteDao champEntiteDao = null;
+
+   public void setChampEntiteDao(final ChampEntiteDao champEntiteDao){
+      this.champEntiteDao = champEntiteDao;
+   }
    
-   /**
-    * va chercher en base de données les identifiants des objets à mettre à jour ainsi que la valeur de contrôle si nécessaire
-    * @param listCodeForSelect : liste des codes des objets à modifier
-    * @param banque : banque de rattachement des objets : permet de faire un contrôle sur le code et de ne pas autoriser une modification sur une collection n'appartenant pas à l'utilisateur
-    * @param nomChampForControle : nom du champ de la donnée de contrôle à récupérer. Sera null dans la majorité des cas sauf pour Patient
-    * @return une liste de CodeIdPair, DTO qui contient le code (donnée en entrée), l'id associé en base et la valeur du champ de contrôle 
-    */
-   List<CodeIdPair> findIdAndDataForControleByCodesAndBanque(List<String> listCodeForSelect, Banque banque, String nomChampForControle);
+   @Override
+   public ChampEntite findByEntiteAndNomManager(Entite entite, String nom){
+      log.debug("Recherche des ChampEntites par entité et nom");
+      if(entite != null && nom != null){
+         //la méthode findByEntiteAndNomManager renvoie une liste mais ne peut contenir en réalité qu'un élément => on prend le 1er
+         return champEntiteDao.findByEntiteAndNom(entite, nom).get(0);
+      }
+      return null;
+   }
+   
+   @Override
+   public ChampEntite findCleFonctionelleForEntite(final Entite entite) {
+      List<ChampEntite> champsEntite = champEntiteDao.findByEntiteAndObligatoireGatsbi(entite, true);
+      if(champsEntite != null) {
+         if(champsEntite.size() == 1) {
+            return champsEntite.get(0);
+         }
+         else {
+            throw new IllegalArgumentException("L'entité " + entite.getNom() + " n'a pas un champ unique pour sa clé fonctionnelle mais " + String.valueOf(champsEntite.size()));
+         }
+      }
+      
+      return null;
+   }
 }

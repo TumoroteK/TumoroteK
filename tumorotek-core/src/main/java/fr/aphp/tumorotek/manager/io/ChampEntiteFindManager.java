@@ -33,46 +33,47 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.io.imports.modification.champannotation;
+package fr.aphp.tumorotek.manager.io;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.model.CodeIdPair;
-import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
- * cette interface définit les méthodes implémentées dans les strategy, classe dédiées aux règles différentes selon les entités 
- * dans le cadre de l'import pour modifier des annotations. 
- * Ces spécificités concernent la création du modèle et les contrôles en amont du traitement de mise à jour des annotations, qui lui ne dépend pas de l'entité concerné
+ * cette interface a été définie pour contourner un problème lié au fait que les managers classiques sont encapsulés dans un proxy pour gérer les transactions ce qui
+ * pose problème lors de l'utilisation d'un manager comme attribut d'une classe abstraite, les classes fille ne pouvant pas accéder qu'à la classe proxy 
+ * et non à la classe manager proprement dit. 
+ * C'est le cas dans le traitement de la mise à jour des annotations par import, avec les strategy héritant de AbstractImportChampAnnotationEntiteStrategy
+ * https://stackoverflow.com/questions/14937516/spring-aop-illegalargumentexception-cannot-convert-value-of-type-proxy12
+ * Dans l'absolu, toutes les méthodes select devrait être dans cette classe sans transaction.
+ * Mais pour limiter les risques de régression, seules les méthodes introduites par ce traitement ont été déportées dans cette classe et celle existante a été dupliquée
+ * sachant que c'est la même méthode du Dao qui est appelée dans les 2 managers.
  * 
  * @since 2.3.1.0 (TK-538)
  * @author chuet
  *
  */
-public interface ImportChampAnnotationEntiteStrategy
+public interface ChampEntiteFindManager
 {
+
+   //méthode "dupliquée" de ChampEntiteManager avec amélioration du type de retour puisqu'un seul champEntite peut être trouvé pour un nom et une entité
    /**
-    * méthode qui récupère le champ correspondant à la clé fonctionnelle de l'objet à modifier
-    * @param entite
+    * Recherche le champ dont l'entité et le nom sont passés
+    * en paramètres.
+    * @param entite Entité à laquelle les champs appartiennent.
+    * @param nom Nom du ChampEntite.
     * @return ChampEntite
     */
-   ChampEntite retrieveChampForCleFonctionnelle(Entite entite);
+   ChampEntite findByEntiteAndNomManager(Entite entite, String nom);
    
    /**
-    * retourne l'éventuel champ utilisé pour contrôler la valeur de la clé fonctionnelle. Utilisé à date uniquement pour le Patient
-    * @param entite
-    * @return
+    * Renvoie le champ correspondant à la clé fonctionnelle de l'entité passée en paramètre. Si l'entité a une clé composée, une IllegalArgumentException est lancée
+    * @param entite.
+      @throws IllegalArgumentException
+    * @return ChampEntite.
     */
-   ChampEntite retrieveChampForControle(Entite entite);
+   ChampEntite findCleFonctionelleForEntite(final Entite entite);
    
-   /**
-    * va chercher en base de données les identifiants des objets à mettre à jour ainsi que la valeur de contrôle si nécessaire
-    * @param listCodeForSelect : liste des codes des objets à modifier
-    * @param banque : banque de rattachement des objets : permet de faire un contrôle sur le code et de ne pas autoriser une modification sur une collection n'appartenant pas à l'utilisateur
-    * @param nomChampForControle : nom du champ de la donnée de contrôle à récupérer. Sera null dans la majorité des cas sauf pour Patient
-    * @return une liste de CodeIdPair, DTO qui contient le code (donnée en entrée), l'id associé en base et la valeur du champ de contrôle 
-    */
-   List<CodeIdPair> findIdAndDataForControleByCodesAndBanque(List<String> listCodeForSelect, Banque banque, String nomChampForControle);
+
 }

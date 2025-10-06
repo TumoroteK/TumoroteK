@@ -100,7 +100,7 @@ public class ModificationAnnotationObjetExistantStrategy extends AbstractImportT
        result.add(codeFonctionnel);
       }
       //ajout des éventuels champs de contrôle
-      ChampEntite champEntiteForControle = entiteStrategy.retrieveChampForContole(entite);
+      ChampEntite champEntiteForControle = entiteStrategy.retrieveChampForControle(entite);
       if(champEntiteForControle != null) {
          //si contexte Gatsbi, on vérifie que le champ est visible :
          if(eContexte == EContexte.GATSBI) {

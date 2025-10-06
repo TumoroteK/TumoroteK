@@ -154,12 +154,4 @@ public interface ChampEntiteManager
     * @return Valeur du champ (en String).
     */
    Object getValueForObjectManager(final ChampEntite champ, final Object obj, final boolean prettyFormat);
-   
-   /**
-    * Renvoie le champ correspondant à la clé fonctionnelle de l'entité passée en paramètre. Si l'entité a une clé composée, une IllegalArgumentException est lancée
-    * @param entite.
-      @throws IllegalArgumentException
-    * @return ChampEntite.
-    */
-   ChampEntite findCleFonctionelleForEntite(final Entite entite);
 }

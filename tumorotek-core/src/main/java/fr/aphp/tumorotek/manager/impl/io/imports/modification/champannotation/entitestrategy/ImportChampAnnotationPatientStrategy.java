@@ -62,7 +62,7 @@ public class ImportChampAnnotationPatientStrategy extends AbstractImportChampAnn
    //Pour le patient, la clé fonctionnelle est le Nip sauf dans le cas d'un contexte Gatsbi ou c'est l'identifiant (cf ImportChampAnnotationPatientGatsbiStrategy)
    @Override
    public ChampEntite retrieveChampForCleFonctionnelle(Entite entite){
-      return getChampEntiteManager().findByEntiteAndNomManager(entite, "Nip").get(0);
+      return getChampEntiteFindManager().findByEntiteAndNomManager(entite, "Nip");
    }
    
    /**
@@ -73,7 +73,7 @@ public class ImportChampAnnotationPatientStrategy extends AbstractImportChampAnn
     * @return liste de CodeIdPair contenant également le nom
     * @since 2.3.1 (TK-538)
     */
-   ///!\ cette requête est volontairement mis ici et non dans PatientManagerImpl car du fait de l'héritage, il ne faut pas gérer de transaction (cf commentaire TK-538 dans applicationContextManager.xml)
+   ///!\ cette requête est volontairement mise ici et non dans PatientManagerImpl car du fait de l'héritage, il ne faut pas gérer de transaction (cf commentaire TK-538 dans applicationContextManager.xml)
    @Override
    public List<CodeIdPair> findIdAndDataForControleByCodesAndBanque(List<String> nips, Banque banque, String nomChampForControle) {
       String hqlPartForControle = "";

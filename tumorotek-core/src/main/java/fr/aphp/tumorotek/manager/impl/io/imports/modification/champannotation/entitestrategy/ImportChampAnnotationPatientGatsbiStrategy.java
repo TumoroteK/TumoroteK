@@ -56,7 +56,7 @@ public class ImportChampAnnotationPatientGatsbiStrategy extends ImportChampAnnot
 {
    @Override
    public ChampEntite retrieveChampForCleFonctionnelle(Entite entite){
-      return getChampEntiteManager().findCleFonctionelleForEntite(entite);
+      return getChampEntiteFindManager().findCleFonctionelleForEntite(entite);
    }
    
    /**

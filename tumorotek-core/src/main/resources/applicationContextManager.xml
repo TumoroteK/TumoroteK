@@ -1455,10 +1455,9 @@
 		</property>
 	</bean>
 	<!--  TK-538  -->
-	<!-- un bean lié à ChampEntiteManagerImpl sans gestion de la transaction est défini pour résoudre le problème rencontré sinon
-	avec l'utilisation de ce bean encapsulé dans le proxy pour la transaction : en effet, une classe encapsulée dans txProxyTemplate ne peut pas héritée d'une autre classe
-	cf commentaire au niveau de importChampAnnotationPatientStrategy -->
-	<bean id="champEntiteManagerWithoutTransaction" class="fr.aphp.tumorotek.manager.impl.io.ChampEntiteManagerImpl">
+	<!-- ce bean ne gère que des requêtes de select. Il ne doit pas gérer de transaction pour ne pas être encapsulé dans txProxyTemplate, e qui pose problème
+		lors de l'utilisation de la classe comme attribut dans une classe abstraite cf commentaire au niveau de importChampAnnotationPatientStrategy -->
+	<bean id="champEntiteFindManager" class="fr.aphp.tumorotek.manager.impl.io.ChampEntiteFindManagerImpl">
 		<property name="champEntiteDao" ref="champEntiteDao" />
 	</bean>
 
@@ -2345,23 +2344,23 @@
 	     -->	
 	<bean id="importChampAnnotationPatientStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationPatientStrategy">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
-		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+		<property name="champEntiteFindManager" ref="champEntiteFindManager" />
 	</bean>
 	<bean id="importChampAnnotationPatientGatsbiStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationPatientGatsbiStrategy">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
-		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+		<property name="champEntiteFindManager" ref="champEntiteFindManager" />
 	</bean>
 	<bean id="importChampAnnotationPrelevementStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationPrelevementStrategy">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
-		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+		<property name="champEntiteFindManager" ref="champEntiteFindManager" />
 	</bean>
 	<bean id="importChampAnnotationEchantillonStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationEchantillonStrategy">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
-		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+		<property name="champEntiteFindManager" ref="champEntiteFindManager" />
 	</bean>
 	<bean id="importChampAnnotationProdDeriveStrategy" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationProdDeriveStrategy">
 		<property name="entityManagerFactory" ref="entityManagerFactory" />
-		<property name="champEntiteManager" ref="champEntiteManagerWithoutTransaction" />
+		<property name="champEntiteFindManager" ref="champEntiteFindManager" />
 	</bean>
 
 	<bean id="importChampAnnotationEntiteStrategyFactory" class="fr.aphp.tumorotek.manager.impl.io.imports.modification.champannotation.entitestrategy.ImportChampAnnotationEntiteStrategyFactory">

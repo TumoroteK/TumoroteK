@@ -39,6 +39,7 @@ import java.util.List;
 
 import javax.persistence.EntityManagerFactory;
 
+import fr.aphp.tumorotek.manager.io.ChampEntiteFindManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.manager.io.imports.modification.champannotation.ImportChampAnnotationEntiteStrategy;
 import fr.aphp.tumorotek.model.CodeIdPair;
@@ -55,7 +56,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
  */
 public abstract class AbstractImportChampAnnotationEntiteStrategy implements ImportChampAnnotationEntiteStrategy
 {
-   private ChampEntiteManager champEntiteManager;// /!\ instance sans transaction pour éviter un problème avec l'héritage (cf mapping spring)
+   private ChampEntiteFindManager champEntiteFindManager;// /!\ manager sans transaction pour éviter un problème avec l'héritage (cf mapping spring)
    
    private EntityManagerFactory entityManagerFactory;
 
@@ -71,12 +72,12 @@ public abstract class AbstractImportChampAnnotationEntiteStrategy implements Imp
       this.entityManagerFactory = entityManagerFactory;
    }
    
-   protected ChampEntiteManager getChampEntiteManager(){
-      return champEntiteManager;
+   protected ChampEntiteFindManager getChampEntiteFindManager(){
+      return champEntiteFindManager;
    }
 
-   public void setChampEntiteManager(ChampEntiteManager champEntiteManager){
-      this.champEntiteManager = champEntiteManager;
+   public void setChampEntiteFindManager(ChampEntiteFindManager champEntiteFindManager){
+      this.champEntiteFindManager = champEntiteFindManager;
    } 
    
    protected void setNomChampForControle(String nomColonneForControle){
@@ -86,15 +87,15 @@ public abstract class AbstractImportChampAnnotationEntiteStrategy implements Imp
    
    @Override
    public ChampEntite retrieveChampForCleFonctionnelle(Entite entite){
-      return champEntiteManager.findCleFonctionelleForEntite(entite);
+      return champEntiteFindManager.findCleFonctionelleForEntite(entite);
    }
    
    
    //va chercher l'objet ChampEntite correspondant à la colonne de contrôle définies par nomColonneForControle
    @Override
-   public ChampEntite retrieveChampForContole(Entite entite){
+   public ChampEntite retrieveChampForControle(Entite entite){
       if(nomChampForControle != null) {
-         return getChampEntiteManager().findByEntiteAndNomManager(entite, nomChampForControle).get(0);//la méthode findByEntiteAndNomManager renvoie une liste mais ne peut contenir en réalité qu'un élément
+         return getChampEntiteFindManager().findByEntiteAndNomManager(entite, nomChampForControle);
       }
 
       return null;
