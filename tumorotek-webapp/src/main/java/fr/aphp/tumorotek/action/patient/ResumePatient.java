@@ -35,6 +35,9 @@
  **/
 package fr.aphp.tumorotek.action.patient;
 
+import java.util.HashSet;
+import java.util.List;
+
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
@@ -47,6 +50,7 @@ import org.zkoss.zul.Tabbox;
 import org.zkoss.zul.Tabpanel;
 import org.zkoss.zul.Textbox;
 
+import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -174,6 +178,10 @@ public class ResumePatient
          }else{
             codeDiagLabel.setValue(null);
          }
+         //TK-761 : récupération des maladies du patient (nécessaires ensuite lors de la sauvegarde - cf PrelevementManagerImpl.checkRequiredObjectsAndValidate() TG-255) :
+         //sans ces 2 lignes, on a une exception "failed to lazily initialize a collection of role : ...Patient.maladies non session our session was closed.
+         List<Maladie> listMaladie = ManagerLocator.getMaladieManager().findAllByPatientManager(this.maladie.getPatient());
+         this.maladie.getPatient().setMaladies(new HashSet<Maladie>(listMaladie));
          setPatientProperties(this.maladie.getPatient());
       }else{
          linkMaladieLabel.setValue(null);
