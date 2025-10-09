@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+	<!-- remplacement de l'index DATES_ENTITE_IDX par ENTITE_DATES_IDX (permutation de 2 colonnes)  -->
+	<changeSet id="dropIndex-TK-762" author="CH" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+            <indexExists indexName="DATES_ENTITE_IDX" tableName="RETOUR" />
+    	</preConditions>
+        <dropIndex indexName="DATES_ENTITE_IDX" tableName="RETOUR" />  
+    </changeSet>
+	<changeSet id="createIndex-TK-762" author="CH" runAlways="false" context="*">
+        <preConditions onFail="MARK_RAN">
+	        <not>
+	            <indexExists indexName="ENTITE_DATES_IDX" tableName="RETOUR" />
+	        </not>
+    	</preConditions>
+        <createIndex indexName="ENTITE_DATES_IDX" tableName="RETOUR" unique="false">  
+        	<column name="ENTITE_ID"/>  
+        	<column name="DATE_RETOUR"/> 
+        	<column name="DATE_SORTIE"/> 
+    	</createIndex>
+    </changeSet>  
+
+</databaseChangeLog>
