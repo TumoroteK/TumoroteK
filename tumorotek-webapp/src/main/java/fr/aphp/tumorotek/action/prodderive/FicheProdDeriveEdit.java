@@ -2262,8 +2262,9 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          // Contrôle à  faire que si un parent est renseigné
          if(!getTypeParent().equals("Aucun")) {
             final BigDecimal quantiteTransfoValue = (BigDecimal) value;
-            // Si isQuantiteObligatoire est null et elle doit être rensigné: Lance une exception
-            if (isQuantiteObligatoire && quantiteTransfoValue == null) {
+            // Si la quantité de transformation est obligatoire et que la parent contient une quantité (getQuantiteMax() != null)
+            // quantiteTransfoValue doit être renseignée. Si ce n'est pas le cas, le traitement lance une exception
+            if (isQuantiteObligatoire && getQuantiteMax() != null && quantiteTransfoValue == null) {
                throw new WrongValueException(comp, Labels.getLabel("ficheMultiProdDerive.validation.quantite"));
             }
             // Si la valeur est negative : Lance une exception

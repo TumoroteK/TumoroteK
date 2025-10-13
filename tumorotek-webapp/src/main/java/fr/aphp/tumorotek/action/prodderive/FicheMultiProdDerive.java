@@ -250,8 +250,6 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
-      initializeQuantiteUtiliseObligatoireFromSession();
-
       setWaitLabel("ficheProdDerive.multi.creation.encours");
 
       // liste de composants pour le prlvt parent
@@ -1460,6 +1458,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          prodDerives.clear();
       }
 
+      // /!\ doit être appelée après l'appel de setQuantiteMax() :
+      initializeQuantiteUtiliseObligatoireFromSession();
+      
       prodDerivesDecorated = ProdDeriveDecorator2.decorateListe(prodDerives);
       final ListModel<ProdDeriveDecorator2> list = new ListModelList<>(prodDerivesDecorated);
       derivesList.setModel(list);
@@ -2728,7 +2729,7 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
       isQuantiteObligatoire = Boolean.parseBoolean(deriveQteObligatoireDto.getValeur());
 
-      requiredTransfoQuantiteLabel.setVisible(isQuantiteObligatoire);
+      requiredTransfoQuantiteLabel.setVisible(isQuantiteObligatoire && getQuantiteMax() != null);
 
    }
 
