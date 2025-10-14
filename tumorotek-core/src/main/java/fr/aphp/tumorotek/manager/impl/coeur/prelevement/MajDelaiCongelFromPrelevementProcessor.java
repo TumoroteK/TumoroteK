@@ -85,43 +85,46 @@ public class MajDelaiCongelFromPrelevementProcessor
          int nbEchantillonConcerneParMessage = 0;
          
          defineCasMajDelaiCongel(majDelaiCongelDTO);
-       
-         //Récupère les échantillons du prélèvement et les tri par type de délai de congélation :
-         Map<ETypeDelaiCongelation, List<Echantillon>> mapEchantillonByTypeDelaiCongelation =
-            findByPrelevementAndSortByTypeDelaiCongelation(majDelaiCongelDTO.getPrelevement(), majDelaiCongelDTO.getOldDatePrelevement());
-         int nbTotalEchantillon = Utils.retrieveNbElementInMapOfList(mapEchantillonByTypeDelaiCongelation);
-
-         ECasMajDelaiCongelFromPrelevement casMajDelaiCongel = majDelaiCongelDTO.getCasMajDelaiCongel();
-         switch(casMajDelaiCongel){
-            case CAS1__DATES_AVANT_APRES_VALIDES:
-               if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) {
-                  keyMessage = casMajDelaiCongel.retrieveKeyI18nMessageForModifDatePrelevement(nbTotalEchantillon);
-                  nbEchantillonConcerneParMessage=mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL).size();
-               }
-               break;
-
-            case CAS2__DATE_AVANT_NON_VALIDE__DATE_APRES_VALIDE:
-               if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) {
-                  keyMessage = casMajDelaiCongel.retrieveKeyI18nMessageForModifDatePrelevement(nbTotalEchantillon);
-                  nbEchantillonConcerneParMessage=mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL).size();
-               }
-               break;
-               
-            case CAS3__DATE_AVANT_VALIDE__DATE_APRES_NON_VALIDE:
-               if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.THEORIQUE)) {
-                  keyMessage = casMajDelaiCongel.retrieveKeyI18nMessageForModifDatePrelevement(nbTotalEchantillon);
-                  nbEchantillonConcerneParMessage=mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.THEORIQUE).size();
-               }
-               break;
-               
-            default:
-               break;
-         }
          
-         majDelaiCongelDTO.setKeyI18nTitreModaleConfirmation(ModaleMajDelaiCongelationConstants.KEY_TITLE__PRELEVEMENT__CONFIRMATION);
-         majDelaiCongelDTO.setKeyI18nMessageModaleConfirmation(keyMessage);
-         majDelaiCongelDTO.setNbEchantillonConcerneParConfirmation(nbEchantillonConcerneParMessage);
-         majDelaiCongelDTO.setNbTotalEchantillon(nbTotalEchantillon);
+         ECasMajDelaiCongelFromPrelevement casMajDelaiCongel = majDelaiCongelDTO.getCasMajDelaiCongel();
+         if(casMajDelaiCongel != null) {
+            //Récupère les échantillons du prélèvement et les tri par type de délai de congélation :
+            Map<ETypeDelaiCongelation, List<Echantillon>> mapEchantillonByTypeDelaiCongelation =
+               findByPrelevementAndSortByTypeDelaiCongelation(majDelaiCongelDTO.getPrelevement(), majDelaiCongelDTO.getOldDatePrelevement());
+            int nbTotalEchantillon = Utils.retrieveNbElementInMapOfList(mapEchantillonByTypeDelaiCongelation);
+   
+   
+            switch(casMajDelaiCongel){
+               case CAS1__DATES_AVANT_APRES_VALIDES:
+                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) {
+                     keyMessage = casMajDelaiCongel.retrieveKeyI18nMessageForModifDatePrelevement(nbTotalEchantillon);
+                     nbEchantillonConcerneParMessage=mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL).size();
+                  }
+                  break;
+   
+               case CAS2__DATE_AVANT_NON_VALIDE__DATE_APRES_VALIDE:
+                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) {
+                     keyMessage = casMajDelaiCongel.retrieveKeyI18nMessageForModifDatePrelevement(nbTotalEchantillon);
+                     nbEchantillonConcerneParMessage=mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL).size();
+                  }
+                  break;
+                  
+               case CAS3__DATE_AVANT_VALIDE__DATE_APRES_NON_VALIDE:
+                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.THEORIQUE)) {
+                     keyMessage = casMajDelaiCongel.retrieveKeyI18nMessageForModifDatePrelevement(nbTotalEchantillon);
+                     nbEchantillonConcerneParMessage=mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.THEORIQUE).size();
+                  }
+                  break;
+                  
+               default:
+                  break;
+            }
+            
+            majDelaiCongelDTO.setKeyI18nTitreModaleConfirmation(ModaleMajDelaiCongelationConstants.KEY_TITLE__PRELEVEMENT__CONFIRMATION);
+            majDelaiCongelDTO.setKeyI18nMessageModaleConfirmation(keyMessage);
+            majDelaiCongelDTO.setNbEchantillonConcerneParConfirmation(nbEchantillonConcerneParMessage);
+            majDelaiCongelDTO.setNbTotalEchantillon(nbTotalEchantillon);
+         }
       }
    }
    
@@ -162,59 +165,61 @@ public class MajDelaiCongelFromPrelevementProcessor
             findByPrelevementAndSortByTypeDelaiCongelation(majDelaiCongelDTO.getPrelevement(), majDelaiCongelDTO.getOldDatePrelevement());
 
          ECasMajDelaiCongelFromPrelevement casMajDelaiCongel = majDelaiCongelDTO.getCasMajDelaiCongel();
-         Boolean confirmationUtilisateur = majDelaiCongelDTO.isConfirmationUtilisateur();
-         List<Echantillon> listEchantillonToUpdate = new ArrayList<Echantillon>();
-         switch(casMajDelaiCongel){
-            case CAS1__DATES_AVANT_APRES_VALIDES:
-               //par défaut on met à jour les échantillons avec délai théorique et ceux sans délai mais une date de stockage valide
-               //si l'utilisateur confirme, on met aussi à jour les échantillons avec délai saisi et date de stockage avec heure
-               if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.THEORIQUE)) {
-                  listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.THEORIQUE));
-               }
-               if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.UNDEFINED_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) {               
-                  listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.UNDEFINED_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL));
-               }
-
-               if(confirmationUtilisateur != null && confirmationUtilisateur) {
-                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) {   
-                     listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL));
-                  }
-               }
-               
-               echantillonManager.updateDelaiCongelationWithTheoriqueIfPossible(majDelaiCongelDTO.getNewDatePrelevement(), listEchantillonToUpdate);
-               
-               break;
-
-            case CAS2__DATE_AVANT_NON_VALIDE__DATE_APRES_VALIDE:
-               //par défaut on met à jour les échantillons sans délai mais une date de stockage valide
-               //si l'utilisateur confirme, on met aussi à jour les échantillons avec délai saisi et date de stockage avec heure
-               if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.UNDEFINED_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) { 
-                  listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.UNDEFINED_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL));
-               }
-
-               if(confirmationUtilisateur != null && confirmationUtilisateur) {
-                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) { 
-                     listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL));
-                  }
-               }
-               
-               echantillonManager.updateDelaiCongelationWithTheoriqueIfPossible(majDelaiCongelDTO.getNewDatePrelevement(), listEchantillonToUpdate);
-
-               break;
-               
-            case CAS3__DATE_AVANT_VALIDE__DATE_APRES_NON_VALIDE:
-             //si l'utilisateur confirme, on supprime les délais théorique
-               if(confirmationUtilisateur != null && confirmationUtilisateur) {
-                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.THEORIQUE)) { 
+         if(casMajDelaiCongel != null) {
+            Boolean confirmationUtilisateur = majDelaiCongelDTO.isConfirmationUtilisateur();
+            List<Echantillon> listEchantillonToUpdate = new ArrayList<Echantillon>();
+            switch(casMajDelaiCongel){
+               case CAS1__DATES_AVANT_APRES_VALIDES:
+                  //par défaut on met à jour les échantillons avec délai théorique et ceux sans délai mais une date de stockage valide
+                  //si l'utilisateur confirme, on met aussi à jour les échantillons avec délai saisi et date de stockage avec heure
+                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.THEORIQUE)) {
                      listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.THEORIQUE));
                   }
+                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.UNDEFINED_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) {               
+                     listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.UNDEFINED_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL));
+                  }
+   
+                  if(confirmationUtilisateur != null && confirmationUtilisateur) {
+                     if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) {   
+                        listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL));
+                     }
+                  }
                   
-                  echantillonManager.removeDelaiCongelation(listEchantillonToUpdate);
-               }
-               break;
-               
-            default:
-               break;
+                  echantillonManager.updateDelaiCongelationWithTheoriqueIfPossible(majDelaiCongelDTO.getNewDatePrelevement(), listEchantillonToUpdate);
+                  
+                  break;
+   
+               case CAS2__DATE_AVANT_NON_VALIDE__DATE_APRES_VALIDE:
+                  //par défaut on met à jour les échantillons sans délai mais une date de stockage valide
+                  //si l'utilisateur confirme, on met aussi à jour les échantillons avec délai saisi et date de stockage avec heure
+                  if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.UNDEFINED_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) { 
+                     listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.UNDEFINED_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL));
+                  }
+   
+                  if(confirmationUtilisateur != null && confirmationUtilisateur) {
+                     if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL)) { 
+                        listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.SAISI_WITH_DATE_STOCKAGE_VALIDE_FOR_CALCUL));
+                     }
+                  }
+                  
+                  echantillonManager.updateDelaiCongelationWithTheoriqueIfPossible(majDelaiCongelDTO.getNewDatePrelevement(), listEchantillonToUpdate);
+   
+                  break;
+                  
+               case CAS3__DATE_AVANT_VALIDE__DATE_APRES_NON_VALIDE:
+                //si l'utilisateur confirme, on supprime les délais théorique
+                  if(confirmationUtilisateur != null && confirmationUtilisateur) {
+                     if(mapEchantillonByTypeDelaiCongelation.containsKey(ETypeDelaiCongelation.THEORIQUE)) { 
+                        listEchantillonToUpdate.addAll(mapEchantillonByTypeDelaiCongelation.get(ETypeDelaiCongelation.THEORIQUE));
+                     }
+                     
+                     echantillonManager.removeDelaiCongelation(listEchantillonToUpdate);
+                  }
+                  break;
+                  
+               default:
+                  break;
+            }
          }
       }
 
