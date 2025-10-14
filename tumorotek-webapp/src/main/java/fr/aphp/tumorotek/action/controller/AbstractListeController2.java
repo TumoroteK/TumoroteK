@@ -728,11 +728,20 @@ public abstract class AbstractListeController2 extends AbstractController
 		}
 	}
 
-	public void onShowResults(){
-		//cette méthode est appelée soit à la suite de l'alimentation de listObjects soit à la suite de l'alimentaiton
-	        //de resultsIds
-	        //l'affichage s'appuie sur listObjects donc si c'est resultIds qui est renseigné, on alimente listObjects
-	        if(getListObjects().isEmpty()) {		
+	///---------------------------------------
+	//correction des bugs TK-429 et TK-767
+	//il aurait fallu définir 2 méthodes d'affichage différentes : une pour listObjects et une autre pour afficher resultatsIds
+	//mais l'impact était important car il fallait revoir tous les appels assez nombreux
+	//il a donc été décidé d'adapter la méthode pour afficher soit l'un soit l'autre avec priorité par défaut à l'affichage de listObjects
+	
+	//Cette méthode affiche le contenu de listObjects
+	//Mais elle est appelée soit à la suite de l'alimentation de listObjects soit à la suite de l'alimentaiton
+   //de resultsIds. Dans ce dernier cas, listObjects est alimentée par resultsIds. 
+	//Par défaut, il est considéré que listObjects peut être alimentée par resultsId que si listObjects est vide.
+	//Mais il semble que dans certains cas, listObjects est quand même alimentée. Il est alors possible de forcer l'écrasement de listObjects par resultsIds
+	//en passant forceResultIds à true
+	public void onShowResults(boolean forceResultIds){
+	   if(forceResultIds || getListObjects().isEmpty()) {		
 			List<Integer> ids = new ArrayList<>();
 			if(getResultatsIds().size() > 500){
 				Collections.reverse(getResultatsIds());
@@ -750,6 +759,17 @@ public abstract class AbstractListeController2 extends AbstractController
 		getBinder().loadComponent(objectsListGrid);
 	}
 
+	//TK-429 : Affiche les objets associés à listObjects si celle-ci n'est pas vide, sinon affiche resultatsIds.
+   public void onShowResults(){
+      onShowResults(false);
+	}
+	
+   //TK-767 : Affiche les objets associés à resultatsIds même si listObjects est déjà alimentée.
+   public void onShowResultsFromResultatsIds(){
+      onShowResults(true);
+   }
+   /// ---------------------------------------
+   
 	/**
 	 * Evenement relayant l'envoi vers une nouvelle cession
 	 * d'un trop grand nombre de résultats (envoyé depuis ResultatsModale)

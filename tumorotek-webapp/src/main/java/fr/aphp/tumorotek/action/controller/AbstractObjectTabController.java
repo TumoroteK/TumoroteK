@@ -958,7 +958,7 @@ public abstract class AbstractObjectTabController extends AbstractController
 				tabController.getListe().callResultatsModale(ids);
 			}else{
 				tabController.getListe().setResultatsIds(ids);
-				tabController.getListe().onShowResults();
+				tabController.getListe().onShowResultsFromResultatsIds();
 				//updateListContent(resultats);
 			}
 		}
