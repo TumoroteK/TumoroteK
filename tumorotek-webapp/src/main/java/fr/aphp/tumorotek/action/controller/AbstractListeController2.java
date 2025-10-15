@@ -690,17 +690,15 @@ public abstract class AbstractListeController2 extends AbstractController
 		//TK-429 : cas spécifique de la recherche des 30 derniers
 		if(dateCreation.isChecked() && dateCreationBox.getSelectedIndex() == 3){
 			setListObjects(extractLastObjectsCreated());
-			onShowResults();
+			onShowResultsFromListObjects();
 		}else{
 			setResultatsIds(doFindObjects());
 			if(getResultatsIds().size() > 500){
 				openResultatsWindow(page, getResultatsIds(), self, getEntiteNom(), getObjectTabController());
 			}else if(getResultatsIds().size() > 0){
-				// setListObjects(extractObjectsFromIds(resultatsIds));
-				onShowResults();
+				onShowResultsFromResultatsIds();
 			}else{
-				// setListObjects(new ArrayList<Object>());
-				onShowResults();
+			   onShowResultsFromResultatsIds();
 				Messagebox.show(Labels.getLabel("recherche.avancee.no.results"),
 						Labels.getLabel("recherche.avancee.no.results.title"), Messagebox.OK, Messagebox.INFORMATION);
 			}
@@ -720,9 +718,9 @@ public abstract class AbstractListeController2 extends AbstractController
 		if(res.size() > 500){
 			openResultatsWindow(page, res, self, getEntiteNom(), getObjectTabController());
 		}else if(res.size() > 0){
-			onShowResults();
+		   onShowResultsFromResultatsIds();
 		}else{
-			onShowResults();
+		   onShowResultsFromResultatsIds();
 			Messagebox.show(Labels.getLabel("recherche.avancee.no.results"), Labels.getLabel("recherche.avancee.no.results.title"),
 					Messagebox.OK, Messagebox.INFORMATION);
 		}
@@ -730,45 +728,28 @@ public abstract class AbstractListeController2 extends AbstractController
 
 	///---------------------------------------
 	//correction des bugs TK-429 et TK-767
-	//il aurait fallu définir 2 méthodes d'affichage différentes : une pour listObjects et une autre pour afficher resultatsIds
-	//mais l'impact était important car il fallait revoir tous les appels assez nombreux
-	//il a donc été décidé d'adapter la méthode pour afficher soit l'un soit l'autre avec priorité par défaut à l'affichage de listObjects
-	
-	//Cette méthode affiche le contenu de listObjects
-	//Mais elle est appelée soit à la suite de l'alimentation de listObjects soit à la suite de l'alimentaiton
-   //de resultsIds. Dans ce dernier cas, listObjects est alimentée par resultsIds. 
-	//Par défaut, il est considéré que listObjects peut être alimentée par resultsId que si listObjects est vide.
-	//Mais il semble que dans certains cas, listObjects est quand même alimentée. Il est alors possible de forcer l'écrasement de listObjects par resultsIds
-	//en passant forceResultIds à true
-	public void onShowResults(boolean forceResultIds){
-	   if(forceResultIds || getListObjects().isEmpty()) {		
-			List<Integer> ids = new ArrayList<>();
-			if(getResultatsIds().size() > 500){
-				Collections.reverse(getResultatsIds());
-				ids = getResultatsIds().subList(0, 500);
-		    	}else{
-				ids = getResultatsIds();
-		    	}
-			setListObjects(extractObjectsFromIds(ids));
-		}
-
-		getObjectTabController().clearStaticFiche();
-		getObjectTabController().switchToOnlyListeMode();
-		objectsListGrid.setActivePage(0);
-		updateListResultsLabel(getListObjects().size());
-		getBinder().loadComponent(objectsListGrid);
-	}
-
-	//TK-429 : Affiche les objets associés à listObjects si celle-ci n'est pas vide, sinon affiche resultatsIds.
-   public void onShowResults(){
-      onShowResults(false);
-	}
-	
-   //TK-767 : Affiche les objets associés à resultatsIds même si listObjects est déjà alimentée.
-   public void onShowResultsFromResultatsIds(){
-      onShowResults(true);
+	//initialement une seule méthode était définie onShowResults() qui était appelée soit après l'alimentation de getListObjects()
+	//soit après l'alimentation de getResultatsIds() ce qui amenait une difficulté pour savoir où aller récupérer les données
+	//à afficher => définition de 2 méthodes dédiées aux 2 cas.
+   public void onShowResultsFromListObjects(){
+      getObjectTabController().clearStaticFiche();
+      getObjectTabController().switchToOnlyListeMode();
+      objectsListGrid.setActivePage(0);
+      updateListResultsLabel(getListObjects().size());
+      getBinder().loadComponent(objectsListGrid);
    }
-   /// ---------------------------------------
+   public void onShowResultsFromResultatsIds(){
+      List<Integer> ids = new ArrayList<>();
+      if(getResultatsIds().size() > 500){
+         Collections.reverse(getResultatsIds());
+         ids = getResultatsIds().subList(0, 500);
+      }else{
+         ids = getResultatsIds();
+      }
+      setListObjects(extractObjectsFromIds(ids));
+      onShowResultsFromListObjects();
+   }
+   ///---------------------------------------
    
 	/**
 	 * Evenement relayant l'envoi vers une nouvelle cession
