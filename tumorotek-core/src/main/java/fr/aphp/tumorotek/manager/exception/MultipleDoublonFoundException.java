@@ -40,9 +40,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Classe permettant de gérer la détection de doublons lors d'une opération sur 2 types d'entité 
- * par exemple : la mise à jour des codes des enfants (échantillons) et petits-enfants (dérivés) d'un prélèvement
- * Classe créée le 29/08/23.
+ * Classe permettant de gérer la détection de plusieurs doublons lors d'une seule opération
+ * par exemple : la mise à jour des codes des échantillons, dérivés suite à la mise à jour du code du prélèvement associé
+ * Classe créée le 29/08/2023.
  *
  * @author Corinne Huet
  * @version 2.3.1 (TK-426)
@@ -78,5 +78,4 @@ public class MultipleDoublonFoundException extends TKException
    public void setDoublonFoundExceptions(List<DoublonFoundException> doublonFoundExceptions){
       this.doublonFoundExceptions = doublonFoundExceptions;
    }
-   
 }

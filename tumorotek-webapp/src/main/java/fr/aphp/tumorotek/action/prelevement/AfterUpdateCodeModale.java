@@ -240,11 +240,7 @@ public class AfterUpdateCodeModale extends AbstractController
          mapUpdatedAndDoublon = ManagerLocator.getEchantillonManager().updateCodeEchantillonsManager(echantillons, oldPrefixe,
             newPrefixe, SessionUtils.getLoggedUser(sessionScope));
          if(mapUpdatedAndDoublon != null) {
-            DoublonFoundException doublonFoundExceptionForEchantillon = new DoublonFoundException("Echantillon", "modification", new ArrayList<String>(), null);
-            populateDoublonFoundExceptionIfNecessary(doublonFoundExceptionForEchantillon, mapUpdatedAndDoublon);
-            if(!doublonFoundExceptionForEchantillon.getCodes().isEmpty()) {
-               listDoublonFoundExceptions.add(doublonFoundExceptionForEchantillon);
-            }
+            populateDoublonFoundExceptionIfNecessary(mapUpdatedAndDoublon, listDoublonFoundExceptions, "Echantillon", "modification");
             //si des échantillons ont été mis à jour, récupération des dérivés de ces échantillons
             if(mapUpdatedAndDoublon.get(TKConstants.MAP_KEY_UPDATED) != null) {
                listEchantillonUpdated = mapUpdatedAndDoublon.get(TKConstants.MAP_KEY_UPDATED);
@@ -259,8 +255,7 @@ public class AfterUpdateCodeModale extends AbstractController
          // Mise à jour du code des produits dérives et des éventuels dérivés issus de ces dérivés
          Map<String, List<ProdDerive>> mapUpdateAndDoubonForDerive = changeDerivesCode(listMergedDerive);
          if(mapUpdateAndDoubonForDerive != null) {
-            DoublonFoundException doublonFoundExceptionForDerive = new DoublonFoundException("ProdDerive", "modification", new ArrayList<String>(), null);
-            populateDoublonFoundExceptionIfNecessary(doublonFoundExceptionForDerive, mapUpdateAndDoubonForDerive);
+            populateDoublonFoundExceptionIfNecessary(mapUpdateAndDoubonForDerive, listDoublonFoundExceptions, "ProdDerive", "modification");
             if(mapUpdateAndDoubonForDerive.get(TKConstants.MAP_KEY_UPDATED) != null) {
                List<ProdDerive> listDeriveUpdatedForFirstIteration = mapUpdateAndDoubonForDerive.get(TKConstants.MAP_KEY_UPDATED);
                listAllUpdatedDerive.addAll(listDeriveUpdatedForFirstIteration);
@@ -268,13 +263,10 @@ public class AfterUpdateCodeModale extends AbstractController
                List<ProdDerive> listDeriveFromDerive = getProduitsDeriveFromProduitsDerive(listDeriveUpdatedForFirstIteration);
                //mise à jour des dérivés de dérivés
                Map<String, List<ProdDerive>> mapUpdateAndDoubonForDeriveFromDerive = changeDerivesCode(listDeriveFromDerive);
-               populateDoublonFoundExceptionIfNecessary(doublonFoundExceptionForDerive, mapUpdateAndDoubonForDeriveFromDerive);
+               populateDoublonFoundExceptionIfNecessary(mapUpdateAndDoubonForDeriveFromDerive, listDoublonFoundExceptions, "ProdDerive", "modification");            
                if(mapUpdateAndDoubonForDeriveFromDerive != null) {
                   listAllUpdatedDerive.addAll(mapUpdateAndDoubonForDeriveFromDerive.get(TKConstants.MAP_KEY_UPDATED));
                }
-            }
-            if(!doublonFoundExceptionForDerive.getCodes().isEmpty()) {
-               listDoublonFoundExceptions.add(doublonFoundExceptionForDerive);
             }
          }
       }
@@ -343,9 +335,13 @@ public class AfterUpdateCodeModale extends AbstractController
       }
    }
    
-   private <E> void populateDoublonFoundExceptionIfNecessary (DoublonFoundException doublonFoundException, Map<String, List<E>> mapUpdateResult) {
+   private <E> void populateDoublonFoundExceptionIfNecessary (Map<String, List<E>> mapUpdateResult, List<DoublonFoundException> listDoublonFoundException, 
+                                                               String entiteNom, String typeOperation) {
       if(mapUpdateResult != null && mapUpdateResult.get(TKConstants.MAP_KEY_DOUBLON) != null && mapUpdateResult.get(TKConstants.MAP_KEY_DOUBLON).size() > 0) {
-         doublonFoundException.getCodes().addAll(mapUpdateResult.get(TKConstants.MAP_KEY_DOUBLON).stream().map( s -> ((TKStockableObject)s).getCode()).collect(Collectors.toList()));            
+         List<E> listObjetEnDoublon = mapUpdateResult.get(TKConstants.MAP_KEY_DOUBLON);
+         for(E stockableObject : listObjetEnDoublon) {
+            listDoublonFoundException.add(new DoublonFoundException(entiteNom, typeOperation, ((TKStockableObject)stockableObject).getCode()));
+         }
       }
    }
 

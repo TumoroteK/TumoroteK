@@ -35,10 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.exception;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
 import fr.aphp.tumorotek.manager.impl.coeur.patient.PatientDoublonFound;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 
@@ -63,10 +59,7 @@ public class DoublonFoundException extends TKException
    private String operation;
 
    // @since 2.1
-   //TK-426 : champ initialement de type String transformé en List pour gérer le cas des mises 
-   //à jour simultanées de plusieurs codes. 
-   //Exemple : modification en cascade des enfants et petits enfants d'un élément dont le code a été mis à jour. 
-   private List<String> codes;
+   private String code;
    
    private PatientDoublonFound patientDoublonFound; 
 
@@ -86,16 +79,15 @@ public class DoublonFoundException extends TKException
     * @since 2.1
     */
    public DoublonFoundException(final String _e, final String _o, final String _c, final Plateforme _p){
-      this(_e, _o, new ArrayList<String>(Arrays.asList(_c)),_p);
-   }
-   
-   public DoublonFoundException(final String _e, final String _o, final List<String> codes, final Plateforme _p){
       super();
       this.entite = _e;
       this.operation = _o;
-      this.codes = new ArrayList<String>();
-      this.codes.addAll(codes);
+      this.code = _c;
       this.plateforme = _p;
+   }
+   
+   public DoublonFoundException(final String _e, final String _o, final String _c){
+      this(_e, _o, _c, null);
    }
    
    /**
@@ -133,23 +125,12 @@ public class DoublonFoundException extends TKException
       return super.getMessage();
    }
 
-   public List<String> getCodes(){
-      if(codes == null) {
-         return new ArrayList<String>();
-      }
-      return codes;
+   public String getCode(){
+      return code;
    }
 
-   public void setCodes(final List<String> codes){
-      this.codes = codes;
-   }
-   
-   //ramène la 1ere valeur :
-   public String getCode(){
-      if(getCodes() != null && !getCodes().isEmpty()) {
-         return getCodes().get(0);
-      }
-      return null;
+   public void setCode(final String code){
+      this.code = code;
    }
 
    public Plateforme getPlateforme(){

@@ -123,41 +123,35 @@ public class DynamicMultiLineMessageBox
 
    }
 
-   //définit le message à afficher pour le cas d'un doublon
-   ///!\ le doublon peut porter sur plusieurs codes ...
+   //définit le message à afficher pour le cas d'un code en doublon
    private void defineDetailForDoublonFoundException(DoublonFoundException doublonFoundException){
       String label = "error.doublonfound.details";
-      //banques associées au code en doublon. Ces banques sont séparées par une virgule. Il peut y en effet il y avoir plusieurs
+      //banques associées au code en doublon. Ces banques sont séparées par une virgule. Il peut y en effet il y en avoir plusieurs
       //car avant la notion de plateforme, le code devait être unique uniquement au niveau de la collection. Ces codes peuvent toujours exister, donc ces doublons "acceptés" à l'époque aussi
       String banks = "";
-      //contient une liste dont chaque élément est une chaîne correspondant au nom d'une banque (voire exceptionnellement de plusieurs banques - cf commentaire ci-dessus).
-      //cette liste a autant d'éléments que doublonFoundException.getCodes(). Ces 2 listes seront ensuite "rapprochées"
-      List<String> banksByCodeDoublon = new ArrayList<String>();
+      String code = null;
       //TK-426 : Dans le cas de mise à jour automatique du code des enfants d'un prélèvement, ce traitement peut afficher des doublons sur des codes échantillon
       //ou sur des codes de produit dérivés. Pour éviter l'ambiguïté, le type de l'entité concernée est affiché dans le message de doublon via un label internationalisé
-      String labelsForTypeEntiteKeyByCodeDoublon = null;
+      String labelsForTypeEntiteKeyOfCodeDoublon = null;
       switch(doublonFoundException.getEntite()){
          case "Prelevement":
             List<Prelevement> dbls = new ArrayList<Prelevement>();
-            for(String code : doublonFoundException.getCodes()) {
-               //pour chaque code prélèvement détecté en doublon, récupération des prélèvements avec ce code (peuvent être plusieurs même si désormais ce n'est
-               //plus autorisé - cf remarque plus haut sur la variable "banks") pour indiquer les banques concernées.
-               dbls = ManagerLocator.getPrelevementManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
-               for(final Prelevement prelevement : dbls){
-                  if(!banks.equals("")){
-                     banks = banks + ", ";
-                  }
-                  banks = banks + prelevement.getBanque().getNom();
+            code = doublonFoundException.getCode();
+            //pour le code prélèvement détecté en doublon, récupération des prélèvements avec ce code (peuvent être plusieurs même si désormais ce n'est
+            //plus autorisé - cf remarque plus haut sur la variable "banks") pour indiquer les banques concernées.
+            dbls = ManagerLocator.getPrelevementManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+            for(final Prelevement prelevement : dbls){
+               if(!banks.equals("")){
+                  banks = banks + ", ";
                }
-               labelsForTypeEntiteKeyByCodeDoublon = Labels.getLabel("Entite.Prelevement");
-               banksByCodeDoublon.add(banks);
-               banks="";
+               banks = banks + prelevement.getBanque().getNom();
             }
+            labelsForTypeEntiteKeyOfCodeDoublon = Labels.getLabel("Entite.Prelevement");
 
             break;
          case "Echantillon":
             List<Echantillon> dblEs = new ArrayList<Echantillon>();
-            for(String code : doublonFoundException.getCodes()) {
+            code = doublonFoundException.getCode();
                dblEs = ManagerLocator.getEchantillonManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
                for(final Echantillon echantillon : dblEs){
                   if(!banks.equals("")){
@@ -165,42 +159,33 @@ public class DynamicMultiLineMessageBox
                   }
                   banks = banks + echantillon.getBanque().getNom();
                }
-               labelsForTypeEntiteKeyByCodeDoublon = Labels.getLabel("Entite.Echantillon");
-               banksByCodeDoublon.add(banks);
-               banks="";
-            }
+               labelsForTypeEntiteKeyOfCodeDoublon = Labels.getLabel("Entite.Echantillon");
 
             break;
          case "ProdDerive":
             List<ProdDerive> dblDs = new ArrayList<ProdDerive>();
-            for(String code : doublonFoundException.getCodes()) {
-               dblDs = ManagerLocator.getProdDeriveManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
-               for(final ProdDerive derive : dblDs){
-                  if(!banks.equals("")){
-                     banks = banks + ", ";
-                  }
-                  banks = banks + derive.getBanque().getNom();
+            code = doublonFoundException.getCode();
+            dblDs = ManagerLocator.getProdDeriveManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+            for(final ProdDerive derive : dblDs){
+               if(!banks.equals("")){
+                  banks = banks + ", ";
                }
-               labelsForTypeEntiteKeyByCodeDoublon= Labels.getLabel("Entite.ProdDerive");
-               banksByCodeDoublon.add(banks);
-               banks="";
+               banks = banks + derive.getBanque().getNom();
             }
+            labelsForTypeEntiteKeyOfCodeDoublon= Labels.getLabel("Entite.ProdDerive");
 
             break;
          case "Cession":
             label = "error.doublonfound.details.cession";
             List<Cession> dblCs = new ArrayList<Cession>();
-            for(String code : doublonFoundException.getCodes()) {
-               dblCs = ManagerLocator.getCessionManager().findByNumeroInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
-               for(final Cession cession : dblCs){
-                  if(!banks.equals("")){
-                     banks = banks + ", ";
-                  }
-                  banks = banks + cession.getBanque().getNom();
+            code = doublonFoundException.getCode();
+            dblCs = ManagerLocator.getCessionManager().findByNumeroInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
+            for(final Cession cession : dblCs){
+               if(!banks.equals("")){
+                  banks = banks + ", ";
                }
-               banksByCodeDoublon.add(banks);
-               banks="";
-            }                  
+               banks = banks + cession.getBanque().getNom();
+            }
 
             break;
          case "Patient":
@@ -224,29 +209,25 @@ public class DynamicMultiLineMessageBox
             break;
       }
       
-      //Affiche un message par code en doublon en les séparant par une ligne blanche
-      int nb = doublonFoundException.getCodes().size();
       if(exceptionDetails == null) {
          exceptionDetails="";         
       }
       
-      if(banksByCodeDoublon.isEmpty()) {//cas du patient ...
+      if(banks.equals("")) {//cas du patient ...
          exceptionDetails= exceptionDetails + label;
       }
       else {
-         for(int i=0; i< nb; i++) {
-            //le nombre de paramètres à passer au libellé internationalisé dépendant du cas en cours de traitement, 
-            //passage par une liste qui sera transformée en tableau lors de l'appel de la récupération du libellé internationalisé
-            List<String> listParamLabel = new ArrayList<String>();
-            if(labelsForTypeEntiteKeyByCodeDoublon != null) {
-               listParamLabel.add(labelsForTypeEntiteKeyByCodeDoublon.toLowerCase());
-            }
-            listParamLabel.add(doublonFoundException.getCodes().get(i));
-            listParamLabel.add(banksByCodeDoublon.get(i));
-            exceptionDetails = exceptionDetails + ObjectTypesFormatters.getLabel(label, listParamLabel.toArray(new String[0]));
-               
-            exceptionDetails = exceptionDetails + "<br><br>";//prépare pour l'éventuel message suivant.
+         //le nombre de paramètres à passer au libellé internationalisé dépendant du cas en cours de traitement, 
+         //passage par une liste qui sera transformée en tableau lors de l'appel de la récupération du libellé internationalisé
+         List<String> listParamLabel = new ArrayList<String>();
+         if(labelsForTypeEntiteKeyOfCodeDoublon != null) {
+            listParamLabel.add(labelsForTypeEntiteKeyOfCodeDoublon.toLowerCase());
          }
+         listParamLabel.add(doublonFoundException.getCode());
+         listParamLabel.add(banks);
+         exceptionDetails = exceptionDetails + ObjectTypesFormatters.getLabel(label, listParamLabel.toArray(new String[0]));
+            
+         exceptionDetails = exceptionDetails + "<br><br>";//prépare pour l'éventuel message suivant.
       }
    }
 
