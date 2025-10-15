@@ -229,7 +229,9 @@ public class AfterUpdateCodeModale extends AbstractController
       List<Echantillon> listEchantillonUpdated = new ArrayList<Echantillon>();
       List<ProdDerive> listDeriveFromUpdatedEchantillons = new ArrayList<ProdDerive>();
       List<ProdDerive> listAllUpdatedDerive = new ArrayList<ProdDerive>();
-      //une DoublonFoundException peut être envoyée lors de la mise à jour des codes échantillon et/ou lors de celle des codes produit dérivés
+      //une DoublonFoundException est attachée à une entité.
+      //Dans le cas présent, elle peut être envoyée lors de la mise à jour des codes échantillon et/ou lors de celle des codes produit dérivés
+      //=> utilisation d'une liste qui contiendra 0, 1 ou 2 éléments...
       List<DoublonFoundException> listDoublonFoundExceptions = new ArrayList<DoublonFoundException>();
 
       // Met à jour le code des échantillons et celui des éventuels dérivés issus des échantillons 

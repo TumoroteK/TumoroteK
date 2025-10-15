@@ -96,7 +96,7 @@ public class DynamicMultiLineMessageBox
    //Le principe de cette classe semble être :
    // - si exception transmise => si DoublonFoundException => construction d'un message spécifique
    // - sinon, le texte à afficher est transmis tel quel => attribut message plus approprié que exceptionDetails.
-   // Dans l'absolu, il faudrait également gérer le cas d'une exception autre que DoublonFoundException même si pour le moment,n'est jamais appelé dans ce cas 
+   // Dans l'absolu, il faudrait également gérer le cas d'une exception autre que DoublonFoundException même si pour le moment ça ne semble pas nécessaire 
    @Init
    public void init(@ExecutionArgParam("title") final String _t, @ExecutionArgParam("message") final String _m,
       @ExecutionArgParam("exception") final Exception _e, @ExecutionArgParam("exceptionDetails") final String _exceptionDetails){
@@ -123,19 +123,25 @@ public class DynamicMultiLineMessageBox
 
    }
 
+   //définit le message à afficher pour le cas d'un doublon
+   ///!\ le doublon peut porter sur plusieurs codes ...
    private void defineDetailForDoublonFoundException(DoublonFoundException doublonFoundException){
       String label = "error.doublonfound.details";
+      //banques associées au code en doublon. Ces banques sont séparées par une virgule. Il peut y en effet il y avoir plusieurs
+      //car avant la notion de plateforme, le code devait être unique uniquement au niveau de la collection. Ces codes peuvent toujours exister, donc ces doublons "acceptés" à l'époque aussi
       String banks = "";
+      //contient une liste dont chaque élément est une chaîne correspondant au nom d'une banque (voire exceptionnellement de plusieurs banques - cf commentaire ci-dessus).
+      //cette liste a autant d'éléments que doublonFoundException.getCodes(). Ces 2 listes seront ensuite "rapprochées"
       List<String> banksByCodeDoublon = new ArrayList<String>();
-      //TK-426 : Dans le cas de mise à jour automatique du code des enfants d'un prélèvement, ce traitement peut afficher des doublonc sur des codes échantillon
-      //ou sur des codes de produit dérivés. Pour éviter l'ambiguïté, le type de l'entité concerné est affiché dans le message de doublon
-      //=> pour cela, définition d'une liste contenant le type de l'entité à afficher pour chaque cas de code en doublon. La valeur est internationalisée
-      List<String> labelsForTypeEntiteKeyByCodeDoublon = new ArrayList<String>();
+      //TK-426 : Dans le cas de mise à jour automatique du code des enfants d'un prélèvement, ce traitement peut afficher des doublons sur des codes échantillon
+      //ou sur des codes de produit dérivés. Pour éviter l'ambiguïté, le type de l'entité concernée est affiché dans le message de doublon via un label internationalisé
+      String labelsForTypeEntiteKeyByCodeDoublon = null;
       switch(doublonFoundException.getEntite()){
          case "Prelevement":
             List<Prelevement> dbls = new ArrayList<Prelevement>();
-            //Dans certains cas, plusieurs doublons ont pu être détectés en même temps :
             for(String code : doublonFoundException.getCodes()) {
+               //pour chaque code prélèvement détecté en doublon, récupération des prélèvements avec ce code (peuvent être plusieurs même si désormais ce n'est
+               //plus autorisé - cf remarque plus haut sur la variable "banks") pour indiquer les banques concernées.
                dbls = ManagerLocator.getPrelevementManager().findByCodeInPlateformeManager(code, SessionUtils.getCurrentPlateforme());
                for(final Prelevement prelevement : dbls){
                   if(!banks.equals("")){
@@ -143,7 +149,7 @@ public class DynamicMultiLineMessageBox
                   }
                   banks = banks + prelevement.getBanque().getNom();
                }
-               labelsForTypeEntiteKeyByCodeDoublon.add(Labels.getLabel("Entite.Prelevement"));
+               labelsForTypeEntiteKeyByCodeDoublon = Labels.getLabel("Entite.Prelevement");
                banksByCodeDoublon.add(banks);
                banks="";
             }
@@ -159,7 +165,7 @@ public class DynamicMultiLineMessageBox
                   }
                   banks = banks + echantillon.getBanque().getNom();
                }
-               labelsForTypeEntiteKeyByCodeDoublon.add(Labels.getLabel("Entite.Echantillon"));
+               labelsForTypeEntiteKeyByCodeDoublon = Labels.getLabel("Entite.Echantillon");
                banksByCodeDoublon.add(banks);
                banks="";
             }
@@ -175,7 +181,7 @@ public class DynamicMultiLineMessageBox
                   }
                   banks = banks + derive.getBanque().getNom();
                }
-               labelsForTypeEntiteKeyByCodeDoublon.add(Labels.getLabel("Entite.ProdDerive"));
+               labelsForTypeEntiteKeyByCodeDoublon= Labels.getLabel("Entite.ProdDerive");
                banksByCodeDoublon.add(banks);
                banks="";
             }
@@ -204,7 +210,7 @@ public class DynamicMultiLineMessageBox
                if (dbf.getNip() != null) {
                   label = ObjectTypesFormatters
                      .getLabel("validation.doublon.patient.nip", new String[] {dbf.getNip()});
-               }else if (dbf.getIdentifiant() != null){
+               }else if (dbf.getIdentifiant() != null){//seule donnée liée à la collection mais dans ce cas le doublon ne peut être détecté qu'au sein de la collection
                   label = ObjectTypesFormatters
                      .getLabel("validation.doublon.patient.identifiant", new String[] {dbf.getIdentifiant()});
                }else {
@@ -217,37 +223,31 @@ public class DynamicMultiLineMessageBox
          default:
             break;
       }
-
-      /*
-      exceptionDetails = !banks.equals("")
-         ? ObjectTypesFormatters.getLabel(label, new String[] {doublonFoundException.getCode(), banks})
-         : label;
-        */ 
       
       //Affiche un message par code en doublon en les séparant par une ligne blanche
       int nb = doublonFoundException.getCodes().size();
       if(exceptionDetails == null) {
          exceptionDetails="";         
       }
-      for(int i=0; i< nb; i++) {
-         if(!banksByCodeDoublon.isEmpty() && !banksByCodeDoublon.get(i).equals("")) {
-            //Le nombre de paramètres à passer au libellé internationalisé dépendant du cas en cours de traitement, 
+      
+      if(banksByCodeDoublon.isEmpty()) {//cas du patient ...
+         exceptionDetails= exceptionDetails + label;
+      }
+      else {
+         for(int i=0; i< nb; i++) {
+            //le nombre de paramètres à passer au libellé internationalisé dépendant du cas en cours de traitement, 
             //passage par une liste qui sera transformée en tableau lors de l'appel de la récupération du libellé internationalisé
             List<String> listParamLabel = new ArrayList<String>();
-            if(!labelsForTypeEntiteKeyByCodeDoublon.isEmpty()) {
-               listParamLabel.add(labelsForTypeEntiteKeyByCodeDoublon.get(i).toLowerCase());
+            if(labelsForTypeEntiteKeyByCodeDoublon != null) {
+               listParamLabel.add(labelsForTypeEntiteKeyByCodeDoublon.toLowerCase());
             }
             listParamLabel.add(doublonFoundException.getCodes().get(i));
             listParamLabel.add(banksByCodeDoublon.get(i));
             exceptionDetails = exceptionDetails + ObjectTypesFormatters.getLabel(label, listParamLabel.toArray(new String[0]));
+               
+            exceptionDetails = exceptionDetails + "<br><br>";//prépare pour l'éventuel message suivant.
          }
-         else {
-            exceptionDetails= exceptionDetails + label;
-            
-         }
-         exceptionDetails = exceptionDetails + "<br><br>";//prépare pour l'éventuel message suivant.
       }
-
    }
 
    public String getTitle(){

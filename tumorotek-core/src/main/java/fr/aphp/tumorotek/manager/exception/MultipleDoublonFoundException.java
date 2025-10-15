@@ -41,7 +41,7 @@ import java.util.List;
 
 /**
  * Classe permettant de gérer la détection de doublons lors d'une opération sur 2 types d'entité 
- * par exemple : la mise à jour des codes des enfants (échantillons) et petits-enfants (dérivés) d'un prélèvement)
+ * par exemple : la mise à jour des codes des enfants (échantillons) et petits-enfants (dérivés) d'un prélèvement
  * Classe créée le 29/08/23.
  *
  * @author Corinne Huet
