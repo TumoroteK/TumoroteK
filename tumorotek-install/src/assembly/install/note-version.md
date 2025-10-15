@@ -48,6 +48,7 @@
 - YouTrack [TK-463](https://tumorotek.myjetbrains.com/youtrack/issue/TK-463) : ${cession} Impression : retirer le nom du patient dans les champs à imprimer par défaut
 - YouTrack [TK-421](https://tumorotek.myjetbrains.com/youtrack/issue/TK-421) : ${stockage} Au niveau du nom des conteneurs partagés, ajouter le nom de la plateforme d'appartenance 
 - YouTrack [TK-369](https://tumorotek.myjetbrains.com/youtrack/issue/TK-369) : ${stockage} Déplacement échantillon : fiche d'impression affiche 2 fois la boîte cible
+- YouTrack [TK-771](https://tumorotek.myjetbrains.com/youtrack/issue/TK-771) : ${stockage} Impossible de supprimer le partage d'un conteneur
 - YouTrack [TK-723](https://tumorotek.myjetbrains.com/youtrack/issue/TK-723) : ${administration} Fusion de patient "Gatsbi" : l'identifiant du patient supprimé n'est pas reporté sur le patient gardé
 - YouTrack [TK-440](https://tumorotek.myjetbrains.com/youtrack/issue/TK-440) : ${administration} Fusion de collaborateur - plantage aléatoire
 - YouTrack [TK-635](https://tumorotek.myjetbrains.com/youtrack/issue/TK-635) : ${administration} Impression Fiche Collection > liste des conteneurs : ajouter la colonne plateforme si au moins un conteneur est partagé

@@ -586,7 +586,10 @@ public class ConteneurManagerImpl implements ConteneurManager
             final ConteneurPlateforme tmp = it.next();
             // si une Plateforme n'est pas dans la nouvelle liste, on
             // la conserve afin de la retirer par la suite
-            if(!plateformes.contains(tmp.getPlateforme()) && !tmp.getPartage()){
+            //TK-771 : vu le changement de règle de gestion sur le partage de conteneur
+            //un conteneur à supprimer aura la valeur partage à true désormais
+            //if(!plateformes.contains(tmp.getPlateforme()) && !tmp.getPartage()){
+            if(!plateformes.contains(tmp.getPlateforme())){
                pfsToRemove.add(tmp);
             }
          }

@@ -310,7 +310,6 @@ public class BanqueManagerImpl implements BanqueManager
    public void setPatientManager(PatientManager patientManager){
       this.patientManager = patientManager;
    }
-
    
    /**
     * Recherche une Banque dont l'identifiant est passé en paramètre.
@@ -1096,8 +1095,25 @@ public class BanqueManagerImpl implements BanqueManager
       return new ArrayList<>();
    }
 
+   ///!\ cette méthode est notamment utilisée pour vérifier qu'un partage de conteneur peut être supprimé
+   //dans ce cas, un test est fait pour vérifier que la liste est vide
+   //il ne faut donc pas renvoyer vide si un des paramètres est incorrect
+   @Override
+   public List<Banque> findByConteneurAndPlateforme(Plateforme plateformeOfBanqueRecherchee, Conteneur conteneur) {
+      boolean nullForplateformeOfBanqueRecherchee =  plateformeOfBanqueRecherchee == null;
+      boolean nullForConteneur = conteneur == null;
+      if(nullForplateformeOfBanqueRecherchee || nullForConteneur) {
+         throw new IllegalArgumentException("les paramètres 'plateforme des banques recherchées' et 'conteneur associé' ne peuvent pas être null. "
+            + "Or plateformeOfBanqueRecherchee vaut " + (nullForplateformeOfBanqueRecherchee ? "null " : plateformeOfBanqueRecherchee) 
+            + " et conteneur vaut " + (nullForConteneur ? "null " : conteneur));
+      }
+      return banqueDao.findByConteneurAndPlateforme(plateformeOfBanqueRecherchee, conteneur);
+   }
+   
    @Override
    public List<Banque> findByEtudeManager(final Etude e){
       return banqueDao.findByEtude(e);
    }
+   
+
 }

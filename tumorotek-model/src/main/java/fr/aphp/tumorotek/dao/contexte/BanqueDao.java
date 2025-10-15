@@ -212,4 +212,13 @@ public interface BanqueDao extends GenericDaoJpa<Banque, Integer>
     * @since 2.3.0-gatsbi
     */
    List<Banque> findByEtude(Etude etude);
+   
+   /**
+    * retourne les collections appartenant à une plateforme et qui sont rattachées à un conteneur
+    * cette méthode est notamment utilisée pour déterminer si des collections sont associées à un conteneur partagé 
+    * @param plateformeOfBanqueRecherchee
+    * @param conteneur
+    * @return nombre de collections concernées
+    */
+   List<Banque> findByConteneurAndPlateforme(Plateforme plateformeOfBanqueRecherchee, Conteneur conteneur);
 }

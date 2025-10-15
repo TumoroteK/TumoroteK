@@ -139,6 +139,7 @@ import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
    @NamedQuery(name = "Banque.findByTableAnnotation",
       query = "SELECT b FROM Banque b " + "JOIN b.tableAnnotationBanques t " + "WHERE t.pk.tableAnnotation = ?1"),
    @NamedQuery(name = "Banque.findByConteneur", query = "SELECT b FROM Banque b " + "JOIN b.conteneurs c " + "WHERE c = ?1"),
+   @NamedQuery(name = "Banque.findByConteneurAndPlateforme", query = "SELECT b from Banque b JOIN b.conteneurs c where b.plateforme = ?1 and c = ?2"),
    @NamedQuery(name = "Banque.findByEtude", query = "SELECT b FROM Banque b WHERE b.etude = ?1")
 
 })

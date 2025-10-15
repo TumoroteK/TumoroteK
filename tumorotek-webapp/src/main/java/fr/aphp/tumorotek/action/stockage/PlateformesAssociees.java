@@ -55,7 +55,10 @@ import org.zkoss.zul.Messagebox;
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
 import fr.aphp.tumorotek.component.OneToManyComponent;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.context.PlateformeManager;
+import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.ConteneurPlateforme;
@@ -183,11 +186,38 @@ public class PlateformesAssociees extends OneToManyComponent<ConteneurPlateforme
       final fr.aphp.tumorotek.model.stockage.ConteneurPlateforme cur =
          (ConteneurPlateforme) AbstractListeController2.getBindingData((ForwardEvent) event, false);
 
+      //TK-771 : adaptation du contrôle à la nouvelle gestion du partage d'un conteneur qui ne se fait plus en 2 étapes mais en 1 seule
+      //1er contrôle : vérification que le conteneur est bien partagé. Sinon, on ne fait rien
+      //2e : ce conteneur est-il rattaché à des collections de la plateforme à laquelle il était partagé ?
       if(ManagerLocator.getConteneurManager().findByPartageManager(cur.getPlateforme(), true).contains(cur.getConteneur())){
-         Messagebox.show(Labels.getLabel("conteneur.plateforme.remove.error"), Labels.getLabel("general.warning"), Messagebox.OK,
-            Messagebox.ERROR);
-      }else{
-         super.onClick$deleteImage(event);
+         try {
+            List<Banque> listBanqueAssocieeAuConteneur = ManagerLocator.getBanqueManager().findByConteneurAndPlateforme(cur.getPlateforme(), conteneur);
+            int nbBanque = listBanqueAssocieeAuConteneur.size(); 
+            if(nbBanque == 0) {
+               super.onClick$deleteImage(event);
+            }
+            else {
+               List<Banque> listBanqueForMessage = listBanqueAssocieeAuConteneur;
+               String etc = "";
+               //on n'affiche que les 10 premières collections :
+               final int NB_BANQUE_TO_DISPLAY = 10;
+               if(nbBanque > NB_BANQUE_TO_DISPLAY) {
+                  etc = "... ";
+                  listBanqueForMessage=listBanqueAssocieeAuConteneur.subList(0, NB_BANQUE_TO_DISPLAY);
+               }
+               String banqueNomAsString = new StringBuilder()
+                  .append(listBanqueForMessage.stream().map(banque -> banque.getNom()).collect(Collectors.joining(", ")))
+                  .append(etc).toString();
+               Messagebox.show(
+                  Labels.getLabel("conteneur.plateforme.remove.error", new String[] {banqueNomAsString}),
+                  Labels.getLabel("general.warning"), Messagebox.OK,Messagebox.ERROR);
+            }
+         }
+         catch(IllegalArgumentException illegalArgumentException) {
+            Messagebox.show(Labels.getLabel("general.errorTechnique"), Labels.getLabel("general.error"), Messagebox.OK,
+               Messagebox.ERROR);
+            log.error(illegalArgumentException.getMessage(), illegalArgumentException);
+         }
       }
    }
 
