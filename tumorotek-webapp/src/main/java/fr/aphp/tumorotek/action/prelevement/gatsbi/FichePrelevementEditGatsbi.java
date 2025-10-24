@@ -484,22 +484,24 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
          super.initCollaborateurs();
    
          //dans le cas de Gatsbi, si un filtre est défini sur les collaborateurs,
-         //on peut remonter du service à l'établissement 
-         if(filterOnPreleveurDefined){
-            if(selectedService == null){ //
-               if(allEtablissements.size() == 2){
-                  selectedEtablissement = allEtablissements.get(1);
+         //on peut remonter du service à l'établissement dans le cas de la création (en modif on garde les valeurs renseignées lors de la création) 
+         if(prelevement.getPrelevementId() == null) {
+            if(filterOnPreleveurDefined){
+               if(selectedService == null){ //
+                  if(allEtablissements.size() == 2){
+                     selectedEtablissement = allEtablissements.get(1);
+                  }else{
+                     selectedEtablissement = null;
+                  }
                }else{
-                  selectedEtablissement = null;
+                  selectedEtablissement = selectedService.getEtablissement();
                }
-            }else{
-               selectedEtablissement = selectedService.getEtablissement();
-            }
-            if(collaborateurs.size() == 2){
-               selectedCollaborateur = allCollaborateurs.get(1);
-            }else{
-               if(!collaborateurs.contains(selectedCollaborateur)){
-                  selectedCollaborateur = null;
+               if(collaborateurs.size() == 2){
+                  selectedCollaborateur = allCollaborateurs.get(1);
+               }else{
+                  if(!collaborateurs.contains(selectedCollaborateur)){
+                     selectedCollaborateur = null;
+                  }
                }
             }
          }

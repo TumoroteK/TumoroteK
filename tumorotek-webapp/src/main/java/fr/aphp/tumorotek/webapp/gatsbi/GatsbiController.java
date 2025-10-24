@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import org.apache.commons.beanutils.PropertyUtils;
@@ -93,6 +94,7 @@ import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantite;
 import fr.aphp.tumorotek.action.echantillon.FicheEchantillonEdit.ConstQuantiteInit;
 import fr.aphp.tumorotek.action.prelevement.gatsbi.exception.GatsbiException;
 import fr.aphp.tumorotek.component.CalendarBox;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -391,15 +393,43 @@ public class GatsbiController
          
          //optimisation liée au fait que Gatsbi renvoie tous les thesaurus si il n'y a aucun filtre défini :
          if(values.size() != nbDataNotNullInLModel) {
+            //TK-748 : si une valeur passée par Gatsbi n'est pas trouvée dans le référentiel, celle-ci ne sera pas ajoutée à la liste et un message d'avertissement
+            //sera affiché à l'utilisateur
+            List<ThesaurusValue> listNotFoundValues = new ArrayList<ThesaurusValue>();
             for(ThesaurusValue val : values){
-               thesObjs.add(lModel.stream().filter(
+               Optional<T> searchedValue = lModel.stream().filter(
                   v -> v != null && (((v instanceof TKThesaurusObject) && ((TKThesaurusObject) v).getId().equals(val.getThesaurusId()))
-                     || ((v instanceof Unite) && ((Unite) v).getNom().equals(val.getThesaurusValue())) 
-                     || ((v instanceof Transporteur) && ((Transporteur) v).getNom().equals(val.getThesaurusValue()))
-                     || ((v instanceof Collaborateur) && ((Collaborateur) v).getNomAndPrenom().equals(val.getThesaurusValue())) ))
-                  .findAny().orElseThrow(() -> new TKException("gatsbi.thesaurus.value.notfound", val.getThesaurusValue())));
+                     || ((v instanceof Unite) && ((Unite) v).getId().equals(val.getThesaurusId())) 
+                     || ((v instanceof Transporteur) && ((Transporteur) v).getTransporteurId().equals(val.getThesaurusId()))
+                     || ((v instanceof Collaborateur) && ((Collaborateur) v).getCollaborateurId().equals(val.getThesaurusId())) ))
+                  .findAny();
+               if(searchedValue.isPresent()) {
+                  thesObjs.add(searchedValue.get());                      
+               }
+               else {
+                  listNotFoundValues.add(val);
+               }
             }
-            
+         
+            if(!listNotFoundValues.isEmpty()) {
+               ChampEntite champEntite = ManagerLocator.getChampEntiteManager().findByIdManager(chpId);
+               String valeursIncorrectesConcatenees = listNotFoundValues.stream().map(v -> v.getThesaurusValue()).collect(Collectors.joining(","));
+               final String PREFIXE_KEY_MESSAGE = "gatsbi.thesaurus.value.notfound.";
+               String suffixe = "singulier";
+               if(listNotFoundValues.size() > 1) {
+                  suffixe = "pluriel";
+               }
+               String keyMessage = new StringBuilder(PREFIXE_KEY_MESSAGE).append(suffixe).toString();
+               String messageAvertissement = ObjectTypesFormatters.getLabel(keyMessage, new String[] {
+                                 valeursIncorrectesConcatenees, 
+                                 ObjectTypesFormatters.getLabelForChampEntite(champEntite),
+                                 contexte.getNom()
+                              }
+               );
+               Messagebox.show(messageAvertissement, Labels.getLabel("general.warning"), Messagebox.OK, Messagebox.EXCLAMATION);
+               log.warn(messageAvertissement); 
+            }
+               
             return thesObjs;
          }
       }

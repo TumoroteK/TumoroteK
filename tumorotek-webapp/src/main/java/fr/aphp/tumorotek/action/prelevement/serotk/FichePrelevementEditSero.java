@@ -132,12 +132,20 @@ public class FichePrelevementEditSero extends FichePrelevementEdit
    }
 
    @Override
-   public void initSelectedInLists(){
-      super.initSelectedInLists();
+   public void initSelectedInLists(boolean addSelectedInListIfAbsent){
+      super.initSelectedInLists(addSelectedInListIfAbsent);
       // sauf dans le cas ou create another prelevement
       final List<Protocole> sels = new ArrayList<>();
       sels.addAll(getDelegate().getProtocoles());
 
+      if(addSelectedInListIfAbsent) {
+         for(Protocole selectedProtocole : sels) {
+            if(!protocoles.contains(selectedProtocole)) {
+               protocoles.add(0,selectedProtocole);
+            }
+         }
+      }
+      
       selectProtocoles(sels);
    }
 

@@ -267,7 +267,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       setParentObject(prel);
 
       // Initialisation du mode (listes, valeurs...)
-      initEditableMode();
+      initEditableMode(false);
       initQuantiteAndVolume();
       initAssociations();
 
@@ -1669,9 +1669,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    }
 
    @Override
-   public void initEditableMode(){
+   public void initEditableMode(boolean addSelectedInListIfAbsent){
 
-      super.initEditableMode();
+      super.initEditableMode(addSelectedInListIfAbsent);
 
       //TG-244 & TG-265
       initCodePrefixe();
@@ -2459,7 +2459,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       scrollToTop();
 
       // Initialisation du mode (listes, valeurs...)
-      initEditableMode();
+      initEditableMode(true);
       initQuantiteAndVolume();
       initAssociations();
 
@@ -2918,7 +2918,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          // car setObj passe prelevement à null..
          // setParentObject(echan.getPrelevement());
 
-         initEditableMode();
+         initEditableMode(false);
 
          getBinder().loadComponent(self);
 

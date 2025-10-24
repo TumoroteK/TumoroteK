@@ -483,70 +483,6 @@ public final class ObjectTypesFormatters
       return c;
    }
 
-   public static String getLabelForChampEntite(final ChampEntite c){
-      final StringBuffer iProperty = new StringBuffer();
-      iProperty.append("Champ.");
-      iProperty.append(c.getEntite().getNom());
-      iProperty.append(".");
-
-      String champOk = "";
-      // si le nom du champ finit par "Id", on le retire
-      if(c.getNom().endsWith("Id")){
-         champOk = c.getNom().substring(0, c.getNom().length() - 2);
-      }else{
-         champOk = c.getNom();
-      }
-      iProperty.append(champOk);
-
-      // on ajoute la valeur du champ
-      return Labels.getLabel(iProperty.toString());
-   }
-
-   /**
-    * Retourne le libellé internationalisé correspondant à un champ
-    * @param champ
-    * @return
-    */
-   public static String getLabelForChamp(final Champ champ){
-
-      String label = "";
-
-      if(champ.getChampAnnotation() != null){
-         label = champ.getChampAnnotation().getNom();
-      }else{
-
-         String nomEntite = null;
-         String nomChamp = null;
-
-         String propertyKey = "Champ.";
-
-         if(champ.getChampEntite() != null){
-            nomEntite = champ.getChampEntite().getEntite().getNom();
-            // nomChamp = champ.getChampEntite().getNom().replace("Id", "");
-            // TG-236 : le code ci-dessus pose problème pour le champ Identifiant.
-            // En effet, il est transformé en entifiant (suppression de Id)
-            // => la clé n'est pas trouvée !
-            // Par conséquent, modification de l'algorithme de suppression du suffixe Id
-            nomChamp = champ.getChampEntite().getNom();
-            if(nomChamp.endsWith("Id")) {
-               nomChamp = nomChamp.substring(0, nomChamp.length()-2);
-            };
-            propertyKey += nomEntite + "." + nomChamp;
-         }else if(champ.getChampDelegue() != null){
-            final EContexte contexte = champ.getChampDelegue().getContexte();
-            nomEntite = champ.getChampDelegue().getEntite().getNom();
-            nomChamp = champ.getChampDelegue().getNom().replace("Id", "");
-            propertyKey += nomEntite + "." + contexte.getNom() + "." + StringUtils.capitalize(nomChamp);
-         }
-
-         label = Labels.getLabel(propertyKey);
-
-      }
-
-      return label;
-
-   }
-
    /**
     * Formatte l'affichage de la temperature.
     * @param temp Float
@@ -780,6 +716,9 @@ public final class ObjectTypesFormatters
       return labelChamp;
    }
 
+   // /!\ Les 3 méthodes ci-dessous semblent avec le même objectif ... Les 2 premières ont même la même signature
+   // Mais la mise en oeuvre semble un peu différente (à creuser)
+   // La 3e prend un ChampEntite et non un Champ en paramètre... une factorisation doit être possible. A étudier (TK-776)
    /**
     * Retourne un label formaté avec internationalisation
     * @param champ champ à formatter
@@ -788,6 +727,7 @@ public final class ObjectTypesFormatters
    public static String formatChampLabel(final Champ champ){
       String labelChamp = null;
       String champNom = champ.nom();
+      //NB : la méthode .nom() appelée ci-dessus supprime les sufficxes Id donc on ne doit jamais passer dans le if ci-dessous ... 
       if(null != champ.getChampEntite() && champNom.endsWith("Id")){
          // si le nom du champ finit par "Id", on le retire
          champNom = champ.nom().substring(0, champNom.length() - 2);
@@ -806,6 +746,71 @@ public final class ObjectTypesFormatters
       }
       return labelChamp;
    }
+   
+   /**
+    * Retourne le libellé internationalisé correspondant à un champ
+    * @param champ
+    * @return
+    */
+   public static String getLabelForChamp(final Champ champ){
+
+      String label = "";
+
+      if(champ.getChampAnnotation() != null){
+         label = champ.getChampAnnotation().getNom();
+      }else{
+
+         String nomEntite = null;
+         String nomChamp = null;
+
+         String propertyKey = "Champ.";
+
+         if(champ.getChampEntite() != null){
+            nomEntite = champ.getChampEntite().getEntite().getNom();
+            // nomChamp = champ.getChampEntite().getNom().replace("Id", "");
+            // TG-236 : le code ci-dessus pose problème pour le champ Identifiant.
+            // En effet, il est transformé en entifiant (suppression de Id)
+            // => la clé n'est pas trouvée !
+            // Par conséquent, modification de l'algorithme de suppression du suffixe Id
+            nomChamp = champ.getChampEntite().getNom();
+            if(nomChamp.endsWith("Id")) {
+               nomChamp = nomChamp.substring(0, nomChamp.length()-2);
+            };
+            propertyKey += nomEntite + "." + nomChamp;
+         }else if(champ.getChampDelegue() != null){
+            final EContexte contexte = champ.getChampDelegue().getContexte();
+            nomEntite = champ.getChampDelegue().getEntite().getNom();
+            nomChamp = champ.getChampDelegue().getNom().replace("Id", "");
+            propertyKey += nomEntite + "." + contexte.getNom() + "." + StringUtils.capitalize(nomChamp);
+         }
+
+         label = Labels.getLabel(propertyKey);
+
+      }
+
+      return label;
+
+   }
+   
+   public static String getLabelForChampEntite(final ChampEntite c){
+      final StringBuffer iProperty = new StringBuffer();
+      iProperty.append("Champ.");
+      iProperty.append(c.getEntite().getNom());
+      iProperty.append(".");
+
+      String champOk = "";
+      // si le nom du champ finit par "Id", on le retire
+      if(c.getNom().endsWith("Id")){
+         champOk = c.getNom().substring(0, c.getNom().length() - 2);
+      }else{
+         champOk = c.getNom();
+      }
+      iProperty.append(champOk);
+
+      // on ajoute la valeur du champ
+      return Labels.getLabel(iProperty.toString());
+   }
+   ///////////////////
 
    /**
     * Retourne l'adresse logique d'un objet.

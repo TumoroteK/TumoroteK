@@ -218,10 +218,12 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
    private List<NonConformite> nonConformitesTraitement = new ArrayList<>();
 
+   //A supprimer (TK-779) : En effet, plus utilisé car plusieurs non conformités de traitement sont sélectionnables - cf méthode selectNonConformites() 
    private NonConformite selectedNonConformiteTraitement;
 
    private List<NonConformite> nonConformitesCession = new ArrayList<>();
 
+   //A supprimer (TK-779) : En effet, plus utilisé car plusieurs non conformités de cession sont sélectionnables - cf méthode selectNonConformites()
    private NonConformite selectedNonConformiteCession;
 
    private List<LaboInter> laboInters = null;
@@ -367,7 +369,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    public void switchToEditMode(){
       // Initialisation du mode (listes, valeurs...)
       initQuantiteAndVolume();
-      initEditableMode();
+      initEditableMode(true);
 
       super.switchToEditMode();
       
@@ -1012,11 +1014,21 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          .findByPlateformeEntiteAndTypeStringManager(SessionUtils.getPlateforme(sessionScope), "Cession", echEntite);
    }
 
+   
+   
+   //TK-748
    /**
-    * Méthode pour l'initialisation du mode d'édition : récupération du contenu des
+    * Méthode pour l'initialisation du mode édition : récupération du contenu des
     * listes déroulantes (types, qualités...).
+    * 
+    * @param addSelectedInListIfAbsent permet de gérer le cas de la fiche en mode modification 
+    * quand la valeur précédemment saisie n'est pas dans la liste des valeurs possibles. Si vaut true, elle est alors ajoutée en 1ere position (avant l'éventuelle valeur null
+    * mais ce n'est pas gênant, au contraire, ça fait ressortir la valeur précédente).
+    * Actuellement, ce mécanisme est nécessaire pour les collections Gatsbi si la valeur a été supprimée du filtre
+    * mais il pourrait aussi être utilisé, si un jour, il devient possible de supprimer / désactiver une valeur de thésaurus (comme c'est le cas pour le transporteur)
+    * c'est pour cela que cette règle de gestion n'est pas mise dans la classe FicheEchantillonEditGatsbi  
     */
-   public void initEditableMode(){
+   public void initEditableMode(boolean addSelectedInListIfAbsent){
       quantite = null;
       quantiteInit = null;
 
@@ -1024,16 +1036,22 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
       if(echantillon.getEchantillonType() != null){
          selectedType = echantillon.getEchantillonType();
+         if(addSelectedInListIfAbsent && !types.contains(selectedType)) {
+            types.add(0,selectedType);
+         }
       }else{
          selectedType = types.get(0);
       }
 
       selectedQuantiteUnite = echantillon.getQuantiteUnite();
-
+      if(addSelectedInListIfAbsent && selectedQuantiteUnite != null && !quantiteUnites.contains(selectedQuantiteUnite)) {
+         quantiteUnites.add(0,selectedQuantiteUnite);
+      }
+      
       if(this.echantillon.getCollaborateur() != null && collaborateurs.contains(this.echantillon.getCollaborateur())){
          selectedCollaborateur = this.echantillon.getCollaborateur();
          collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
-      }else if(this.echantillon.getCollaborateur() != null){
+      }else if(addSelectedInListIfAbsent && this.echantillon.getCollaborateur() != null){
          collaborateurs.add(this.echantillon.getCollaborateur());
          selectedCollaborateur = this.echantillon.getCollaborateur();
          nomsAndPrenoms.add(this.echantillon.getCollaborateur().getNomAndPrenom());
@@ -1045,9 +1063,15 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       }
 
       selectedQualite = echantillon.getEchanQualite();
-
+      if(addSelectedInListIfAbsent && selectedQualite != null && !qualites.contains(selectedQualite)) {
+         qualites.add(0,selectedQualite);
+      }
+      
       selectedPrepa = echantillon.getModePrepa();
-
+      if(addSelectedInListIfAbsent && selectedPrepa != null && !prepas.contains(selectedPrepa)) {
+         prepas.add(0,selectedPrepa);
+      }
+      
       if(echantillon.getTumoral() != null){
          tumoraleBox.setChecked(echantillon.getTumoral());
       }else{
@@ -1071,12 +1095,12 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
 
       initDelaiCgl();
 
-      initNonConformites();
+      initNonConformites(addSelectedInListIfAbsent);
    }
 
-   public void initNonConformites(){
+   public void initNonConformites(boolean addSelectedInListIfAbsent){
 
-      // traitement
+      //A SUPPRIMER (TK-779) : cet attribut selectedNonConformiteTraitement n'est plus utilisé car ne gère qu'une conformité alors que plusieurs possibles - cf appel de selectNonConformites() en bas de la méthode
       selectedNonConformiteTraitement = null;
       if(echantillon != null && echantillon.getEchantillonId() != null){
          final List<ObjetNonConforme> tmp =
@@ -1087,6 +1111,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
             }
          }
       }
+      ///
+
+      //Non conformité pour le traitement :
       if(this.echantillon.getConformeTraitement() != null){
          if(this.echantillon.getConformeTraitement()){
             conformeTraitementBoxOui.setChecked(true);
@@ -1099,7 +1126,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          }
       }
 
-      // cession
+      //A SUPPRIMER (TK-779) :cet attribut selectedNonConformiteCession ne semble pas utilisé car ne gère qu'une conformité alors que plusieurs possibles - cf appel de selectNonConformites() en bas de la méthode
       selectedNonConformiteCession = null;
       if(echantillon != null && echantillon.getEchantillonId() != null){
          final List<ObjetNonConforme> tmp =
@@ -1110,6 +1137,9 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
             }
          }
       }
+      ///
+
+      // non conformité pour la cession :
       if(this.echantillon.getConformeCession() != null){
          if(this.echantillon.getConformeCession()){
             conformeCessionBoxOui.setChecked(true);
@@ -1125,7 +1155,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       getBinder().loadComponent(nonConformitesTraitementBox);
       getBinder().loadComponent(nonConformitesCessionBox);
 
-      selectNonConformites();
+      selectNonConformites(addSelectedInListIfAbsent);
    }
 
    /**
@@ -1134,7 +1164,7 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
     * @param risks liste à selectionner
     */
 
-   public void selectNonConformites(){
+   public void selectNonConformites(boolean addSelectedInListIfAbsent){
       final List<NonConformite> ncfTrait = new ArrayList<>();
       final List<NonConformite> ncfCess = new ArrayList<>();
       if(echantillon != null && echantillon.getEchantillonId() != null){
@@ -1150,8 +1180,36 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
          }
       }
 
-      ((Selectable<NonConformite>) nonConformitesTraitementBox.getModel()).setSelection(ncfTrait);
-      ((Selectable<NonConformite>) nonConformitesCessionBox.getModel()).setSelection(ncfCess);
+      List<NonConformite> selectedNcfTrait = new ArrayList<>();
+      List<NonConformite> selectedNcfCess = new ArrayList<>();
+      
+      //si addSelectedInListIfAbsent,
+      //les valeurs doivent être affichées même si ces nonConformites ne sont plus d'actualité (c'est-à-dire non présentes dans nonConformites)
+      for(int i = 0; i < ncfTrait.size(); i++){
+         if(nonConformitesTraitement.indexOf(ncfTrait.get(i)) == -1){
+            if(addSelectedInListIfAbsent) {
+               nonConformitesTraitement.add(0, ncfTrait.get(i));
+               selectedNcfTrait.add(ncfTrait.get(i));
+            }
+         }
+         else {
+            selectedNcfTrait.add(ncfTrait.get(i));
+         }
+      }
+      for(int i = 0; i < ncfCess.size(); i++){
+         if(nonConformitesCession.indexOf(ncfCess.get(i)) == -1){
+            if(addSelectedInListIfAbsent) {
+               nonConformitesCession.add(0, ncfCess.get(i));
+               selectedNcfCess.add(ncfCess.get(i));
+            }
+         }
+         else {
+            selectedNcfCess.add(ncfCess.get(i));     
+         }
+      }
+      
+      ((Selectable<NonConformite>) nonConformitesTraitementBox.getModel()).setSelection(selectedNcfTrait);
+      ((Selectable<NonConformite>) nonConformitesCessionBox.getModel()).setSelection(selectedNcfCess);
 
       getBinder().loadAttribute(nonConformitesTraitementBox, "selectedItems");
       getBinder().loadAttribute(nonConformitesCessionBox, "selectedItems");

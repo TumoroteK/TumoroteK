@@ -46,11 +46,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import fr.aphp.tumorotek.utils.MessagesUtils;
-import fr.aphp.tumorotek.utils.TKDateUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.validation.Errors;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
@@ -92,11 +90,9 @@ import fr.aphp.tumorotek.decorator.PrelevementDecorator2;
 import fr.aphp.tumorotek.dto.MajDelaiCongelFromPrelevementDTO;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
-import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ETypeDelaiCongelation;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
-import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.ConditMilieu;
@@ -114,6 +110,7 @@ import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.systeme.Unite;
+import fr.aphp.tumorotek.utils.MessagesUtils;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -353,7 +350,11 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          enablePatientGroup(false);
       }
 
-      initSelectedInLists();
+      //si la valeur sélectionnée n'est pas dans la liste déroulante initialisée avec toutes les valeurs possibles c'est-à-dire actives à l'instant t, 
+      //on l'ajoute pour ne pas perdre la valeur précédemment saisie.
+      //Ce cas se rencontre avec Gatsbi qui permet de filtrer les valeurs possibles et avec la désactivation d'une valeur de thesaurus (voire de la
+      //suppression d'une valeur si un jour cela est permis - à date impossible si la valeur est utilisée).
+      initSelectedInLists(true);
       initCollaborations();
 
       //this.isPatientMaladieStatic = true;
@@ -413,23 +414,47 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       dateConsentBoxChanged = false;
    }
 
+   
+   //TK-748
    /**
     * Initialisation des valeurs selected pour chaque liste.
+    * 
+    * @param addSelectedInListIfAbsent permet de gérer le cas de la fiche en mode modification 
+    * quand la valeur précédemment saisie n'est pas dans la liste des valeurs possibles. Si vaut true, elle est alors ajoutée en 1ere position (avant l'éventuelle valeur null)
+    * mais ce n'est pas gênant, au contraire, ça fait ressortir la valeur précédente.
+    * Actuellement, ce mécanisme est nécessaire pour les collections Gatsbi si la valeur a été supprimée du filtre
+    * mais il pourrait aussi être utilisé si un jour, il devient possible de supprimer / désactiver une valeur de thésaurus (comme c'est le cas pour le transporteur)
+    * c'est pour cela qu'il n'est pas mis dans la classe FichePrelevementEditGatsbi 
     */
-   public void initSelectedInLists(){
+   public void initSelectedInLists(boolean addSelectedInListIfAbsent){
 
       if(this.prelevement.getNature() != null){
          selectedNature = this.prelevement.getNature();
+         if(addSelectedInListIfAbsent && !natures.contains(selectedNature)) {
+            natures.add(0, selectedNature);
+         }
       }else if(!natures.isEmpty()){
          selectedNature = natures.get(0);
       }
 
       selectedMode = this.prelevement.getPrelevementType();
+      if(addSelectedInListIfAbsent && selectedMode != null && !modes.contains(selectedMode)) {
+         modes.add(0, selectedMode);
+      }
       selectedConditType = this.prelevement.getConditType();
+      if(addSelectedInListIfAbsent && selectedConditType != null && !conditTypes.contains(selectedConditType)) {
+         conditTypes.add(0, selectedConditType);
+      }
       selectedConditMilieu = this.prelevement.getConditMilieu();
-
+      if(addSelectedInListIfAbsent && selectedConditMilieu != null && !conditMilieus.contains(selectedConditMilieu)) {
+         conditMilieus.add(0, selectedConditMilieu);
+      }
+      
       if(this.prelevement.getConsentType() != null){
          selectedConsentType = this.prelevement.getConsentType();
+         if(addSelectedInListIfAbsent && !consentTypes.contains(selectedConsentType)) {
+            consentTypes.add(0, selectedConsentType);
+         }
       }else{
          final List<ConsentType> tmps = ManagerLocator.getConsentTypeManager().findByTypeLikeManager("EN ATTENTE", false);
          // @since 2.3.0-gatsbi init selected in list EN ATTENTE si hors gatsbi
@@ -446,8 +471,26 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().setRisques(ManagerLocator.getPrelevementManager().getRisquesManager(getObject()));
       }
       sels.addAll(getObject().getRisques());
+      
+      if(addSelectedInListIfAbsent) {
+         for(Risque selectedRisque : sels) {
+            if(!risques.contains(selectedRisque)) {
+               risques.add(0,selectedRisque);
+            }
+         }
+      }
 
       selectRisques(sels);
+   }
+   
+   //TK-748
+   /**
+    * Initialisation des valeurs selected pour chaque liste sans ajouter la valeur à la liste si "selected" n'y est pas
+    * (la valeur selected ne sera donc pas prise en compte). Fonctionnement par défaut avant Gatsbi donc garder pour la copie et 
+    * l'injection d'un dossier externe
+    */
+   public void initSelectedInLists(){
+      initSelectedInLists(false);
    }
 
    /**
@@ -500,7 +543,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       populateServicesForSelectedEtablissement();
       
       initCollaborateurs();
-
+      
       //dans le cas de la création, si une seule valeur de collaborateur (en plus de la ligne blanche), on la force:
       //dans la réalité concerne plutôt Gatsbi mais règle générale définie en standard
       if(prelevement.getPrelevementId() == null) {
@@ -538,14 +581,14 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       if(prelevement.getPrelevementId() != null) {
          //************** gestion des cas où la valeur sélectionnée correspond à un élément archivé, non présent dans les listes :
          if(selectedEtablissement != null && !allEtablissements.contains(selectedEtablissement)) {
-            allEtablissements.add(selectedEtablissement);
+            etablissements.add(0,selectedEtablissement);
          }
          
          if(selectedService != null && !allServices.contains(selectedService)) {
-            allServices.add(selectedService);
+            services.add(0,selectedService);
          }
          if(selectedCollaborateur != null && !allCollaborateurs.contains(selectedCollaborateur)) {
-            allCollaborateurs.add(selectedCollaborateur);
+            collaborateurs.add(0,selectedCollaborateur);
          }
          //************** gestion des cas où la valeur sélectionnée correspond à un élément archivé, non présent dans les listes - FIN
       }

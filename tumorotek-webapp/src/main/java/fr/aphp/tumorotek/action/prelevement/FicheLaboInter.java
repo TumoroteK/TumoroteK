@@ -42,7 +42,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import fr.aphp.tumorotek.utils.TKDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.Errors;
@@ -68,6 +67,7 @@ import org.zkoss.zul.ListModelList;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.ext.Selectable;
 
 import fr.aphp.tumorotek.action.CustomSimpleListModel;
 import fr.aphp.tumorotek.action.ManagerLocator;
@@ -88,6 +88,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Nature;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.PrelevementType;
+import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
 import fr.aphp.tumorotek.model.contexte.Service;
@@ -200,9 +201,14 @@ public class FicheLaboInter extends AbstractFicheEditController
 
    private List<NonConformite> nonConformites = new ArrayList<>();
 
+   //////
+   //CHT : A supprimer (TK-779)
+   //Ne semble plus utilisé car plusieurs non conformités à l'arrivée sont sélectionnables => définition de l'attribut selectedNonConformitesItem ci-dessous
+   //mais l'implémentation ne semble pas l'utiliser non plus : cf méthode initAssociations() qui gère la sélection des non conformités - à la fin de la méthode.
    private NonConformite selectedNonConformite;
 
    private Set<Listitem> selectedNonConformitesItem = new HashSet<>();
+   //////
 
    /**
     * Variables formulaire.
@@ -321,35 +327,7 @@ public class FicheLaboInter extends AbstractFicheEditController
       return ManagerLocator.getCollaborateurManager().findAllActiveObjectsWithOrderManager();
    }
    
-   
-   /**
-    * Select les non conformites dans la dropdown list.
-    *
-    * @param risks liste à selectionner
-    */
-   public void selectNonConformites(){
-
-      final List<NonConformite> ncf = new ArrayList<>();
-      if(prelevement != null && prelevement.getPrelevementId() != null){
-         final List<ObjetNonConforme> list =
-            ManagerLocator.getObjetNonConformeManager().findByObjetAndTypeManager(prelevement, "Arrivee");
-         for(int i = 0; i < list.size(); i++){
-            ncf.add(list.get(i).getNonConformite());
-         }
-      }
-
-      selectedNonConformitesItem.clear();
-
-      for(int i = 0; i < ncf.size(); i++){
-         if(nonConformites.indexOf(ncf.get(i)) >= 0){
-            selectedNonConformitesItem.add(nonConformitesBox.getItemAtIndex(nonConformites.indexOf(ncf.get(i))));
-         }
-      }
-      // risquesBox.setSelectedItems(selectedRisques);
-      getBinder().loadAttribute(nonConformitesBox, "selectedItems");
-
-   }
-
+   //A supprimer (cf TK-779)
    public void initNonConformites(){
       if(prelevement != null && prelevement.getPrelevementId() != null){
          final List<ObjetNonConforme> tmp =
@@ -396,6 +374,9 @@ public class FicheLaboInter extends AbstractFicheEditController
       collabBox.setValue("");
       if(this.prelevement != null){
          selectedTransporteur = this.prelevement.getTransporteur();
+         if(selectedTransporteur != null && !transporteurs.contains(selectedTransporteur)) {
+            transporteurs.add(0, selectedTransporteur);
+         }
 
          if(this.prelevement.getOperateur() != null && collaborateurs.contains(this.prelevement.getOperateur())){
             selectedCollaborateur = this.prelevement.getOperateur();
@@ -408,9 +389,37 @@ public class FicheLaboInter extends AbstractFicheEditController
             collabBox.setValue(selectedCollaborateur.getNomAndPrenom());
          }
          selectedQuantiteUnite = this.prelevement.getQuantiteUnite();
+         if(selectedQuantiteUnite != null && !quantiteUnites.contains(selectedQuantiteUnite)) {
+            quantiteUnites.add(0,selectedQuantiteUnite);
+         }
       }
 
-      selectNonConformites();
+      // sauf dans le cas ou create another prelevement
+       final List<NonConformite> ncfForPrelevement = new ArrayList<>();
+       if(prelevement != null && prelevement.getPrelevementId() != null){
+          final List<ObjetNonConforme> listObjetNonConforme =
+             ManagerLocator.getObjetNonConformeManager().findByObjetAndTypeManager(prelevement, "Arrivee");
+          //extraction des non conformités du lien objet / non conformité :
+          for(int i = 0; i < listObjetNonConforme.size(); i++){
+             ncfForPrelevement.add(listObjetNonConforme.get(i).getNonConformite());
+          }
+          
+          //TK-748
+          //Dans le cas de la modification, si une conformité attachée au prélèvement n'est plus d'actualité (c'est-à-dire non présentes dans la liste
+          //des conformités possibles : nonConformites), il faut l'ajouter pour ne pas perdre cette valeur lors de l'affichage du composant.
+          //C'est le cas à date avec Gatsbi qui permet de filtrer les valeurs des thésaurus mais pourrait également être utile si un jour on permet de 
+          //supprimer / inactiver une valeur de thesaurus.
+          for(NonConformite ncfASelectionner : ncfForPrelevement) {
+             if(!nonConformites.contains(ncfASelectionner)) {
+                nonConformites.add(0,ncfASelectionner);
+             }
+          }
+       }
+
+       ((Selectable<NonConformite>) nonConformitesBox.getModel()).setSelection(ncfForPrelevement);
+
+       //rechargement de tout le composant pour mise à jour de la liste de toutes les conformités et de celles sélectionnées
+       getBinder().loadComponent(nonConformitesBox);
 
    }
 
@@ -420,6 +429,7 @@ public class FicheLaboInter extends AbstractFicheEditController
 
       this.maladie = this.prelevement.getMaladie();
 
+      //appel à supprimer (cf TK-779)
       initNonConformites();
 
       if(this.prelevement.getConformeArrivee() != null){
