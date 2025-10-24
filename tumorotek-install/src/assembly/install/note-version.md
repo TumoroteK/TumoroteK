@@ -1,6 +1,6 @@
 #### Notes
 
-##### Version 2.3.1.0 - Publiée le 19/09/2025
+##### Version 2.3.1.0 - Publiée le 24/10/2025
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
 - YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
@@ -37,6 +37,7 @@
 - YouTrack [TK-696](https://tumorotek.myjetbrains.com/youtrack/issue/TK-696) : Création d'un ${prelevement} avec échantillons : erreur "TransientObjectException" lors de la validation
 - YouTrack [TK-474](https://tumorotek.myjetbrains.com/youtrack/issue/TK-474) : Création d'un ${prelevement} : la modification du code prélèvement après utilisation du bouton "Retour" n'est pas appliquée sur les écrans des étape 2 (site inter) et étape 3 (saisie échantillon)
 - YouTrack [TK-449](https://tumorotek.myjetbrains.com/youtrack/issue/TK-449) : Fiche ${prelevement} en collection sérologie : affichage stérilité du site intermédiaire non formaté
+- YouTrack [TK-748](https://tumorotek.myjetbrains.com/youtrack/issue/TK-748) : Fiche ${prelevement} : Gatsbi > problème lors de la désactivation d'un collaborateur défini dans les thesaurus des contextes
 - YouTrack [TK-427](https://tumorotek.myjetbrains.com/youtrack/issue/TK-427) : ${echantillon} Mettre à jour le délai de congélation des échantillons lorsque la date de prélèvement est renseignée (après la création des échantillons) ou modifiée
 - YouTrack [TK-309](https://tumorotek.myjetbrains.com/youtrack/issue/TK-309) : ${echantillon} Problème de renommage du code
 - YouTrack [TK-729](https://tumorotek.myjetbrains.com/youtrack/issue/TK-729) : ${export} de ${produit-derive} : plantage 
@@ -54,9 +55,11 @@
 - YouTrack [TK-635](https://tumorotek.myjetbrains.com/youtrack/issue/TK-635) : ${administration} Impression Fiche Collection > liste des conteneurs : ajouter la colonne plateforme si au moins un conteneur est partagé
 - YouTrack [TK-627](https://tumorotek.myjetbrains.com/youtrack/issue/TK-627) : ${administration} Collections : ajouter un tri sur toutes les entêtes de colonne
 - YouTrack [TK-625](https://tumorotek.myjetbrains.com/youtrack/issue/TK-625) : ${administration} Impression > sélection d'un modèle existant : les blocs apparaissent en double
+- YouTrack [TK-771](https://tumorotek.myjetbrains.com/youtrack/issue/TK-771) : ${administration} Impossible de supprimer le partage d'un conteneur
 - YouTrack [TK-460](https://tumorotek.myjetbrains.com/youtrack/issue/TK-460) : ${statistiques} : plantage lors du tri sur le résultat d'un indicateur
 
-
+###### Corrections dans le module Gatsbi (version 1.0.0.11)
+- YouTrack [TK-748](https://tumorotek.myjetbrains.com/youtrack/issue/TK-748) : Fiche ${prelevement} : Gatsbi > problème lors de la désactivation d'un collaborateur défini dans les thesaurus des contextes
 
 
 ##### Version 2.3.0.18 - Publiée le le 05/09/2025
