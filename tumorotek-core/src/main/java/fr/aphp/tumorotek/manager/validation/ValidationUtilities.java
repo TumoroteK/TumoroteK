@@ -104,7 +104,7 @@ public final class ValidationUtilities
    private ValidationUtilities(){}
 
    /**
-    * Medthode généraliste de qui compare deux dates assignées aux objets au
+    * Medthode généraliste qui compare deux dates assignées aux objets au
     * coeur de TK. Cette méthode tient compte du fait que les dates peuvent
     * être de type Date ou Calendar et doivent pouvoir se comparer
     * malgré leur type. Si l'objetBindingError est null alors execute la
@@ -117,9 +117,19 @@ public final class ValidationUtilities
     * @param mid partie interm du message d'erreur localisé
     * @param suffixe pour compléter le message d'erreur
     * @param errs
-    * @param before
-    * @return false si check -> error
+    * @param before : condition à vérifier, vaut true si date doit être strictement avant dateRef. 
+    *                   False correpond donc à doit être après ou égale (ce qui peut poser problème /!\). 
+    *                   Pour être plus générique, il aurait mieux fallu gérer toutes les possibilités via une enum : 
+    *                   avant strictement, avant ou égale, égale, après et après ou égale   
+    * @return true si la condition "before" entre les 2 dates n'est pas respectée ( ce n'est pas très logique :-( ) 
+    * 
     */
+   //REFACTORING (TK-780) : cette méthode est à découper en 2 méthodes (aux signatures bien différentes) :
+   // - une qui compare juste 2 dates selon une condition (avant strictement, avant ou égale, égale, après, après ou égale) et renvoie un boolean true si comparaison respectée et false sinon
+   //   public static boolean compareDateWithCondition(Object date, Object dateRef, enum condition)
+   // - une autre qui fait la même comparaison mais qui renvoie void. Le résultat est obtenu par l'ajout d'une Error dans la liste Errors passées en paramètre
+   //   public static void checkConditionOnDates(Object date, Object dateRef, enum condition, Errors errs, String champ, String prefixe, String mid, String suffixe). 
+   //        Idéalement, les 3 derniers paramètres sont à regroupés dans un objet
    public static boolean checkWithDate(final Object date, final String champ, final Object dateRef, final String prefixe,
       final String mid, final String suffixe, final Errors errs, final boolean before){
 
