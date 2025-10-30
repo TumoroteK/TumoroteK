@@ -279,6 +279,7 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
       return null;
    }
    
+   //valide que les champs à ne pas afficher dans un contexte sérologie ne font pas partie de la liste des champ du modèle
    private ItemForErrorResult<ImportColonne> validateChampSerologie(List<ChampEntite> listChampEntiteForTemplate, Banque banque) {
       List<String> listContexteNom = Arrays.asList(EChampSupprimePourSerologie.values()).stream().map(enumValue -> enumValue.getNom()).collect(Collectors.toList());
       List<ChampEntite> listchampEntiteKO = new ArrayList<ChampEntite>();
