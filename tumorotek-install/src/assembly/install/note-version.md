@@ -40,6 +40,7 @@
 - YouTrack [TK-748](https://tumorotek.myjetbrains.com/youtrack/issue/TK-748) : Fiche ${prelevement} : Gatsbi > problème lors de la désactivation d'un collaborateur défini dans les thesaurus des contextes
 - YouTrack [TK-427](https://tumorotek.myjetbrains.com/youtrack/issue/TK-427) : ${echantillon} Mettre à jour le délai de congélation des échantillons lorsque la date de prélèvement est renseignée (après la création des échantillons) ou modifiée
 - YouTrack [TK-309](https://tumorotek.myjetbrains.com/youtrack/issue/TK-309) : ${echantillon} Problème de renommage du code
+- YouTrack [TK-621](https://tumorotek.myjetbrains.com/youtrack/issue/TK-621) : ${echantillon} Message d'erreur lors de l'impression de la fiche INCA pour un échantillon sans prélèvement
 - YouTrack [TK-729](https://tumorotek.myjetbrains.com/youtrack/issue/TK-729) : ${export} de ${produit-derive} : plantage 
 - YouTrack [TK-669](https://tumorotek.myjetbrains.com/youtrack/issue/TK-669) : Modification d'un ${produit-derive} : Améliorer le contrôle de longueur du code
 - YouTrack [TK-668](https://tumorotek.myjetbrains.com/youtrack/issue/TK-668) : Création d'un ${produit-derive} : Améliorer les contrôles de longueur du code
