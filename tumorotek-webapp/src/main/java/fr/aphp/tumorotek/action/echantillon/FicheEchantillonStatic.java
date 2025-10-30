@@ -831,7 +831,7 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
       // Site de soin
       ++nbItemsINCaTotaux;
-      if(prelevement.getServicePreleveur() != null && prelevement.getServicePreleveur().getEtablissement() != null){
+      if(prelevement != null && prelevement.getServicePreleveur() != null && prelevement.getServicePreleveur().getEtablissement() != null){
          tmp = prelevement.getServicePreleveur().getEtablissement().getNom();
          ++nbItemsINCaRemplis;
       }else{
