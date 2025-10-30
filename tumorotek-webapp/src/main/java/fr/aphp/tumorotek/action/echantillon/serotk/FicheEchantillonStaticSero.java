@@ -62,7 +62,15 @@ public class FicheEchantillonStaticSero extends FicheEchantillonStatic
       super.doAfterCompose(comp);
       qualiteEchanLabel.setVisible(false);
       qualiteEchanValue.setVisible(false);
+      //TK-782 : attention à bien gérer la fermeture du bloc avec le fait qu'il soit caché sinon les champs qu'il contient sont quand même affichés
       groupInfosCompEchan.setVisible(false);
    }
 
+   //TK-782
+   //dans le cas du contexte sérologie, le bloc est caché donc on force sa fermeture pour bien caché ce qu'il contient
+   @Override
+   protected void manageGroupInfosCompEchanOpening() {
+      setGroupInfosCompEchanOpen(false);
+   }
+   
 }

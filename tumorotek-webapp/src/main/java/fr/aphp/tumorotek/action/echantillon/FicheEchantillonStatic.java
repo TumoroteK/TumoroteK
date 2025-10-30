@@ -382,7 +382,8 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
 
       drawRisquesFormatted();
 
-      setGroupInfosCompEchanOpen(true);
+      //TK-782
+      manageGroupInfosCompEchanOpening();
 
       // annotations
       super.setObject(echantillon);
@@ -2209,6 +2210,13 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       }
    }
 
+   //TK-782
+   //en standard, le bloc est ouvert mais ce ne sera pas le cas en contexte sérologie puisque les champs ne seront pas affichés
+   //cette méthode est donc surchargée dans FicheEchantillonStaticSero
+   protected void manageGroupInfosCompEchanOpening() {
+      setGroupInfosCompEchanOpen(true);
+   }
+   
    protected void setGroupInfosCompEchanOpen(final boolean b){
       if(groupInfosCompEchan instanceof Group){
          ((Group) groupInfosCompEchan).setOpen(b);
