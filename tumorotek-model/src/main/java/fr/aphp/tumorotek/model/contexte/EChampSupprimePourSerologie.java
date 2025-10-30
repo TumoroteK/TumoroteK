@@ -40,6 +40,8 @@ import fr.aphp.tumorotek.model.systeme.EEntiteId;
 
 public enum EChampSupprimePourSerologie
 {
+   QUALITE("EchanQualiteId", EEntiteId.ECHANTILLON.getId()),
+   //champ du bloc "Informations complémentaires"
    LATERALITE("Lateralite", EEntiteId.ECHANTILLON.getId()), 
    TUMORAL("Tumoral", EEntiteId.ECHANTILLON.getId()), 
    CODE_ORGANES("CodeOrganes", EEntiteId.ECHANTILLON.getId()), 
