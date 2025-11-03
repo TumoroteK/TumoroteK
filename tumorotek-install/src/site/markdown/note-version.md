@@ -1,6 +1,6 @@
 #### Notes
 
-##### Version 2.3.1.0 - Publiée le 19/09/2025
+##### Version 2.3.1.0 - Publiée le 03/11/2025
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
 - YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
@@ -37,8 +37,10 @@
 - YouTrack [TK-696](https://tumorotek.myjetbrains.com/youtrack/issue/TK-696) : Création d'un <span class="badge badge-prelevement">Prélèvement</span> avec échantillons : erreur "TransientObjectException" lors de la validation
 - YouTrack [TK-474](https://tumorotek.myjetbrains.com/youtrack/issue/TK-474) : Création d'un <span class="badge badge-prelevement">Prélèvement</span> : la modification du code prélèvement après utilisation du bouton "Retour" n'est pas appliquée sur les écrans des étape 2 (site inter) et étape 3 (saisie échantillon)
 - YouTrack [TK-449](https://tumorotek.myjetbrains.com/youtrack/issue/TK-449) : Fiche <span class="badge badge-prelevement">Prélèvement</span> en collection sérologie : affichage stérilité du site intermédiaire non formaté
+- YouTrack [TK-748](https://tumorotek.myjetbrains.com/youtrack/issue/TK-748) : Fiche <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > problème lors de la désactivation d'un collaborateur défini dans les thesaurus des contextes
 - YouTrack [TK-427](https://tumorotek.myjetbrains.com/youtrack/issue/TK-427) : <span class="badge badge-echantillon">Echantillon</span> Mettre à jour le délai de congélation des échantillons lorsque la date de prélèvement est renseignée (après la création des échantillons) ou modifiée
 - YouTrack [TK-309](https://tumorotek.myjetbrains.com/youtrack/issue/TK-309) : <span class="badge badge-echantillon">Echantillon</span> Problème de renommage du code
+- YouTrack [TK-621](https://tumorotek.myjetbrains.com/youtrack/issue/TK-621) : <span class="badge badge-echantillon">Echantillon</span> Message d'erreur lors de l'impression de la fiche INCA pour un échantillon sans prélèvement
 - YouTrack [TK-729](https://tumorotek.myjetbrains.com/youtrack/issue/TK-729) : <span class="badge badge-export">Export</span> de <span class="badge badge-produit-derive">Produit dérivé</span> : plantage 
 - YouTrack [TK-669](https://tumorotek.myjetbrains.com/youtrack/issue/TK-669) : Modification d'un <span class="badge badge-produit-derive">Produit dérivé</span> : Améliorer le contrôle de longueur du code
 - YouTrack [TK-668](https://tumorotek.myjetbrains.com/youtrack/issue/TK-668) : Création d'un <span class="badge badge-produit-derive">Produit dérivé</span> : Améliorer les contrôles de longueur du code
@@ -48,6 +50,7 @@
 - YouTrack [TK-463](https://tumorotek.myjetbrains.com/youtrack/issue/TK-463) : <span class="badge badge-cession">Cession</span> Impression : retirer le nom du patient dans les champs à imprimer par défaut
 - YouTrack [TK-421](https://tumorotek.myjetbrains.com/youtrack/issue/TK-421) : <span class="badge badge-stockage">Stockage</span> Au niveau du nom des conteneurs partagés, ajouter le nom de la plateforme d'appartenance 
 - YouTrack [TK-369](https://tumorotek.myjetbrains.com/youtrack/issue/TK-369) : <span class="badge badge-stockage">Stockage</span> Déplacement échantillon : fiche d'impression affiche 2 fois la boîte cible
+- YouTrack [TK-771](https://tumorotek.myjetbrains.com/youtrack/issue/TK-771) : <span class="badge badge-stockage">Stockage</span> et <span class="badge badge-administration">Administration</span> Impossible de supprimer le partage d'un conteneur
 - YouTrack [TK-723](https://tumorotek.myjetbrains.com/youtrack/issue/TK-723) : <span class="badge badge-administration">Administration</span> Fusion de patient "Gatsbi" : l'identifiant du patient supprimé n'est pas reporté sur le patient gardé
 - YouTrack [TK-440](https://tumorotek.myjetbrains.com/youtrack/issue/TK-440) : <span class="badge badge-administration">Administration</span> Fusion de collaborateur - plantage aléatoire
 - YouTrack [TK-635](https://tumorotek.myjetbrains.com/youtrack/issue/TK-635) : <span class="badge badge-administration">Administration</span> Impression Fiche Collection > liste des conteneurs : ajouter la colonne plateforme si au moins un conteneur est partagé
@@ -55,7 +58,8 @@
 - YouTrack [TK-625](https://tumorotek.myjetbrains.com/youtrack/issue/TK-625) : <span class="badge badge-administration">Administration</span> Impression > sélection d'un modèle existant : les blocs apparaissent en double
 - YouTrack [TK-460](https://tumorotek.myjetbrains.com/youtrack/issue/TK-460) : <span class="badge badge-statistiques">Statistiques</span> : plantage lors du tri sur le résultat d'un indicateur
 
-
+###### Corrections dans le module Gatsbi (version 1.0.0.11)
+- YouTrack [TK-748](https://tumorotek.myjetbrains.com/youtrack/issue/TK-748) : Fiche <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > problème lors de la désactivation d'un collaborateur défini dans les thesaurus des contextes
 
 
 ##### Version 2.3.0.18 - Publiée le le 05/09/2025

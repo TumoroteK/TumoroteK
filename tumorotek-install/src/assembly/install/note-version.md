@@ -1,6 +1,6 @@
 #### Notes
 
-##### Version 2.3.1.0 - Publiée le 24/10/2025
+##### Version 2.3.1.0 - Publiée le 03/11/2025
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
 - YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
@@ -50,13 +50,12 @@
 - YouTrack [TK-463](https://tumorotek.myjetbrains.com/youtrack/issue/TK-463) : ${cession} Impression : retirer le nom du patient dans les champs à imprimer par défaut
 - YouTrack [TK-421](https://tumorotek.myjetbrains.com/youtrack/issue/TK-421) : ${stockage} Au niveau du nom des conteneurs partagés, ajouter le nom de la plateforme d'appartenance 
 - YouTrack [TK-369](https://tumorotek.myjetbrains.com/youtrack/issue/TK-369) : ${stockage} Déplacement échantillon : fiche d'impression affiche 2 fois la boîte cible
-- YouTrack [TK-771](https://tumorotek.myjetbrains.com/youtrack/issue/TK-771) : ${stockage} Impossible de supprimer le partage d'un conteneur
+- YouTrack [TK-771](https://tumorotek.myjetbrains.com/youtrack/issue/TK-771) : ${stockage} et ${administration} Impossible de supprimer le partage d'un conteneur
 - YouTrack [TK-723](https://tumorotek.myjetbrains.com/youtrack/issue/TK-723) : ${administration} Fusion de patient "Gatsbi" : l'identifiant du patient supprimé n'est pas reporté sur le patient gardé
 - YouTrack [TK-440](https://tumorotek.myjetbrains.com/youtrack/issue/TK-440) : ${administration} Fusion de collaborateur - plantage aléatoire
 - YouTrack [TK-635](https://tumorotek.myjetbrains.com/youtrack/issue/TK-635) : ${administration} Impression Fiche Collection > liste des conteneurs : ajouter la colonne plateforme si au moins un conteneur est partagé
 - YouTrack [TK-627](https://tumorotek.myjetbrains.com/youtrack/issue/TK-627) : ${administration} Collections : ajouter un tri sur toutes les entêtes de colonne
 - YouTrack [TK-625](https://tumorotek.myjetbrains.com/youtrack/issue/TK-625) : ${administration} Impression > sélection d'un modèle existant : les blocs apparaissent en double
-- YouTrack [TK-771](https://tumorotek.myjetbrains.com/youtrack/issue/TK-771) : ${administration} Impossible de supprimer le partage d'un conteneur
 - YouTrack [TK-460](https://tumorotek.myjetbrains.com/youtrack/issue/TK-460) : ${statistiques} : plantage lors du tri sur le résultat d'un indicateur
 
 ###### Corrections dans le module Gatsbi (version 1.0.0.11)
