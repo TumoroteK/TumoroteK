@@ -522,6 +522,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
          // gestion de la non conformité
          if(isPrelevementProcedure){
+            //conformité arrivée étant sur l'écran laboInter, le test ci-dessous sécurise l'appel à 
+            //getFicheLaboInter() (en lien avec la remarque au niveau de la déclaration de la méthode PrelevementController.getFicheLaboInter() - correction bug TK-787) :
             if(getParentObject().getConformeArrivee() != null && !getParentObject().getConformeArrivee()){
                ManagerLocator.getObjetNonConformeManager().createUpdateOrRemoveListObjectManager(getParentObject(),
                   getPrelevementController().getFicheLaboInter().findSelectedNonConformites(), "Arrivee");
@@ -673,6 +675,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       }
    }
 
+   //Cas de la modification (possible uniquement à partir de la fiche Edit de Prelevement puis next)
    @Override
    public void onClick$validate(){
 
@@ -681,6 +684,12 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       if(addedEchantillons.size() == 0){
          if(Messagebox.show(Labels.getLabel("message.noEchantillonAdded"), Labels.getLabel("message.save.title"),
             Messagebox.YES | Messagebox.NO, Messagebox.QUESTION) == Messagebox.YES){
+            //TK-789 (pb avec Gatsbi si contexte sans champ visible sur l'écran site intermédiaire)
+            // /!\ compliqué à corriger car la sauvegarde globale et la redirection ensuite est 
+            //gérée par getFicheLaboInter().onClick$validate() donc si on ajoute un if(getPrelevementController().hasFicheLaboInter())
+            //il faut gérer la sauvegarde globale dans le else mais il n'y a pas de méthode simple pour faire uniquement cette partie
+            //=> décision le 10/11/2025 de laisser le bug (c'est un cas à la marge : 
+            //maj depuis Prélèvement + paramétre spécifique sur Gatsbi + validation au niveau de l'écran Echantillon mais sans ajout d'échantillon)
             getPrelevementController().getFicheLaboInter().onClick$validate();
             saveEmplacements();
             createFileHtmlToPrint();
@@ -774,12 +783,20 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
 
       final TransactionStatus status = ManagerLocator.getTxManager().getTransaction(def);
       try{
-         getPrelevementController().getFicheLaboInter().updateObjectWithAnnots();
-
-         setParentObject(getPrelevementController().getFicheLaboInter().getObject());
+         //correction bug TK-787 :
+         if(getPrelevementController().hasFicheLaboInter()) {
+            getPrelevementController().getFicheLaboInter().updateObjectWithAnnots();
+         }
+         //code surprenant sans doute lié au fait que le seul cas d'utilisation qui fait passer ici
+         //est "être en modification sur le prélèvement et d'avoir fait suivant..." donc il faut alimenter le prélèvement avant la mise à jour
+         //Ainsi, lors de la correction de TK-787, on garde le fait d'aller chercher SYSTEMATIQUEMENT les sites intermédiaires en base de données 
+         //sans tester si (getPrelevementController().hasFicheLaboInter() vaut true). C'est une sécurité pour éviter de remettre ces sites à vide
+         //si ce test n'était pas fiable dans un cas particulier
+         setParentObject(getPrelevementController().getFicheEdit().getObject());
          getParentObject().setLaboInters(
             new HashSet<>(ManagerLocator.getPrelevementManager().getLaboIntersWithOrderManager(getParentObject())));
-
+         ///// fin TK-787
+         
          Fichier crAnapath = null;
          String crDataType = null;
          String crPath = null;
@@ -1079,7 +1096,15 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
    @Override
    public void onClick$revert(){
       if(isPrelevementProcedure){
-         getPrelevementController().getFicheLaboInter().onClick$revert();
+         //TK-788
+         if(getPrelevementController().hasFicheLaboInter()) {
+            getPrelevementController().getFicheLaboInter().onClick$revert();
+         }
+         else {//cas Gatsbi sans champ sur le 2e écran : on fait uniquement le revert sur le 1er écran lié au prélèvement
+            PrelevementController prelController = (PrelevementController) getMainWindow().getMainTabbox().getTabpanels()
+               .getFellow("prelevementPanel").getFellow("winPrelevement").getAttributeOrFellow("winPrelevement$composer", true);
+            prelController.getFicheEdit().onClick$revert();
+         }
       }
       getObjectTabController().onCancel();
    }

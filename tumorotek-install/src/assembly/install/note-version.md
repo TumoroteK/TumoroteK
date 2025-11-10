@@ -38,6 +38,8 @@
 - YouTrack [TK-474](https://tumorotek.myjetbrains.com/youtrack/issue/TK-474) : Création d'un ${prelevement} : la modification du code prélèvement après utilisation du bouton "Retour" n'est pas appliquée sur les écrans des étape 2 (site inter) et étape 3 (saisie échantillon)
 - YouTrack [TK-449](https://tumorotek.myjetbrains.com/youtrack/issue/TK-449) : Fiche ${prelevement} en collection sérologie : affichage stérilité du site intermédiaire non formaté
 - YouTrack [TK-748](https://tumorotek.myjetbrains.com/youtrack/issue/TK-748) : Fiche ${prelevement} : Gatsbi > problème lors de la désactivation d'un collaborateur défini dans les thesaurus des contextes
+- YouTrack [TK-787](https://tumorotek.myjetbrains.com/youtrack/issue/TK-787) : Modification ${prelevement} : Gatsbi > message d'erreur lors de la validation de la modification des échantillons dans le cas où il n'y a pas l'écran des sites intermédiaires (aucun champ visible)
+- YouTrack [TK-788](https://tumorotek.myjetbrains.com/youtrack/issue/TK-788) : Modification ${prelevement} : Gatsbi > message d'erreur lors de l'annulation de la modification des échantillons dans le cas où il n'y a pas l'écran des sites intermédiaires (aucun champ visible)
 - YouTrack [TK-427](https://tumorotek.myjetbrains.com/youtrack/issue/TK-427) : ${echantillon} Mettre à jour le délai de congélation des échantillons lorsque la date de prélèvement est renseignée (après la création des échantillons) ou modifiée
 - YouTrack [TK-309](https://tumorotek.myjetbrains.com/youtrack/issue/TK-309) : ${echantillon} Problème de renommage du code
 - YouTrack [TK-621](https://tumorotek.myjetbrains.com/youtrack/issue/TK-621) : ${echantillon} Message d'erreur lors de l'impression de la fiche INCA pour un échantillon sans prélèvement

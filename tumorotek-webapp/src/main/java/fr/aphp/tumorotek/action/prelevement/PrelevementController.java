@@ -549,6 +549,9 @@ public class PrelevementController extends AbstractObjectTabController
     *
     * @return fiche FicheLaboInter
     */
+   // /!\ TK-787 : à partir de la version 2.3.0 (Gatsbi), il faut sécuriser l'appel de getFicheLaboInter() (en l'encadrant par if(hasFicheLaboInter()) par exemple)
+   // car ce composant n'existe pas si pour le contexte Gatsbi tous les champs de cet écran sont "non visibles"
+   // A noter que this.self.getFellow("divLaboInter") existe bien mais c'est getFellow("fwinLaboInter") qui pose problème
    public FicheLaboInter getFicheLaboInter(){
       return ((FicheLaboInter) this.self.getFellow("divLaboInter").getFellow("fwinLaboInter")
          .getAttributeOrFellow("fwinLaboInter$composer", true));
