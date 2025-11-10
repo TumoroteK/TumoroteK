@@ -610,7 +610,7 @@ public class FichePlateforme extends AbstractFicheCombineController
     */
    public void onClick$addAdminButton(){
       // max 3 admins par plateforme
-      if(administrateurs.size() < 3){
+      if(administrateurs.size() < 5){
          if(selectedUser == null){
             throw new WrongValueException(usersBox, Labels.getLabel("plateforme.add.null.user.error"));
          }

@@ -19,6 +19,7 @@
 - YouTrack [TK-435](https://tumorotek.myjetbrains.com/youtrack/issue/TK-435) : ${administration} Paramètres : gestion de paramètres fonctionnels plateforme dépendants
 - YouTrack [TK-730](https://tumorotek.myjetbrains.com/youtrack/issue/TK-730) : ${administration} Comptes : permettre de rechercher sur une partie du login
 - YouTrack [TK-731](https://tumorotek.myjetbrains.com/youtrack/issue/TK-731) : ${administration} Comptes : afficher le nombre d'éléments dans la liste
+- YouTrack [TK-790](https://tumorotek.myjetbrains.com/youtrack/issue/TK-790) : ${administration} Augmenter la limite max du nombre d'utilisateurs pour passer de 3 à 5
 - YouTrack [TK-340](https://tumorotek.myjetbrains.com/youtrack/issue/TK-340) : Pouvoir passer d'une plateforme à l'autre sans se déconnecter / reconnecter
 - YouTrack [TK-526](https://tumorotek.myjetbrains.com/youtrack/issue/TK-526) : Afficher en haut des écrans, le nom de la plateforme en cours
 - YouTrack [TK-430](https://tumorotek.myjetbrains.com/youtrack/issue/TK-430) : Fiche ${prelevement} : affichage des dérivés des échantillons
