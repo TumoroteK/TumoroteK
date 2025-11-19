@@ -1161,14 +1161,26 @@ public class PrelevementManagerImpl implements PrelevementManager
 
       }
       if(laboInters != null){
+         // /!\ pour le traitement de création  / mise à jour du prélèvement, la liste laboInters ne doit
+         // pas être ajoutée à l'objet prelevement. En effet, il a été décidé que la création / mise à jour des laboInters (et le lien
+         // avec le prelevement) sera implémentée dans la transaction et non laissée à la main d'hibernate (ça permet de contrôler la 
+         // grappe d'objets traités). 
+         // Par contre, le validateur laboInterValidator fait des contrôles sur l'enchainement des labo intermédiaires (vérification
+         // qu'il n'y a pas de chevauchement entre les dates d'arrivée et de départ de chaque site)
+         // Or ce validateur est utilisé via la méthode BeanValidator.validateObject() qui n'a accès qu'à l'objet labo (et au prélèvement rattaché). 
+         // Par conséquent, il a été décidé d'ajouter les laboInters au prélèvement mais UNIQUEMENT le temps de la validation.
+         // A noter que c'est une erreur de conception d'utiliser BeanValidator pour cette validation puisque comme son nom l'indique,
+         // il n'est censé valider que des éléments qui sont intrinséquement liés à l'objet métier associé.
+         // Il aurait été plus pertinent de déporter le contrôle de l'enchainement des laboInters dans une autre méthode 
+         // de validation ne s'appuyant pas sur BeanValidator. 
          prelevement.setLaboInters(new HashSet<>(laboInters));
-         // prelevement.setLaboInters(new HashSet<LaboInter>());
          for(int i = 0; i < laboInters.size(); i++){
             final LaboInter labo = laboInters.get(i);
             labo.setPrelevement(prelevement);
-            BeanValidator.validateObject(labo, new Validator[] {laboInterValidator});
+            BeanValidator.validateObject(labo, new Validator[] {laboInterValidator});//labInterValidator a besoin de la liste des labo pour valider l'enchainement de chacun
             // prelevement.getLaboInters().add(labo);
          }
+         // Suppression de l'ajout des laboInters fait précédemment (cf commentaire ci-dessus)
          prelevement.setLaboInters(new HashSet<LaboInter>());
       }
 
