@@ -1,5 +1,9 @@
 #### Notes
 
+##### Version 2.3.0.15-fix794 - Publiée le 02/12/2025 (pour l'ICO)
+###### Correction du bug :
+- YouTrack [TK-794](https://tumorotek.myjetbrains.com/youtrack/issue/TK-794) : Gatsbi > Fiche Prélèvement en modification : le préleveur est remis à vide
+
 ##### Version 2.3.0.15 - Publiée le 07/04/2025
 ###### Corrections dans TK
 - YouTrack [TK-533](https://tumorotek.myjetbrains.com/youtrack/issue/TK-533) : Export <span class="badge badge-prelevement">Prélèvement</span> : pour le champ quantité du bloc "Arrivée au site de stockage" (page 2), l'unité n'est pas exportée
