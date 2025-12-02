@@ -496,7 +496,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
                selectedEtablissement = selectedService.getEtablissement();
             }
             if(collaborateurs.size() == 2){
-               selectedCollaborateur = allCollaborateurs.get(1);
+               selectedCollaborateur = collaborateurs.get(1);
             }else{
                if(!collaborateurs.contains(selectedCollaborateur)){
                   selectedCollaborateur = null;
