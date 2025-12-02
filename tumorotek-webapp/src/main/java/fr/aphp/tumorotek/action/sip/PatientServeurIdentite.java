@@ -299,7 +299,6 @@ public class PatientServeurIdentite implements Sip
     * Methode de connexion et d'accès à la base de données
     * du serveur d'identités des patients.
     * @param nip
-    * @throws ActionException
     */
    @Override
    public List<Patient> getPatientsServeurNip(final String nip){
@@ -319,7 +318,6 @@ public class PatientServeurIdentite implements Sip
     * Methode de connexion et d'accès à la base de
     * données du serveur d'identités des patients.
     * @param nom
-    * @throws ActionException
     */
    @Override
    public List<Patient> getPatientsServeurNom(final String nom){
@@ -331,7 +329,6 @@ public class PatientServeurIdentite implements Sip
     * Methode de connexion et d'accès à la base de
     * données du serveur d'identités des patients.
     * @param numDossier
-    * @throws ActionException
     */
    @Override
    public List<Patient> getPatientsServeurNumDossier(final String numDossier){
