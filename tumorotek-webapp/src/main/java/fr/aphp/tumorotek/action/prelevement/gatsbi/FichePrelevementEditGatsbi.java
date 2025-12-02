@@ -364,7 +364,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
             populateEtablissementsServicesAndCollaborateurs(listCollaborateurFiltree);
             filterOnPreleveurDefined = true;
          }
-         //on n'affiche pas l'aide à la saisie sur un filtre est défini sur les collaborateurs
+         //on n'affiche pas l'aide à la saisie si un filtre est défini sur les collaborateurs
          operateurAideSaisiePrel.setVisible(!filterOnPreleveurDefined);
       }
       else {
@@ -496,7 +496,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
                selectedEtablissement = selectedService.getEtablissement();
             }
             if(collaborateurs.size() == 2){
-               selectedCollaborateur = allCollaborateurs.get(1);
+               selectedCollaborateur = collaborateurs.get(1);
             }else{
                if(!collaborateurs.contains(selectedCollaborateur)){
                   selectedCollaborateur = null;
