@@ -42,6 +42,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.validation.BindException;
 import org.springframework.validation.Errors;
+import org.springframework.validation.ObjectError;
 import org.springframework.validation.Validator;
 
 import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
@@ -82,7 +83,12 @@ public final class BeanValidator
       }
 
       if(errors.size() > 0){
-         log.debug(errors.toString());
+         for(Errors anErrors : errors) {
+            List<ObjectError> listObjectError = anErrors.getAllErrors();
+            for(ObjectError objectError : listObjectError) {
+               log.debug("Détail erreur de validation : {}", objectError.toString());
+            }
+         }
          log.warn("Validation error(s) found, throwing ValidationException.");
          throw new ValidationException(errors);
       }
