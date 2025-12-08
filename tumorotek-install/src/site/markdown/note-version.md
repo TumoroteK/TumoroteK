@@ -1,6 +1,6 @@
 #### Notes
 
-##### Version 2.3.1.0 - Publiée le 03/11/2025
+##### Version 2.3.1.0 - Publiée le 02/12/2025
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
 - YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
@@ -19,6 +19,7 @@
 - YouTrack [TK-435](https://tumorotek.myjetbrains.com/youtrack/issue/TK-435) : <span class="badge badge-administration">Administration</span> Paramètres : gestion de paramètres fonctionnels plateforme dépendants
 - YouTrack [TK-730](https://tumorotek.myjetbrains.com/youtrack/issue/TK-730) : <span class="badge badge-administration">Administration</span> Comptes : permettre de rechercher sur une partie du login
 - YouTrack [TK-731](https://tumorotek.myjetbrains.com/youtrack/issue/TK-731) : <span class="badge badge-administration">Administration</span> Comptes : afficher le nombre d'éléments dans la liste
+- YouTrack [TK-790](https://tumorotek.myjetbrains.com/youtrack/issue/TK-790) : <span class="badge badge-administration">Administration</span> Augmenter la limite max du nombre d'utilisateurs pour passer de 3 à 5
 - YouTrack [TK-340](https://tumorotek.myjetbrains.com/youtrack/issue/TK-340) : Pouvoir passer d'une plateforme à l'autre sans se déconnecter / reconnecter
 - YouTrack [TK-526](https://tumorotek.myjetbrains.com/youtrack/issue/TK-526) : Afficher en haut des écrans, le nom de la plateforme en cours
 - YouTrack [TK-430](https://tumorotek.myjetbrains.com/youtrack/issue/TK-430) : Fiche <span class="badge badge-prelevement">Prélèvement</span> : affichage des dérivés des échantillons
@@ -38,6 +39,9 @@
 - YouTrack [TK-474](https://tumorotek.myjetbrains.com/youtrack/issue/TK-474) : Création d'un <span class="badge badge-prelevement">Prélèvement</span> : la modification du code prélèvement après utilisation du bouton "Retour" n'est pas appliquée sur les écrans des étape 2 (site inter) et étape 3 (saisie échantillon)
 - YouTrack [TK-449](https://tumorotek.myjetbrains.com/youtrack/issue/TK-449) : Fiche <span class="badge badge-prelevement">Prélèvement</span> en collection sérologie : affichage stérilité du site intermédiaire non formaté
 - YouTrack [TK-748](https://tumorotek.myjetbrains.com/youtrack/issue/TK-748) : Fiche <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > problème lors de la désactivation d'un collaborateur défini dans les thesaurus des contextes
+- YouTrack [TK-794](https://tumorotek.myjetbrains.com/youtrack/issue/TK-794) : Modification <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > le préleveur est remis à vide
+- YouTrack [TK-787](https://tumorotek.myjetbrains.com/youtrack/issue/TK-787) : Modification <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > message d'erreur lors de la validation de la modification des échantillons dans le cas où il n'y a pas l'écran des sites intermédiaires (aucun champ visible)
+- YouTrack [TK-788](https://tumorotek.myjetbrains.com/youtrack/issue/TK-788) : Modification <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > message d'erreur lors de l'annulation de la modification des échantillons dans le cas où il n'y a pas l'écran des sites intermédiaires (aucun champ visible)
 - YouTrack [TK-427](https://tumorotek.myjetbrains.com/youtrack/issue/TK-427) : <span class="badge badge-echantillon">Echantillon</span> Mettre à jour le délai de congélation des échantillons lorsque la date de prélèvement est renseignée (après la création des échantillons) ou modifiée
 - YouTrack [TK-309](https://tumorotek.myjetbrains.com/youtrack/issue/TK-309) : <span class="badge badge-echantillon">Echantillon</span> Problème de renommage du code
 - YouTrack [TK-621](https://tumorotek.myjetbrains.com/youtrack/issue/TK-621) : <span class="badge badge-echantillon">Echantillon</span> Message d'erreur lors de l'impression de la fiche INCA pour un échantillon sans prélèvement
