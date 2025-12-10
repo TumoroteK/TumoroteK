@@ -1,6 +1,6 @@
 #### Notes
 
-##### Version 2.3.1.0 - Publiée le 02/12/2025
+##### Version 2.3.1.0 - Publiée le 10/12/2025
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
 - YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
@@ -52,6 +52,7 @@
 - YouTrack [TK-429](https://tumorotek.myjetbrains.com/youtrack/issue/TK-429) : Liste des ${produit-derive} : recherche rapide "les 30 derniers" ne fait rien
 - YouTrack [TK-531](https://tumorotek.myjetbrains.com/youtrack/issue/TK-531) : ${cession} En mode modification, si l'utilisateur va dans le champ numéro, un message intempestif de doublon apparaît et bloque la validation
 - YouTrack [TK-463](https://tumorotek.myjetbrains.com/youtrack/issue/TK-463) : ${cession} Impression : retirer le nom du patient dans les champs à imprimer par défaut
+- YouTrack [TK-795](https://tumorotek.myjetbrains.com/youtrack/issue/TK-795) : ${export} de ${cession} : message d'erreur si le numéro d'au moins une cession de l'export fait plus de 50 caractères
 - YouTrack [TK-421](https://tumorotek.myjetbrains.com/youtrack/issue/TK-421) : ${stockage} Au niveau du nom des conteneurs partagés, ajouter le nom de la plateforme d'appartenance 
 - YouTrack [TK-369](https://tumorotek.myjetbrains.com/youtrack/issue/TK-369) : ${stockage} Déplacement échantillon : fiche d'impression affiche 2 fois la boîte cible
 - YouTrack [TK-771](https://tumorotek.myjetbrains.com/youtrack/issue/TK-771) : ${stockage} et ${administration} Impossible de supprimer le partage d'un conteneur

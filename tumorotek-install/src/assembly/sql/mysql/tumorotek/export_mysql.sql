@@ -1307,7 +1307,7 @@ CREATE PROCEDURE `create_tmp_cession_table`()
     CREATE TEMPORARY TABLE TMP_CESSION_EXPORT (
       CESSION_ID         int(10),
       BANQUE             varchar(200),
-      NUMERO             varchar(50),
+      NUMERO             varchar(100),
       CESSION_TYPE       varchar(200),
       ECHANTILLONS       varchar(1000),
       NB_ECHANTILLONS    int(6),
