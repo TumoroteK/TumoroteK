@@ -43,6 +43,13 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
 
+// Refactoring TK-797 :
+// Problème de conception : si cette classe est une factory, elle doit juste renvoyer le bon ResultProcessor
+// en fonction d'un paramètre (nom du logiciel)
+// => en attribut, elle ne doit pas contenir de viewHandler mais tous les resultProcessor qu'elle gère : il manque donc DaVinciResutProcessor()
+//    en méthode, elle ne doit pas contenir sendQuery() mais une méthode getResultProcessor(String nomLogiciel) (voire getResultProcessor(Emetteur emetteur) dont est issu le nom du logiciel)
+//    il faut alors revoir les appels à sendQuery() (fait par le front) : il doit appeler le ViewHandler et c'est lui dans sa méthode 
+//    queryView() qui appelle la factory pour aiguiller vers le bon traitement. 
 public class ViewHandlerFactoryImpl implements ViewHandlerFactory
 {
 

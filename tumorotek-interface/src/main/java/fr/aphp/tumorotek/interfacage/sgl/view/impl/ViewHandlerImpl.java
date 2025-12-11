@@ -65,6 +65,8 @@ public class ViewHandlerImpl implements ViewHandler
 
    private final Logger log = LoggerFactory.getLogger(SglHandler.class);
 
+   ///!\ les fichiers de configuration de l'accès SGL par requêtage direct sont dans le répertoire camel alors que ce type d'interfaçage ne s'appuie
+   //pas sur camel... cela peut porter à confusion !
    private String camelConfigLocation;
 
    public void setCamelConfigLocation(final String _c){
