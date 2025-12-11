@@ -35,6 +35,14 @@
  **/
 package fr.aphp.tumorotek.action.sip;
 
+//Refactoring TK-796
+//Erreur de conception : une Factory gère l'instanciation (voire la mise à disposition) d'objets généralement implémentant une même interface
+//permettant d'avoir des comportements différents avec un même code sans faire de if (principe du polymorphisme)
+//Or ici, l'interface Sip n'a qu'une seule implémentation PatientServeurIdentite (il y a d'ailleurs sans doute une confusion dans le sens de l'acronyme
+//SIP qui pour l'interface semble être le type d'interfaçage avec le système de gestion de l'identité patient (qui peut être de différents types : message, query, ...)
+//et pour l'implémentation  correspond au serveur d'identité patient lui même ...)
+//Et les appelants s'appuient sur des if (en plus de ceux définis dans la Factory qui devraient être les seuls)
+
 /**
  *
  * @author teamtumo v1.
