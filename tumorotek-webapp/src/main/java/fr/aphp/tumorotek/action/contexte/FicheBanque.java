@@ -113,6 +113,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
@@ -121,6 +122,7 @@ import fr.aphp.tumorotek.model.systeme.CouleurEntiteType;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -1090,8 +1092,16 @@ public class FicheBanque extends AbstractFicheCombineController
 
       // init des contextes
       if(contextes.isEmpty()){
+         //Ajout ne 1ere position d'une "ligne blanche dans la liste déroulante"
          contextes.add(new Contexte());
-         contextes.addAll(ManagerLocator.getContexteManager().findByOrderManager());
+         //récupération des contextes à afficher : si Gatsbi est présent dans la table (à partir de la version 2.3.0)
+         //on ne l'affiche que si le module Gatsbi est bien installé
+         List<Contexte> listContexteToAdd = ManagerLocator.getContexteManager().findByOrderManager();
+         boolean gatsbiInstalled = (TkParam.GATSBI_INSTALLATION.getValue() != null && Boolean.parseBoolean(TkParam.GATSBI_INSTALLATION.getValue()));
+         if(!gatsbiInstalled) {
+            listContexteToAdd.removeIf(contexte -> EContexte.GATSBI.getNom().equals(contexte.getNom()));
+         }
+         contextes.addAll(listContexteToAdd);
       }
 
       // init des collaborateurs
