@@ -415,7 +415,7 @@
 							
 							<listbox id="couleurEchanBox"  mold="select" rows="1"
 								itemRenderer="@{fwinBanque$composer.couleurRenderer}"
-								visible="false" hflex="min">
+								visible="false" >
 								<listitem self="@{each='col'}" value="@{col}" />
 							</listbox>
 						</div>

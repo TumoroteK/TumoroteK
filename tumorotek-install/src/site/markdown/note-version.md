@@ -1,6 +1,6 @@
 #### Notes
 
-##### Version 2.3.1.0 - Publiée le 10/12/2025
+##### Version 2.3.1.0 - Publiée le 18/12/2025
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
 - YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
@@ -60,6 +60,7 @@
 - YouTrack [TK-440](https://tumorotek.myjetbrains.com/youtrack/issue/TK-440) : <span class="badge badge-administration">Administration</span> Fusion de collaborateur - plantage aléatoire
 - YouTrack [TK-635](https://tumorotek.myjetbrains.com/youtrack/issue/TK-635) : <span class="badge badge-administration">Administration</span> Impression Fiche Collection > liste des conteneurs : ajouter la colonne plateforme si au moins un conteneur est partagé
 - YouTrack [TK-627](https://tumorotek.myjetbrains.com/youtrack/issue/TK-627) : <span class="badge badge-administration">Administration</span> Collections : ajouter un tri sur toutes les entêtes de colonne
+- YouTrack [TK-800](https://tumorotek.myjetbrains.com/youtrack/issue/TK-800) : <span class="badge badge-administration">Administration</span> Fiche Collection : l'assignation d'une couleur pour les échantillons n'est pas possible
 - YouTrack [TK-625](https://tumorotek.myjetbrains.com/youtrack/issue/TK-625) : <span class="badge badge-administration">Administration</span> Impression > sélection d'un modèle existant : les blocs apparaissent en double
 - YouTrack [TK-460](https://tumorotek.myjetbrains.com/youtrack/issue/TK-460) : <span class="badge badge-statistiques">Statistiques</span> : plantage lors du tri sur le résultat d'un indicateur
 
