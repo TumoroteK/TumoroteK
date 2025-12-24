@@ -588,10 +588,10 @@
 
 					<!-- Origin: Prelevement -->
 					<row spans="4" visible="@{fwinPrelevementStaticSero$composer.isDerivesFromPrlvmntFound}">
-						<vbox >
-							<vbox >
+						<vbox width="100%">
+							<vbox width="100%">
 								<label value="@{fwinPrelevementStaticSero$composer.derivesFromPrlvmntHeader}" sclass="formSubTitle" />
-								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;" />
+								<image width="100%" src="/images/pixelble.gif" style="background-repeat: repeat-x;" />
 							</vbox>
 
 							<vbox align="center" hflex="1" vflex="1">
@@ -640,11 +640,11 @@
 					<!-- Origin: Echantillons -->
 
 					<row spans="4" visible="@{fwinPrelevementStaticSero$composer.isDerivesFromEchantillonsFound}">
-						<vbox >
+						<vbox width="100%">
 
-							<vbox >
+							<vbox width="100%">
 								<label value="@{fwinPrelevementStaticSero$composer.derivesFromEchantHeader}" sclass="formSubTitle" />
-								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;" />
+								<image width="100%" src="/images/pixelble.gif" style="background-repeat: repeat-x;" />
 							</vbox>
 
 							<vbox align="center" hflex="1" vflex="1">
@@ -664,17 +664,15 @@
 								<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
 								<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
 								<column label="${c:l('prodDerive.code.parent')}" visible="true"/>
-								<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
+								<column label="${c:l('Champ.ProdDerive.DateStock')}"/>
 								<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-								<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-								<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
+								<column label="${c:l('Champ.ProdDerive.Volume')}" width="100px"/>
+								<column label="${c:l('Champ.ProdDerive.Conc')}" width="100px" visible="false"/>
+								<column label="${c:l('Champ.ProdDerive.Quantite')}" width="100px"/>
+								<column label="${c:l('Champ.ProdDerive.ObjetStatut')}" width="100px"/>
 								<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-								<column label="${c:l('derives.nb')}" width="100px"
-									    visible="false"/>
-								<column label="${c:l('cession.nb')}" width="100px"
-									    visible="false"/>
+								<column label="${c:l('derives.nb')}" visible="false"/>
+								<column label="${c:l('cession.nb')}" visible="false"/>
 							</columns>
 									<rows>
 										<row self="@{each='currDerive'}" value="currDerive"/>
@@ -692,10 +690,10 @@
 
 					<!--        Origin: Derives-->
 					<row spans="4" visible="@{fwinPrelevementStaticSero$composer.isDerivesFromDerivesFound}">
-						<vbox >
-							<vbox >
+						<vbox width="100%">
+							<vbox width="100%">
 								<label value="@{fwinPrelevementStaticSero$composer.derivesFromDerivesHeader}" sclass="formSubTitle" />
-								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;" />
+								<image width="100%" src="/images/pixelble.gif" style="background-repeat: repeat-x;" />
 							</vbox>
 
 							<vbox align="center" hflex="1" vflex="1">
@@ -715,17 +713,15 @@
 										<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
 										<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
 										<column label="${c:l('prodDerive.code.parent')}" visible="true"/>
-										<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
+										<column label="${c:l('Champ.ProdDerive.DateStock')}" />
 										<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-										<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-										<column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-										<column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-										<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
+										<column label="${c:l('Champ.ProdDerive.Volume')}" width="100px"/>
+										<column label="${c:l('Champ.ProdDerive.Conc')}" width="100px" visible="false"/>
+										<column label="${c:l('Champ.ProdDerive.Quantite')}" width="100px"/>
+										<column label="${c:l('Champ.ProdDerive.ObjetStatut')}" width="100px"/>
 										<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-										<column label="${c:l('derives.nb')}" width="100px"
-									visible="false"/>
-										<column label="${c:l('cession.nb')}" width="100px"
-									visible="false"/>
+										<column label="${c:l('derives.nb')}" visible="false"/>
+										<column label="${c:l('cession.nb')}" visible="false"/>
 							</columns>
 							<rows>
 								<row self="@{each='currDerive'}" value="currDerive"/>
