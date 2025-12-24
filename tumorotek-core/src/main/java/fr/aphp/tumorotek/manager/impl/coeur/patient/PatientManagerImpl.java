@@ -274,6 +274,9 @@ public class PatientManagerImpl implements PatientManager
 
             }
 
+            //Après la création / mise à jour du patient, passage du tag newIdenti
+            patient.setNewIdentifiantAdded(false);
+            
             CreateOrUpdateUtilities.createAssociateOperation(patient, operationManager, oType, utilisateur);
 
             //////////////////// CHT : ces appels sont surprenant vu que ces relations de Patient sont de type "CASCADE.MERGE" a minima ...

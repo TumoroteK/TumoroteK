@@ -628,4 +628,10 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       return newIdentifiantAdded;
    }
 
+   //à utiliser quand la notion de "new" a été prise en compte dans le cas où le patient
+   //à un cycle de vie long (transmission à prélèvement par exemple - car de l'import)
+   @Transient
+   public void setNewIdentifiantAdded(boolean newIdentifiantAdded){
+      this.newIdentifiantAdded = newIdentifiantAdded;
+   }
 }
