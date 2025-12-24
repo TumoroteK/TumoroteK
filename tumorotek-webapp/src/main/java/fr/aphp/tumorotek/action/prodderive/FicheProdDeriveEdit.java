@@ -623,9 +623,11 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       //exception "failed to lazily initialize a collection of role : ...Patient.maladies non session our session was closed." si on ne récupère pas ces maladies avant 
       //d'où l'ajout des 2 lignes ci-dessous :
       //A noter que dans le cas du ticket TK-803, une analyse de tous les appels de PrelevementManagerImpl.checkRequiredObjectsAndValidate() a amené à sécuriser en catchant LazyInitializationException
-      //ces 2 lignes ne sont donc plus indispensables mais c'est plus propre d'éviter de lancer une LazyInitializationException
-      List<Maladie> listMaladie = ManagerLocator.getMaladieManager().findAllByPatientManager(maladie.getPatient());
-      maladie.getPatient().setMaladies(new HashSet<Maladie>(listMaladie));
+      //ces 4 lignes ne sont donc plus indispensables mais c'est plus propre d'éviter de lancer une LazyInitializationException
+      if(maladie != null) {
+         List<Maladie> listMaladie = ManagerLocator.getMaladieManager().findAllByPatientManager(maladie.getPatient());
+         maladie.getPatient().setMaladies(new HashSet<Maladie>(listMaladie));
+      }
       ManagerLocator.getPrelevementManager().updateObjectSansGestionImpactSurDelaiCongelManager(((Prelevement) getParentObject()),
          ((Prelevement) getParentObject()).getBanque(), ((Prelevement) getParentObject()).getNature(), maladie,
          ((Prelevement) getParentObject()).getConsentType(), ((Prelevement) getParentObject()).getPreleveur(),
