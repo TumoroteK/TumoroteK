@@ -1141,7 +1141,11 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
          }else if(ex instanceof WrongValueException){
             throw (WrongValueException)ex;
          }else if(ex.getCause() != null){
-            return handleExceptionMessage((RuntimeException) ex.getCause());
+            if(ex.getCause() instanceof RuntimeException) {
+               return handleExceptionMessage((RuntimeException) ex.getCause());
+            }
+            Throwable cause = ex.getCause();
+            return cause.getClass().getSimpleName() + " : " + cause.getMessage();
          }else{
             message = Labels.getLabel(ex.getMessage());
          }
