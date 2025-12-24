@@ -51,6 +51,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.TypedQuery;
 
+import org.hibernate.LazyInitializationException;
 import org.hibernate.collection.PersistentSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -1124,13 +1125,25 @@ public class PrelevementManagerImpl implements PrelevementManager
          
          Patient patient = maladie.getPatient();
          // @since gatsbi
-         //TG-255 et TK-711
-         //les maladies existantes et les visites à créer ont été mises dans le patient pour les transporter "facilement" jusqu'au back.
-         //Mais après récupération, il vaut mieux les supprimer du patient puisqu'elles sont gérées à part par une méthode spécifique qui gère également operation
-         //A noter que le fait qu'il y ait un cascadeType MERGE entre Patient et ses Maladies est incohérent avec les méthodes définies dans les managers : ceci pose problème. 
+         //TG-255, TK-711 et TK-803
+         //les maladies existantes et les visites à créer ont été mises dans le patient pour les transporter "facilement" jusqu'au back. Mais c'est une erreur de conception
+         //de devoir aller chercher des éléments de 2e niveau (les maladies du patient de la maladie) quand le chargement de ce 2e niveau est en lazy car à cette étape du code
+         //l'objet est détaché de la base de données donc si les maladies n'ont pas été settées, on a une LazyInitializationException.
+         //Or cette méthode est appelée dans de nombreux cas d'utilisation pour lesquels les maladies du patient ne sont pas settés. Après avoir essayé de corriger chaque cas TK-711, TK-803
+         //décision de privilégier le non blocage à une éventuelle mauvaise gestion des visites Gatsbi en catchant la LazyInitializationException qui serait lancée : normalement, ces cas ne doivent pas correspondre
+         //à un cas d'utilisation gérant les visites... (fait dans le cadre du ticket TK-803)
+         //Par ailleurs, après récupération, il vaut mieux supprimer les maladies contenues dans le patient puisqu'elles sont gérées à part par une méthode spécifique qui gère également la table 
+         //OPERATION. A noter que le fait qu'il y ait un cascadeType MERGE entre Patient et ses Maladies est incohérent avec les méthodes définies dans les managers : ceci pose problème. 
          //Il faudrait supprimer ce cascade mais il est difficile de sécuriser complètement cette opération ....
-         List<Maladie> maladiesExistantesOuVisites =  new ArrayList<Maladie>(patient.getMaladies());
-         patient.getMaladies().clear();
+         List<Maladie> maladiesExistantesOuVisites =  new ArrayList<Maladie>();
+         try {
+            maladiesExistantesOuVisites.addAll(patient.getMaladies());
+            patient.getMaladies().clear();
+         }
+         catch(LazyInitializationException lazyInitializationException) {
+            log.warn("PrelevementManagerImpl.checkRequiredObjectsAndValidate() : LazyInitializationException lancée lors de la récupération des maladies du patient. Catch mis en oeuvre pour aller les chercher en base");
+            maladiesExistantesOuVisites.addAll(maladieManager.findAllByPatientManager(patient));
+         }
          
          // creation / maj du patient
          if(patient.getPatientId() == null){               

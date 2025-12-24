@@ -618,6 +618,14 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
       // Update du prlvt
       final Maladie maladie = ((Prelevement) getParentObject()).getMaladie();
+      //TK-803 : updateObjectSansGestionImpactSurDelaiCongelManager() appellera PrelevementManagerImpl.checkRequiredObjectsAndValidate() qui ira rechercher toutes les maladies du patient 
+      //rattaché à la maladie courante (depuis Gatsbi et la récupération des visites). Or l'objet patient est détaché de la bdd à ce moment-là donc on a une est fermée donc 
+      //exception "failed to lazily initialize a collection of role : ...Patient.maladies non session our session was closed." si on ne récupère pas ces maladies avant 
+      //d'où l'ajout des 2 lignes ci-dessous :
+      //A noter que dans le cas du ticket TK-803, une analyse de tous les appels de PrelevementManagerImpl.checkRequiredObjectsAndValidate() a amené à sécuriser en catchant LazyInitializationException
+      //ces 2 lignes ne sont donc plus indispensables mais c'est plus propre d'éviter de lancer une LazyInitializationException
+      List<Maladie> listMaladie = ManagerLocator.getMaladieManager().findAllByPatientManager(maladie.getPatient());
+      maladie.getPatient().setMaladies(new HashSet<Maladie>(listMaladie));
       ManagerLocator.getPrelevementManager().updateObjectSansGestionImpactSurDelaiCongelManager(((Prelevement) getParentObject()),
          ((Prelevement) getParentObject()).getBanque(), ((Prelevement) getParentObject()).getNature(), maladie,
          ((Prelevement) getParentObject()).getConsentType(), ((Prelevement) getParentObject()).getPreleveur(),

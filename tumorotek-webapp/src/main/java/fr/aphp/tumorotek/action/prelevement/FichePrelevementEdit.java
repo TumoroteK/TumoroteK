@@ -993,7 +993,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().getRisques().clear();
          getObject().getRisques().addAll(findSelectedRisques());
 
-         //Update de l'objet
+         // Update de l'objet
+         // /!\ de maladie on va chercher à récupérer les maladies du patient associé => cas qui doit pas dans le catch de LazyInitializationException 
+         // dans PrelevementManagerImpl.checkRequiredObjectsAndValidate() - cf commentaire sur ticket TK-803)
          ManagerLocator.getPrelevementManager().updateObjectManager(prelevement,
             GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), selectedNature, maladie,
             selectedConsentType, selectedCollaborateur, selectedService, selectedMode, selectedConditType, selectedConditMilieu,

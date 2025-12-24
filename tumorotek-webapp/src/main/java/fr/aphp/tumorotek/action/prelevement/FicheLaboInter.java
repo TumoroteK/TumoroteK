@@ -734,7 +734,7 @@ public class FicheLaboInter extends AbstractFicheEditController
          ManagerLocator.getLaboInterManager().removeObjectManager(lab);
       }
 
-      // update de l'objet
+      // update de l'objet (cas qui doit pas dans le catch de LazyInitializationException dans PrelevementManagerImpl.checkRequiredObjectsAndValidate() - cf commentaire sur ticket TK-803)  
       ManagerLocator.getPrelevementManager().updateObjectWithNonConformitesManager(prelevement,
          GatsbiController.enrichesBanqueWithEtudeContextes(prelevement.getBanque(), sessionScope), nature, maladie, consentType,
          preleveur, servicePreleveur, mode, conditType, conditMilieu, selectedTransporteur, selectedCollaborateur,

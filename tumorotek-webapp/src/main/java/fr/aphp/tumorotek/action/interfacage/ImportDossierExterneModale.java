@@ -407,6 +407,8 @@ public class ImportDossierExterneModale extends AbstractFicheCombineController
                   .findByChampAndObjetManager(prelevementAnnoValeurs.get(i).getChampAnnotation(), prelevement));
             }
 
+            // /!\ de maladie on va chercher à récupérer les maladies du patient associé => cas qui doit pas dans le catch de LazyInitializationException 
+            // dans PrelevementManagerImpl.checkRequiredObjectsAndValidate() - cf commentaire sur ticket TK-803)
             ManagerLocator.getPrelevementManager().updateObjectSansGestionImpactSurDelaiCongelManager(prelevement, prelevement.getBanque(),
                prelevement.getNature(), maladie, prelevement.getConsentType(), prelevement.getPreleveur(),
                prelevement.getServicePreleveur(), prelevement.getPrelevementType(), prelevement.getConditType(),
