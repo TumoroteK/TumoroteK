@@ -1302,8 +1302,6 @@ public class ImportManagerImpl implements ImportManager
             }
          }
          
-         ///////////////////: A REVOIR - la MODIFiCATIOB n'est pas gérée !!!!!!!!
-         
          // on regarde si le patient existe deja en base
          if(patientManager.findDoublonManager(patient).isPresent()){
 
@@ -1657,10 +1655,10 @@ public class ImportManagerImpl implements ImportManager
                      parent = patDuo.getSecondObj();
                   }
 
-                  // import modification - on ne passe jamais dans ce code car le front qui permettrait de valoriser isUpdate à true
-                  //n'a jamais été fait ....
-//TEMP !!
-//                  // import modification
+                  // import modification
+//21/05/2025 : ce code a été mis en commentaire car on ne passe jamais ici puisque l'import en modification (modèle avec isUpdate à true) n'est pas implémenté côté front
+//Lors de la mise en oeuvre de la modification des annotations par import (TK-538) - qui ne s'appuie pas sur cette classe, il avait alors été envisagé de supprimer le champ isUpdate de ImportTemplate
+//(la mise en commentaire était une 1ere étape) mais les impacts étant trop importants, ceci a été abandonné...                   
 //                  if(properties.getImportTemplate().getIsUpdate() && patDuo.getSecondObj() != null){
 //                     if(tkAnnotableDuoManager.mergeDuoObjectsManager(patDuo,
 //                        tkAnnotableDuoManager.compareObjectsDuoManager(patDuo,
@@ -1680,7 +1678,7 @@ public class ImportManagerImpl implements ImportManager
                      final Importation imp = new Importation();
                      imp.setTypeCode(EImportationType.CREATION.getCode());//on est forcément en création car le mode modification n'est pas implémenté côté front.... Par conséquent, à nettoyer côté back;
                      imp.setEntiteId(patDuo.getEntite().getEntiteId());
-                     imp.setIsUpdate(pat.getPatientId() != null);/////////////////////// A REVOIR !!
+                     imp.setIsUpdate(pat.getPatientId() != null);
 
                      patientManager.createOrUpdateObjectManager(pat, null, null, null, !toUpdate.isEmpty() ? toUpdate : null,
                         !toDelete.isEmpty() ? toDelete : null, null, null, utilisateur,
@@ -1708,8 +1706,11 @@ public class ImportManagerImpl implements ImportManager
                   }else{
                      parent = prlvtDuo.getSecondObj();
                   }
-//TEMP !!!
-                  // import modification
+
+                  // import modification 
+//21/05/2025 : ce code a été mis en commentaire car on ne passe jamais ici puisque l'import en modification (modèle avec isUpdate à true) n'est pas implémenté côté front
+//Lors de la mise en oeuvre de la modification des annotations par import (TK-538) - qui ne s'appuie pas sur cette classe, il avait alors été envisagé de supprimer le champ isUpdate de ImportTemplate
+//(la mise en commentaire était une 1ere étape) mais les impacts étant trop importants, ceci a été abandonné...   
 //                  if(properties.getImportTemplate().getIsUpdate() && prlvtDuo.getSecondObj() != null){
 //                     if(tkAnnotableDuoManager.mergeDuoObjectsManager(prlvtDuo,
 //                        tkAnnotableDuoManager.compareObjectsDuoManager(prlvtDuo,
@@ -1728,7 +1729,7 @@ public class ImportManagerImpl implements ImportManager
                      final Importation imp = new Importation();
                      imp.setTypeCode(EImportationType.CREATION.getCode());
                      imp.setEntiteId(prlvtDuo.getEntite().getEntiteId());
-                     imp.setIsUpdate(prlvt.getPrelevementId() != null);/////////////////////////////////
+                     imp.setIsUpdate(prlvt.getPrelevementId() != null);
 
                      // create
                      if(prlvt.getPrelevementId() == null){
