@@ -76,7 +76,7 @@
 				<div class="block-separator" />
 				<!-- Resume patient -->
 				<groupbox id="groupPatient">
-					<caption label="${c:l('bloc.prelevement.patient')}" />
+					<caption label="${c:l('bloc.prelevement.patient')}"/>
 					<div>
 						<div id="patientBlockDiv"><!-- Patient -->
 							<div id="patientBlockDivContainer" class="block-container">
@@ -253,7 +253,7 @@
 				<div class="block-separator" />
 				<!-- Transfert du site préleveur vers le site de stockage -->
 				<groupbox id="gridFormPrlvtComp">
-					<caption label="${c:l('bloc.prelevement.laboInter')}" />
+					<caption label="${c:l('bloc.prelevement.laboInter')}"/>
 					<!-- Départ du site préleveur -->
 					<div id="departBlockDiv">
 						<div class="block-title">
@@ -505,7 +505,7 @@
 				<div class="block-separator" />
 				<!-- Echantillons -->
 				<groupbox id="groupEchans">
-					<caption label="@{fwinPrelevementStatic$composer.echantillonsGroupHeader}" />
+					<caption label="@{fwinPrelevementStatic$composer.echantillonsGroupHeader}"/>
 					<div class="column-container" align="center" style="padding: 5px">
 						<grid id="echantillonsGrid"
 							fixedLayout="true" 
@@ -528,9 +528,9 @@
 
 							<!--				Derives-->
 				<groupbox  id="groupDerives">
-				<caption label="@{fwinPrelevementStatic$composer.totalProdDerivesGroupHeader}"  />
+				<caption label="@{fwinPrelevementStatic$composer.totalProdDerivesGroupHeader}"/>
 					<!--selectionner tous les derives-->
-					<div class="item item-wide">
+					<div width="100%">
 						<vbox align="center" hflex="1" vflex="1"  id="selectAllDerivesVbox">
 							<div class="block-title">
 								<div class="column-container">
@@ -539,17 +539,14 @@
 											height="24px"
 											image="/images/icones/selectAllProdDerives.png"
 											forward="onClick=onSelectAllDerives(all)"/>
-									<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
-
 								</div>
 							</div>
 						</vbox>
 					</div>
 
 				<!--                    Origin: Prelevement -->
-				<div visible="@{fwinPrelevementStatic$composer.isDerivesFromPrlvmntFound}">
-					<div class="item item-wide">				
-						<vbox align="center" hflex="1" vflex="1">
+				<div width="100%" visible="@{fwinPrelevementStatic$composer.isDerivesFromPrlvmntFound}">
+						<vbox align="left" hflex="1" vflex="1">
 							<div class="block-title">
 								<div class="column-container">
 									<label value="@{fwinPrelevementStatic$composer.derivesFromPrlvmntHeader}" sclass="formSubTitle"/>
@@ -572,45 +569,40 @@
 									<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
 									<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
 									<column label="${c:l('prodDerive.code.parent')}" visible="false"/>
-									<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
+									<column label="${c:l('Champ.ProdDerive.DateStock')}"/>
 									<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-									<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-									<column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-									<column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-									<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
+									<column label="${c:l('Champ.ProdDerive.Volume')}" width="100px"/>
+									<column label="${c:l('Champ.ProdDerive.Conc')}" width="100px" visible="false"/>
+									<column label="${c:l('Champ.ProdDerive.Quantite')}" width="100px"/>
+									<column label="${c:l('Champ.ProdDerive.ObjetStatut')}" width="100px"/>
 									<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-									<column label="${c:l('derives.nb')}" width="100px"
-											visible="false"/>
-									<column label="${c:l('cession.nb')}" width="100px"
-											visible="false"/>
+									<column label="${c:l('derives.nb')}" visible="false"/>
+									<column label="${c:l('cession.nb')}" visible="false"/>
 								</columns>
 								<rows>
 									<row self="@{each='currDerive'}" value="currDerive"/>
 								</rows>
 							</grid>
-
-
-
-							<button sclass="buttonv2"
-									label="${c:l('general.selectAll')}"
-									height="24px"
-									image="/images/icones/selectall.png"
-									forward="onClick=onSelectAllFromPrlvmnt(all)"/>
+							<div width="100%" align="center">
+								<button sclass="buttonv2"
+										label="${c:l('general.selectAll')}"
+										height="24px"
+										image="/images/icones/selectall.png"
+										forward="onClick=onSelectAllFromPrlvmnt(all)"/>
+							</div>
 						</vbox>
-					</div>
 				</div>
 
-					<!--                    Origin: Echantillons -->
-					<div visible="@{fwinPrelevementStatic$composer.isDerivesFromEchantillonsFound}">
-					<div class="item item-wide">
-					<vbox align="center" hflex="1" vflex="1">
+				<!--                    Origin: Echantillons -->
+				<div width="100%" visible="@{fwinPrelevementStatic$composer.isDerivesFromEchantillonsFound}">
+					<vbox align="left" hflex="1" vflex="1">
 						<div class="block-title">
 							<div class="column-container">
 								<label value="@{fwinPrelevementStatic$composer.derivesFromEchantHeader}" sclass="formSubTitle"/>
 								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>
 						</div>
-					<grid
+						<grid
 							hflex="1"
 							fixedLayout="true"
 							sclass="gridListStyle"
@@ -618,7 +610,7 @@
 							sizedByContent="false"
 							model="@{fwinPrelevementStatic$composer.listDerivesFromEchantillons}"
 							rowRenderer="@{fwinPrelevementStatic$composer.prodDeriveRenderer}">
-						<columns menupopup="auto" sizable="true">
+							<columns menupopup="auto" sizable="true">
 							<column align="center" width="70px"/>
 							<column label="${c:l('general.code')}"/>
 							<column label="${c:l('Entite.Banque')}"
@@ -626,45 +618,40 @@
 							<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
 							<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
 							<column label="${c:l('prodDerive.code.parent')}" visible="true"/>
-							<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
+							<column label="${c:l('Champ.ProdDerive.DateStock')}"/>
 							<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-							<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-							<column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-							<column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-							<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
+							<column label="${c:l('Champ.ProdDerive.Volume')}" width="100px"/>
+							<column label="${c:l('Champ.ProdDerive.Conc')}" width="100px" visible="false"/>
+							<column label="${c:l('Champ.ProdDerive.Quantite')}" width="100px"/>
+							<column label="${c:l('Champ.ProdDerive.ObjetStatut')}" width="100px"/>
 							<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-							<column label="${c:l('derives.nb')}" width="100px"
-									visible="false"/>
-							<column label="${c:l('cession.nb')}" width="100px"
-									visible="false"/>
-						</columns>
-						<rows>
-							<row self="@{each='currDerive'}" value="currDerive"/>
-						</rows>
-					</grid>
-					<button   sclass="buttonv2"
-							  label="${c:l('general.selectAll')}"
-							  height="24px"
-							  image="/images/icones/selectall.png"
-							  forward="onClick=onSelectAllFromEchantillons(all)"/>
+							<column label="${c:l('derives.nb')}" visible="false"/>
+							<column label="${c:l('cession.nb')}" visible="false"/>
+							</columns>
+							<rows>
+								<row self="@{each='currDerive'}" value="currDerive"/>
+							</rows>
+						</grid>
+						<div width="100%" align="center">
+							<button   sclass="buttonv2"
+									  label="${c:l('general.selectAll')}"
+									  height="24px"
+									  image="/images/icones/selectall.png"
+									  forward="onClick=onSelectAllFromEchantillons(all)"/>
+						</div>
 					</vbox>
 				</div>
-			</div>
 
 					<!--                    Origin: Derives -->
-					<div visible="@{fwinPrelevementStatic$composer.isDerivesFromDerivesFound}">
-
-
-
-					<div class="item item-wide">
-					<vbox align="center" hflex="1" vflex="1">
+					<div width="100%" visible="@{fwinPrelevementStatic$composer.isDerivesFromDerivesFound}">
+					<vbox align="left" hflex="1" vflex="1">
 						<div class="block-title">
 							<div class="column-container">
 								<label value="@{fwinPrelevementStatic$composer.derivesFromDerivesHeader}" sclass="formSubTitle"/>
 								<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
 							</div>
 						</div>
-					<grid
+						<grid
 							hflex="1"
 							fixedLayout="true"
 							sclass="gridListStyle"
@@ -679,29 +666,28 @@
 									<column label="${c:l('Champ.ProdDerive.CodeLabo')}" visible="false"/>
 									<column label="${c:l('prodDerive.type.parent')}" visible="false"/>
 									<column label="${c:l('prodDerive.code.parent')}" visible="true"/>
-									<column label="${c:l('Champ.ProdDerive.DateStock')}" width="130px"/>
+									<column label="${c:l('Champ.ProdDerive.DateStock')}"/>
 									<column label="${c:l('Champ.ProdDerive.ProdType')}"/>
-									<column label="${c:l('Champ.ProdDerive.Volume')}" width="130px"/>
-									<column label="${c:l('Champ.ProdDerive.Conc')}" visible="false" width="130px"/>
-									<column label="${c:l('Champ.ProdDerive.Quantite')}" width="130px"/>
-									<column label="${c:l('Champ.ProdDerive.ObjetStatut')}"/>
+									<column label="${c:l('Champ.ProdDerive.Volume')}" width="100px"/>
+									<column label="${c:l('Champ.ProdDerive.Conc')}" width="100px" visible="false"/>
+									<column label="${c:l('Champ.ProdDerive.Quantite')}" width="100px"/>
+									<column label="${c:l('Champ.ProdDerive.ObjetStatut')}" width="100px"/>
 									<column label="${c:l('Champ.ProdDerive.Emplacement')}"/>
-									<column label="${c:l('derives.nb')}" width="100px"
-										visible="false"/>
-									<column label="${c:l('cession.nb')}" width="100px"
-										visible="false"/>
+									<column label="${c:l('derives.nb')}" visible="false"/>
+									<column label="${c:l('cession.nb')}" visible="false"/>
 								</columns>
 								<rows>
 									<row self="@{each='currDerive'}" value="currDerive"/>
 								</rows>
 							</grid>
-							<button   sclass="buttonv2"
-									  label="${c:l('general.selectAll')}"
-									  height="24px"
-									  image="/images/icones/selectall.png"
-									  forward="onClick=onSelectAllFromDerives(all)"/>
+							<div width="100%" align="center">
+								<button   sclass="buttonv2"
+										  label="${c:l('general.selectAll')}"
+										  height="24px"
+										  image="/images/icones/selectall.png"
+										  forward="onClick=onSelectAllFromDerives(all)"/>
+							</div>
 						</vbox>
-					</div>
 			</div>
 
 

@@ -128,7 +128,8 @@ div.item .modifmultiValue {
 div.main-container .z-groupbox-header {
 	color: #00227c;
 	font-weight: bold;
-	font-size: 12px;
+	font-family:Verdana, Arial, Helvetica, sans-serif;
+	font-size: 13px;
 }
 
 div.prelevements-only .z-groupbox-cnt{
