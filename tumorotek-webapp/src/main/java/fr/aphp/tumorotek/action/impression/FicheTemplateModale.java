@@ -371,6 +371,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 
       //TODO Pour l'instant création à la volée de modèle BLOC uniquement
       this.template.setType(ETemplateType.BLOC);
+      initNomFile();
       this.formatsRow.setVisible(true);
       this.enteteRow.setVisible(true);
       this.piedPageRow.setVisible(true);
@@ -382,6 +383,11 @@ public class FicheTemplateModale extends AbstractImpressionController
 
       this.groupClesChamps.setVisible(false);
       this.cleImpressionStaticGrid.setVisible(false);
+   }
+
+   public void initNomFile(){
+      nomFile = selectedEntite.getNom().toLowerCase() + ".pdf";
+      selectedFormat="PDF";
    }
 
    @Override
@@ -397,7 +403,7 @@ public class FicheTemplateModale extends AbstractImpressionController
          contenuStaticRow.setVisible(true);
          groupClesChamps.setVisible(false);
          cleImpressionStaticGrid.setVisible(false);
-         nomFile = selectedEntite.getNom().toLowerCase() + ".pdf";
+         initNomFile();
       }else if(ETemplateType.DOC == selectedTemplate.getType()){
          formatsRow.setVisible(false);
          enteteRow.setVisible(false);
@@ -491,8 +497,6 @@ public class FicheTemplateModale extends AbstractImpressionController
    public void setFieldsToUpperCase(){}
 
    public void onSelect$formatsBox(){
-      selectedFormat = formats.get(formatsBox.getSelectedIndex());
-
       if(nomFile.contains(".")){
          nomFile = nomFile.substring(0, nomFile.indexOf(".") + 1);
       }
@@ -520,8 +524,10 @@ public class FicheTemplateModale extends AbstractImpressionController
       templates.add(newOne);
       selectedTemplate = templates.get(0);
       rowHistorique.setVisible(canHistorique);
-      nomFile = selectedEntite.getNom().toLowerCase() + ".pdf";
 
+      formats.add("PDF");
+      formats.add("HTML");
+      
       if(selectedTemplate.getTemplateId() != null){
          setObject(selectedTemplate);
          switchToStaticMode();
@@ -529,10 +535,6 @@ public class FicheTemplateModale extends AbstractImpressionController
          switchToCreateMode();
          defineAllBlocImpressions();
       }
-
-      formats.add("PDF");
-      formats.add("HTML");
-      selectedFormat = formats.get(0);
 
       getBinder().loadComponent(self);
    }

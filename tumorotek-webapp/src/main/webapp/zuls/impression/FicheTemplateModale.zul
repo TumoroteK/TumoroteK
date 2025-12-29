@@ -62,7 +62,7 @@
 								<label value="*" sclass="requiredMark" />
 							</hbox>
 							<div>
-								<listbox id="formatsBox" mold="select" rows="1" model="@{fwinTemplateModale$composer.formats}">
+								<listbox id="formatsBox" mold="select" rows="1" model="@{fwinTemplateModale$composer.formats}" selectedItem="@{fwinTemplateModale$composer.selectedFormat}">
 									<listitem self="@{each='format'}" value="@{format}">
 										<listcell label="@{format}" />
 									</listitem>
