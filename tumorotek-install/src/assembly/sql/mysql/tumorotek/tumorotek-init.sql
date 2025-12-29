@@ -370,7 +370,9 @@ VALUES (1, 'bloc.prelevement.principal', 2, 1, 0),
        (24, 'bloc.patient.maladies', 1, 3, 1),
        (25, 'bloc.patient.prelevements', 1, 4, 1),
        (26, 'bloc.echantillon.retours', 3, 7, 0),
-       (27, 'bloc.prodDerive.retours', 8, 6, 0);
+       (27, 'bloc.prodDerive.retours', 8, 6, 0),
+       (28, 'bloc.prelevement.echantillons.prodDerives', 2, 7, 1),
+       (29, 'bloc.prelevement.allProdDerives.prodDerives', 2, 8, 1);       
 /*!40000 ALTER TABLE `BLOC_IMPRESSION`
   ENABLE KEYS */;
 UNLOCK TABLES;
@@ -1353,7 +1355,23 @@ VALUES (2, 2, 1),
        (233, 25, 10),
        (245, 13, 8),
        (245, 14, 8),
-       (249, 3, 11);
+       (249, 3, 11),
+       (79, 28, 1),
+       (94, 28, 2),
+       (86, 28, 3),
+       (78, 28, 4),
+       (84, 28, 5),
+       (91, 28, 6),
+       (81, 28, 7),
+       (87, 28, 8),
+       (79, 29, 1),
+       (94, 29, 2),
+       (86, 29, 3),
+       (78, 29, 4),
+       (84, 29, 5),
+       (91, 29, 6),
+       (81, 29, 7),
+       (87, 29, 8);       
 /*!40000 ALTER TABLE `CHAMP_ENTITE_BLOC`
   ENABLE KEYS */;
 UNLOCK TABLES;

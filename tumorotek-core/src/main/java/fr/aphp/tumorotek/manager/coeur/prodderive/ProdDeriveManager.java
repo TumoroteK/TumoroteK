@@ -233,6 +233,15 @@ public interface ProdDeriveManager
    List<ProdDerive> getProdDerivesManager(ProdDerive prodDerive);
 
    /**
+    * Recherche tous les produits dérivés dont les parents sont les prodDerives 
+    * passés en paramètre.
+    * @param prodDerives ProdDerives pour lesquels on recherche les
+    * produits dérivés enfants.
+    * @return List de ProdDerives.
+    */
+   List<ProdDerive> getAllProdDerivesManager(List<ProdDerive> prodDerives);
+   
+   /**
     * Recherche un emplacement dont le dérivé est 
     * passé en paramètre.
     * @param prodDerive ProdDerive pour lequel on recherche un

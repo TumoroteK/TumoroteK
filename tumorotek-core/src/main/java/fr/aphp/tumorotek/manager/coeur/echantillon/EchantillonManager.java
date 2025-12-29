@@ -247,6 +247,15 @@ public interface EchantillonManager
    List<ProdDerive> getProdDerivesManager(Echantillon echantillon);
 
    /**
+    * Recherche tous les produits dérivés dont les parents sont les échantillons 
+    * passés en paramètre.
+    * @param echantillons liste des échantillons dont on recherche des
+    * produits dérivés.
+    * @return List de ProdDerives.
+    */
+   List<ProdDerive> getAllProdDerivesManager(List<Echantillon> echantillons);
+   
+   /**
     * Recherche un emplacement dont l'échantillon est 
     * passé en paramètre.
     * @param echantillon Echantillon pour lequel on recherche un

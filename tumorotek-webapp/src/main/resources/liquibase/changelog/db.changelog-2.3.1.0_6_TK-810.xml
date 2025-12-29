@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+
+	<changeSet id="insertBLOC_IMPRESSION-28-TK-810" author="CH" runAlways="false" context="*">
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM BLOC_IMPRESSION
+                WHERE BLOC_IMPRESSION_ID = 28
+            </sqlCheck>
+        </preConditions>
+        <comment>Impression Fiche prélèvement : Gestion du nouveau bloc : dérivés des échantillons</comment>
+        <insert tableName="BLOC_IMPRESSION">
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="NOM" value="bloc.prelevement.echantillons.prodDerives"/>
+            <column name="ENTITE_ID" value="2"/>
+            <column name="ORDRE" value="7" />
+            <column name="IS_LISTE" value="1"/>
+        </insert>
+    </changeSet>
+	<changeSet id="insertBLOC_IMPRESSION-29-TK-810" author="CH" runAlways="false" context="*">
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM BLOC_IMPRESSION
+                WHERE BLOC_IMPRESSION_ID = 29
+            </sqlCheck>
+        </preConditions>
+        <comment>Impression Fiche prélèvement : Gestion du nouveau bloc : dérivés des dérivés</comment>     
+        <insert tableName="BLOC_IMPRESSION">
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="NOM" value="bloc.prelevement.allProdDerives.prodDerives"/>
+            <column name="ENTITE_ID" value="2"/>
+            <column name="ORDRE" value="8" />
+            <column name="IS_LISTE" value="1"/>
+        </insert>
+    </changeSet>
+	<changeSet id="insertCHAMP_ENTITE_BLOC-28-TK-810" author="CH" runAlways="false" context="*">
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE_BLOC
+                WHERE BLOC_IMPRESSION_ID = 28
+            </sqlCheck>
+        </preConditions>
+        <comment>Impression Fiche prélèvement : Gestion du nouveau bloc : dérivés des échantillons</comment>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="79"/>
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="ORDRE" value="1" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="94"/>
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="ORDRE" value="2" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="86"/>
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="ORDRE" value="3" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="78"/>
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="ORDRE" value="4" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="84"/>
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="ORDRE" value="5" />
+        </insert>
+		<insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="91"/>
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="ORDRE" value="6" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="81"/>
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="ORDRE" value="7" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="87"/>
+            <column name="BLOC_IMPRESSION_ID" value="28"/>
+            <column name="ORDRE" value="8" />
+        </insert>                
+    </changeSet>  
+
+	<changeSet id="insertCHAMP_ENTITE_BLOC-29-TK-810" author="CH" runAlways="false" context="*">
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE_BLOC
+                WHERE BLOC_IMPRESSION_ID = 29
+            </sqlCheck>
+        </preConditions>
+        <comment>Impression Fiche prélèvement : Gestion du nouveau bloc : dérivés des dérivés</comment>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="79"/>
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="ORDRE" value="1" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="94"/>
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="ORDRE" value="2" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="86"/>
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="ORDRE" value="3" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="78"/>
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="ORDRE" value="4" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="84"/>
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="ORDRE" value="5" />
+        </insert>
+		<insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="91"/>
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="ORDRE" value="6" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="81"/>
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="ORDRE" value="7" />
+        </insert>
+        <insert tableName="CHAMP_ENTITE_BLOC">
+            <column name="CHAMP_ENTITE_ID" value="87"/>
+            <column name="BLOC_IMPRESSION_ID" value="29"/>
+            <column name="ORDRE" value="8" />
+        </insert>                
+    </changeSet> 
+</databaseChangeLog>

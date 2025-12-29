@@ -100,7 +100,6 @@ import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.systeme.FichierManager;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
 import fr.aphp.tumorotek.manager.validation.coeur.echantillon.gatsbi.EchantillonGatsbiValidator;
-import fr.aphp.tumorotek.model.CodeIdPair;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.cession.CederObjet;
 import fr.aphp.tumorotek.model.cession.Retour;
@@ -125,8 +124,8 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
-import fr.aphp.tumorotek.utils.Utils;
 import fr.aphp.tumorotek.utils.TKDateUtils;
+import fr.aphp.tumorotek.utils.Utils;
 /**
  *
  * Implémentation du manager du bean de domaine Echantillon.
@@ -516,6 +515,19 @@ public class EchantillonManagerImpl implements EchantillonManager
       return new ArrayList<>();
    }
 
+   @Override
+   public List<ProdDerive> getAllProdDerivesManager(List<Echantillon> echantillons){
+      List<ProdDerive> allDerive = new ArrayList<ProdDerive>();
+      for (Echantillon echantillon: echantillons){
+         List<ProdDerive> listProdDerives = getProdDerivesManager(echantillon);
+         allDerive.addAll(listProdDerives);
+   
+      }
+      
+      return allDerive;
+   }
+   
+   
    @Override
    public Emplacement getEmplacementManager(Echantillon echantillon){
       if(echantillon != null){

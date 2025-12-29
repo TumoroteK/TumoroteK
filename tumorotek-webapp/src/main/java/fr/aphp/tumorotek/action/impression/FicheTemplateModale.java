@@ -94,6 +94,7 @@ import fr.aphp.tumorotek.manager.impl.xml.ListeElement;
 import fr.aphp.tumorotek.manager.impl.xml.Paragraphe;
 import fr.aphp.tumorotek.manager.impl.xml.SousParagraphe;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
+import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.cession.Cession;
 import fr.aphp.tumorotek.model.cession.Retour;
@@ -734,6 +735,11 @@ public class FicheTemplateModale extends AbstractImpressionController
     */
    public void createDocumentForPrelevement(){
       final Prelevement prelevement = (Prelevement) objectToPrint;
+      //les 3 listes ci-dessous sont utilisés par 2 blocs au moins. Comme la sélection des blocs à imprimer est 
+      //à la main de l'utilisateur, tous les blocs utilisant ces listes peuvent les initialiser si celles-ci sont null
+      Set<Echantillon> echantillons = null;
+      List<ProdDerive> prodDeriveFromPrel = null;
+      List<ProdDerive> prodDeriveFromEchantillons = null;
       for(int i = 0; i < blocImpressionsDecorated.size(); i++){
          if(blocImpressionsDecorated.get(i).getImprimer()){
             if(blocImpressionsDecorated.get(i).getBlocImpression() != null){
@@ -747,12 +753,34 @@ public class FicheTemplateModale extends AbstractImpressionController
                }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.prelevement.laboInter")){
                   createBlocLaboIntersPrelevement(prelevement);
                }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.prelevement.echantillons")){
-                  final Set<Echantillon> echantillons =
-                     ManagerLocator.getPrelevementManager().getEchantillonsManager(prelevement);
+                  if(echantillons == null) {
+                     echantillons = ManagerLocator.getPrelevementManager().getEchantillonsManager(prelevement);
+                  }
                   createBlocListeEchantillon(echantillons, blocImpressionsDecorated.get(i).getChampEntites());
                }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.prelevement.prodDerives")){
-                  createBlocListeProdDerive(ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement),
-                     blocImpressionsDecorated.get(i).getChampEntites());
+                  if(prodDeriveFromPrel == null) {
+                     prodDeriveFromPrel = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+                  }
+                  createBlocListeProdDerive(prodDeriveFromPrel, blocImpressionsDecorated.get(i).getChampEntites(), "bloc.prelevement.prodDerives");
+               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.prelevement.echantillons.prodDerives")){
+                  if(echantillons == null) {
+                     echantillons = ManagerLocator.getPrelevementManager().getEchantillonsManager(prelevement);
+                  }
+                  if(prodDeriveFromEchantillons == null) {
+                     prodDeriveFromEchantillons = ManagerLocator.getEchantillonManager().getAllProdDerivesManager(new ArrayList<Echantillon>(echantillons));
+                  }
+                  createBlocListeProdDerive(prodDeriveFromEchantillons, blocImpressionsDecorated.get(i).getChampEntites(), "bloc.prelevement.echantillons.prodDerives");
+               }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.prelevement.allProdDerives.prodDerives")){
+                  if(prodDeriveFromPrel == null) {
+                     prodDeriveFromPrel = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+                  }                  
+                  if(prodDeriveFromEchantillons == null) {
+                     prodDeriveFromEchantillons = ManagerLocator.getEchantillonManager().getAllProdDerivesManager(new ArrayList<Echantillon>(echantillons));
+                  }
+                  List<ProdDerive> allProdDeriveFromPrelOrEchantillons = new ArrayList<ProdDerive>(prodDeriveFromPrel);
+                  allProdDeriveFromPrelOrEchantillons.addAll(prodDeriveFromEchantillons);
+                  createBlocListeProdDerive(ManagerLocator.getProdDeriveManager().getAllProdDerivesManager(allProdDeriveFromPrelOrEchantillons),
+                     blocImpressionsDecorated.get(i).getChampEntites(), "bloc.prelevement.allProdDerives.prodDerives");
                }
             }else if(blocImpressionsDecorated.get(i).getTableAnnotation() != null){
                createBlocAnnotationForObject(prelevement, blocImpressionsDecorated.get(i).getTableAnnotation());
@@ -787,7 +815,7 @@ public class FicheTemplateModale extends AbstractImpressionController
                   createBlocComplementaireForEchantillon(echantillon);
                }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.echantillon.prodDerives")){
                   createBlocListeProdDerive(ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon),
-                     blocImpressionsDecorated.get(i).getChampEntites());
+                     blocImpressionsDecorated.get(i).getChampEntites(), "bloc.echantillon.prodDerives");
                }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.echantillon.cessions")){
                   createBlocListeCessions(
                      cedeObjFactory.decorateListe(ManagerLocator.getCederObjetManager().findByObjetManager(echantillon)),
@@ -823,7 +851,7 @@ public class FicheTemplateModale extends AbstractImpressionController
                   createBlocComplementaireForProdDerive(derive);
                }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.prodDerive.prodDerives")){
                   createBlocListeProdDerive(ManagerLocator.getProdDeriveManager().getProdDerivesManager(derive),
-                     blocImpressionsDecorated.get(i).getChampEntites());
+                     blocImpressionsDecorated.get(i).getChampEntites(), "bloc.prodDerive.prodDerives");
                }else if(blocImpressionsDecorated.get(i).getBlocImpression().getNom().equals("bloc.prodDerive.cessions")){
                   createBlocListeCessions(
                      cedeObjFactory.decorateListe(ManagerLocator.getCederObjetManager().findByObjetManager(derive)),
@@ -3051,33 +3079,44 @@ public class FicheTemplateModale extends AbstractImpressionController
    }
 
    /**
-    * Crée le bloc contenant une liste de dérivés.
+    * Crée le bloc contenant une liste de dérivés. Peut être utilisé dans différents contextes :
+    * sur la fiche prélèvement : dérivés du prélèvement, dérivés des échantillons du prélèvement, dérivés des dérivés liés au prélèvement
+    * sur la fiche échantillon : dérivés de l'échantillon
     * @param derives ProdDerives à imprimer.
     * @param champs Colonnes à imprimer.
+    * @param paragraphTitleKey clé du libellé internationalisé à utiliser pour le titre du bloc
+    * @param displayParent si vaut true ajoute une colonne pour afficher le code parent
     */
-   public void createBlocListeProdDerive(final List<ProdDerive> derives, final List<ChampEntite> champs){
+   public void createBlocListeProdDerive(final List<ProdDerive> derives, final List<ChampEntite> champs, 
+      final String paragraphTitleKey){
       // Entete
       final String[] listeEntete = new String[champs.size()];
       final ProdDeriveRowRenderer renderer = new ProdDeriveRowRenderer(false, false);
       for(int i = 0; i < champs.size(); i++){
-         final StringBuffer iProperty = new StringBuffer();
-         iProperty.append("Champ.");
-         iProperty.append(champs.get(i).getEntite().getNom());
-         iProperty.append(".");
-
-         String champOk = "";
-         // si le nom du champ finit par "Id", on le retire
-         if(champs.get(i).getNom().endsWith("Id")){
-            champOk = champs.get(i).getNom().substring(0, champs.get(i).getNom().length() - 2);
-         }else{
-            champOk = champs.get(i).getNom();
+         //TK-810 : cas spécifique du code parent qui est affiché sur la fiche prélèvement pour les dérivés issus de ses échantillons ou de ses
+         //dérivés. Celui-ci est associé au champ "TransformationId" :
+         if(champs.get(i).getNom().equals("TransformationId")){
+            listeEntete[i] = Labels.getLabel("prodDerive.code.parent");
          }
-         iProperty.append(champOk);
-         listeEntete[i] = Labels.getLabel(iProperty.toString());
+         else {
+            final StringBuffer iProperty = new StringBuffer();
+            iProperty.append("Champ.");
+            iProperty.append(champs.get(i).getEntite().getNom());
+            iProperty.append(".");
+
+            String champOk = "";
+            if(champs.get(i).getNom().endsWith("Id")){// si le nom du champ finit par "Id", on le retire
+               champOk = champs.get(i).getNom().substring(0, champs.get(i).getNom().length() - 2);
+            }else{
+               champOk = champs.get(i).getNom();
+            }
+            iProperty.append(champOk);
+            listeEntete[i] = Labels.getLabel(iProperty.toString());
+         }
       }
       final EnteteListe entetes = new EnteteListe(listeEntete);
 
-      // liste des échantillons
+      // liste des dérivés
       final LigneListe[] liste = new LigneListe[derives.size()];
       for(int i = 0; i < derives.size(); i++){
          final ProdDerive prod = derives.get(i);
@@ -3087,6 +3126,20 @@ public class FicheTemplateModale extends AbstractImpressionController
 
             if(champs.get(j).getNom().equals("Code")){
                val.append(prod.getCode());
+            }else if(champs.get(j).getNom().equals("TransformationId")){
+               Object parent = ManagerLocator.getProdDeriveManager().findParent(prod);
+               String codeParent = null;
+               if(parent != null) {
+                  //A noter que normalement on n'est pas dans ce cas-là car le parent n'est affiché que
+                  //lorsque le dérivé est issus d'un enfant de l'objet en cours d'impression...
+                  if(parent instanceof Prelevement) { 
+                     codeParent = ((Prelevement)parent).getCode();
+                  }
+                  else {
+                     codeParent = ((TKStockableObject)parent).getCode();
+                  }
+               }
+               val.append(codeParent == null ? "-" : codeParent);
             }else if(champs.get(j).getNom().equals("DateStock")){
                if(prod.getDateStock() != null){
                   val.append(ObjectTypesFormatters.dateRenderer2(prod.getDateStock()));
@@ -3129,7 +3182,7 @@ public class FicheTemplateModale extends AbstractImpressionController
 
       // ajout du paragraphe
       final StringBuffer titre = new StringBuffer();
-      titre.append(Labels.getLabel("bloc.prelevement.prodDerives"));
+      titre.append(Labels.getLabel(paragraphTitleKey));
       titre.append(" (");
       titre.append(derives.size());
       titre.append(")");

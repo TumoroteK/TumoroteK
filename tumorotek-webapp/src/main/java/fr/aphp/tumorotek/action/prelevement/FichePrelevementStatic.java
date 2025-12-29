@@ -458,7 +458,7 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
          // Init des dérivés
          if(canAccessDerives){
-            initiateDerivesLists();
+            initializeDerivesLists();
 
          }
       }
@@ -473,26 +473,19 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
    /**
     * Initialise les listes de dérivés en fonction de différentes sources (prélèvements, échantillons, dérivés).
     */
-      private void initiateDerivesLists() {
+   private void initializeDerivesLists() {
       // parent prelevement
       listDerivesFromPrelevement = ManagerLocator.getPrelevementManager().getProdDerivesManager(prelevement);
+      // dérivés dont les parents sont les echantillons du prélèvement
+      listDerivesFromEchantillons = ManagerLocator.getEchantillonManager().getAllProdDerivesManager(echantillons);
 
-      // parent echantillon
-      for (Echantillon echantillon: echantillons){
-         List<ProdDerive> listProdDerives = ManagerLocator.getEchantillonManager().getProdDerivesManager(echantillon);
-         listDerivesFromEchantillons.addAll(listProdDerives);
-
-      }
       // listDerivesFromPrelevement + listDerivesFromEchantillons
       List<ProdDerive> combinedListDerives = new ArrayList<>(listDerivesFromPrelevement);
       combinedListDerives.addAll(listDerivesFromEchantillons);
-
-      // parent derive: grandparent échantillon + grandparent prelevement
-      for (ProdDerive prodDerive : combinedListDerives) {
-         List<ProdDerive> listProdDerives = ManagerLocator.getProdDeriveManager().getProdDerivesManager(prodDerive);
-         listDerivesFromDerives.addAll(listProdDerives);
-      }
+      // derives dont les parents sont les dérivés du prélèvement ou ceux de ses échantillons :
+      listDerivesFromDerives = ManagerLocator.getProdDeriveManager().getAllProdDerivesManager(combinedListDerives);
    }
+      
    @Override
    public void setNewObject(){
       setObject(new Prelevement());

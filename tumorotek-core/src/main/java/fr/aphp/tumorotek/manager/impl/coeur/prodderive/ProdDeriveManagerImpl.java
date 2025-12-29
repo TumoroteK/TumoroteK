@@ -624,7 +624,18 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
 
       return derives;
    }
-
+   
+   @Override
+   public List<ProdDerive> getAllProdDerivesManager(List<ProdDerive> prodDerives) {
+      List<ProdDerive> allProdDerive = new ArrayList<ProdDerive>();
+      for (ProdDerive prodDerive : prodDerives) {
+         List<ProdDerive> listProdDerives = getProdDerivesManager(prodDerive);
+         allProdDerive.addAll(listProdDerives);
+      }
+      
+      return allProdDerive;
+   }
+   
    @Override
    public Emplacement getEmplacementManager(ProdDerive prodDerive){
       if(prodDerive != null){
