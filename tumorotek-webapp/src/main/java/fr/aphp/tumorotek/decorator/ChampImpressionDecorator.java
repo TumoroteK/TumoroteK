@@ -67,6 +67,12 @@ public class ChampImpressionDecorator
    }
 
    public String getNom(){
+      //TK-810 : cas spécifique du code parent qui est affiché sur la fiche prélèvement pour les dérivés issus de ses échantillons ou de ses
+      //dérivés. Celui-ci est associé au champ "TransformationId" :
+      if(champEntite.getNom().equals("TransformationId")) {
+         return "prodDerive.code.parent";
+      }
+      
       final StringBuffer iProperty = new StringBuffer();
       iProperty.append("Champ.");
       iProperty.append(champEntite.getEntite().getNom());

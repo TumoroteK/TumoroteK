@@ -267,25 +267,33 @@ public class BlocImpressionDecorator
       int i = 0;
       while(it.hasNext()){
          ++i;
-         // pour chaque champ on va construire le code contenu dans
-         // le fichier i3-label.properties
          final ChampEntite champ = it.next();
-         final StringBuffer iProperty = new StringBuffer();
-         iProperty.append("Champ.");
-         iProperty.append(champ.getEntite().getNom());
-         iProperty.append(".");
-
-         String champOk = "";
-         // si le nom du champ finit par "Id", on le retire
-         if(champ.getNom().endsWith("Id")){
-            champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
-         }else{
-            champOk = champ.getNom();
+         String valueToAdd = null;
+         //TK-810 : code spécifique pour gérer le code parent pour les blocs de dérivés des échantillons ou des dérivés du prélèvement
+         //le code parent n'est pas un champ en lui-même : c'est TransformationId qui est utilisé..
+         if(champ.getNom().equals("TransformationId")) {
+            valueToAdd = Labels.getLabel("prodDerive.code.parent");
          }
-         iProperty.append(champOk);
-
+         else {
+            // pour chaque champ on va construire le code contenu dans
+            // le fichier i3-label.properties
+            final StringBuffer iProperty = new StringBuffer();
+            iProperty.append("Champ.");
+            iProperty.append(champ.getEntite().getNom());
+            iProperty.append(".");
+   
+            String champOk = "";
+            // si le nom du champ finit par "Id", on le retire
+            if(champ.getNom().endsWith("Id")){
+               champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
+            }else{
+               champOk = champ.getNom();
+            }
+            iProperty.append(champOk);
+            valueToAdd = Labels.getLabel(iProperty.toString());
+         }
          // on ajoute la valeur du champ
-         sb.append(Labels.getLabel(iProperty.toString()));
+         sb.append(valueToAdd);
          if(i < champs.size()){
             sb.append(", ");
          }else{
@@ -335,22 +343,31 @@ public class BlocImpressionDecorator
             // pour chaque champ on va construire le code contenu dans
             // le fichier i3-label.properties
             final ChampEntite champ = champEntites.get(i);
-            final StringBuffer iProperty = new StringBuffer();
-            iProperty.append("Champ.");
-            iProperty.append(champ.getEntite().getNom());
-            iProperty.append(".");
-
-            String champOk = "";
-            // si le nom du champ finit par "Id", on le retire
-            if(champ.getNom().endsWith("Id")){
-               champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
-            }else{
-               champOk = champ.getNom();
+            String valueToAdd = null;
+            //TK-810 : code spécifique pour gérer le code parent pour les blocs de dérivés des échantillons ou des dérivés du prélèvement
+            //le code parent n'est pas un champ en lui-même : c'est TransformationId qui est utilisé..
+            if(champ.getNom().equals("TransformationId")) {
+               valueToAdd = Labels.getLabel("prodDerive.code.parent");
             }
-            iProperty.append(champOk);
+            else {
+               final StringBuffer iProperty = new StringBuffer();
+               iProperty.append("Champ.");
+               iProperty.append(champ.getEntite().getNom());
+               iProperty.append(".");
+   
+               String champOk = "";
+               // si le nom du champ finit par "Id", on le retire
+               if(champ.getNom().endsWith("Id")){
+                  champOk = champ.getNom().substring(0, champ.getNom().length() - 2);
+               }else{
+                  champOk = champ.getNom();
+               }
+               iProperty.append(champOk);
+               valueToAdd = iProperty.toString();
+            }
 
             // on ajoute la valeur du champ
-            sb.append(Labels.getLabel(iProperty.toString()));
+            sb.append(Labels.getLabel(valueToAdd));
             if(j < champEntites.size()){
                sb.append(", ");
             }else{
