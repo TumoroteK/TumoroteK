@@ -35,18 +35,16 @@
  **/
 package fr.aphp.tumorotek.manager.io;
 
-import java.util.List;
-
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 
 /**
  * cette interface a été définie pour contourner un problème lié au fait que les managers classiques sont encapsulés dans un proxy pour gérer les transactions ce qui
- * pose problème lors de l'utilisation d'un manager comme attribut d'une classe abstraite, les classes fille ne pouvant pas accéder qu'à la classe proxy 
+ * pose problème lors de l'utilisation d'un manager comme attribut d'une classe abstraite, les classes filles ne pouvant accéder qu'à la classe proxy 
  * et non à la classe manager proprement dit. 
  * C'est le cas dans le traitement de la mise à jour des annotations par import, avec les strategy héritant de AbstractImportChampAnnotationEntiteStrategy
  * https://stackoverflow.com/questions/14937516/spring-aop-illegalargumentexception-cannot-convert-value-of-type-proxy12
- * Dans l'absolu, toutes les méthodes select devrait être dans cette classe sans transaction.
+ * Dans l'absolu, toutes les méthodes select devraient être dans cette classe sans transaction.
  * Mais pour limiter les risques de régression, seules les méthodes introduites par ce traitement ont été déportées dans cette classe et celle existante a été dupliquée
  * sachant que c'est la même méthode du Dao qui est appelée dans les 2 managers.
  * 

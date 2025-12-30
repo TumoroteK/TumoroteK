@@ -845,7 +845,7 @@ public class ImportChampAnnotationBatchProcessor implements ImportBatchProcessor
       private List<String> listCode;
       //liste des noms de colonne à utiliser pour les contrôles : dans le cas général, cette liste est vide. Pour le patient, cette liste contient les noms des patients
       //le traitement prévoit qu'à terme plusieurs colonnes pourraient être renseignées par l'utilisateur. Mais à noter que ces colonnes sont figés par le traitement
-      //ce n'est pas l'utilsiateur qui les détermine (cf les classes héritant de ImportChampAnnotationEntiteStrategy)
+      //ce n'est pas l'utilisateur qui les détermine (cf les classes héritant de ImportChampAnnotationEntiteStrategy)
       //private List<List<String>> listValueForControles;
       private List<String> listValueForControle;
       
