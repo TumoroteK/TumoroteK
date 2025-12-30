@@ -1526,7 +1526,6 @@ public class FicheTemplateModale extends AbstractImpressionController
     * @param echantillon Echantillon à imprimer.
     */
    public void createBlocInfosForEchantillon(final Echantillon echantillon){
-      final EchantillonRowRenderer renderer = new EchantillonRowRenderer(false, false);
       // Quantité
       String tmp = "";
       final CoupleValeur cpVide = new CoupleValeur("", "");
@@ -2974,7 +2973,6 @@ public class FicheTemplateModale extends AbstractImpressionController
    public void createBlocListeEchantillon(final Set<Echantillon> echantillons, final List<ChampEntite> champs){
       // Entete
       final String[] listeEntete = new String[champs.size()];
-      final EchantillonRowRenderer renderer = new EchantillonRowRenderer(false, false);
       for(int i = 0; i < champs.size(); i++){
          final StringBuffer iProperty = new StringBuffer();
          iProperty.append("Champ.");
@@ -3006,7 +3004,12 @@ public class FicheTemplateModale extends AbstractImpressionController
             if(champs.get(j).getNom().equals("Code")){
                val.append(echan.getCode());
             }else if(champs.get(j).getNom().equals("DateStock")){
-               val.append(ObjectTypesFormatters.dateRenderer2(echan.getDateStock()));
+               if(echan.getDateStock() != null) {
+                  val.append(ObjectTypesFormatters.dateRenderer2(echan.getDateStock()));
+               }
+               else {
+                  val.append("-");
+               }
             }else if(champs.get(j).getNom().equals("EchantillonTypeId")){
                if(echan.getEchantillonType() != null){
                   val.append(echan.getEchantillonType().getNom());

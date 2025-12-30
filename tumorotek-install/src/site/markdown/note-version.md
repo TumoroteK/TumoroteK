@@ -1,6 +1,6 @@
 #### Notes
 
-##### Version 2.3.1.0 - Publiée le 18/12/2025
+##### Version 2.3.1.0 - Publiée le 30/12/2025
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
 - YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
@@ -39,6 +39,7 @@
 - YouTrack [TK-474](https://tumorotek.myjetbrains.com/youtrack/issue/TK-474) : Création d'un <span class="badge badge-prelevement">Prélèvement</span> : la modification du code prélèvement après utilisation du bouton "Retour" n'est pas appliquée sur les écrans des étape 2 (site inter) et étape 3 (saisie échantillon)
 - YouTrack [TK-449](https://tumorotek.myjetbrains.com/youtrack/issue/TK-449) : Fiche <span class="badge badge-prelevement">Prélèvement</span> en collection sérologie : affichage stérilité du site intermédiaire non formaté
 - YouTrack [TK-748](https://tumorotek.myjetbrains.com/youtrack/issue/TK-748) : Fiche <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > problème lors de la désactivation d'un collaborateur défini dans les thesaurus des contextes
+- YouTrack [TK-812](https://tumorotek.myjetbrains.com/youtrack/issue/TK-812) : Fiche <span class="badge badge-prelevement">Prélèvement</span> > Impression : dans la liste des échantillons, si la date de stockage n'est pas renseignée, "null" est affiché au lieu de "-"
 - YouTrack [TK-794](https://tumorotek.myjetbrains.com/youtrack/issue/TK-794) : Modification <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > le préleveur est remis à vide
 - YouTrack [TK-787](https://tumorotek.myjetbrains.com/youtrack/issue/TK-787) : Modification <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > message d'erreur lors de la validation de la modification des échantillons dans le cas où il n'y a pas l'écran des sites intermédiaires (aucun champ visible)
 - YouTrack [TK-788](https://tumorotek.myjetbrains.com/youtrack/issue/TK-788) : Modification <span class="badge badge-prelevement">Prélèvement</span> : Gatsbi > message d'erreur lors de l'annulation de la modification des échantillons dans le cas où il n'y a pas l'écran des sites intermédiaires (aucun champ visible)
