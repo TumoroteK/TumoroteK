@@ -1393,7 +1393,7 @@ public class Export extends Thread
 			}
 
 			List<Integer> ids = new ArrayList<Integer>();
-			//TK-320 : apparamment o est toujours null (cf appel de export_xxx dans load_sequences()) :
+			//o est non null dans le cas de la gestion des objets liés (exemple : les prélèvements des échantillons) - liste alimentée par populateImtermIds() :
 			if(o == null){
 				ids.addAll(objsId);
 			}else{
