@@ -293,7 +293,7 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
          // Filtre la liste des retourDecorators associés à l'échantillon pour garder ceux avec un impact (dégradation probable de la qualité du matériel).
          List<RetourDecorator> retourDecoratorsAvecImpact = listeRetour.getListObjects().stream()
                                        .map(tkDataObject -> ((RetourDecorator)tkDataObject))
-                                       .filter(retourDecorator -> retourDecorator.getRetour().getImpact()).collect(Collectors.toList());
+                                       .filter(retourDecorator -> retourDecorator.getRetour().getImpact() != null && retourDecorator.getRetour().getImpact()).collect(Collectors.toList());
 
          // Rend l'icône d'impact visible uniquement si des retours avec impact sont trouvés.
          impactIconVisible = !retourDecoratorsAvecImpact.isEmpty();
