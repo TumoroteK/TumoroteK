@@ -858,14 +858,14 @@ public class RetourManagerTest extends AbstractManagerTest4
       dateRetour.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("02/01/2010 23:59:59"));
       r.setDateRetour(dateRetour);
       errs = retourValidator.checkDateSortieCoherence(r);
-      assertTrue(errs.getFieldError().getCode().equals("date.validation.inclueRetourExistant"));
+      assertTrue(errs.getFieldError().getCode().equals("date.validation.retourExistant.incoherent"));
 
       dateSortie.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("08/01/2010 10:00:00"));
       r.setDateSortie(dateSortie);
       dateRetour.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("10/01/2010 23:59:59"));
       r.setDateRetour(dateRetour);
       errs = retourValidator.checkDateSortieCoherence(r);
-      assertTrue(errs.getFieldError().getCode().equals("date.validation.incluDansRetourExistant"));
+      assertTrue(errs.getFieldError().getCode().equals("date.validation.retourExistant.incoherent"));
 
       dateSortie.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("10/01/2010 10:00:00"));
       r.setDateSortie(dateSortie);
@@ -908,14 +908,14 @@ public class RetourManagerTest extends AbstractManagerTest4
       dateRetour.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("02/01/2010 23:59:59"));
       r.setDateRetour(dateRetour);
       errs = retourValidator.checkDateRetourCoherence(r);
-      assertTrue(errs.getFieldError().getCode().equals("date.validation.inclueRetourExistant"));
+      assertTrue(errs.getFieldError().getCode().equals("date.validation.retourExistant.incoherent"));
 
       dateSortie.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("31/12/2009 10:00:00"));
       r.setDateSortie(dateSortie);
       dateRetour.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("01/01/2010 16:59:59"));
       r.setDateRetour(dateRetour);
       errs = retourValidator.checkDateRetourCoherence(r);
-      assertTrue(errs.getFieldError().getCode().equals("date.validation.incluDansRetourExistant"));
+      assertTrue(errs.getFieldError().getCode().equals("date.validation.retourExistant.incoherent"));
 
       dateRetour.setTime(new SimpleDateFormat("dd/MM/yyyy hh:mm:ss").parse("31/12/2009 10:00:00"));
       r.setDateRetour(dateRetour);

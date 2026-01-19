@@ -48,11 +48,20 @@ import fr.aphp.tumorotek.manager.exception.TKException;
  * @author jbriscoe
  * @see http://javaboutique.internet.com/tutorials/validation/index-3.html
  */
+//CHT : ValidationException hérite de TKException mais ne correspond pas du tout au même type d'exception :
+//      TKException correspond à une seule erreur pouvant être rattachée à un objet
+//      ValidationException peut gérer plusieurs erreurs mais ne fait pas de lien avec un objet (l'objet pourrait être passé comme param 
+//      du message dans les Errors mais potentiellement cela signifie qu'il peut y avoir plusieurs objets pour une ValidationException
+//      le mécanisme d'affichage du message définie dans AbstractController.handleExceptionMessage() plante alors avec un NullPointerException :-(
+//      Pb rencontré lors du traitement du ticket TK-766...
 public class ValidationException extends TKException
 {
 
    private static final long serialVersionUID = 1L;
 
+   //Erreur de conception (TODO TK-816): cet attribut ne doit pas être une liste mais juste un Errors qui est lui même une "liste" d'ObjectError.
+   //Lors de l'appel du constructeur, l'objet Errors de spring est ajouté à la liste mais lors de l'affichage des erreurs, 
+   //AbstractController.handleExceptionMessage() boucle sur errors et non sur  errors.getAllErrors() donc seule la 1ere erreur est affichée ...
    private List<Errors> errors;
 
    public ValidationException(final List<Errors> errs){

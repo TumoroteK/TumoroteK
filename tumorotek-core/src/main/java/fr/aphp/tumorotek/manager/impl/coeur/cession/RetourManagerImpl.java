@@ -598,11 +598,11 @@ public class RetourManagerImpl implements RetourManager
                }else{
                   if(isEchan){
                      if(listEchIdWithRetourEnConflit.contains(obj.listableObjectId())){
-                        throw new TKException("date.validation.retourExistant.incoherent", obj.getCode());
+                        throw new TKException("date.validation.retourExistant.incoherent.echantillon", obj.getCode());
                      }
                   }else{
                      if(listDeriveIdWithRetourEnConflit.contains(obj.listableObjectId())){
-                        throw new TKException("date.validation.retourExistant.incoherent", obj.getCode());
+                        throw new TKException("date.validation.retourExistant.incoherent.derive", obj.getCode());
                      }
                   }
                }
@@ -621,8 +621,11 @@ public class RetourManagerImpl implements RetourManager
             throw new RuntimeException(e1);
          }catch(final SQLException e1){
             throw new RuntimeException(e1);
+         //TK-766 : TKException est une RuntimeException spécifique qui permet de gérer un message internationalisé avec un code
+         //il ne faut donc pas la transformer en RuntimeException basique mais la renvoyer tel quel  
+         //ce catch est nécessaire, sinon TKException est catché par le catch global suivant (sur Exception) ... 
          }catch(final TKException r1){
-            throw new RuntimeException(r1);
+            throw r1;
          }catch(final Exception e1){
             throw new RuntimeException(e1);
          }finally{

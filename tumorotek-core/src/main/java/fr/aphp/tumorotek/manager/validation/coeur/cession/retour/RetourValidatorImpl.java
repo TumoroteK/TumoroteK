@@ -49,6 +49,7 @@ import fr.aphp.tumorotek.manager.exception.ObjectStatutException;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.cession.Retour;
+import fr.aphp.tumorotek.model.systeme.EEntiteId;
 
 public class RetourValidatorImpl implements RetourValidator
 {
@@ -140,13 +141,19 @@ public class RetourValidatorImpl implements RetourValidator
 
             // inclusion d'un autre retour
             if(!findByObjInsideDatesManager(retour.getDateSortie(), retour.getDateRetour(), obj, retour.getRetourId()).isEmpty()){
-               errs.rejectValue("dateSortie", "date.validation.inclueRetourExistant");
+               //TK-766 : TK ne gère pas bien les "errors" avec un param donc définition d'une properties date.validation.retourExistant.incoherent 
+               //correspondant à un message générique contrairement au traitement createRetourHugeListManager()
+               //NB : si la méthode checkDateSortieCoherence() n'était appelée que sur un objet unique, cela ne serait pas gènant
+               //     mais elle est aussi appelée pour dans une boucle pour des traitements massifs comme la validation d'une cession
+               //     (FicheCessionEdit.prepareCedesTKobjs()) :-(
+               errs.rejectValue("dateSortie", "date.validation.retourExistant.incoherent");
             }
          }
 
          // inclusion dans un autre retour
          if(!findByObjDatesManager(retour.getDateSortie(), obj, retour.getRetourId()).isEmpty()){
-            errs.rejectValue("dateSortie", "date.validation.incluDansRetourExistant");
+            //TK-766 : cf commentaire ci-dessus
+            errs.rejectValue("dateSortie", "date.validation.retourExistant.incoherent");
          }
 
          final Calendar overTime = Calendar.getInstance();
@@ -179,7 +186,7 @@ public class RetourValidatorImpl implements RetourValidator
 
             // inclusion d'un autre retour
             if(!findByObjInsideDatesManager(retour.getDateSortie(), retour.getDateRetour(), obj, retour.getRetourId()).isEmpty()){
-               errs.rejectValue("dateRetour", "date.validation.inclueRetourExistant");
+               errs.rejectValue("dateRetour", "date.validation.retourExistant.incoherent");
             }
          }else{
             errs.rejectValue("dateSortie", "retour.dateSortie.empty");
@@ -187,7 +194,7 @@ public class RetourValidatorImpl implements RetourValidator
 
          // inclusion dans un autre retour
          if(!findByObjDatesManager(retour.getDateRetour(), obj, retour.getRetourId()).isEmpty()){
-            errs.rejectValue("dateRetour", "date.validation.incluDansRetourExistant");
+            errs.rejectValue("dateRetour", "date.validation.retourExistant.incoherent");
          }
 
          final Calendar overTime = Calendar.getInstance();

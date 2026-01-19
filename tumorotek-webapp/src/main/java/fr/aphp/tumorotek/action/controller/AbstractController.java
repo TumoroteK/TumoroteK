@@ -631,6 +631,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		if(ex instanceof ValidationException){
 			message = new StringBuilder(Labels.getLabel("validation.error"));
 			message.append("\n");
+			//erreur de conception de ValidationException (cf commentaire dans la classe - (TODO TK-816)) :
 			final Iterator<Errors> errs = (((ValidationException) ex).getErrors()).iterator();
 			String errCode;
 			while(errs.hasNext()){
