@@ -406,20 +406,11 @@ public class RetourManagerImpl implements RetourManager
 
          // ids objs dont les retours pourraient rentrer en conflit
          // avec le retour créé
-         final Set<Integer> objsEchanIds = new HashSet<>();
-         objsEchanIds
-            .addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateSortie(), entiteDao.findByNom("Echantillon").get(0)));
-         objsEchanIds
-            .addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateRetour(), entiteDao.findByNom("Echantillon").get(0)));
-         objsEchanIds.addAll(retourDao.findObjIdsInsideDatesEntite(retour.getDateSortie(), retour.getDateRetour(),
-            entiteDao.findByNom("Echantillon").get(0)));
-         final Set<Integer> objsDeriveIds = new HashSet<>();
-         objsDeriveIds
-            .addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateSortie(), entiteDao.findByNom("ProdDerive").get(0)));
-         objsDeriveIds
-            .addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateRetour(), entiteDao.findByNom("ProdDerive").get(0)));
-         objsDeriveIds.addAll(retourDao.findObjIdsInsideDatesEntite(retour.getDateSortie(), retour.getDateRetour(),
-            entiteDao.findByNom("ProdDerive").get(0)));
+         final Set<Integer> listEchIdWithRetourEnConflit = new HashSet<>();
+         final Set<Integer> listDeriveIdWithRetourEnConflit = new HashSet<>();
+         
+         //TK-815 : optimisation du contrôle pour passer par l'index sur objet_id
+         populateAllObjIdsWithRetourEnConflit(listEchIdWithRetourEnConflit, listDeriveIdWithRetourEnConflit, retour, objects);
 
          final List<Integer> echansId = new ArrayList<>();
          final List<Integer> derivesId = new ArrayList<>();
@@ -429,9 +420,6 @@ public class RetourManagerImpl implements RetourManager
          PreparedStatement pstmtE = null;
          PreparedStatement pstmtEste = null;
          PreparedStatement pstmtD = null;
-         // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-         // Integer idRetour = retourDao.findByMaxId().get(0);
 
          try{
 
@@ -609,11 +597,11 @@ public class RetourManagerImpl implements RetourManager
                   continue;
                }else{
                   if(isEchan){
-                     if(objsEchanIds.contains(obj.listableObjectId())){
+                     if(listEchIdWithRetourEnConflit.contains(obj.listableObjectId())){
                         throw new TKException("date.validation.retourExistant.incoherent", obj.getCode());
                      }
                   }else{
-                     if(objsDeriveIds.contains(obj.listableObjectId())){
+                     if(listDeriveIdWithRetourEnConflit.contains(obj.listableObjectId())){
                         throw new TKException("date.validation.retourExistant.incoherent", obj.getCode());
                      }
                   }
@@ -679,6 +667,8 @@ public class RetourManagerImpl implements RetourManager
       return ok;
 
    }
+
+
 
    @Override
    public TKStockableObject getObjetFromRetourManager(final Retour retour){
@@ -772,5 +762,69 @@ public class RetourManagerImpl implements RetourManager
       return modifPossible;
    }
 
+   private void populateAllObjIdsWithRetourEnConflit(final Set<Integer> listEchIdWithRetourEnConflit,
+      final Set<Integer> listDeriveIdWithRetourEnConflit, final Retour retour, final List<TKStockableObject> objects){
+
+      //Récupération des entités :
+      Entite entiteEchantillon = entiteDao.findByNom("Echantillon").get(0);
+      Entite entiteDerive = entiteDao.findByNom("ProdDerive").get(0);
+      
+      //TK-815 (optimisation pour passer par l'index sur objet_id de la table RETOUR) :
+      //Séparation des echantillons et dérivés pour gérer les id dans des listes différentes :
+      List<Integer> listEchIdForRetourACreerAvantControle = new ArrayList<Integer>();
+      List<Integer> listDeriveIdForRetourACreerAvantControle = new ArrayList<Integer>();
+      for(TKStockableObject stockableObject : objects) {
+         if(stockableObject instanceof Echantillon) {
+            listEchIdForRetourACreerAvantControle.add(stockableObject.listableObjectId());
+         }
+         else {
+            listDeriveIdForRetourACreerAvantControle.add(stockableObject.listableObjectId());
+         }
+      }
+  
+      //TK-815 : Objets ids avec des évènements de stockages (retours) en conflit avec l'évènement de stockage en cours de création  :
+      int nbEchIdForRetourACreerAvantControle = listEchIdForRetourACreerAvantControle.size();
+      if(nbEchIdForRetourACreerAvantControle > 0) {
+         //TK-815 : on passe la liste des objets ids concernés pour passer par l'index.
+         //traitement mis dans un try catch pour sécuriser le cas d'un très grand nombre qui ferait planter le in
+         //dans ce cas, on passe par le traitement actuel non optimisé
+         //A noter qu'en développement, la requête est passée pour le déplacement d'un casier contenant 2000 échantillons. Pas de test fait au delà... 
+         try {
+            listEchIdWithRetourEnConflit.addAll(filterListObjetIdWithRetourEnConflit(retour, entiteEchantillon, listEchIdForRetourACreerAvantControle));
+         }
+         catch(Exception e) {
+            listEchIdWithRetourEnConflit.addAll(retrieveListObjetIdWithRetourEnConflit(retour, entiteEchantillon));
+         }
+      }
+
+      //TK-815 : même optimisation pour les dérivés que pour les échantillons - cf commentaire ci-dessus
+      int nbDeriveIdForRetourACreerAvantControle = listDeriveIdForRetourACreerAvantControle.size();
+      if(nbDeriveIdForRetourACreerAvantControle > 0) {
+         try {
+            listDeriveIdWithRetourEnConflit.addAll(filterListObjetIdWithRetourEnConflit(retour, entiteDerive, listDeriveIdForRetourACreerAvantControle));
+         }
+         catch(Exception e) {
+            listDeriveIdWithRetourEnConflit.addAll(retrieveListObjetIdWithRetourEnConflit(retour, entiteDerive));
+         }
+      }
+   }
+   
+   private List<Integer> retrieveListObjetIdWithRetourEnConflit(Retour retour, Entite entite) {
+      List<Integer> result = new ArrayList<Integer>();
+      result.addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateSortie(), entite));
+      result.addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateRetour(), entite));
+      result.addAll(retourDao.findObjIdsInsideDatesEntite(retour.getDateSortie(), retour.getDateRetour(), entite));
+      
+      return result;
+   }
+   
+   private List<Integer> filterListObjetIdWithRetourEnConflit(Retour retour, Entite entite, List<Integer> listObjId) {
+      List<Integer> result = new ArrayList<Integer>();
+      result.addAll(retourDao.findObjIdsByDatesAndEntiteAndObjIds(retour.getDateSortie(), entite, listObjId));
+      result.addAll(retourDao.findObjIdsByDatesAndEntiteAndObjIds(retour.getDateRetour(), entite, listObjId));
+      result.addAll(retourDao.findObjIdsInsideDatesEntiteObjIds(retour.getDateSortie(), retour.getDateRetour(), entite, listObjId));
+      
+      return result;
+   }
 }
 

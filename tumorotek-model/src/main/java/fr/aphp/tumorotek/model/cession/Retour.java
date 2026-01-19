@@ -91,11 +91,15 @@ import fr.aphp.tumorotek.model.systeme.Entite;
          + "AND r.retourId <> ?4"),
    @NamedQuery(name = "Retour.findObjIdsByDatesAndEntite",
       query = "SELECT distinct r.objetId FROM Retour r where r.dateSortie <= ?1 " + "AND r.dateRetour >= ?1 AND r.entite = ?2"),
+   @NamedQuery(name = "Retour.findObjIdsByDatesAndEntiteAndObjIds",//TK-815 (requête proche de la précédente : ajout de objet_id pour passer par l'index)
+   query = "SELECT distinct r.objetId FROM Retour r where r.dateSortie <= ?1 " + "AND r.dateRetour >= ?1 AND r.entite = ?2 AND r.objetId in (?3)"),
    @NamedQuery(name = "Retour.findByObjInsideDates",
       query = "SELECT r FROM Retour r where r.dateSortie >= ?1 " + "AND r.dateRetour <= ?2 AND r.objetId = ?3 and r.entite = ?4 "
          + "AND r.retourId <> ?5"),
    @NamedQuery(name = "Retour.findObjIdsInsideDatesEntite",
       query = "SELECT distinct r.objetId FROM Retour r where r.dateSortie >= ?1 " + "AND r.dateRetour <= ?2 AND r.entite = ?3"),
+   @NamedQuery(name = "Retour.findObjIdsInsideDatesEntiteObjIds",//TK-815 (requête proche de la précédente : ajout de objet_id pour passer par l'index)
+   query = "SELECT distinct r.objetId FROM Retour r where r.dateSortie >= ?1 " + "AND r.dateRetour <= ?2 AND r.entite = ?3 AND r.objetId in (?4)"),
    @NamedQuery(name = "Retour.findByCollaborateur", query = "SELECT r FROM Retour r where r.collaborateur = ?1 ")})
 public class Retour implements TKdataObject, Serializable
 {
