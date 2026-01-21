@@ -69,6 +69,7 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.echantillon.gatsbi.GatsbiControllerEchantillon;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.exception.WarningException;
 import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
 import fr.aphp.tumorotek.model.TKStockableObject;
@@ -656,11 +657,16 @@ public class FicheRetour extends AbstractFicheCombineController
 
             // fermeture de la fenêtre
             Events.postEvent(new Event("onClose", self.getRoot()));
-         }else{
+         }else{//On ne passe jamais ici car si l'insertion s'est mal passée, une exception a été lancée...
             Messagebox.show(Labels.getLabel("message.retour.error"), "Error", Messagebox.OK, Messagebox.ERROR);
          }
 
-      }catch(final RuntimeException re){
+      }
+      catch(final WarningException warning){
+         Clients.clearBusy();
+         Messagebox.show(handleExceptionMessage(warning), "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
+      }
+      catch(final RuntimeException re){
          Clients.clearBusy();
          Messagebox.show(handleExceptionMessage(re), "Error", Messagebox.OK, Messagebox.ERROR);
       }

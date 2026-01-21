@@ -100,6 +100,7 @@ import fr.aphp.tumorotek.action.utilisateur.FichePasswordModale;
 import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.component.ProgressBarComponent;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.exception.BasicTKException;
 import fr.aphp.tumorotek.manager.exception.DeriveBatchSaveException;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.EmplacementDoublonFoundException;
@@ -110,6 +111,7 @@ import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.StringEtiquetteOverSizeException;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.exception.TransformationQuantiteOverDemandException;
+import fr.aphp.tumorotek.manager.exception.WarningException;
 import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -711,9 +713,18 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 			log.error(message.toString(), ex);
 		}
 
+		//new version 2.3.1.0-rc5 (TK-817):
+		if(ex instanceof BasicTKException) {
+		   if(((BasicTKException)ex).hasParam()) {
+		      message = new StringBuilder(Labels.getLabel(ex.getMessage(), ((BasicTKException)ex).getMessageParams()));
+		   }
+		   else {
+		      message = new StringBuilder(Labels.getLabel(ex.getMessage()));
+		   }
+		}
 		// si l'exception possède des infos sur l'objet qui l'a
 		// généré, on écrit ces informations dans le message
-		if(ex instanceof TKException){
+		else if(ex instanceof TKException){
 			if(message.toString().contains("{1}")){
 				message = new StringBuilder(ObjectTypesFormatters.getLabel(ex.getMessage(),
 						new String[] {((TKException) ex).getIdentificationObjetException()}));

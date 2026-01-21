@@ -39,11 +39,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -66,10 +70,12 @@ import fr.aphp.tumorotek.dao.stockage.EmplacementDao;
 import fr.aphp.tumorotek.dao.stockage.IncidentDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
+import fr.aphp.tumorotek.manager.exception.BasicTKException;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.ObjectStatutException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.manager.exception.WarningException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
@@ -395,6 +401,7 @@ public class RetourManagerImpl implements RetourManager
 
    }
 
+   //Cette méthode devrait renvoyer void et non un boolean puisqu'en cas de problème, une exception est lancée !
    @Override
    public boolean createRetourHugeListManager(final List<TKStockableObject> objects, final List<OldEmplTrace> oldEmpAdrls,
       final Retour retour, final Collaborateur collaborateur, final Cession cession, final Transformation transformation,
@@ -414,6 +421,11 @@ public class RetourManagerImpl implements RetourManager
 
          final List<Integer> echansId = new ArrayList<>();
          final List<Integer> derivesId = new ArrayList<>();
+         
+         //Cette liste sera alimentée avec les éventuels codes des échantillons pour lesquels la date de stockage est postérieure
+         //à la date de sortie du retour à créer. Dans ce cas, le retour ne sera pas créé
+         final List<String> listEchCodeForIncompatibiliteWithDateStockage = new ArrayList<String>(); 
+         final List<String> listDeriveCodeForIncompatibiliteWithDateStockage = new ArrayList<String>();
 
          Connection conn = null;
          PreparedStatement pstmt = null;
@@ -592,8 +604,12 @@ public class RetourManagerImpl implements RetourManager
                   || obj.getObjetStatut().getStatut().equals("ENCOURS")) && retour.getRetourId() == null){
                   throw new ObjectStatutException(entiteDao.findByNom(obj.entiteNom()).get(0).getNom(), "évènement de stockage");
                }else if(retour.getDateSortie().before(obj.getDateStock())){
-                  // throw new TKException("date.validation.infDateStockage: "
-                  //	+ obj.getCode());
+                  if(isEchan) {
+                     listEchCodeForIncompatibiliteWithDateStockage.add(obj.getCode());
+                  }
+                  else {
+                     listDeriveCodeForIncompatibiliteWithDateStockage.add(obj.getCode());
+                  }
                   continue;
                }else{
                   if(isEchan){
@@ -617,6 +633,10 @@ public class RetourManagerImpl implements RetourManager
             pstmtEste.executeBatch();
             pstmtD.executeBatch();
 
+            manageIncompatibiliteDateStockage(  listEchCodeForIncompatibiliteWithDateStockage,
+                                                listDeriveCodeForIncompatibiliteWithDateStockage,
+                                                objects.size(), retour.getDateSortie().getTime());
+            
          }catch(final CannotGetJdbcConnectionException e1){
             throw new RuntimeException(e1);
          }catch(final SQLException e1){
@@ -671,7 +691,59 @@ public class RetourManagerImpl implements RetourManager
 
    }
 
-
+   //NB : l'objectif premier de cette méthode est de lancer des exceptions si incompatibilité
+   //Ainsi même si les exceptions lancées sont des Runtime, elles sont ajoutées dans la signature pour mettre en avant ceci
+   //Et pour la même raison, même si WarningException est une BasicException, les 2 sont lancées
+   //A noter que dans l'absolu, l'exception de plus haut niveau de TK, TKException n'aurait pas dû être une RuntimeException
+   //pour que le développeur est la main pour définir les exceptions filles comme Runtime ou non...
+   private void manageIncompatibiliteDateStockage(
+      final List<String> listEchCodeForIncompatibiliteWithDateStockage,
+      final List<String> listDeriveCodeForIncompatibiliteWithDateStockage,
+      final int nbRetourACreer, final Date dateSortie) throws WarningException, BasicTKException {
+      //si aucun retour n'a été créé à cause de dates de stockage incohérentes avec la date de sortie, lancement d'une BasicTKException
+      //Par contre, si seulement certains n'ont pas été créés, lancement d'une WarningException 
+      int nbIncompatibiliteDateStockageForEch = listEchCodeForIncompatibiliteWithDateStockage.size();
+      int nbIncompatibiliteDateStockageForDerive = listDeriveCodeForIncompatibiliteWithDateStockage.size();
+      int nbIncompatibiliteDateStockageForAll = nbIncompatibiliteDateStockageForEch + nbIncompatibiliteDateStockageForDerive;
+      if(nbIncompatibiliteDateStockageForAll > 0) {
+         String keyI18nMessage = null;
+         if(nbIncompatibiliteDateStockageForAll == nbRetourACreer) {
+            if(nbIncompatibiliteDateStockageForAll == 1) {
+               keyI18nMessage = "date.validation.incoherence.dateStockage.singulier";
+            }
+            else {
+               keyI18nMessage = "date.validation.incoherence.dateStockage.pluriel";
+            }
+            throw new BasicTKException(keyI18nMessage, new Object[] {dateSortie});
+         }
+         else {
+            Object[] params = null;
+            if(nbIncompatibiliteDateStockageForEch > 0) {
+               if(nbIncompatibiliteDateStockageForDerive > 0) {
+                  keyI18nMessage = "date.validation.incoherence.dateStockage.warning";
+                  //on passe en paramètre la liste des codes échantillon, la liste des codes dérivés et la date de début
+                  params = new Object[3];
+                  params[0] = listEchCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
+                  params[1] = listDeriveCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
+                  params[2] = dateSortie;
+               }
+               else {
+                  keyI18nMessage = "date.validation.incoherence.dateStockage.warning.echantillon";
+                  params = new Object[2];
+                  params[0] = listEchCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
+                  params[1] = dateSortie;
+               }
+            }
+            else {
+               keyI18nMessage = "date.validation.incoherence.dateStockage.warning.derive";
+               params = new Object[2];
+               params[0] = listDeriveCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
+               params[1] = dateSortie;
+            }
+            throw new WarningException(keyI18nMessage, params);
+         }
+      }
+   }
 
    @Override
    public TKStockableObject getObjetFromRetourManager(final Retour retour){

@@ -54,6 +54,7 @@ import fr.aphp.tumorotek.manager.exception.TKException;
 //      du message dans les Errors mais potentiellement cela signifie qu'il peut y avoir plusieurs objets pour une ValidationException
 //      le mécanisme d'affichage du message définie dans AbstractController.handleExceptionMessage() plante alors avec un NullPointerException :-(
 //      Pb rencontré lors du traitement du ticket TK-766...
+//NB : il y a une autre classe ValidationException dans le package fr.aphp.tumorotek.manager.exception. Elle étend aussi TKException....
 public class ValidationException extends TKException
 {
 
