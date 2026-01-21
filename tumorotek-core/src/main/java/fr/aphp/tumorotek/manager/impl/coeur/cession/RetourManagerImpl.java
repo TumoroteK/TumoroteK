@@ -39,11 +39,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -66,10 +70,12 @@ import fr.aphp.tumorotek.dao.stockage.EmplacementDao;
 import fr.aphp.tumorotek.dao.stockage.IncidentDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
+import fr.aphp.tumorotek.manager.exception.BasicTKException;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.ObjectStatutException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.manager.exception.WarningException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
@@ -395,6 +401,7 @@ public class RetourManagerImpl implements RetourManager
 
    }
 
+   //Cette méthode devrait renvoyer void et non un boolean puisqu'en cas de problème, une exception est lancée !
    @Override
    public boolean createRetourHugeListManager(final List<TKStockableObject> objects, final List<OldEmplTrace> oldEmpAdrls,
       final Retour retour, final Collaborateur collaborateur, final Cession cession, final Transformation transformation,
@@ -406,32 +413,25 @@ public class RetourManagerImpl implements RetourManager
 
          // ids objs dont les retours pourraient rentrer en conflit
          // avec le retour créé
-         final Set<Integer> objsEchanIds = new HashSet<>();
-         objsEchanIds
-            .addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateSortie(), entiteDao.findByNom("Echantillon").get(0)));
-         objsEchanIds
-            .addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateRetour(), entiteDao.findByNom("Echantillon").get(0)));
-         objsEchanIds.addAll(retourDao.findObjIdsInsideDatesEntite(retour.getDateSortie(), retour.getDateRetour(),
-            entiteDao.findByNom("Echantillon").get(0)));
-         final Set<Integer> objsDeriveIds = new HashSet<>();
-         objsDeriveIds
-            .addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateSortie(), entiteDao.findByNom("ProdDerive").get(0)));
-         objsDeriveIds
-            .addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateRetour(), entiteDao.findByNom("ProdDerive").get(0)));
-         objsDeriveIds.addAll(retourDao.findObjIdsInsideDatesEntite(retour.getDateSortie(), retour.getDateRetour(),
-            entiteDao.findByNom("ProdDerive").get(0)));
+         final Set<Integer> listEchIdWithRetourEnConflit = new HashSet<>();
+         final Set<Integer> listDeriveIdWithRetourEnConflit = new HashSet<>();
+         
+         //TK-815 : optimisation du contrôle pour passer par l'index sur objet_id
+         populateAllObjIdsWithRetourEnConflit(listEchIdWithRetourEnConflit, listDeriveIdWithRetourEnConflit, retour, objects);
 
          final List<Integer> echansId = new ArrayList<>();
          final List<Integer> derivesId = new ArrayList<>();
+         
+         //Cette liste sera alimentée avec les éventuels codes des échantillons pour lesquels la date de stockage est postérieure
+         //à la date de sortie du retour à créer. Dans ce cas, le retour ne sera pas créé
+         final List<String> listEchCodeForIncompatibiliteWithDateStockage = new ArrayList<String>(); 
+         final List<String> listDeriveCodeForIncompatibiliteWithDateStockage = new ArrayList<String>();
 
          Connection conn = null;
          PreparedStatement pstmt = null;
          PreparedStatement pstmtE = null;
          PreparedStatement pstmtEste = null;
          PreparedStatement pstmtD = null;
-         // SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-
-         // Integer idRetour = retourDao.findByMaxId().get(0);
 
          try{
 
@@ -604,17 +604,21 @@ public class RetourManagerImpl implements RetourManager
                   || obj.getObjetStatut().getStatut().equals("ENCOURS")) && retour.getRetourId() == null){
                   throw new ObjectStatutException(entiteDao.findByNom(obj.entiteNom()).get(0).getNom(), "évènement de stockage");
                }else if(retour.getDateSortie().before(obj.getDateStock())){
-                  // throw new TKException("date.validation.infDateStockage: "
-                  //	+ obj.getCode());
+                  if(isEchan) {
+                     listEchCodeForIncompatibiliteWithDateStockage.add(obj.getCode());
+                  }
+                  else {
+                     listDeriveCodeForIncompatibiliteWithDateStockage.add(obj.getCode());
+                  }
                   continue;
                }else{
                   if(isEchan){
-                     if(objsEchanIds.contains(obj.listableObjectId())){
-                        throw new TKException("date.validation.retourExistant.incoherent", obj.getCode());
+                     if(listEchIdWithRetourEnConflit.contains(obj.listableObjectId())){
+                        throw new TKException("date.validation.retourExistant.incoherent.echantillon", obj.getCode());
                      }
                   }else{
-                     if(objsDeriveIds.contains(obj.listableObjectId())){
-                        throw new TKException("date.validation.retourExistant.incoherent", obj.getCode());
+                     if(listDeriveIdWithRetourEnConflit.contains(obj.listableObjectId())){
+                        throw new TKException("date.validation.retourExistant.incoherent.derive", obj.getCode());
                      }
                   }
                }
@@ -629,12 +633,19 @@ public class RetourManagerImpl implements RetourManager
             pstmtEste.executeBatch();
             pstmtD.executeBatch();
 
+            manageIncompatibiliteDateStockage(  listEchCodeForIncompatibiliteWithDateStockage,
+                                                listDeriveCodeForIncompatibiliteWithDateStockage,
+                                                objects.size(), retour.getDateSortie().getTime());
+            
          }catch(final CannotGetJdbcConnectionException e1){
             throw new RuntimeException(e1);
          }catch(final SQLException e1){
             throw new RuntimeException(e1);
+         //TK-766 : TKException est une RuntimeException spécifique qui permet de gérer un message internationalisé avec un code
+         //il ne faut donc pas la transformer en RuntimeException basique mais la renvoyer tel quel  
+         //ce catch est nécessaire, sinon TKException est catché par le catch global suivant (sur Exception) ... 
          }catch(final TKException r1){
-            throw new RuntimeException(r1);
+            throw r1;
          }catch(final Exception e1){
             throw new RuntimeException(e1);
          }finally{
@@ -678,6 +689,60 @@ public class RetourManagerImpl implements RetourManager
 
       return ok;
 
+   }
+
+   //NB : l'objectif premier de cette méthode est de lancer des exceptions si incompatibilité
+   //Ainsi même si les exceptions lancées sont des Runtime, elles sont ajoutées dans la signature pour mettre en avant ceci
+   //Et pour la même raison, même si WarningException est une BasicException, les 2 sont lancées
+   //A noter que dans l'absolu, l'exception de plus haut niveau de TK, TKException n'aurait pas dû être une RuntimeException
+   //pour que le développeur est la main pour définir les exceptions filles comme Runtime ou non...
+   private void manageIncompatibiliteDateStockage(
+      final List<String> listEchCodeForIncompatibiliteWithDateStockage,
+      final List<String> listDeriveCodeForIncompatibiliteWithDateStockage,
+      final int nbRetourACreer, final Date dateSortie) throws WarningException, BasicTKException {
+      //si aucun retour n'a été créé à cause de dates de stockage incohérentes avec la date de sortie, lancement d'une BasicTKException
+      //Par contre, si seulement certains n'ont pas été créés, lancement d'une WarningException 
+      int nbIncompatibiliteDateStockageForEch = listEchCodeForIncompatibiliteWithDateStockage.size();
+      int nbIncompatibiliteDateStockageForDerive = listDeriveCodeForIncompatibiliteWithDateStockage.size();
+      int nbIncompatibiliteDateStockageForAll = nbIncompatibiliteDateStockageForEch + nbIncompatibiliteDateStockageForDerive;
+      if(nbIncompatibiliteDateStockageForAll > 0) {
+         String keyI18nMessage = null;
+         if(nbIncompatibiliteDateStockageForAll == nbRetourACreer) {
+            if(nbIncompatibiliteDateStockageForAll == 1) {
+               keyI18nMessage = "date.validation.incoherence.dateStockage.singulier";
+            }
+            else {
+               keyI18nMessage = "date.validation.incoherence.dateStockage.pluriel";
+            }
+            throw new BasicTKException(keyI18nMessage, new Object[] {dateSortie});
+         }
+         else {
+            Object[] params = null;
+            if(nbIncompatibiliteDateStockageForEch > 0) {
+               if(nbIncompatibiliteDateStockageForDerive > 0) {
+                  keyI18nMessage = "date.validation.incoherence.dateStockage.warning";
+                  //on passe en paramètre la liste des codes échantillon, la liste des codes dérivés et la date de début
+                  params = new Object[3];
+                  params[0] = listEchCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
+                  params[1] = listDeriveCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
+                  params[2] = dateSortie;
+               }
+               else {
+                  keyI18nMessage = "date.validation.incoherence.dateStockage.warning.echantillon";
+                  params = new Object[2];
+                  params[0] = listEchCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
+                  params[1] = dateSortie;
+               }
+            }
+            else {
+               keyI18nMessage = "date.validation.incoherence.dateStockage.warning.derive";
+               params = new Object[2];
+               params[0] = listDeriveCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
+               params[1] = dateSortie;
+            }
+            throw new WarningException(keyI18nMessage, params);
+         }
+      }
    }
 
    @Override
@@ -772,5 +837,69 @@ public class RetourManagerImpl implements RetourManager
       return modifPossible;
    }
 
+   private void populateAllObjIdsWithRetourEnConflit(final Set<Integer> listEchIdWithRetourEnConflit,
+      final Set<Integer> listDeriveIdWithRetourEnConflit, final Retour retour, final List<TKStockableObject> objects){
+
+      //Récupération des entités :
+      Entite entiteEchantillon = entiteDao.findByNom("Echantillon").get(0);
+      Entite entiteDerive = entiteDao.findByNom("ProdDerive").get(0);
+      
+      //TK-815 (optimisation pour passer par l'index sur objet_id de la table RETOUR) :
+      //Séparation des echantillons et dérivés pour gérer les id dans des listes différentes :
+      List<Integer> listEchIdForRetourACreerAvantControle = new ArrayList<Integer>();
+      List<Integer> listDeriveIdForRetourACreerAvantControle = new ArrayList<Integer>();
+      for(TKStockableObject stockableObject : objects) {
+         if(stockableObject instanceof Echantillon) {
+            listEchIdForRetourACreerAvantControle.add(stockableObject.listableObjectId());
+         }
+         else {
+            listDeriveIdForRetourACreerAvantControle.add(stockableObject.listableObjectId());
+         }
+      }
+  
+      //TK-815 : Objets ids avec des évènements de stockages (retours) en conflit avec l'évènement de stockage en cours de création  :
+      int nbEchIdForRetourACreerAvantControle = listEchIdForRetourACreerAvantControle.size();
+      if(nbEchIdForRetourACreerAvantControle > 0) {
+         //TK-815 : on passe la liste des objets ids concernés pour passer par l'index.
+         //traitement mis dans un try catch pour sécuriser le cas d'un très grand nombre qui ferait planter le in
+         //dans ce cas, on passe par le traitement actuel non optimisé
+         //A noter qu'en développement, la requête est passée pour le déplacement d'un casier contenant 2000 échantillons. Pas de test fait au delà... 
+         try {
+            listEchIdWithRetourEnConflit.addAll(filterListObjetIdWithRetourEnConflit(retour, entiteEchantillon, listEchIdForRetourACreerAvantControle));
+         }
+         catch(Exception e) {
+            listEchIdWithRetourEnConflit.addAll(retrieveListObjetIdWithRetourEnConflit(retour, entiteEchantillon));
+         }
+      }
+
+      //TK-815 : même optimisation pour les dérivés que pour les échantillons - cf commentaire ci-dessus
+      int nbDeriveIdForRetourACreerAvantControle = listDeriveIdForRetourACreerAvantControle.size();
+      if(nbDeriveIdForRetourACreerAvantControle > 0) {
+         try {
+            listDeriveIdWithRetourEnConflit.addAll(filterListObjetIdWithRetourEnConflit(retour, entiteDerive, listDeriveIdForRetourACreerAvantControle));
+         }
+         catch(Exception e) {
+            listDeriveIdWithRetourEnConflit.addAll(retrieveListObjetIdWithRetourEnConflit(retour, entiteDerive));
+         }
+      }
+   }
+   
+   private List<Integer> retrieveListObjetIdWithRetourEnConflit(Retour retour, Entite entite) {
+      List<Integer> result = new ArrayList<Integer>();
+      result.addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateSortie(), entite));
+      result.addAll(retourDao.findObjIdsByDatesAndEntite(retour.getDateRetour(), entite));
+      result.addAll(retourDao.findObjIdsInsideDatesEntite(retour.getDateSortie(), retour.getDateRetour(), entite));
+      
+      return result;
+   }
+   
+   private List<Integer> filterListObjetIdWithRetourEnConflit(Retour retour, Entite entite, List<Integer> listObjId) {
+      List<Integer> result = new ArrayList<Integer>();
+      result.addAll(retourDao.findObjIdsByDatesAndEntiteAndObjIds(retour.getDateSortie(), entite, listObjId));
+      result.addAll(retourDao.findObjIdsByDatesAndEntiteAndObjIds(retour.getDateRetour(), entite, listObjId));
+      result.addAll(retourDao.findObjIdsInsideDatesEntiteObjIds(retour.getDateSortie(), retour.getDateRetour(), entite, listObjId));
+      
+      return result;
+   }
 }
 

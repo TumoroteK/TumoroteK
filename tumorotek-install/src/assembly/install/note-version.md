@@ -1,6 +1,6 @@
 #### Notes
 
-##### Version 2.3.1.0 - Publiée le 05/01/2026
+##### Version 2.3.1.0 - Publiée le 21/01/2026
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
 - YouTrack [TK-444](https://tumorotek.myjetbrains.com/youtrack/issue/TK-444) : Mise à jour des liens sur la page de l'onglet Accueil
@@ -51,6 +51,7 @@
 - YouTrack [TK-668](https://tumorotek.myjetbrains.com/youtrack/issue/TK-668) : Création d'un ${produit-derive} : Améliorer les contrôles de longueur du code
 - YouTrack [TK-656](https://tumorotek.myjetbrains.com/youtrack/issue/TK-656) : Fiche ${produit-derive} : la date de stockage est remise à blanc lors du clic sur Valider
 - YouTrack [TK-429](https://tumorotek.myjetbrains.com/youtrack/issue/TK-429) : Liste des ${produit-derive} : recherche rapide "les 30 derniers" ne fait rien
+- YouTrack [TK-817](https://tumorotek.myjetbrains.com/youtrack/issue/TK-817) : Création ${stockage-evenement} : message indiquant que les évènements sont créés mais ils ne le sont pas
 - YouTrack [TK-531](https://tumorotek.myjetbrains.com/youtrack/issue/TK-531) : ${cession} En mode modification, si l'utilisateur va dans le champ numéro, un message intempestif de doublon apparaît et bloque la validation
 - YouTrack [TK-463](https://tumorotek.myjetbrains.com/youtrack/issue/TK-463) : ${cession} Impression : retirer le nom du patient dans les champs à imprimer par défaut
 - YouTrack [TK-795](https://tumorotek.myjetbrains.com/youtrack/issue/TK-795) : ${export} de ${cession} : message d'erreur si le numéro d'au moins une cession de l'export fait plus de 50 caractères

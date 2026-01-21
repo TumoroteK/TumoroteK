@@ -33,26 +33,32 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.exception.uimessage;
+package fr.aphp.tumorotek.manager.exception;
 
 /**
- * permet de gérer un message à afficher à l'utilisateur en fonction de sa locale pour une cellule donnée d'un fichier d'import.
- * 
- * @since 2.3.1.0 (TK-538)
+ * Cette classe permet de gérer un autre format pour le retour à l'utilisateur (utilisation du logo warning au lieu d'erreur)
+ * Fait lors du catch de cette exception 
  * @author chuet
- *
+ * @since 2.3.1.0 (TK-817)
  */
-public class UIMessageForCell extends UIMessage
+public class WarningException extends BasicTKException
 {
-   //numéro de la ligne associé à ce message : commence à 1
-   private int cellIndex;
 
-   public UIMessageForCell(int cellIndex, String i18nKey, String[] params) {
-      super(i18nKey, params);
-      this.cellIndex = cellIndex;
+   /**
+    * 
+    */
+   private static final long serialVersionUID = -5436964792231689991L;
+
+   public WarningException(){
+      super();
    }
    
-   public int getCellIndex(){
-      return cellIndex;
+   public WarningException(String message){
+      super(message);
+   }
+   
+   public WarningException(String message, Object[] messageParams){
+      this(message);
+      setMessageParams(messageParams);
    }
 }

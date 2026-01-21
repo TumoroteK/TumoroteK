@@ -2281,6 +2281,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
 					epuisement.setObjetId(tkObj.listableObjectId());
 					final Errors errs = ManagerLocator.getRetourValidator().checkDateSortieCoherence(epuisement);
 					if(errs.hasErrors()){
+					   //On ne devrait pas passer une liste d'Errors mais "juste" Errors (TODO TK-816)
 						final List<Errors> errsList = new ArrayList<>();
 						errsList.add(errs);
 						throw new ValidationException(errsList);

@@ -113,6 +113,7 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
     * composé par DateSortie - DateRetour contient la date passée en paramètre.
     * Cette méthode sera appelée lors du contrôle de cohérence de dates pour
     * optimiser l'insertion en batch mode.
+    * Ressemble à {@link findObjIdsByDatesAndEntiteAndObjIds} qui passe une liste d'objets ids pour utiliser un index pour être plus performante 
     * @param dt
     * @param e
     * @return
@@ -121,11 +122,26 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
    List<Integer> findObjIdsByDatesAndEntite(Calendar dt, Entite e);
 
    /**
+    * Filtre les objets ids passés en paramètre pour ne ramener que ceux qui ont au moins un retour dont l'intervalle de dates
+    * composé par DateSortie - DateRetour contient la date passée en paramètre.
+    * Cette méthode sera appelée lors du contrôle de cohérence de dates pour
+    * optimiser l'insertion en batch mode.
+    * Ressemble à {@link findObjIdsByDatesAndEntite} mais plus performante car le paramètre objetIds permet de passer par un index
+    * @param dt
+    * @param e
+    * @param objetIds objets ids à filtrer
+    * @return List<Integer> ids
+    * @since 2.3.1.0 (TK-815)
+    */
+   List<Integer> findObjIdsByDatesAndEntiteAndObjIds(Calendar dt, Entite e, List<Integer> objetIds);
+   
+   /**
     * Recherche objets ids dont les retours formant l'intervalle de dates
     * composé par DateSortie - DateRetour est inclu dans l'intervalle de dates
     * composé par les dates passées en paramètres.
     * Cette méthode sera appelée lors du contrôle de cohérence de dates pour
     * optimiser l'insertion en batch mode.
+    * Ressemble à {@link findObjIdsInsideDatesEntiteObjIds} qui passe une liste d'objets ids pour utiliser un index pour être plus performante
     * @param dt date limite inf
     * @param dt2 date limite sup
     * @param e Entite (Echantillon ou ProdDerive)
@@ -134,6 +150,22 @@ public interface RetourDao extends GenericDaoJpa<Retour, Integer>
     */
    List<Integer> findObjIdsInsideDatesEntite(Calendar dt, Calendar dt2, Entite es);
 
+   /**
+    * Filtre les objets ids passés en paramètre pour ne ramener que ceux qui ont au moins un retour dont l'intervalle de dates
+    * composé par DateSortie - DateRetour est inclu dans l'intervalle de dates
+    * composé par les dates passées en paramètres.
+    * Cette méthode sera appelée lors du contrôle de cohérence de dates pour
+    * optimiser l'insertion en batch mode.
+    * Ressemble à {@link findObjIdsInsideDatesEntite} mais plus performante car le paramètre objetIds permet de passer par un index
+    * @param dt date limite inf
+    * @param dt2 date limite sup
+    * @param e Entite (Echantillon ou ProdDerive)
+    * @param objetIds objets ids à filtrer
+    * @return List<Integer> ids
+    * @since 2.3.1.0 (TK-815)
+    */
+   List<Integer> findObjIdsInsideDatesEntiteObjIds(Calendar dt, Calendar dt2, Entite es, List<Integer> objetIds);
+   
    /**
     * Recherche les Retours dont les objets sont passés en paramètres
     * sous la forme découplée objetId et Entite et dont la date de retour est nulle.

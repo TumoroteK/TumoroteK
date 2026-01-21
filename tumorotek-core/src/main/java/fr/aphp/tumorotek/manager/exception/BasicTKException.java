@@ -33,26 +33,60 @@
  * avez pris connaissance de la licence CeCILL, et que vous en avez
  * accepté les termes.
  **/
-package fr.aphp.tumorotek.manager.exception.uimessage;
+package fr.aphp.tumorotek.manager.exception;
 
 /**
- * permet de gérer un message à afficher à l'utilisateur en fonction de sa locale pour une cellule donnée d'un fichier d'import.
- * 
- * @since 2.3.1.0 (TK-538)
+ * Classe Exception basique qui permet de gérer un message internationalisé
+ * A noter que cette classe aurait dû s'appeler TKException et être la classe parent de toutes les classes Exception de l'application...
+ * car la TKException gère le cas spécifique où un seul paramètre est passé : cas d'une exception portant sur un 
+ * seul objet dont la référence doit être transmise à l'utilisateur 
  * @author chuet
- *
+ * @since 2.3.1.0 (TK-817)
  */
-public class UIMessageForCell extends UIMessage
+public class BasicTKException extends TKException
 {
-   //numéro de la ligne associé à ce message : commence à 1
-   private int cellIndex;
 
-   public UIMessageForCell(int cellIndex, String i18nKey, String[] params) {
-      super(i18nKey, params);
-      this.cellIndex = cellIndex;
+   /**
+    * 
+    */
+   private static final long serialVersionUID = -5436964792231689991L;
+   
+   private Object[] messageParams;
+
+   public BasicTKException(){
+      super();
    }
    
-   public int getCellIndex(){
-      return cellIndex;
+   /**
+    * si le message correspond à la clé d'un message internationalisé, les paramètres doivent commencer à 0
+    * contrairement au message dans TKException où le param doit avoir l'indice 1 ce qui n'est pas habituel ... 
+    * @param message
+    */
+   public BasicTKException(String message){
+      super(message);
    }
+   
+   public BasicTKException(String message, Object[] messageParams){
+      this(message);
+      this.messageParams = messageParams;
+   }
+
+   @Override
+   public String getMessage(){
+      // /!\ cette methode doit renvoyer l'attribut message et non passer par le traitement de la méthode getMessage() du parent
+      return message;
+   }
+   
+   public Object[] getMessageParams(){
+      return messageParams;
+   }
+   protected void setMessageParams(Object[] messageParams){
+      this.messageParams = messageParams;
+   }
+
+   public boolean hasParam() {
+      return messageParams != null && messageParams.length > 0;
+   }
+
+
 }
