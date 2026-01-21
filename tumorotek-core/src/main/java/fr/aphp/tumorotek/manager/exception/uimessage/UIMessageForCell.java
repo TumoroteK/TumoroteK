@@ -35,8 +35,6 @@
  **/
 package fr.aphp.tumorotek.manager.exception.uimessage;
 
-import fr.aphp.tumorotek.manager.exception.AbstractImportCellScopeException;
-
 /**
  * permet de gérer un message à afficher à l'utilisateur en fonction de sa locale pour une cellule donnée d'un fichier d'import.
  * 
@@ -53,23 +51,6 @@ public class UIMessageForCell extends UIMessage
       super(i18nKey, params);
       this.cellIndex = cellIndex;
    }
-   
-//   public UIMessageForCell(int cellIndex, UIMessage uiMessage) {
-//         super(uiMessage.getI18nKey(), uiMessage.getParams());
-//      }
-//      else {
-//         super("", null);
-//      }
-//      this.cellIndex = cellIndex;
-//   }
-//   
-//   public UIMessageForCell(int cellIndex, AbstractWrongImportValueException wrongImportValueException) {
-//      if(wrongImportValueException != null) {
-//         wrongImportValueException.buildUIMessage();
-//         super(wrongImportValueException.get, params);
-//      }
-//      this.cellIndex = cellIndex;
-//   }
    
    public int getCellIndex(){
       return cellIndex;

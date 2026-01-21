@@ -88,8 +88,4 @@ public class WrongImportValueException extends TKException
       return this.colonne.getNom() + ": erreur de formatage, " + this.valeurAttendue + " attendu(e).";
    }
 
-   //A définir en 
-   public UIMessage buildUIMessage() {
-      return new UIMessage("", null);
-   }
 }
