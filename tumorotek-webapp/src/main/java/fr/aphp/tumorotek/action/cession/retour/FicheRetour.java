@@ -69,7 +69,8 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.echantillon.gatsbi.GatsbiControllerEchantillon;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.manager.exception.WarningException;
+import fr.aphp.tumorotek.manager.exception.TKWarningException;
+import fr.aphp.tumorotek.manager.exception.TKWarningRuntimeException;
 import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
 import fr.aphp.tumorotek.model.TKStockableObject;
@@ -487,43 +488,54 @@ public class FicheRetour extends AbstractFicheCombineController
          }else{
             objToUpdate.addAll(getObjects());
          }
-         insertOk = ManagerLocator.getRetourManager().createRetourHugeListManager(objToUpdate, oldEmplacements, retour,
-            selectedCollaborateur, cession, transformation, incident, SessionUtils.getLoggedUser(sessionScope));
-
-         // si l'insertion s'est passée sans erreurs
-         // refresh statuts objets dans les listes
-         // si ENCOURS ou IMPACT
-         if(insertOk && (retour.getDateRetour() == null || (retour.getImpact() != null && retour.getImpact())
-            || (retour.getSterile() != null && !retour.getSterile())) && getObjects().size() < 100){
-
-            final List<TKdataObject> derives = new ArrayList<>();
-            final List<TKdataObject> echans = new ArrayList<>();
-
-            for(int i = 0; i < getObjects().size(); i++){
-               if(getObjects().get(i) instanceof Echantillon){
-                  // on vérifie que l'on retrouve bien la
-                  // page contenant la liste
-                  // des échantillons
-                  // refresh object
-                  echans.add(ManagerLocator.getEchantillonManager().findByIdManager(getObjects().get(i).listableObjectId()));
-               }else if(getObjects().get(i) instanceof ProdDerive){
-                  // on vérifie que l'on retrouve bien la
-                  // page contenant la liste des dérives
-
-                  // refresh object
-                  derives.add(ManagerLocator.getProdDeriveManager().findByIdManager(getObjects().get(i).listableObjectId()));
+         //createRetourHugeListManager a dû renvoyer une TKWarningException qui n'était pas une RuntimeException pour que le traitement
+         //ne fasse pas de rollback dans le cas d'un Warning à remonter à l'utilisateur
+         //mais pour ne pas avoir à modifier la signature de createNewObject() utilisé dans beaucoup de traitements, 
+         //il faut retransformer cette exception en RuntimeException c'est-à-dire en TKWarningRuntimeException...
+         try {
+            //NB : createRetourHugeListManager lançant des exceptions en cas de problème, le retour (insertOk) vaut toujours true
+            //la méthode ne devrait donc rien retourner ...
+            insertOk = ManagerLocator.getRetourManager().createRetourHugeListManager(objToUpdate, oldEmplacements, retour,
+               selectedCollaborateur, cession, transformation, incident, SessionUtils.getLoggedUser(sessionScope));
+   
+            // si l'insertion s'est passée sans erreurs
+            // refresh statuts objets dans les listes
+            // si ENCOURS ou IMPACT
+            if(insertOk && (retour.getDateRetour() == null || (retour.getImpact() != null && retour.getImpact())
+               || (retour.getSterile() != null && !retour.getSterile())) && getObjects().size() < 100){
+   
+               final List<TKdataObject> derives = new ArrayList<>();
+               final List<TKdataObject> echans = new ArrayList<>();
+   
+               for(int i = 0; i < getObjects().size(); i++){
+                  if(getObjects().get(i) instanceof Echantillon){
+                     // on vérifie que l'on retrouve bien la
+                     // page contenant la liste
+                     // des échantillons
+                     // refresh object
+                     echans.add(ManagerLocator.getEchantillonManager().findByIdManager(getObjects().get(i).listableObjectId()));
+                  }else if(getObjects().get(i) instanceof ProdDerive){
+                     // on vérifie que l'on retrouve bien la
+                     // page contenant la liste des dérives
+   
+                     // refresh object
+                     derives.add(ManagerLocator.getProdDeriveManager().findByIdManager(getObjects().get(i).listableObjectId()));
+                  }
+               }
+               // update de l'échantillon dans la liste
+               if(!echans.isEmpty() && getMainWindow().isFullfilledComponent("echantillonPanel", "winEchantillon")
+                  && getEchantillonController() != null && getEchantillonController().getListe() != null){
+                  getEchantillonController().getListe().updateMultiObjectsGridListInPlace(echans);
+               }
+               // update de l'échantillon dans la liste
+               if(!derives.isEmpty() && getMainWindow().isFullfilledComponent("derivePanel", "winProdDerive")
+                  && getProdDeriveController() != null && getProdDeriveController().getListe() != null){
+                  getProdDeriveController().getListe().updateMultiObjectsGridListInPlace(derives);
                }
             }
-            // update de l'échantillon dans la liste
-            if(!echans.isEmpty() && getMainWindow().isFullfilledComponent("echantillonPanel", "winEchantillon")
-               && getEchantillonController() != null && getEchantillonController().getListe() != null){
-               getEchantillonController().getListe().updateMultiObjectsGridListInPlace(echans);
-            }
-            // update de l'échantillon dans la liste
-            if(!derives.isEmpty() && getMainWindow().isFullfilledComponent("derivePanel", "winProdDerive")
-               && getProdDeriveController() != null && getProdDeriveController().getListe() != null){
-               getProdDeriveController().getListe().updateMultiObjectsGridListInPlace(derives);
-            }
+         }
+         catch (TKWarningException e) {
+            throw new TKWarningRuntimeException(e);
          }
       }
    }
@@ -662,7 +674,7 @@ public class FicheRetour extends AbstractFicheCombineController
          }
 
       }
-      catch(final WarningException warning){
+      catch(final TKWarningRuntimeException warning){
          Clients.clearBusy();
          Messagebox.show(handleExceptionMessage(warning), "Warning", Messagebox.OK, Messagebox.EXCLAMATION);
       }

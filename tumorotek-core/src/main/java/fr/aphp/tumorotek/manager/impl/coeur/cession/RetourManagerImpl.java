@@ -70,12 +70,12 @@ import fr.aphp.tumorotek.dao.stockage.EmplacementDao;
 import fr.aphp.tumorotek.dao.stockage.IncidentDao;
 import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
-import fr.aphp.tumorotek.manager.exception.BasicTKException;
+import fr.aphp.tumorotek.manager.exception.TKBasicRuntimeException;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.ObjectStatutException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.TKException;
-import fr.aphp.tumorotek.manager.exception.WarningException;
+import fr.aphp.tumorotek.manager.exception.TKWarningException;
 import fr.aphp.tumorotek.manager.impl.coeur.CreateOrUpdateUtilities;
 import fr.aphp.tumorotek.manager.qualite.OperationManager;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
@@ -405,7 +405,7 @@ public class RetourManagerImpl implements RetourManager
    @Override
    public boolean createRetourHugeListManager(final List<TKStockableObject> objects, final List<OldEmplTrace> oldEmpAdrls,
       final Retour retour, final Collaborateur collaborateur, final Cession cession, final Transformation transformation,
-      final Incident incident, final Utilisateur utilisateur){
+      final Incident incident, final Utilisateur utilisateur) throws TKWarningException {
 
       final boolean ok = true;
 
@@ -646,7 +646,12 @@ public class RetourManagerImpl implements RetourManager
          //ce catch est nécessaire, sinon TKException est catché par le catch global suivant (sur Exception) ... 
          }catch(final TKException r1){
             throw r1;
-         }catch(final Exception e1){
+         }
+         //TK-817 : si c'est une TKWarningException on la relance tel quel pour ne pas faire de rollback
+         catch(final TKWarningException warning){
+            throw warning;
+         }
+         catch(final Exception e1){
             throw new RuntimeException(e1);
          }finally{
             if(pstmt != null){
@@ -692,14 +697,15 @@ public class RetourManagerImpl implements RetourManager
    }
 
    //NB : l'objectif premier de cette méthode est de lancer des exceptions si incompatibilité
-   //Ainsi même si les exceptions lancées sont des Runtime, elles sont ajoutées dans la signature pour mettre en avant ceci
+   //Ainsi même si BasicTKRuntimeException est une RuntimeException contrairement à WarningException, elle est également
+   //ajoutée dans la signature pour bien mettre en évidence les 2 cas gérer
    //Et pour la même raison, même si WarningException est une BasicException, les 2 sont lancées
    //A noter que dans l'absolu, l'exception de plus haut niveau de TK, TKException n'aurait pas dû être une RuntimeException
    //pour que le développeur est la main pour définir les exceptions filles comme Runtime ou non...
    private void manageIncompatibiliteDateStockage(
       final List<String> listEchCodeForIncompatibiliteWithDateStockage,
       final List<String> listDeriveCodeForIncompatibiliteWithDateStockage,
-      final int nbRetourACreer, final Date dateSortie) throws WarningException, BasicTKException {
+      final int nbRetourACreer, final Date dateSortie) throws TKWarningException, TKBasicRuntimeException {
       //si aucun retour n'a été créé à cause de dates de stockage incohérentes avec la date de sortie, lancement d'une BasicTKException
       //Par contre, si seulement certains n'ont pas été créés, lancement d'une WarningException 
       int nbIncompatibiliteDateStockageForEch = listEchCodeForIncompatibiliteWithDateStockage.size();
@@ -714,7 +720,8 @@ public class RetourManagerImpl implements RetourManager
             else {
                keyI18nMessage = "date.validation.incoherence.dateStockage.pluriel";
             }
-            throw new BasicTKException(keyI18nMessage, new Object[] {dateSortie});
+            //dans ce cas, on peut lancer une RuntimeException qui fera un rollback sur la transaction en cours puisque le traitement n'aura rien fait
+            throw new TKBasicRuntimeException(keyI18nMessage, new Object[] {dateSortie});
          }
          else {
             Object[] params = null;
@@ -740,7 +747,8 @@ public class RetourManagerImpl implements RetourManager
                params[0] = listDeriveCodeForIncompatibiliteWithDateStockage.stream().collect(Collectors.joining(", "));
                params[1] = dateSortie;
             }
-            throw new WarningException(keyI18nMessage, params);
+            //on lance TKWarningException qui n'est pas une RuntimeException et donc n'entrainera pas un rollback des autres évènements créés
+            throw new TKWarningException(keyI18nMessage, params);
          }
       }
    }

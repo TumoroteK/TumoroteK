@@ -36,57 +36,44 @@
 package fr.aphp.tumorotek.manager.exception;
 
 /**
- * Classe Exception basique qui permet de gérer un message internationalisé
- * A noter que cette classe aurait dû s'appeler TKException et être la classe parent de toutes les classes Exception de l'application...
- * car la TKException gère le cas spécifique où un seul paramètre est passé : cas d'une exception portant sur un 
- * seul objet dont la référence doit être transmise à l'utilisateur 
+ * Cette classe permet de gérer un message internationalisé avec des paramètres, comme {@link TKBasicRuntimeException}, mais 
+ * avec un autre format d'affichage pour l'utilisateur (utilisation du logo warning au lieu d'erreur),
+ * via un catch spécifique. 
+ * Toutefois, cette classe n'hérite pas de {@link TKBasicRuntimeException} qui elle même hérite de RuntimeException car 
+ * on souhaite qu'elle puisse être lancée dans une méthode gérant une transaction avec la base de données 
+ * <b>sans</b> entrainer un rollback
+ * A noter que cette classe ne va pas jusqu'à AbstractController.handleExceptionMessage()
+ * car il aurait fallu modifier la signature d'une méthode utilisée par héritage dans de nombreuses classes
+ * (Or TK ne travaille jusqu'à présent qu'avec des RuntimException donc il y a peu de throws au niveau des signatures)
+ * TKWarningException est donc transformée en {@link TKWarningRuntimeException} dès qu'elle est catchée par la couche web (où il n'y a plus 
+ * de risque de rollback)
  * @author chuet
  * @since 2.3.1.0 (TK-817)
  */
-public class BasicTKException extends TKException
+public class TKWarningException extends Exception
 {
-
-   /**
-    * 
-    */
    private static final long serialVersionUID = -5436964792231689991L;
-   
-   private Object[] messageParams;
 
-   public BasicTKException(){
+   private Object[] messageParams;
+   
+   public TKWarningException(){
       super();
    }
    
-   /**
-    * si le message correspond à la clé d'un message internationalisé, les paramètres doivent commencer à 0
-    * contrairement au message dans TKException où le param doit avoir l'indice 1 ce qui n'est pas habituel ... 
-    * @param message
-    */
-   public BasicTKException(String message){
+   public TKWarningException(String message){
       super(message);
    }
    
-   public BasicTKException(String message, Object[] messageParams){
+   public TKWarningException(String message, Object[] messageParams){
       this(message);
-      this.messageParams = messageParams;
-   }
-
-   @Override
-   public String getMessage(){
-      // /!\ cette methode doit renvoyer l'attribut message et non passer par le traitement de la méthode getMessage() du parent
-      return message;
+      this.messageParams=messageParams;
    }
    
    public Object[] getMessageParams(){
       return messageParams;
    }
-   protected void setMessageParams(Object[] messageParams){
-      this.messageParams = messageParams;
-   }
 
    public boolean hasParam() {
       return messageParams != null && messageParams.length > 0;
    }
-
-
 }

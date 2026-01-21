@@ -64,6 +64,7 @@ import fr.aphp.tumorotek.dao.systeme.EntiteDao;
 import fr.aphp.tumorotek.dao.utilisateur.UtilisateurDao;
 import fr.aphp.tumorotek.manager.coeur.cession.RetourManager;
 import fr.aphp.tumorotek.manager.exception.ObjectStatutException;
+import fr.aphp.tumorotek.manager.exception.TKWarningException;
 import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.manager.validation.BeanValidator;
@@ -465,7 +466,7 @@ public class RetourManagerTest extends AbstractManagerTest4
 
    @Test
    @SuppressWarnings("deprecation")
-   public void testCreateRetourHugeListManager() throws ParseException{
+   public void testCreateRetourHugeListManager() throws ParseException, TKWarningException {
       final Retour base = new Retour();
 
       /*Champs obligatoires*/

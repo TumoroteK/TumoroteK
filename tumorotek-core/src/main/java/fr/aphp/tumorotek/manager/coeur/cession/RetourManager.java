@@ -37,6 +37,8 @@ package fr.aphp.tumorotek.manager.coeur.cession;
 
 import java.util.List;
 
+import fr.aphp.tumorotek.manager.exception.TKBasicRuntimeException;
+import fr.aphp.tumorotek.manager.exception.TKWarningException;
 import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.cession.Cession;
@@ -159,7 +161,7 @@ public interface RetourManager
     * @version 2.2.3-genno
     */
    boolean createRetourHugeListManager(List<TKStockableObject> objects, List<OldEmplTrace> oldEmpAdrls, Retour retour,
-      Collaborateur collaborateur, Cession cession, Transformation transformation, Incident incident, Utilisateur utilisateur);
+      Collaborateur collaborateur, Cession cession, Transformation transformation, Incident incident, Utilisateur utilisateur) throws TKWarningException;
    /*
    void createRetourHugeListByTxManager(List<TKStockableObject> objects,
    		Hashtable<TKStockableObject, String> oldEmpAdrls,

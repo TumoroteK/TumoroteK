@@ -36,29 +36,35 @@
 package fr.aphp.tumorotek.manager.exception;
 
 /**
- * Cette classe permet de gérer un autre format pour le retour à l'utilisateur (utilisation du logo warning au lieu d'erreur)
- * Fait lors du catch de cette exception 
+ * Cette classe permet de gérer un message internationalisé avec des paramètres, comme {@link TKBasicRuntimeException}, mais 
+ * avec un autre format d'affichage pour l'utilisateur (utilisation du logo warning au lieu d'erreur),
+ * via un catch spécifique. 
+ * Elle peut être instanciée à partir d'une {@link TKWarningException} dans le cas où le lancement de cette exception
+ * se fait dans une méthode liée à une transaction avec la base de données et qu'il ne faut pas faire de rollback
+ * (pour rappel TK s'appuie sur le mécanisme spring qui déclenche un rollback dès qu'une RuntimeException est lancée)
  * @author chuet
  * @since 2.3.1.0 (TK-817)
  */
-public class WarningException extends BasicTKException
+public class TKWarningRuntimeException extends TKBasicRuntimeException
 {
 
-   /**
-    * 
-    */
-   private static final long serialVersionUID = -5436964792231689991L;
+   private static final long serialVersionUID = -2771885815113255200L;
 
-   public WarningException(){
+   public TKWarningRuntimeException() {
       super();
    }
    
-   public WarningException(String message){
+   public TKWarningRuntimeException(String message) {
       super(message);
    }
    
-   public WarningException(String message, Object[] messageParams){
+   public TKWarningRuntimeException(String message, Object[] messageParams) {
       this(message);
       setMessageParams(messageParams);
    }
+   
+   public TKWarningRuntimeException(TKWarningException warningException) {
+      this(warningException.getMessage(), warningException.getMessageParams());
+   }
+   
 }
