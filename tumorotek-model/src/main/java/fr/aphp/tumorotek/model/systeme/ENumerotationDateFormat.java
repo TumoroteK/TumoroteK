@@ -43,7 +43,7 @@ public enum ENumerotationDateFormat
 {
 
    AAAA("aaaa", "yyyy"), AA("aa", "yy"), AAAA_MM("aaaamm", "yyyy-MM"), AA_MM("aamm", "yy-MM"),
-   AAAA_MM_JJ("aaaammjj", "yyyy-MM-dd"), AA_MM_JJ("aammjj", "yyyy-MM-dd"), MM_JJ("mmjj", "MM-dd");
+   AAAA_MM_JJ("aaaammjj", "yyyy-MM-dd"), AA_MM_JJ("aammjj", "yy-MM-dd"), MM_JJ("mmjj", "MM-dd");
 
    private String libelle;
 

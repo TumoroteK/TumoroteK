@@ -65,6 +65,7 @@
 - YouTrack [TK-627](https://tumorotek.myjetbrains.com/youtrack/issue/TK-627) : <span class="badge badge-administration">Administration</span> Collections : ajouter un tri sur toutes les entêtes de colonne
 - YouTrack [TK-800](https://tumorotek.myjetbrains.com/youtrack/issue/TK-800) : <span class="badge badge-administration">Administration</span> Fiche Collection : l'assignation d'une couleur pour les échantillons n'est pas possible
 - YouTrack [TK-625](https://tumorotek.myjetbrains.com/youtrack/issue/TK-625) : <span class="badge badge-administration">Administration</span> Impression > sélection d'un modèle existant : les blocs apparaissent en double
+- YouTrack [TK-819](https://tumorotek.myjetbrains.com/youtrack/issue/TK-819) : <span class="badge badge-administration">Administration</span> Numérotation > mauvaise gestion du format de date aa-mm-jj
 - YouTrack [TK-460](https://tumorotek.myjetbrains.com/youtrack/issue/TK-460) : <span class="badge badge-statistiques">Statistiques</span> : plantage lors du tri sur le résultat d'un indicateur
 
 ###### Corrections dans le module Gatsbi (version 1.0.0.11)
