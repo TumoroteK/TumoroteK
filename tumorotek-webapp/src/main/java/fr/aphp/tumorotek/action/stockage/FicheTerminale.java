@@ -1520,13 +1520,13 @@ public class FicheTerminale extends AbstractFicheCombineStockageController
 					if(empDest.getEntite().getNom().equals("Echantillon")){
 						// emplForRetours.put(ManagerLocator.getEchantillonManager().findByIdManager(empDest.getObjetId()),
 						//   empDest.clone());
-						emplForRetours.add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empDep.getObjetId()), 
+						emplForRetours.add(new OldEmplTrace(ManagerLocator.getEchantillonManager().findByIdManager(empDest.getObjetId()), 
 								ManagerLocator.getEmplacementManager().getAdrlManager(empDest, false), 
 								ManagerLocator.getEmplacementManager().getConteneurManager(empDest), empDest.clone()));
 					}else if(empDest.getEntite().getNom().equals("ProdDerive")){
 						// emplForRetours.put(ManagerLocator.getProdDeriveManager().findByIdManager(empDest.getObjetId()),
 						//   empDest.clone());
-						emplForRetours.add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empDep.getObjetId()), 
+						emplForRetours.add(new OldEmplTrace(ManagerLocator.getProdDeriveManager().findByIdManager(empDest.getObjetId()), 
 								ManagerLocator.getEmplacementManager().getAdrlManager(empDest, false), 
 								ManagerLocator.getEmplacementManager().getConteneurManager(empDest), empDest.clone()));
 					}
