@@ -22,6 +22,8 @@ CREATE PROCEDURE stats_count_prel_raison_nonconf(IN date_debut DATE, IN date_fin
 -- mettre à jour AbstractGridListVM
 -- et stats_fr.properties
 
+-- /!\ si le fichier a déjà été chargé mais que les procédures stockées ont été écrasées par le standard, il peut être nécessaire
+-- de mettre en commentaire les 6 inserts suivants car les données sont déjà présentes en base...  
 insert into SUBDIVISION values (4, 'ConformeArrivee.Raison', 257);
 insert into SUBDIVISION values (5, 'ConformeTraitement.Raison', 261);
 insert into SUBDIVISION values (6, 'ConformeCession.Raison', 262);
@@ -166,5 +168,5 @@ CREATE PROCEDURE stats_TER_(IN name_Proc varchar(50), IN date_debut DATE, IN dat
 delimiter ;
 CALL stats_TER_('count_prel_raison_nonconf','1970-01-01','2021-07-13',4);
 
-SELECT banque_id, o.non_conformite_id, count(prelevement_id) as cc FROM PRELEVEMENT p
-     OBJET_NON_CONFORME o on p.prelevement_id=o.objet_id WHERE o.entite_id=2 AND p.DATE_PRELEVEMENT BETWEEN '1970-01-01' AND '2021-07-13' GROUP BY p.banque_id, o.non_conformite_id
+SELECT banque_id, o.non_conformite_id, count(prelevement_id) as cc FROM PRELEVEMENT p inner join
+     OBJET_NON_CONFORME o on p.prelevement_id=o.objet_id WHERE o.entite_id=2 AND p.DATE_PRELEVEMENT BETWEEN '1970-01-01' AND '2021-07-13' GROUP BY p.banque_id, o.non_conformite_id;
