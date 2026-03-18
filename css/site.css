@@ -101,6 +101,11 @@ svg.fa-exclamation-triangle{
     background-color: #F5CBF5;
 }
 
+.badge-import {
+    color: #800080;
+    background-color: #D7A6D7;
+}
+
 .badge-impression {
     color: #808000;
     background-color:#E1E100;
