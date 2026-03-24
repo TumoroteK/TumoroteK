@@ -2882,15 +2882,20 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          int i = 0;
          Textbox tb;
          for(final EchantillonDTO deco : getEchantillonsDecorated()){
+            
             if(deco.isNew() && deco.getAdrlTmp() == null){
-               if(i < sT.getScanTubes().size()){
+               while(i < sT.getScanTubes().size() && sT.getScanTubes().get(i).getCode() == null) {//TK-848 : on récupère le tube suivant avec un code renseigné
+                     i++;
+               }
+               if(i == sT.getScanTubes().size()) { 
+                  break;
+               }
+               else {
                   tb = (Textbox) echantillonsList.getRows().getChildren().get(getEchantillonsDecorated().indexOf(deco))
                      .getFirstChild().getNextSibling();
                   tb.setValue(sT.getScanTubes().get(i).getCode());
                   Events.postEvent("onChange", tb, null);
                   i++;
-               }else{
-                  break;
                }
             }
          }
