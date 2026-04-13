@@ -1561,11 +1561,6 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete, filesToMove);
          }
 
-         //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
-         if(!bank.getContexte().equals(derive.getBanque().getContexte())){
-            derive.setDelegate(null);
-         }
-
          derive.setBanque(bank);
 
          if(findDoublonManager(derive)){

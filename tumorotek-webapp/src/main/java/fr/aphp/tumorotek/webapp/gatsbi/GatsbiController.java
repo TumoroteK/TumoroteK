@@ -147,7 +147,7 @@ public class GatsbiController
          put(ContexteType.PATIENT, new String[] {"patientBlockDiv"});
          
          put(ContexteType.PRELEVEMENT, new String[] {"identifiantBlockDiv", "patientBlockDiv", "infoPrelBlockDiv",
-            "conditBlockDiv", "consentBlockDiv", "departBlockDiv", "arriveeBlockDiv"});
+            "conditBlockDiv", "consentBlockDiv", "infosCompBlockDiv", "departBlockDiv", "arriveeBlockDiv"});
 
          put(ContexteType.ECHANTILLON, new String[] {"identifiantBlockDiv", "infoEchanBlockDiv", "anapathInfosBlockDiv"});
       }
@@ -166,11 +166,11 @@ public class GatsbiController
          put(ContexteType.MALADIE, new String[] {"codeDiv", "dateDiagnosticDiv", "visiteMedecinsDiv"});
          // prelevement
          put(ContexteType.PRELEVEMENT,
-            new String[] {"codeDiv", "codeLaboDiv", "natureDiv", 
+            new String[] {"codeDiv", "codeLaboDiv", "natureDiv", "protocolesDiv",
                "ndaDiv", 
                "datePrelDiv", "typeDiv", "sterileDiv", "risquesDiv",
                "etabPreleveurDiv", "servicePreleveurDiv", "preleveurDiv", "conditTypeDiv", "conditNbrDiv", "conditMilieuDiv",
-               "consentTypeDiv", "consentDateDiv",
+               "consentTypeDiv", "consentDateDiv", "complementDiagnosticDiv",
                // transfert site stockage
                "dateDepartDiv", "transporteurDiv", "tempTranspDiv", "congPrelDiv", "dateArriveeDiv", "operateurDiv",
                "quantiteDiv", "conformeArriveeDiv", "congBiothequeDiv"});
@@ -339,7 +339,7 @@ public class GatsbiController
                   List<TKThesaurusObject> thesObjs =  filterExistingListModel(contexte, lModel, thesaurusChampId);
 
                   // ListModelList conversion
-                  //Dans la recherche avancée, les listes à choix multiple (risques et conformité) ont été faites avec un ListModelList (nom de l'attribut suffixé par Model)
+                  //Dans la recherche avancée, les listes à choix multiple (risques, protocoles et conformité) ont été faites avec un ListModelList (nom de l'attribut suffixé par Model)
                   //Dans le reste (fiche edition), les listes sont des List. Dans ce cas l'attribut n'a pas de suffixe d'où la règle ci-dessous
                   if(!((String) div.getAttribute("listmodel")).endsWith("Model")){
                      PropertyUtils.setProperty(controller, (String) div.getAttribute("listmodel"), thesObjs);

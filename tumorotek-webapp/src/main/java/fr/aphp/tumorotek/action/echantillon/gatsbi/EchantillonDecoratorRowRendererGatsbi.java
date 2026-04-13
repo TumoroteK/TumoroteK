@@ -63,11 +63,6 @@ public class EchantillonDecoratorRowRendererGatsbi extends AbstractEchantillonDe
    }
 
    @Override
-   public void render(final Row row, final EchantillonDTO deco, final int index){
-      super.render(row, deco, index);
-   }
-
-   @Override
    protected void renderEchantillon(final Row row, final EchantillonDTO deco)
       throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
       for(final Integer chpId : contexte.getChampEntiteInTableauOrdered()){

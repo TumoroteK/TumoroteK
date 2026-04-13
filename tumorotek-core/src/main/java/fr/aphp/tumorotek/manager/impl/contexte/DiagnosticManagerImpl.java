@@ -91,22 +91,14 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    @Override
    public void createObjectManager(final Diagnostic obj){
 
-      final Diagnostic pt = obj;
+      final Diagnostic diagnostic = obj;
 
-      // On vérifie que la pf n'est pas null. Si c'est le cas on envoie
-      // une exception
-      if(pt.getPlateforme() == null){
-         log.warn("Objet obligatoire Plateforme manquant lors de la creation d'un objet Diagnostic");
-         throw new RequiredObjectIsNullException("Diagnostic", "creation", "Plateforme");
-      }
-      pt.setPlateforme(plateformeDao.mergeObject(pt.getPlateforme()));
-
-      BeanValidator.validateObject(pt, new Validator[] {diagnosticValidator});
-      if(!findDoublonManager(pt)){
-         diagnosticDao.createObject(pt);
-         log.info("Enregistrement objet Diagnostic {}",  pt);
+      BeanValidator.validateObject(diagnostic, new Validator[] {diagnosticValidator});
+      if(!findDoublonManager(diagnostic)){
+         diagnosticDao.createObject(diagnostic);
+         log.info("Enregistrement objet Diagnostic {}",  diagnostic);
       }else{
-         log.warn("Doublon lors creation objet Diagnostic {}",  pt);
+         log.warn("Doublon lors creation objet Diagnostic {}",  diagnostic);
          throw new DoublonFoundException("Diagnostic", "creation");
       }
    }
@@ -123,7 +115,6 @@ public class DiagnosticManagerImpl implements DiagnosticManager
       }
    }
 
-   @Override
    public List<Diagnostic> findAllObjectsManager(){
       return diagnosticDao.findAll();
    }
@@ -141,24 +132,19 @@ public class DiagnosticManagerImpl implements DiagnosticManager
    @Override
    public boolean findDoublonManager(final Diagnostic o){
       if(o != null){
-         final Diagnostic pt = o;
-         if(pt.getId() == null){
-            return diagnosticDao.findAll().contains(pt);
+         final Diagnostic diagnostic = o;
+         if(diagnostic.getId() == null){
+            return diagnosticDao.findAll().contains(diagnostic);
          }
-         return diagnosticDao.findByExcludedId(pt.getId()).contains(pt);
+         return diagnosticDao.findByExcludedId(diagnostic.getId()).contains(diagnostic);
       }
       return false;
    }
 
    @Override
    public boolean isUsedObjectManager(final Diagnostic o){
-      final Diagnostic pt = diagnosticDao.mergeObject(o);
-      return pt.getMaladies().size() > 0;
-   }
-
-   @Override
-   public List<Diagnostic> findByOrderManager(final Plateforme pf){
-      return diagnosticDao.findByPfOrder(pf);
+      final Diagnostic diagnostic = diagnosticDao.mergeObject(o);
+      return diagnostic.getMaladies().size() > 0;
    }
 
    @Override

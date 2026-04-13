@@ -104,8 +104,6 @@ public class ImportColonneDecorator
             }else{
                format = colonne.getChamp().getChampEntite().getDataType().getType();
             }
-         }else if(colonne.getChamp().getChampDelegue() != null){
-            format = colonne.getChamp().getChampDelegue().getDataType().getType();
          }else{
             format = colonne.getChamp().getChampAnnotation().getDataType().getType();
          }
@@ -130,8 +128,6 @@ public class ImportColonneDecorator
             } else { // rendu entite Maladie -> Visite
                entite = Labels.getLabel("gatsbi.visite");
             }
-         }else if(colonne.getChamp().getChampDelegue() != null){
-            entite = Labels.getLabel("Entite." + colonne.getChamp().getChampDelegue().getEntite().getNom());
          }else{
             entite =
                Labels.getLabel("Entite." + colonne.getChamp().getChampAnnotation().getTableAnnotation().getEntite().getNom());

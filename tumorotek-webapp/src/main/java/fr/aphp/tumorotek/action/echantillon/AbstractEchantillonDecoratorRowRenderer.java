@@ -39,7 +39,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
 import java.util.List;
 
-import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -131,14 +130,17 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
          renderEchantillon(row, deco);
       }catch(final Exception e){
          // une erreur inattendue levée dans la récupération
-         // ou le rendu d'une propriété prel
+         // ou le rendu d'une propriété échantillon
          // va arrêter le rendu du reste du tableau
          throw new RuntimeException(e);
       }
 
       // objet statut
       if(deco.getStatut() != null){
-         new Label(Labels.getLabel("Statut." + deco.getStatut().getStatut())).setParent(row);
+         //la clé i18n n'est pas directement tirée du statut :-( (car l'espace éventuellement contenu dans le statut en bdd
+         //a été remplacé par un _ dans la clé i18n ...
+         String libelleI18nForStatut = ObjectTypesFormatters.ILNObjectStatut(deco.getStatut());
+         new Label(libelleI18nForStatut).setParent(row);
       }else{
          new Label().setParent(row);
       }      
@@ -161,29 +163,9 @@ public abstract class AbstractEchantillonDecoratorRowRenderer implements RowRend
       delImg.setParent(row);
    }
 
-   /**
-    * Rendu des colonnes spécifiques échantillon, sera surchargé par Gatsbi.
-    *
-    * @param row
-    * @param deco
-    */
-   protected void renderEchantillon(final Row row, final EchantillonDTO deco)
-      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
-      // type
-      if(deco.getType() != null){
-         new Label(deco.getType()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
-      // quantité
-      if(deco.getOnlyQuantiteInit() != null){
-         new Label(deco.getOnlyQuantiteInit()).setParent(row);
-      }else{
-         new Label().setParent(row);
-      }
-
-   }
+   abstract protected void renderEchantillon(final Row row, final EchantillonDTO deco)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException;
+   
 
    /**
     * Sera surchargée par Gatsbi pour ne pas dessiner les icones quand les champs

@@ -57,8 +57,9 @@
 					<column label="${c:l('prelevement.patient')}" 
 						visible="false" width="100px"/>
 					<column label="${c:l('Champ.Echantillon.DateStock')}" sort="auto(dateStock)"/>
-					<column label="${c:l('Champ.Echantillon.Organe')}"/>
-					<column label="${c:l('ficheEchantillon.codeLesionelLabel')}"/>
+					<column label="${c:l('Champ.Echantillon.DelaiCgl')}"/>
+					<column label="${c:l('Champ.Echantillon.Organe')}" if="${lwinEchantillon$composer.displayEchansOrganeEtCodeLesionnel()}"/>
+					<column label="${c:l('ficheEchantillon.codeLesionelLabel')}" if="${lwinEchantillon$composer.displayEchansOrganeEtCodeLesionnel()}"/>
 					<column label="${c:l('general.type')}" sort="auto(echantillonType.type)" />
 					<column label="${c:l('Champ.Echantillon.Quantite')}"/>
 					<column label="${c:l('Champ.Echantillon.ObjetStatut')}" sort="auto(objetStatut.statut)"/>

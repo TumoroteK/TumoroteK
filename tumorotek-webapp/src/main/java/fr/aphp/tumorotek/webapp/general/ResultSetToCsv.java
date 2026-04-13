@@ -45,6 +45,7 @@ import java.text.SimpleDateFormat;
 
 import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.webapp.general.export.Export;
 
 /**
@@ -73,8 +74,12 @@ public class ResultSetToCsv extends ResultSetToExcel
       setUpdateThread(getExport());
    }
 
+   //TK-520 : pour que ça compile, il a été ajouté "EContexte contexte" comme paramètre mais le code n'a pas été adapté...
+   //L'export plante donc cf commentaire dans AbstractObjectTabController.onLaterExportCatalogue(). 
+   //Par ailleurs, l'export csv n'est utilisé que pour les exports des catalogues. Or ceux-ci ne sont rattachables que pour les collections anapath
+   //donc pas de filtre des champs à afficher dans le cas de cette classe
    @Override
-   public void generate() throws Exception{
+   public void generate(EContexte contexte) throws Exception{
       int currentRow = 0;
       int numCols = 0;
       final ResultSetMetaData resultSetMetaData = getResultSet().getMetaData();
@@ -124,6 +129,7 @@ public class ResultSetToCsv extends ResultSetToExcel
          //				entite = "Cession";
          //			}
 
+         //bizarre cette mise en commentaire : pas d'écriture de ligne d'entête ??
          // writeCell(row, i, isAnno ? title : labelPrintTitle(title, entite),
          //								formatTypes[i], boldStyle);
       }

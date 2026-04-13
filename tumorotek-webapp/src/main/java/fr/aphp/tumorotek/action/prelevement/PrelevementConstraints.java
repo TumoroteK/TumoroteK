@@ -80,6 +80,16 @@ public final class PrelevementConstraints
       nomConstraint.setSize(50);
    }
 
+   private static ConstWord complementDiagnosticConstraint = new ConstWord();
+   static{
+      complementDiagnosticConstraint.setNullable(true);
+      complementDiagnosticConstraint.setSize(300);
+   }
+
+   public static ConstWord getComplementDiagnosticConstraint(){
+      return complementDiagnosticConstraint;
+   }
+   
    private static ConstWord nomNullConstraint = new ConstWord();
    static{
       nomNullConstraint.setNullable(true);

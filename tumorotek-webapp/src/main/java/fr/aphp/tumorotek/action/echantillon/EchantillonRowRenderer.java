@@ -54,10 +54,13 @@ import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.action.utils.TKStockableObjectUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
+import fr.aphp.tumorotek.model.contexte.EContexte;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * EchantillonRenderer affiche dans le Row les membres d'Echantillon sous forme
@@ -214,10 +217,15 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
 
       renderDateProperty(row, echan, "dateStock");
 
-      renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echan));
+      //TK-520 :
+      renderDelaiCgl(row, echan);
+      if(displayEchansOrganeEtCodeLesionnel()) {
+         renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echan));
 
-      renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan));
-
+         renderCodeAssignes(row, ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan));
+      }
+      //Fin TK-520
+      
       renderThesObjectProperty(row, echan, "echantillonType");
 
       renderQuantite(row, echan);
@@ -440,5 +448,11 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
       }else{
          new Label().setParent(row);
       }
+   }
+   
+   //TK-520 : cette méthode static sera appelé par tous les controllers devant géré l'affichage des codes organes
+   //et codes lésionnels. Cela permet de centraliser à un seul endroit du code la règle d'affichage au cas où un jour elle devait évoluer.
+   public static boolean displayEchansOrganeEtCodeLesionnel() {
+      return !ContexteHelper.isContexteSerologie(SessionUtils.getCurrentContexte());
    }
 }

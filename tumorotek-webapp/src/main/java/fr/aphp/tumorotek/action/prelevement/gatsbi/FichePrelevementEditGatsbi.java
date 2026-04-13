@@ -120,7 +120,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
       super.doAfterCompose(comp);
 
       contexte = GatsbiController.initWireAndDisplay(this, 2, true, reqListboxes, reqComboboxes, reqConformeDivs, groupPrlvt,
-         groupPrlvt);
+         groupPrlvt);//bizarre qu'on passe 2 fois groupPrlvt ...
       
       // affichage conditionnel des champs patients
       GatsbiControllerPrelevement.applyPatientContext(groupPatient, true);
@@ -128,6 +128,7 @@ public class FichePrelevementEditGatsbi extends FichePrelevementEdit
       // TG-251 : setRows ne fonctionne pas car le composant est dessiné avant l'alimentation de la liste des données
       // on force donc la hauteur à 4 valeurs ici :
       risquesBox.setHeight(4 * 20 + "px");
+      protocolesBox.setHeight(4 * 20 + "px");
    }
    
    @Override

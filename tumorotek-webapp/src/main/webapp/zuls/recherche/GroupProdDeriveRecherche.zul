@@ -35,6 +35,8 @@
 -->
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
+<!-- Ce zul ne semble pas utilisé... avait peut-être été initialisé pour mutualiser du code dans les FicheRechercheAvanceeXxx.zul mais cette mutualisation n'aurait pas été  finalisée ... -->
+
 <!-- Groupe dérivé -->
 <groupbox id="groupProdDerives" open="false">
 	<caption image="/images/icones/history.png"
@@ -62,7 +64,7 @@
 					<listitem
 						self="@{each='prodDeriveType'}" value="prodDeriveType">
 						<listcell
-							label="@{prodDeriveType.type}" />
+							label="@{prodDeriveType.nom}" />
 					</listitem>
 					<custom-attributes
 						attribut="ProdTypeId" entite="ProdDerive" />

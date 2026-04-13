@@ -42,9 +42,7 @@ import java.util.List;
 import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 //Decorator utilisé pour afficher les objet Champ dans la liste déroulante "Champ à importer" sur le modèle d'import 
 //en création ou modification
@@ -73,9 +71,8 @@ public class ImportChampDecorator
          nom = getLabelForChampEntite(champ.getChampEntite());
       }else if(champ.getChampAnnotation() != null){
          nom = champ.getChampAnnotation().getNom();
-      }else if(champ.getChampDelegue() != null){
-         nom = getLabelForChampDelegue(champ.getChampDelegue());
       }
+
       return nom;
    }
 
@@ -96,10 +93,6 @@ public class ImportChampDecorator
 
       // on ajoute la valeur du champ
       return Labels.getLabel(iProperty.toString());
-   }
-
-   public String getLabelForChampDelegue(final ChampDelegue c){
-      return Labels.getLabel(c.getILNLabelForChampDelegue(SessionUtils.getCurrentContexte()));
    }
 
    /**

@@ -43,8 +43,10 @@ import java.util.Set;
 import org.zkoss.util.resource.Labels;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
+import fr.aphp.tumorotek.model.contexte.EChampSupprimePourSerologie;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.impression.BlocImpression;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
@@ -204,55 +206,11 @@ public class BlocImpressionDecorator
          }
       }
       
-      // Vilain HACK !! contexte SEROLOGIE
-      if(contexte != null && "SEROLOGIE".equals(contexte.getNom())){
-         // prelevement
-         if(blocImpression.getEntite().getEntiteId() == 2){
-            if(blocImpression.getNom().equals("bloc.prelevement.patient")){
-               final ChampEntite diagnostic =
-                  new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(7), "SEROLOGIE.Diagnostic", null);
-               champs.add(diagnostic);
-               champEntites.add(diagnostic);
-            }
-            if(blocImpression.getNom().equals("bloc.prelevement.principal")){
-               final ChampEntite protocoles =
-                  new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(2), "SEROLOGIE.Protocoles", null);
-               champs.add(protocoles);
-               champEntites.add(protocoles);
-            }
-            if(blocImpression.getNom().equals("bloc.prelevement.informations.prelevement")){
-               final ChampEntite compDiag = new ChampEntite(blocImpression.getEntite(), "SEROLOGIE.Libelle", null);
-               champs.add(compDiag);
-               champEntites.add(compDiag);
-            }
-            if(blocImpression.getNom().equals("bloc.prelevement.echantillons")){
-               final ChampEntite echanQualite =
-                  new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "EchanQualiteId", null);
-               champEntites.remove(echanQualite);
-               champs.remove(echanQualite);
-               final ChampEntite adicapOrgane =
-                  new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "AdicapOrganeId", null);
-               champEntites.remove(adicapOrgane);
-               champs.remove(adicapOrgane);
-               final ChampEntite codeAssigne =
-                  new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "CodeAssigneId", null);
-               champEntites.remove(codeAssigne);
-               champs.remove(codeAssigne);
-            }
-         }else if(blocImpression.getEntite().getEntiteId() == 3){
-            if(blocImpression.getNom().equals("bloc.echantillon.informations.prelevement")){
-               final ChampEntite protocoles =
-                  new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(2), "SEROLOGIE.Protocoles", null);
-               champs.add(protocoles);
-               champEntites.add(protocoles);
-            }
-            if(blocImpression.getNom().equals("bloc.echantillon.informations.echantillon")){
-               final ChampEntite echanQualite =
-                  new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "EchanQualiteId", null);
-               champEntites.remove(echanQualite);
-               champs.remove(echanQualite);
-            }
-         }
+      //TK-530 :
+      if(ContexteHelper.isContexteSerologie(contexte)) {
+         List<String> listNomDesChampsSupprimesEnSero = EChampSupprimePourSerologie.getAllNom();
+         champs.removeIf(champEntite -> listNomDesChampsSupprimesEnSero.contains(champEntite.getNom()));
+         champEntites.removeIf(champEntite -> listNomDesChampsSupprimesEnSero.contains(champEntite.getNom()));
       }
 
       // @since gatsbi intercepte et filtre les champs

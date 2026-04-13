@@ -68,6 +68,7 @@
 						label="${c:l('Champ.Prelevement.Nature.Nature')}"
 						sort="auto(nature.nom)" />
 					<column label="${c:l('general.diagnostic')}" />
+					<column label="${c:l('Champ.Prelevement.Protocoles')}" />
 					<column align="center" sort="auto"
 						id="nbEchantillonsColumn">
 						<vbox align="center">

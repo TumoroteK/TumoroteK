@@ -34,7 +34,7 @@
  * accepté les termes. 
 -->
 <window id="fwinModifMultiPrelevement" border="none" apply="fr.aphp.tumorotek.action.prelevement.FicheModifMultiPrelevement">
-	<panel id="winPanel" title="${c:l('fichePatient.panel.title')}"
+	<panel id="winPanel" title="${c:l('fichePrelevement.panel.title')}"
 	 	sclass="fichePanelv2" closable="true">
 		<panelchildren id="panelChildrenWithScroll" style="overflow:scroll">
 			<grid id="formGrid" fixedLayout="true" sclass="gridForm1">
@@ -152,6 +152,20 @@
 								sclass="formLink" />
 						</div>
 					</row>
+
+					<!-- Protocoles -->
+					<row>
+						<label value="${c:l('Champ.Prelevement.Protocoles')}" sclass="formLabel" />
+						<div>					
+							<label id="protocolesLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="protocolesMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>
 					
 					<!-- Conditionnenemt -->
 					<row spans="2">
@@ -229,6 +243,28 @@
 								style="font-style:italic"
 							/>
 							<label id="consentDateMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>
+					</row>	
+					
+					<!-- Informations complémentaires -->
+					<row spans="2">
+						<vbox>
+							<label value="${c:l('fichePrelevement.group.infosComp')}" sclass="formSubTitle"/>
+							<image src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vbox>
+					</row>
+					
+					<!-- Complément diagnostic -->
+					<row>
+						<label sclass="formLabel" value="${c:l('Champ.Prelevement.ComplementDiagnostic')}" />
+						<div>
+							<label id="complDiagLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic"
+							/>
+							<label id="complDiagMultiLabel"
 								value="${c:l('general.edit.modification.multiple')}" 
 								sclass="formLink" />
 						</div>
@@ -340,7 +376,7 @@
 								value="${c:l('general.edit.modification.multiple')}" 
 								sclass="formLink" />
 						</div>
-					</row>		
+					</row>
 				</rows>
 			</grid>
 		</panelchildren>

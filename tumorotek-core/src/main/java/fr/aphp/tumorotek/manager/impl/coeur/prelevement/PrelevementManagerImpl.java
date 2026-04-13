@@ -119,6 +119,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.Transformation;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
@@ -1448,6 +1449,19 @@ public class PrelevementManagerImpl implements PrelevementManager
    }
 
    @Override
+   public Set<Protocole> getProtocolesManager(Prelevement prelevement){
+      Set<Protocole> protocoles = new HashSet<>();
+
+      if(prelevement != null){
+         prelevement = prelevementDao.mergeObject(prelevement);
+         protocoles = prelevement.getProtocoles();
+         protocoles.size();
+      }
+      return protocoles;
+   }  
+   
+   
+   @Override
    public List<TKAnnotableObject> getPrelevementChildrenManager(final Prelevement p){
       final List<TKAnnotableObject> children = new ArrayList<>();
       final Iterator<Echantillon> echansIt = getEchantillonsManager(p).iterator();
@@ -1478,7 +1492,7 @@ public class PrelevementManagerImpl implements PrelevementManager
 
       final List<File> filesToDelete = new ArrayList<>();
       final Set<MvFichier> dpcts = new HashSet<>();
-
+      
       if(prlvts != null){
          for(final Prelevement p : prlvts){
             switchBanqueCascadeManager(p, bank, doValidation, u, filesToDelete, dpcts);
@@ -1534,15 +1548,11 @@ public class PrelevementManagerImpl implements PrelevementManager
             prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete, filesToMove);
          }
 
-         //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
-         if(!bank.getContexte().equals(prel.getBanque().getContexte())){
-            prel.setDelegate(null);
-         }
-
          prel.setBanque(bank);
-
-         //Si le délégué présente des informations de validation, on 
-
+         // /!\ si les banques d'origine et cible n'ont pas le même niveau maladie cela génère des problèmes d'affichage : 
+         // dans le cas sans maladie -> avec maladie, il faudrait sans doute faire un changement de maladie vers INDETERMINEE (à créer si elle n'existe pas)
+         // dans l'autre sens, c'est plus risqué car il y a un risque de perte d'information si la maladie est différente de INDETERMINEE (cf TK-838)
+         // Pour le moment laissé en l'état (vu avec Nathalie D. le 02/04/2026)
          if(doValidation && findDoublonManager(prel)){
             log.warn("Doublon lors creation objet Prelevement {}",  prel);
             throw new DoublonFoundException("Prelevement", "switchBanque", prel.getCode(), null);

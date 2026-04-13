@@ -91,6 +91,7 @@ import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.decorator.CederObjetDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.factory.CederObjetDecoratorFactory;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.manager.impl.xml.CoupleSimpleValeur;
 import fr.aphp.tumorotek.manager.impl.xml.CoupleValeur;
 import fr.aphp.tumorotek.manager.impl.xml.LigneDeuxColonnesParagraphe;
@@ -237,7 +238,21 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
    @Override
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
-
+      
+      //TK-520 :
+      //en sérologie, certains champs sont cachés :
+      boolean visible = !ContexteHelper.isContexteSerologie(SessionUtils.getCurrentContexte());
+      // /!\ en contexte Gatsbi ces champs peuvent ne pas existés. Mais si ils existent, ils seront visibles puisque le contexte sera différent de sérologie
+      if(qualiteEchanLabel != null) {
+         qualiteEchanLabel.setVisible(visible);
+         qualiteEchanValue.setVisible(visible);
+      }
+      //TK-782 : attention à bien gérer la fermeture du bloc avec le fait qu'il soit caché sinon les champs qu'il contient sont quand même affichés
+      if(groupInfosCompEchan != null) {
+         groupInfosCompEchan.setVisible(visible);
+         setGroupInfosCompEchanOpen(visible);
+      }
+      
       setDeletionMessage("message.deletion.echantillon");
       setFantomable(true);
 
@@ -381,9 +396,6 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       }
 
       drawRisquesFormatted();
-
-      //TK-782
-      manageGroupInfosCompEchanOpening();
 
       // annotations
       super.setObject(echantillon);
@@ -2208,13 +2220,6 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       }else{
          ((Groupbox) groupDerivesEchan).setOpen(b);
       }
-   }
-
-   //TK-782
-   //en standard, le bloc est ouvert mais ce ne sera pas le cas en contexte sérologie puisque les champs ne seront pas affichés
-   //cette méthode est donc surchargée dans FicheEchantillonStaticSero
-   protected void manageGroupInfosCompEchanOpening() {
-      setGroupInfosCompEchanOpen(true);
    }
    
    protected void setGroupInfosCompEchanOpen(final boolean b){

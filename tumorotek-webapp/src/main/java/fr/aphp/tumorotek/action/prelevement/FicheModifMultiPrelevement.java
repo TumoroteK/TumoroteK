@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.action.prelevement;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,6 +50,7 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.modification.multiple.ConformitePack;
 import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
+import fr.aphp.tumorotek.manager.context.ProtocoleManager;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
@@ -72,6 +74,8 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 
    private Label natureLabelChanged;
 
+   private Label protocolesLabelChanged;
+   
    private Label datePrelevementLabelChanged;
 
    private Label prelevementTypeLabelChanged;
@@ -92,6 +96,8 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
 
    private Label consentTypeLabelChanged;
 
+   private Label complDiagLabelChanged;
+   
    private Label consentDateLabelChanged;
 
    private Label dateDepartLabelChanged;
@@ -203,6 +209,12 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
       }else if("conformeArrivee".equals(champ)){
          nonConformeLabelChanged.setValue(printValue);
          nonConformeLabelChanged.setVisible(!reset);
+      }else if("protocoles".equals(champ)){
+         protocolesLabelChanged.setValue(printValue);
+         protocolesLabelChanged.setVisible(!reset);
+      }else if("complementDiagnostic".equals(champ)){
+         complDiagLabelChanged.setValue(printValue);
+         complDiagLabelChanged.setVisible(!reset);
       }
    }
 
@@ -286,6 +298,12 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
          hasAnyChange = true;
       }
 
+      // maj de protocoles
+      if(!protocolesLabelChanged.getValue().equals("")){
+         current.setProtocoles(getObject().getProtocoles());
+         hasAnyChange = true;
+      }      
+      
       // datePrelevement
       if(!datePrelevementLabelChanged.getValue().equals("")){
          current.setDatePrelevement(getObject().getDatePrelevement());
@@ -354,6 +372,12 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
          current.setConsentDate(getObject().getConsentDate());
          hasAnyChange = true;
       }
+      
+      // maj de complément diagnostic
+      if(!complDiagLabelChanged.getValue().equals("")){
+         current.setComplementDiagnostic(getObject().getComplementDiagnostic());
+         hasAnyChange = true;
+      }      
 
       // dateDepart
       if(!dateDepartLabelChanged.getValue().equals("")){
@@ -427,7 +451,7 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
          Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
       }
    }
-
+  
    public void onClick$datePrelevementMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
          "Champ.Prelevement.DatePrelevement", "datePrelevement", null, null, null, muteAnyRequiredConstraint(null, 30), false,
@@ -481,6 +505,28 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
       }
    }
 
+   public void onClick$protocolesMultiLabel(){
+
+      try{
+         List<Object> protocoles = new ArrayList<>();
+         protocoles.addAll(ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+   
+         // since gatsbi
+         protocoles = applyAnyThesaurusRestriction(protocoles, 274);
+         
+         for(int i = 0; i < getObjsToEdit().size(); i++){
+            ((Prelevement) getObjsToEdit().get(i))
+               .setProtocoles(ManagerLocator.getPrelevementManager().getProtocolesManager((Prelevement) getObjsToEdit().get(i)));
+         }
+         
+         openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "MultiListbox",
+            (List<Object>) getObjsToEdit(), "Champ.Prelevement.Protocoles", "protocoles", (List<Object>) protocoles, "nom",
+            null, null, false, null, switchAnyRequiredFlag(false, 274));
+      }catch(final Exception e){
+         Messagebox.show(handleExceptionMessage(e), "Error", Messagebox.OK, Messagebox.ERROR);
+      }
+   }
+   
    public void onClick$serviceMultiLabel(){
 
       final List<Object> services = new ArrayList<>();
@@ -628,6 +674,13 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
       }
    }
 
+   public void onClick$complDiagMultiLabel(){
+
+      openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", (List<Object>) getObjsToEdit(),
+         "Champ.Prelevement.ComplementDiagnostic", "complementDiagnostic", null, null, null, muteAnyRequiredConstraint(null, 275), false, null, switchAnyRequiredFlag(false, 275));
+
+   }
+   
    @Override
    public TKdataObject getParentObject(){
       return null;
@@ -641,7 +694,7 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
     * l'event te gérer les modifications sur la conformite.
     */
    @Override
-   public void onGetChangeOnChamp(final Event e){
+   public void onGetChangeOnChamp(final Event e) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
       final SimpleChampValue tmp = (SimpleChampValue) e.getData();
 

@@ -50,13 +50,12 @@ import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
+import fr.aphp.tumorotek.model.AbstractThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
-import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 
+// /!\ Table et classe mal nommées. Il s'agit de la fiabilité du diagnostic (CERTAIN, PROBABLE, SUSPECT)
 /**
  * Objet persistant mappant la table DIAGNOSTIC.
- * Contexte SeroTK.
  * Classe créée le 05/06/2018
  *
  * @author Answald Bournique
@@ -71,9 +70,8 @@ import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 @NamedQueries(value = {
    @NamedQuery(name = "Diagnostic.findByNom", query = "SELECT p FROM Diagnostic p WHERE p.nom like ?1 " + "order by p.nom"),
    @NamedQuery(name = "Diagnostic.findByExcludedId", query = "SELECT p FROM Diagnostic p " + "WHERE p.id != ?1"),
-   @NamedQuery(name = "Diagnostic.findByOrder", query = "SELECT p FROM Diagnostic p " + "ORDER BY p.nom"), @NamedQuery(
-      name = "Diagnostic.findByPfOrder", query = "SELECT p FROM Diagnostic p " + "WHERE p.plateforme = ?1 ORDER BY p.nom")})
-public class Diagnostic extends AbstractPfDependantThesaurusObject implements Serializable
+   @NamedQuery(name = "Diagnostic.findByOrder", query = "SELECT p FROM Diagnostic p " + "ORDER BY p.nom")})
+public class Diagnostic extends AbstractThesaurusObject implements Serializable
 {
 
    private static final long serialVersionUID = -2506949180590820975L;
@@ -95,7 +93,7 @@ public class Diagnostic extends AbstractPfDependantThesaurusObject implements Se
       this.description = description;
    }
 
-   @OneToMany(mappedBy = "diagnostic", targetEntity = MaladieSero.class)
+   @OneToMany(mappedBy = "diagnostic", targetEntity = Maladie.class)
    public Set<Maladie> getMaladies(){
       return maladies;
    }

@@ -71,16 +71,6 @@ public interface ImportColonneDao extends GenericDaoJpa<ImportColonne, Integer>
    List<ImportColonne> findByTemplateAndEntite(ImportTemplate importTemplate, Entite entite);
 
    /**
-    * Recherche les ImportColonnes de l'ImportTemplate et de l'entité pour les champs delegues
-    * contextuels.
-    * @param importTemplate Template.
-    * @param entite Entité.
-    * @return Liste d'ImportColonnes.
-    * @since 2.2.1
-    */
-   List<ImportColonne> findByTemplateAndEntiteDelegue(ImportTemplate importTemplate, Entite entite);
-
-   /**
     * Recherche les ImportColonnes de l'ImportTemplate et du datatype.
     * @param importTemplate Template.
     * @param dataType DataType.

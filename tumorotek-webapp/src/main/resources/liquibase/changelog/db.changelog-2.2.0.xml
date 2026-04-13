@@ -135,58 +135,6 @@
         </comment>
         <dropTable tableName="ACTION"/>
     </changeSet>
-    <changeSet id="${project.artifactId}-10" author="GCH" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
-        <preConditions onFail="MARK_RAN">
-            <and>
-                <columnExists tableName="PRELEVEMENT_DELEGATE" columnName="CONTEXTE_ID"/>
-                <not>
-                    <tableExists tableName="CESSION_DELEGATE"/>
-                    <tableExists tableName="ECHANTILLON_DELEGATE"/>
-                    <tableExists tableName="PATIENT_DELEGATE"/>
-                    <tableExists tableName="PROD_DERIVE_DELEGATE"/>
-                </not>
-            </and>
-        </preConditions>
-        <comment>Champs délégués</comment>
-        <dropForeignKeyConstraint baseTableName="PRELEVEMENT_DELEGATE" constraintName="FK_PREL_DEL_CONTEXTE_ID"/>
-        <dropColumn tableName="PRELEVEMENT_DELEGATE" columnName="CONTEXTE_ID"/>
-        <createTable tableName="CESSION_DELEGATE">
-            <column name="CESSION_DELEGATE_ID" type="INT">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="CESSION_ID" type="INT">
-                <constraints unique="true" nullable="false" foreignKeyName="FK_CESSION_DELEGATE_CESSION_ID" referencedTableName="CESSION"
-                             referencedColumnNames="CESSION_ID"/>
-            </column>
-        </createTable>
-        <createTable tableName="ECHANTILLON_DELEGATE">
-            <column name="ECHANTILLON_DELEGATE_ID" type="INT">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="ECHANTILLON_ID" type="INT">
-                <constraints nullable="false" unique="true" foreignKeyName="FK_ECHAN_DELEGATE_ECHAN_ID" referencedTableName="ECHANTILLON"
-                             referencedColumnNames="ECHANTILLON_ID"/>
-            </column>
-        </createTable>
-        <createTable tableName="PATIENT_DELEGATE">
-            <column name="PATIENT_DELEGATE_ID" type="INT">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="PATIENT_ID" type="INT">
-                <constraints nullable="false" unique="true" foreignKeyName="FK_PAT_DELEGATE_PAT_ID" referencedTableName="PATIENT"
-                             referencedColumnNames="PATIENT_ID"/>
-            </column>
-        </createTable>
-        <createTable tableName="PROD_DERIVE_DELEGATE">
-            <column name="PROD_DERIVE_DELEGATE_ID" type="INT">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="PROD_DERIVE_ID" type="INT">
-                <constraints nullable="false" unique="true" foreignKeyName="FK_DERIVE_DELEGATE_DERIVE_ID" referencedTableName="PROD_DERIVE"
-                             referencedColumnNames="PROD_DERIVE_ID"/>
-            </column>
-        </createTable>
-    </changeSet>
     <changeSet id="${project.artifactId}-11" author="ABO" runAlways="false" context="*, 2.2.0-beta-1, 2.2.0-beta-2-SNAPSHOT">
         <comment>Augmentation de la taille de colonne NOM de la table TABLE_ANNOTATION</comment>
         <modifyDataType tableName="TABLE_ANNOTATION" columnName="NOM" newDataType="VARCHAR(100)"/>
@@ -288,7 +236,7 @@
                 <tableExists tableName="DIAGNOSTIC"/>
             </not>
         </preConditions>
-        <comment>Contexte SEROTK - THESAURUS DIAGNOSTIC</comment>
+        <comment>THESAURUS DIAGNOSTIC</comment>
         <createTable tableName="DIAGNOSTIC">
             <column name="DIAGNOSTIC_ID" type="INT(3)">
                 <constraints primaryKey="true" nullable="false"/>
@@ -306,28 +254,6 @@
         </sql>
         <addForeignKeyConstraint constraintName="FK_DIAGNOSTIC_PLATEFORME_ID" referencedTableName="PLATEFORME" referencedColumnNames="PLATEFORME_ID"
                                  baseTableName="DIAGNOSTIC" baseColumnNames="PLATEFORME_ID"/>
-    </changeSet>
-    <changeSet id="${project.artifactId}-19" author="ABO" runAlways="false" context="*">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists tableName="MALADIE_SERO" columnName="DIAGNOSTIC_ID" />
-            </not>
-        </preConditions>
-        <comment>Contexte SEROTK - THESAURUS DIAGNOSTIC</comment>
-        <dropTable tableName="MALADIE_SERO"/>
-        <createTable tableName="MALADIE_SERO">
-            <column name="MALADIE_DELEGATE_ID" type="INT(10)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="DIAGNOSTIC_ID" type="INT(10)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addPrimaryKey constraintName="PK_MALADIE_SERO" tableName="MALADIE_SERO" columnNames="MALADIE_DELEGATE_ID, DIAGNOSTIC_ID"/>
-        <addForeignKeyConstraint constraintName="FK_MAL_SERO_MAL_DEL_ID" baseTableName="MALADIE_SERO" baseColumnNames="MALADIE_DELEGATE_ID"
-                                 referencedTableName="MALADIE_DELEGATE" referencedColumnNames="MALADIE_DELEGATE_ID"/>
-        <addForeignKeyConstraint constraintName="FK_MAL_SERO_DIAG_ID" referencedTableName="DIAGNOSTIC" referencedColumnNames="DIAGNOSTIC_ID"
-                                 baseTableName="MALADIE_SERO" baseColumnNames="DIAGNOSTIC_ID"/>
     </changeSet>
     <changeSet id="${project.artifactId}-20" author="ABO" runAlways="false" context="*">
         <preConditions onFail="MARK_RAN">
@@ -368,46 +294,6 @@
             </where>
         </update>
     </changeSet>
-    <changeSet id="${project.artifactId}-22" author="GCH" runAlways="false" context="*">
-        <preConditions onFail="MARK_RAN">
-            <not>
-                <tableExists tableName="CHAMP_DELEGUE"/>
-            </not>
-        </preConditions>
-        <comment>Mise en place des champs délégués</comment>
-        <createTable tableName="CHAMP_DELEGUE">
-            <column name="CHAMP_DELEGUE_ID" type="INT">
-                <constraints primaryKey="true" nullable="false"/>
-            </column>
-            <column name="NOM" type="VARCHAR(100)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="DATA_TYPE_ID" type="INT">
-                <constraints nullable="false" foreignKeyName="FK_CHAMP_DELEGUE_DATA_TYPE_ID" referencedTableName="DATA_TYPE"
-                             referencedColumnNames="DATA_TYPE_ID"/>
-            </column>
-            <column name="ENTITE_ID" type="INT">
-                <constraints nullable="false" foreignKeyName="FK_CHAMP_DELEGUE_ENTITE_ID" referencedTableName="ENTITE"
-                             referencedColumnNames="ENTITE_ID"/>
-            </column>
-            <column name="CONTEXTE" type="VARCHAR(100)">
-                <constraints nullable="false"/>
-            </column>
-        </createTable>
-        <addUniqueConstraint columnNames="NOM, ENTITE_ID, CONTEXTE" tableName="CHAMP_DELEGUE"/>
-	</changeSet>  
-    <changeSet id="${project.artifactId}-22b" author="GCH" runAlways="false" context="*">
-    	<preConditions onFail="MARK_RAN">
-            <not>
-                <columnExists columnName="CHAMP_DELEGUE_ID" tableName="CHAMP"/>
-            </not>
-        </preConditions>
-        <addColumn tableName="CHAMP">
-            <column name="CHAMP_DELEGUE_ID" type="INT">
-                <constraints foreignKeyName="FK_CHAMP_CHAMP_DELEGUE_ID" referencedTableName="CHAMP_DELEGUE" referencedColumnNames="CHAMP_DELEGUE_ID"/>
-            </column>
-        </addColumn>
-	</changeSet>
     <changeSet id="${project.artifactId}-23" author="ABO" runAlways="false" context="*">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">SELECT COUNT(1) FROM ENTITE
@@ -419,10 +305,6 @@
 
             INSERT INTO CHAMP_ENTITE VALUES (267, 'Nom', 1, 0, 1, NULL, 17, 1, NULL);
             INSERT INTO CHAMP_ENTITE VALUES (268, 'Nom', 1, 0, 1, NULL, 65, 1, NULL);
-
-            INSERT INTO CHAMP_DELEGUE VALUES (1, 'Libelle', 1, 2, 'SEROLOGIE');
-            INSERT INTO CHAMP_DELEGUE VALUES (2, 'Protocoles', 10, 2, 'SEROLOGIE');
-            INSERT INTO CHAMP_DELEGUE VALUES (3, 'Diagnostic', 10, 7, 'SEROLOGIE');
         </sql>
     </changeSet>
     <changeSet id="${project.artifactId}-24" author="GCH" runAlways="false" context="*">

@@ -61,7 +61,6 @@ import fr.aphp.tumorotek.decorator.CritereDecorator;
 import fr.aphp.tumorotek.decorator.EntiteDecorator;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
-import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -185,10 +184,8 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
          entite = entites.get(this.entitesBox.getSelectedIndex()).getEntite();
 
          // @since gatsbi
-         // final Stream<ChampEntite> champEntiteStream =
-         //   ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteAndImportManager(entite, true).stream();
          final Stream<ChampEntite> champEntiteStream =
-            GatsbiController.findByEntiteImportAndIsNullableManager(entite, true, null).stream();
+            GatsbiController.findByEntiteImportAndIsNullableManager(entite, true, null, banque).stream();
          final Stream<ChampEntite> customChampsEntiteStream = getCustomChampEntite().stream();
 
          //Ajout des champs entité
@@ -200,10 +197,6 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
             .map(table -> ManagerLocator.getManager(ChampAnnotationManager.class).findByTableManager(table))
             .flatMap(listChampsAnnotation -> listChampsAnnotation.stream()).map(Champ::new).map(ChampDecorator::new)
             .forEach(champs::add);
-
-         //Ajout des champs délégués
-         ManagerLocator.getManager(ChampDelegueManager.class).findByEntiteAndContexte(entite, SessionUtils.getCurrentContexte())
-            .stream().map(Champ::new).map(ChampDecorator::new).forEach(champs::add);
 
          champs.sort(Comparator.comparing(ChampDecorator::getLabel));
 
@@ -314,13 +307,11 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
             nomChamp = champ.getChampAnnotation().getNom();
          }else if(champ.getChampEntite() != null){
             nomChamp = champ.getChampEntite().getNom();
-         }else if(champ.getChampDelegue() != null){
-            nomChamp = champ.getChampDelegue().getNom();
          }
-
+         
          //Si le champ est un identifiant, on alimente la liste de sousChamps.
          // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-         if(nomChamp.matches("^[a-zA-Z]+Id$")){
+         if(nomChamp != null && nomChamp.matches("^[a-zA-Z]+Id$")){
 
             this.rowOperateur.setVisible(false);
             this.operateursBox.setVisible(false);
@@ -372,7 +363,7 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
             }else if("Service".equals(nomEntiteChamp)){
                // hack Etablissement preleveur
                nomEntiteReel = "Etablissement";
-            }else if(champ.getChampAnnotation() != null || champ.getChampDelegue() != null
+            }else if(champ.getChampAnnotation() != null 
                || (champ.getChampEntite() != null && !"AgeAuPrelevement".equals(nomChamp))){
                // hack age au prélèvement
                operateurs.add(Labels.getLabel("critere.is.null"));
@@ -393,10 +384,8 @@ public class FicheAddCritere extends GenericForwardComposer<Component>
             /** On cherche les SousChamp du Champ. */
             final Stream<? extends AbstractTKChamp> champsEntitesStream =
                ManagerLocator.getManager(ChampEntiteManager.class).findByEntiteManager(entite2).stream();
-            final Stream<? extends AbstractTKChamp> champsDeleguesStream = ManagerLocator.getManager(ChampDelegueManager.class)
-               .findByEntiteAndContexte(entite2, SessionUtils.getCurrentContexte()).stream();
             // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-            Stream.concat(champsEntitesStream, champsDeleguesStream).filter(c -> !c.getNom().matches("^[a-zA-Z]+Id$"))
+            champsEntitesStream.filter(c -> !c.getNom().matches("^[a-zA-Z]+Id$"))
                .map(c -> new Champ(c, champ)).map(ChampDecorator::new).forEach(sousChamps::add);
 
             sousChamps.sort(Comparator.comparing(ChampDecorator::getLabelLong));

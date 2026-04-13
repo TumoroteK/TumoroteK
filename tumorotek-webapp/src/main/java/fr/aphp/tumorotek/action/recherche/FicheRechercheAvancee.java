@@ -63,8 +63,11 @@ import org.zkoss.zul.Textbox;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractListeController2;
+import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.context.DiagnosticManager;
+import fr.aphp.tumorotek.manager.context.ProtocoleManager;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.code.CodeCommon;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -78,7 +81,9 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdQualite;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdType;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Diagnostic;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
@@ -130,11 +135,15 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	private Textbox ndaPatientBox;
 	private Textbox codePrelevementBox;
 	private Textbox codeLaboPrelevementBox;
+	//TK-520 : faibilité du diagnostic
+	private Listbox diagBox;
 	private Listbox natutePrelevementBox;
 	private CalendarBox datePrelevement1Box;
 	private CalendarBox datePrelevement2Box;
 	private Listbox operateursDatePrlvtBox;
 	private Listbox statutJuridiqueBox;
+	//TK-520 : complément diagnostic :
+	private Textbox diagCompBox;
 	private Listbox etablissementPreleveurBox;
 	private Listbox servicePreleveurBox;
 	private Intbox nbEchantillonBox;
@@ -144,6 +153,8 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	// since 2.0.13
 	// private Textbox risquesBox;
 	private Listbox risquesBox;
+	//TK-520 :
+	private Listbox protocolesBox;
 	// since 2.2.1
 	private Listbox etablissementLaboBox;
 	private Listbox serviceLaboBox;
@@ -183,8 +194,10 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	// temp Stock since 2.0.13
 	private Decimalbox tempStockEchantillonBox;
 	private Listbox operateursTempStockEchantillonBox;
+	//TK-520 : sera caché en contexte sérologie
 	private Textbox codeLesionnelBox;
 	private Textbox codeOrganeBox;
+	//
 	private Listbox crAnapathFilebox;
 	// impact since 2.3
 	private Checkbox impactEchanTBox;
@@ -230,6 +243,9 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	 * Objets principaux.
 	 */
 	private boolean anonyme;
+	//Ces champs parents permettent de définir l'arborescence de recherche, pour les différents blocs, en fonction de l'objet recherché
+	//Le parent2 n'est utilisé que pour les dérivés pour lequels, il peut y avoir 2 arboresences de recherche selon que le parent du dérivé
+	//est un Prélèvement ou un Echantillon (le cas du dérivé de dérivé n'est pas géré)
 	protected Champ parent1ToQueryPatient;
 	protected Champ parent2ToQueryPatient;
 	protected Champ parent1ToQueryMaladie;
@@ -242,6 +258,7 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	/**
 	 * Liste d'objets.
 	 */
+	private List<Diagnostic> diagnostics;//TK-520
 	private List<Nature> natures;
 	private List<ConsentType> consentTypes;
 	private List<Service> services;
@@ -265,7 +282,9 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	private List<NonConformite> nCderiveCession;
 
 	private ListModelList<Risque> risquesModel;
-
+	//TK-520
+   private ListModelList<Protocole> protocolesModel;
+	
 	private static final long serialVersionUID = -7186817237148944889L;
 
 	@Override
@@ -277,10 +296,10 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		      this.sexeFBox, this.sexeHBox, this.sexeIndBox, this.etatVBox, this.etatDBox, this.etatIncBox, this.medecinsBox};
 
 		objMaladieComponents = new Component[] {this.libelleMaladieBox, this.codeMaladieBox, this.dateDebutMaladie1Box,
-				this.dateDebutMaladie2Box, this.dateDiagnosticMaladie1Box, this.dateDiagnosticMaladie2Box, this.medecinsMaPatBox};
+				this.dateDebutMaladie2Box, this.dateDiagnosticMaladie1Box, this.dateDiagnosticMaladie2Box, this.diagBox, this.medecinsMaPatBox};
 
-		objPrelevementComponents = new Component[] {this.ndaPatientBox, this.codePrelevementBox, this.natutePrelevementBox,
-				this.codeLaboPrelevementBox, this.datePrelevement1Box, this.datePrelevement2Box, this.statutJuridiqueBox,
+		objPrelevementComponents = new Component[] {this.ndaPatientBox, this.codePrelevementBox, this.natutePrelevementBox, this.protocolesBox,
+				this.codeLaboPrelevementBox, this.datePrelevement1Box, this.datePrelevement2Box, this.statutJuridiqueBox, this.diagCompBox,
 				this.etablissementPreleveurBox, this.servicePreleveurBox, this.nbEchantillonBox, this.agePrlvtBox, this.risquesBox,
 				this.conformeBoolBox, this.nonConformitesArriveeBox, this.etablissementLaboBox, this.serviceLaboBox, this.operateurLaboBox};
 
@@ -307,8 +326,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 				this.operateursQuantiteEchantillonBox, this.operateursVolumeDerivesBox, 
 				this.operateursTempStockDeriveBox, this.operateursDateStockDeriveBox};
 
-		prepareContextComponents();
-
 		openGroups();
 
 		getBinder().loadAll();
@@ -328,17 +345,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		setGroupEchantillonsOpened(groupEchantillons.isOpen());
 		setGroupProdDerivesOpened(groupProdDerives.isOpen());
 	}
-
-	/**
-	 * Crééer les composants spécifiques au contexte de la banque courante
-	 */
-	protected void prepareContextComponents(){}
-
-	/**
-	 * Peuple les listes des composants spécifiques au contexte de la banque
-	 * courante.
-	 */
-	protected void initContextsLists(){}
 
 	/**
 	 * Initialise la fiche de recherche.
@@ -374,6 +380,8 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		// init des listes
 		natures = ManagerLocator.getNatureManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
 		natures.add(0, null);
+		diagnostics = ManagerLocator.getManager(DiagnosticManager.class).findByOrderManager();
+		diagnostics.add(0, null);
 		consentTypes = ManagerLocator.getConsentTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
 		consentTypes.add(0, null);
 		services = ManagerLocator.getServiceManager().findAllObjectsWithOrderManager();
@@ -431,8 +439,10 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		risquesModel = new ListModelList<>();
 		risquesModel.addAll(ManagerLocator.getRisqueManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
 
-		initContextsLists();
-
+		//TK-520 :
+		protocolesModel = new ListModelList<>();
+		protocolesModel.addAll(ManagerLocator.getManager(ProtocoleManager.class).findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+		
 		operateursDecimaux = new ArrayList<>();
 		operateursDecimaux.add("=");
 		operateursDecimaux.add("<");
@@ -654,25 +664,16 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		// traite les critères sur les champs des patients
 		if(getGroupPatientsOpened()){
 			executeQueriesForPatients();
-			if(objPatientContextComponents != null){
-				executeQueriesForPatientsContext();
-			}
 		}
 
 		// traite les critères sur les champs des maladies
 		if(getGroupMaladiesOpened()){
 			executeQueriesForMaladies();
-			if(objMaladieContextComponents != null){
-				executeQueriesForMaladiesContext();
-			}
 		}
 
 		// traite les critères sur les champs des prlvts
 		if(getGroupPrelevementsOpened() || getGroupLaboIntersOpened()){
 			executeQueriesForPrelevements();
-			if(objPrelevementContextComponents != null){
-				executeQueriesForPrelevementsContext();
-			}
 		}
 
 		// traite les critères sur les champs des échantillons
@@ -981,6 +982,19 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	/**
 	 * Crée les champs parents qui permettront d'accéder aux éléments lors d'une
 	 * recherche sur les dérivés.
+	 * /!\ dans ce cas, l'entité du champ parent (1er élément du "toString())) n'est pas l'entité recherchée mais l'entité du parent du dérivé (matériel dont il est issu)
+	 * car le champ parent de plus haut niveau est ProdDerives
+	 * le traitement d'exploitation de ce champ parent est donc spécifique pour les requêtes sur les dérivés  {@link TraitementQueryManagerImpl.findObjetByCriteresWithBanquesDeriveVersionManager}
+	 * L'élément à gauche de ProdDerives donne donc l'entité du matériel qui a été transformé (parent du dérivé) et les élèments à droite les champs à utiliser sur l'entité parent du dérivé
+	 * ainsi les valeurs sont :
+	 *  parentToQueryEchantillon : Echantillon.ProdDerives
+    *  parent1ToQueryPrlvt : Echantillon.ProdDerives.PrelevementId
+    *  parent2ToQueryPrlvt : Prelevement.ProdDerives
+    *  parent1ToQueryMaladie : Echantillon.ProdDerives.Prelevement.MaladieId
+    *  parent2ToQueryMaladie : Prelevement.ProdDerives.MaladieId
+    *  parent1ToQueryPatient : Echantillon.ProdDerives.Prelevement.Maladie.PatientId
+    *  parent2ToQueryPatient : Prelevement.ProdDerives.Maladie.PatientId
+    *  parent1ToQueryProdDerive : Echantillon.ProdDerives.ProdDerives 
 	 */
 	public void createChampsParentsToQueryProdDerives(){
 		// accès aux échantillons
@@ -1270,6 +1284,16 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 						oneValueEntered = true;
 					}
 				}
+	         // si c'est un listbox
+				else if(objMaladieComponents[i].getClass().getSimpleName().equals("Listbox")){
+				   final Listbox current = (Listbox) objMaladieComponents[i];
+				   //si une valeur a été saisie
+				   if(current.getSelectedIndex() > 0){
+   				   executeSimpleQueryForListbox(current, parent1ToQueryMaladie, parent2ToQueryMaladie,  null);
+   				   oneValueEntered = true;
+				   }
+				}
+
 			}
 		}
 	}
@@ -1387,6 +1411,31 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 							getUsedComponents().add(rcv);
 
 							oneValueEntered = true;
+						}
+						//TK-520
+						else if(current.getId().equals("protocolesBox") && !getProtocolesModel().getSelection().isEmpty()){
+	                     final Entite prlvtEntite = ManagerLocator.getEntiteManager().findByNomManager("Prelevement").get(0);
+	                     final ChampEntite champProtocoles =
+	                           ManagerLocator.getChampEntiteManager().findByEntiteAndNomManager(prlvtEntite, "Protocoles").get(0);
+	                     parent1 = new Champ(champProtocoles);
+
+	                     // exécution de la requête
+	                     final List<Object> protocoleNoms = new ArrayList<>();
+	                     for(final Protocole protocole : getProtocolesModel().getSelection()){
+	                        protocoleNoms.add(protocole.getNom());
+	                     }
+
+	                     final boolean cumulative = ((Checkbox) current.getNextSibling()).isChecked();
+	                     executeListQuery("nom", "Protocole", prlvtEntite, parent1,  protocoleNoms, cumulative);
+
+	                     final RechercheCompValues rcv = new RechercheCompValues();
+	                     rcv.setCompClass(Listbox.class);
+	                     rcv.setCompId(current.getId());
+	                     rcv.getSelectedValues().addAll(getProtocolesModel().getSelection());
+	                     rcv.setCumulative(cumulative);
+	                     getUsedComponents().add(rcv);
+
+	                     oneValueEntered = true;
 						}
 					}
 				}else if(objPrelevementComponents[i].getClass().getSimpleName().equals("Datebox")){
@@ -2266,6 +2315,14 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		this.anonyme = ano;
 	}
 
+  public List<Diagnostic> getDiagnostics(){
+      return diagnostics;
+   }
+
+   public void setDiagnostics(final List<Diagnostic> diagnostics){
+      this.diagnostics = diagnostics;
+   }
+	
 	public List<Nature> getNatures(){
 		return natures;
 	}
@@ -2635,23 +2692,6 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	@Override
 	public void removeObject(final String comments){}
 
-	/**
-	 * Exécute les requêtes avec des critères sur les champs des prlvts pour le
-	 * contexte associé à la banque courante.
-	 */
-	protected void executeQueriesForPrelevementsContext(){}
-
-	/**
-	 * Exécute les requêtes avec des critères sur les champs des patients pour le
-	 * contexte associé à la banque courante.
-	 */
-	protected void executeQueriesForPatientsContext(){}
-
-	/**
-	 * Exécute les requêtes avec des critères sur les champs des patients pour le
-	 * contexte associé à la banque courante.
-	 */
-	protected void executeQueriesForMaladiesContext(){}
 
 	/***************************** listbox helpers ****************************/
 	public void onSelect$nonConformitesArriveeBoxHelper(){
@@ -2785,6 +2825,10 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		return risquesModel;
 	}
 
+	public ListModelList<Protocole> getProtocolesModel(){
+	   return protocolesModel;
+	}
+	
 	public SimpleListModel<Service> getServicesLabo() {
 		return servicesLabo;
 	}
@@ -2797,4 +2841,8 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		return collaborateursLabo;
 	}
 
+   //TK-520
+   public boolean displayEchansOrganeEtCodeLesionnel() {
+      return EchantillonRowRenderer.displayEchansOrganeEtCodeLesionnel();
+   }   
 }

@@ -52,21 +52,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.coeur.patient.serotk.AbstractMaladieDelegate;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Diagnostic;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Visite;
 
 /**
@@ -105,7 +102,7 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Visite;
          + "ORDER BY m.dateDebut, m.dateDiagnostic, m.maladieId"),
    @NamedQuery(name = "Maladie.removeAllForBanque", query = "DELETE FROM Maladie m WHERE m.banque = ?1")
 })
-public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObject, TKFantomableObject, Serializable
+public class Maladie implements TKdataObject, TKFantomableObject, Serializable
 {
 
    private static final long serialVersionUID = 4092522013404060267L;
@@ -118,6 +115,9 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
 
    private String code;
 
+   //correspond au niveau de faibilité du diagnostic
+   private Diagnostic diagnostic;//TK-520 (vient de MaladieSero supprimé)
+   
    private Date dateDiagnostic;
 
    private Date dateDebut;
@@ -127,8 +127,6 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
    private Set<Prelevement> prelevements = new HashSet<>();
 
    private Set<Collaborateur> collaborateurs = new HashSet<>();
-
-   private TKDelegateObject<Maladie> delegate;
    
    // @since 2.3.0-gatsbi
    // Transient
@@ -188,6 +186,16 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
 
    public void setCode(final String c){
       this.code = c;
+   }
+   
+   @ManyToOne
+   @JoinColumn(name = "DIAGNOSTIC_ID")
+   public Diagnostic getDiagnostic(){
+      return diagnostic;
+   }
+
+   public void setDiagnostic(final Diagnostic diagnostic){
+      this.diagnostic = diagnostic;
    }
 
    @Column(name = "DATE_DIAGNOSTIC", nullable = true)
@@ -331,8 +339,7 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
       clone.setCollaborateurs(this.collaborateurs);
       clone.setPrelevements(this.prelevements);
       clone.setSystemeDefaut(getSystemeDefaut());
-
-      clone.setDelegate(getDelegate());
+      clone.setDiagnostic(diagnostic);
       
       clone.setBanque(getBanque());
 
@@ -348,18 +355,6 @@ public class Maladie extends TKDelegetableObject<Maladie> implements TKdataObjec
    @Override
    public String entiteNom(){
       return "Maladie";
-   }
-
-   @Override
-   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-      targetEntity = AbstractMaladieDelegate.class)
-   public TKDelegateObject<Maladie> getDelegate(){
-      return delegate;
-   }
-
-   @Override
-   public void setDelegate(final TKDelegateObject<Maladie> delegate){
-      this.delegate = delegate;
    }
 
    @Override

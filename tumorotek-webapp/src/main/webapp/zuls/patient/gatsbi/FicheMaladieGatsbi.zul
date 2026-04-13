@@ -115,6 +115,24 @@
 									visible="false" />
 							</div>
 						</div>
+						<div class="block-separator" />
+						
+						<div class="item item-mid" id="diagDiv"><!-- TK-520 : fiabilité du diagnostic -->
+							<custom-attributes champId="276" />
+							<div class="row-container chpLabel">
+								<label id="diagFormLabel" value="${c:l('Champ.Maladie.Diagnostic')}" sclass="formLabel" />
+							</div>
+							<div class="row-container">
+								<label id="diagLabel" visible="true" value="@{fwinMaladie$composer.maladie.diagnostic.nom}" />
+								<listbox id="diagBox" mold="select" rows="1" visible="false"
+									model="@{fwinMaladie$composer.diagnostics}"
+									selectedItem="@{fwinMaladie$composer.selectedDiag}">	
+									<listitem self="@{each='diag'}" value="@{diag}">			
+										<listcell label="@{diag.nom}"/>
+									</listitem>
+								</listbox>
+							</div>
+						</div>
 					</div>
 					<div class="block-separator" />
 					<!-- Referents -->

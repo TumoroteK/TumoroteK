@@ -106,6 +106,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
@@ -133,6 +134,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    protected Textbox numLaboBoxPrlvt;
 
    protected CalendarBox datePrelCalBox;
+   
+   protected Listbox protocolesBox;
 
    protected Datebox dateConsentBoxPrlvt;
 
@@ -173,6 +176,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    protected List<Nature> natures = new ArrayList<>();
 
    protected Nature selectedNature;
+   
+   protected List<Protocole> protocoles = new ArrayList<>(); //liste à choix multiple (comme risques) => pas de selectedProcotole
 
    protected List<PrelevementType> modes = new ArrayList<>();
 
@@ -391,6 +396,8 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       natures.add(0, null);
       selectedNature = natures.get(0);
 
+      protocoles.addAll(ManagerLocator.getProtocoleManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope)));
+      
       modes = ManagerLocator.getPrelevementTypeManager().findByOrderManager(SessionUtils.getPlateforme(sessionScope));
       modes.add(0, null);
 
@@ -481,6 +488,20 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       }
 
       selectRisques(sels);
+      
+      //TK-520 : protocoles
+      final List<Protocole> listSelectedProtocole = new ArrayList<>();
+      listSelectedProtocole.addAll(getObject().getProtocoles());
+
+      if(addSelectedInListIfAbsent) {
+         for(Protocole selectedProtocole : listSelectedProtocole) {
+            if(!protocoles.contains(selectedProtocole)) {
+               protocoles.add(0,selectedProtocole);
+            }
+         }
+      }
+      
+      selectProtocoles(listSelectedProtocole);
    }
    
    //TK-748
@@ -506,11 +527,27 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getBinder().loadAttribute(risquesBox, "selectedItems");
       }
    }
-
+   
    public void clearRisques(){
       selectRisques(new ArrayList<Risque>());
    }
+   
+   /**
+    * Select les protocoles dans la dropdown list.
+    * @param protos liste à selectionner
+    */
+   public void selectProtocoles(final List<Protocole> protos){
+      if(protos != null){
+         ((Selectable<Protocole>) protocolesBox.getModel()).setSelection(protos);
 
+         getBinder().loadAttribute(protocolesBox, "selectedItems");
+      }
+   }
+   public void clearProtocoles(){
+      selectProtocoles(new ArrayList<Protocole>());
+   }
+
+   
    public void initCollaborations(){
       initAllCollaborationPossible();
       //réinit selectedXxx :
@@ -763,7 +800,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       final List<AnnotationValeur> annos = new ArrayList<>();
       if(prlvt != null){
          newObj = prlvt.clone();
-         newObj.setDelegate(prlvt.cloneDelegateTo(newObj));
          newObj.setPrelevementId(null);
          newObj.setCode(null);
          newObj.setNumeroLabo(null);
@@ -822,6 +858,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          final Unite quantiteUnite = this.prelevement.getQuantiteUnite();
 
          getObject().setRisques(findSelectedRisques());
+         getObject().setProtocoles(findSelectedProtocoles());
          getObject().setLaboInters(new HashSet<LaboInter>());
 
          // update de l'objet
@@ -993,6 +1030,9 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          getObject().getRisques().clear();
          getObject().getRisques().addAll(findSelectedRisques());
 
+         getObject().getProtocoles().clear();
+         getObject().getProtocoles().addAll(findSelectedProtocoles());
+         
          // Update de l'objet
          // /!\ de maladie on va chercher à récupérer les maladies du patient associé => cas qui doit pas dans le catch de LazyInitializationException 
          // dans PrelevementManagerImpl.checkRequiredObjectsAndValidate() - cf commentaire sur ticket TK-803)
@@ -1028,6 +1068,14 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       return rs;
    }
 
+   protected Set<Protocole> findSelectedProtocoles(){
+      final Set<Protocole> rs = new HashSet<>();
+      for(final Listitem listitem : protocolesBox.getSelectedItems()){
+         rs.add(protocoles.get(protocolesBox.getItems().indexOf(listitem)));
+      }
+      return rs;
+   }
+   
    @Override
    protected void setEmptyToNulls(){
       // si le numero labo est vide, on l'enregistre
@@ -1208,6 +1256,7 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          this.prelevement.setConditType(selectedConditType);
          this.prelevement.setConditMilieu(selectedConditMilieu);
          getObject().setRisques(findSelectedRisques());
+         getObject().setProtocoles(findSelectedProtocoles());
 
          this.prelevement.setMaladie(this.maladie);
 
@@ -1411,6 +1460,11 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    public ConstWord getNomNullConstraint(){
       return PatientConstraints.getNomNullConstraint();
    }
+   
+   //TK-520 :
+   public ConstWord getComplementDiagnosticConstraint(){
+      return PrelevementConstraints.getComplementDiagnosticConstraint();
+   }
 
    public ConstInt getConditNbConstraint(){
       return PrelevementConstraints.getNbConditConstraint();
@@ -1554,6 +1608,14 @@ public class FichePrelevementEdit extends AbstractFicheEditController
       this.natures = n;
    }
 
+   public List<Protocole> getProtocoles(){
+      return protocoles;
+   }
+   
+   public void setProtocoles(List<Protocole> protocoles){
+      this.protocoles = protocoles;
+   }
+   
    public Nature getSelectedNature(){
       return selectedNature;
    }
@@ -1836,12 +1898,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
          .setPatientAndMaladieFromOutSideReferenceur(pat, mal, null);
    }
 
-   /**
-    * Methode implémentée par la classe enfant
-    * FichePrelevementEditSero.
-    */
-   public void clearProtocoles(){}
-
    @Override
    public boolean isAnonyme(){
       return isAnonyme;
@@ -2088,5 +2144,6 @@ public class FichePrelevementEdit extends AbstractFicheEditController
    private void reinitElementsForGestionDelaiCongelation() {
       getObjectTabController().setMajDelaiCongelDTO(null);
    }
+
 }
 

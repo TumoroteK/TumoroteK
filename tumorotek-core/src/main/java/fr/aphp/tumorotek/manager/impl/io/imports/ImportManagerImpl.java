@@ -39,7 +39,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -49,7 +48,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
@@ -62,11 +60,9 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.persistence.EntityTransaction;
 import javax.persistence.TypedQuery;
 import javax.sql.DataSource;
 
-import fr.aphp.tumorotek.utils.NonConformiteUtils;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.collections4.map.CaseInsensitiveMap;
 import org.apache.commons.lang3.StringUtils;
@@ -79,9 +75,6 @@ import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.ss.usermodel.WorkbookFactory;
-import org.hibernate.Session;
-import org.hibernate.StatelessSession;
-import org.hibernate.jdbc.Work;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.datasource.DataSourceUtils;
@@ -121,6 +114,7 @@ import fr.aphp.tumorotek.manager.qualite.NonConformiteManager;
 import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
 import fr.aphp.tumorotek.manager.stockage.EmplacementManager;
 import fr.aphp.tumorotek.manager.systeme.EntiteManager;
+import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
@@ -136,6 +130,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
@@ -151,6 +146,7 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.EEntiteId;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.utils.NonConformiteUtils;
 import fr.aphp.tumorotek.utils.Utils;
 
 /**
@@ -943,73 +939,96 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public boolean setRisquesForPrelevement(final Prelevement prlvt, final ImportColonne colonne, final Row row,
+   public void setRisquesForPrelevement(final Prelevement prlvt, final ImportColonne colonne, final Row row,
       final ImportProperties properties) throws WrongImportValueForThesaurusException {
-      boolean addedRisque = false;
       if(prlvt != null && colonne != null && row != null && properties != null){
          ChampEntite champAImporter = colonne.getChamp().getChampEntite();
          if(champAImporter.getNom().equals("Risques")){
-            addedRisque = true;
-            int ind = -1;
-            // on récupère l'indice de la colonne dans le fichier
-            // correspond à l'objet ImportColonne
-            if(properties.getColonnesHeaders().containsKey(colonne.getNom())){
-               ind = properties.getColonnesHeaders().get(colonne.getNom());
-            }
-            // on récupère la valeur dans le fichier
-            Object value = null;
-            if(ind > -1){
-               value = getCellContent(row.getCell(ind), false, properties.getEvaluator());
-            }
-            if(value != null && !((String) value).equals("")){
-               // on récupère la hashtable contenant les valeurs du
-               // thésaurus
-               CaseInsensitiveMap<String, Object> thesValues = new CaseInsensitiveMap<>();
-               if(properties.getThesaurusValues().containsKey(champAImporter)){
-                  thesValues = properties.getThesaurusValues().get(champAImporter);
-               }else{
-                  throw new WrongImportValueException(colonne, champAImporter.getQueryChamp().getEntite().getNom());
-               }
-
-               // on va spliter la valeur de la colonne : les
-               // risques peuvent être séparés par des virgules
-               final Set<Risque> risques = new HashSet<>();
-               if(((String) value).contains(";")){
-                  List<String> listValeurNonAutorisee = new ArrayList<String>();
-                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                  final String[] split = ((String) value).split(";");
-                  for(int i = 0; i < split.length; i++){
-                     // on récupère l'objet correspondant à la valeur
-                     // présente dans le fichier
-                     String valeurCourante = split[i].trim();
-                     if(thesValues.containsKey(valeurCourante)){
-                        risques.add((Risque) thesValues.get(valeurCourante));
-                     }else{
-                        listValeurNonAutorisee.add(valeurCourante);
-                     }
-                  }
-                  if(!listValeurNonAutorisee.isEmpty()) {
-                     throw new WrongImportValueForThesaurusMException(colonne, listValeurNonAutorisee, thesValues.keySet());
-                  }
-               }else{
-                  // on récupère l'objet correspondant à la valeur
-                  // présente dans le fichier
-                  if(thesValues.containsKey((value))){
-                     risques.add((Risque) thesValues.get(((String) value).trim()));
-                  }else{
-                     throw new WrongImportValueForThesaurusException(colonne, thesValues.keySet());
-                  }
-               }
-
-               if(risques.size() > 0){
-                  prlvt.setRisques(risques);
-               }
+            final Set<AbstractPfDependantThesaurusObject> risquesAsThesaurusObjects = readThesaurusValues(colonne, row, properties, champAImporter);
+           
+            if(risquesAsThesaurusObjects.size() > 0){
+               prlvt.setRisques(risquesAsThesaurusObjects.stream().map(th -> (Risque)th).collect(Collectors.toSet()));
             }
          }
       }
-      return addedRisque;
+   }
+   
+   @Override
+   public void setProtocolesForPrelevement(final Prelevement prlvt, final ImportColonne colonne, final Row row,
+      final ImportProperties properties) throws WrongImportValueForThesaurusException {
+      if(prlvt != null && colonne != null && row != null && properties != null){
+         ChampEntite champAImporter = colonne.getChamp().getChampEntite();
+         if(champAImporter.getNom().equals("Protocoles")){
+
+            final Set<AbstractPfDependantThesaurusObject> protocolesAsThesaurusObjects = readThesaurusValues(colonne, row, properties, champAImporter);
+            
+            if(protocolesAsThesaurusObjects.size() > 0){
+               prlvt.setProtocoles(protocolesAsThesaurusObjects.stream().map(th -> (Protocole)th).collect(Collectors.toSet()));
+            }
+         }
+      }
    }
 
+   private Set<AbstractPfDependantThesaurusObject> readThesaurusValues(final ImportColonne colonne, final Row row, final ImportProperties properties,
+      ChampEntite champAImporter)
+      throws WrongImportValueForThesaurusMException, WrongImportValueForThesaurusException{
+      // on va spliter la valeur de la colonne : les
+      // risques peuvent être séparés par des virgules
+      final Set<AbstractPfDependantThesaurusObject> thesaurusObjects = new HashSet<>();
+      int ind = -1;
+      // on récupère l'indice de la colonne dans le fichier
+      // correspond à l'objet ImportColonne
+      if(properties.getColonnesHeaders().containsKey(colonne.getNom())){
+         ind = properties.getColonnesHeaders().get(colonne.getNom());
+      }
+      // on récupère la valeur dans le fichier
+      Object value = null;
+      if(ind > -1){
+         value = getCellContent(row.getCell(ind), false, properties.getEvaluator());
+      }
+      if(value != null && !((String) value).equals("")){
+         // on récupère la hashtable contenant les valeurs du
+         // thésaurus
+         CaseInsensitiveMap<String, Object> thesValues = new CaseInsensitiveMap<>();
+         if(properties.getThesaurusValues().containsKey(champAImporter)){
+            thesValues = properties.getThesaurusValues().get(champAImporter);
+         }else{
+            throw new WrongImportValueException(colonne, champAImporter.getQueryChamp().getEntite().getNom());
+         }
+
+
+         if(((String) value).contains(";")){
+            List<String> listValeurNonAutorisee = new ArrayList<String>();
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+            final String[] split = ((String) value).split(";");
+            for(int i = 0; i < split.length; i++){
+               // on récupère l'objet correspondant à la valeur
+               // présente dans le fichier
+               String valeurCourante = split[i].trim();
+               if(thesValues.containsKey(valeurCourante)){
+                  thesaurusObjects.add((AbstractPfDependantThesaurusObject) thesValues.get(valeurCourante));
+               }else{
+                  listValeurNonAutorisee.add(valeurCourante);
+               }
+            }
+            if(!listValeurNonAutorisee.isEmpty()) {
+               throw new WrongImportValueForThesaurusMException(colonne, listValeurNonAutorisee, thesValues.keySet());
+            }
+         }else{
+            // on récupère l'objet correspondant à la valeur
+            // présente dans le fichier
+            if(thesValues.containsKey((value))){
+               thesaurusObjects.add((Risque) thesValues.get(((String) value).trim()));
+            }else{
+               throw new WrongImportValueForThesaurusException(colonne, thesValues.keySet());
+            }
+         }
+      }
+   
+      return thesaurusObjects;
+   }
+   
+   
    @Override
    public List<NonConformite> setNonConformites(final TKAnnotableObject obj, final ImportColonne colonne, final Row row,
       final ImportProperties properties, final Map<TKAnnotableObject, List<NonConformite>> ncfsList) throws WrongImportValueForThesaurusException {
@@ -1077,13 +1096,11 @@ public class ImportManagerImpl implements ImportManager
    }
 
    @Override
-   public boolean setCodeAssigneForEchantillon(final Echantillon echan, final ImportColonne colonne, final Row row,
+   public void setCodeAssigneForEchantillon(final Echantillon echan, final ImportColonne colonne, final Row row,
       final ImportProperties properties){
-      boolean addedCode = false;
       if(echan != null && colonne != null && row != null && properties != null){
          if(colonne.getChamp().getChampEntite().getNom().equals("CodeOrganes")
             || colonne.getChamp().getChampEntite().getNom().equals("CodeMorphos")){
-            addedCode = true;
             int ind = -1;
             // on récupère l'indice de la colonne dans le fichier
             // correspond à l'objet ImportColonne
@@ -1132,7 +1149,6 @@ public class ImportManagerImpl implements ImportManager
             }
          }
       }
-      return addedCode;
    }
 
    @Override
@@ -1382,22 +1398,27 @@ public class ImportManagerImpl implements ImportManager
             colonnes = properties.getColonnesForEntites().get(duo.getEntite());
             // pour chaque colonne, on set la valeur
             for(int i = 0; i < colonnes.size(); i++){
+               Champ currentChamp = colonnes.get(i).getChamp();
                // si la colonne correspond à un attribut
                // de l'objet
-               if(colonnes.get(i).getChamp().getChampEntite() != null){
+               if(currentChamp.getChampEntite() != null){
 
                   // non conformites
-                  if(NonConformiteUtils.isUneRaisonDeNonConformite(colonnes.get(i).getChamp().getChampEntite().getNom())){
+                  if(NonConformiteUtils.isUneRaisonDeNonConformite(currentChamp.getChampEntite().getNom())){
                      if(ncfsPrelevement == null){ // init la liste
                         ncfsPrelevement = new HashMap<>();
                      }
 
                      duo.getFirstNoConfs().addAll(setNonConformites(prlvt, colonnes.get(i), row, properties, ncfsPrelevement));
 
-                     // cette méthode teste si le champ est un risque
-                     // si c'est la cas, il sera ajouté au prlvt
-                     // sinon on continue la procédure normale
-                  }else if(!setRisquesForPrelevement(prlvt, colonnes.get(i), row, properties)){
+                  }// gestion des cas spécifiques des champs pouvant contenir plusieurs valeurs concaténées
+                  else if ("Protocoles".equals(currentChamp.getChampEntite().getNom())) {
+                     setProtocolesForPrelevement(prlvt, colonnes.get(i), row, properties);
+                  }
+                  else if ("Risques".equals(currentChamp.getChampEntite().getNom())) {
+                     setRisquesForPrelevement(prlvt, colonnes.get(i), row, properties);
+                  }
+                  else {
                      setPropertyForImportColonne(prlvt, colonnes.get(i), row, properties);
                   }
                }else if(colonnes.get(i).getChamp().getChampAnnotation() != null){
@@ -1457,24 +1478,26 @@ public class ImportManagerImpl implements ImportManager
             final List<AnnotationValeur> annotations = new ArrayList<>();
             // pour chaque colonne, on set la valeur
             for(int i = 0; i < colonnes.size(); i++){
+               Champ currentChamp = colonnes.get(i).getChamp();
                // si la colonne correspond à un attribut
                // de l'objet
-               if(colonnes.get(i).getChamp().getChampEntite() != null){
+               if(currentChamp.getChampEntite() != null){
 
-                  if(colonnes.get(i).getChamp().getChampEntite().getNom().equals("ConformeTraitement.Raison")){
+                  if(currentChamp.getChampEntite().getNom().equals("ConformeTraitement.Raison")){
                      if(ncfsEchanTrait == null){ // init la liste
                         ncfsEchanTrait = new HashMap<>();
                      }
                      setNonConformites(echan, colonnes.get(i), row, properties, ncfsEchanTrait);
-                  }else if(colonnes.get(i).getChamp().getChampEntite().getNom().equals("ConformeCession.Raison")){
+                  }else if(currentChamp.getChampEntite().getNom().equals("ConformeCession.Raison")){
                      if(ncfsEchanCess == null){ // init la liste
                         ncfsEchanCess = new HashMap<>();
                      }
                      setNonConformites(echan, colonnes.get(i), row, properties, ncfsEchanCess);
-                     // cette méthode teste si le champ est un code assigné
-                     // si c'est la cas, il sera ajouté au prlvt
-                     // sinon on continue la procédure normale
-                  }else if(!setCodeAssigneForEchantillon(echan, colonnes.get(i), row, properties)){
+                  }else if(currentChamp.getChampEntite().getNom().equals("CodeOrganes")
+                     || currentChamp.getChampEntite().getNom().equals("CodeMorphos")){
+                     setCodeAssigneForEchantillon(echan, colonnes.get(i), row, properties);
+                  }
+                  else {
                      setPropertyForImportColonne(echan, colonnes.get(i), row, properties);
                   }
 
