@@ -47,6 +47,7 @@ import org.zkoss.zul.Messagebox;
 
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -125,6 +126,15 @@ public class FicheRechercheAvanceeGatsbi extends FicheRechercheAvancee
       getRisquesModel().addAll(risks);
    }
 
+   /**
+    * Gatsbi modifie cette liste et implémente donc le setter
+    * @param protocoles
+    */
+   public void setProtocolesModel(final ListModelList<Protocole> protocoles){
+      getProtocolesModel().clear();
+      getProtocolesModel().addAll(protocoles);
+   }
+   
    /**** Gastbi setter/getter surcharges pour apache's PropertyUtils.g/setProperty : listModel ncarrivee comme custom-attributes 
     * ******/
    public List<NonConformite> getNcarrivee(){

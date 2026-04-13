@@ -121,7 +121,7 @@ public class ChangeBanqueModale extends GenericForwardComposer<Component>
       prlvtsGrid.setModel(new ListModelList<>(prelevements));
       prlvtsGrid.setRowRenderer(new MyGridRenderer());
 
-      // recherche les échantillons et dérivés issus du prélèvement
+      // recherche les échantillons et dérivés issus du premier ?? prélèvement => TK-652 et TK-653 A Faire !
       setObjectsFromPrelevement(prlvts[0]);
    }
 

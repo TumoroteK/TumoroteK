@@ -63,6 +63,7 @@ import fr.aphp.tumorotek.action.stockage.StockageController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
 import fr.aphp.tumorotek.manager.ConfigManager;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.Catalogue;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -834,4 +835,10 @@ public class ListeEchantillon extends AbstractListeController2
 	public void onClick$storageRobotItem() {
 		postStorageData(getSelectedObjects(), false);
 	}
+	
+	//TK-520
+   public boolean displayEchansOrganeEtCodeLesionnel() {
+      return EchantillonRowRenderer.displayEchansOrganeEtCodeLesionnel();
+   }
+
 }

@@ -71,6 +71,11 @@
 								value="@{fwinPrelevementStatic$composer.object.nature.nature}"
 								sclass="formValue" />
 						</div>
+						<div class="item item-mid" id="protocolesDiv"><!-- Protocoles -->	
+							<custom-attributes champId="274" />
+							<label value="${c:l('Champ.Prelevement.Protocoles')}" sclass="chpLabel formLabel"/>	
+							<vbox id="protocolesBox" />
+						</div>
 					</div>
 				</div>
 				<div class="block-separator" />
@@ -249,7 +254,26 @@
 							</div>
 						</div>
 					</div>
+					<div class="block-separator" />
+					<div id="infosCompBlockDiv"><!-- Informations complémentaires -->
+						<div class="block-title">
+							<div class="column-container">
+								<label value="${c:l('fichePrelevement.group.infosComp')}" sclass="formSubTitle"/>
+								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							</div>
+						</div>
+						<div class="block-container" id="infosCompBlockDivContainer">
+							<div class="item item-wide" id="complementDiagnosticDiv"><!-- Complément diagnostic -->
+								<custom-attributes champId="275" />
+								<label value="${c:l('Champ.Prelevement.ComplementDiagnostic')}" sclass="chpLabel formLabel"/>
+								<label id="complementDiagnosticLabelPrlvt" 
+									value="@{fwinPrelevementStatic$composer.object.complementDiagnostic}"
+									sclass="formValue" />
+							</div>
+						</div>
+					</div>
 				</groupbox>
+
 				<div class="block-separator" />
 				<!-- Transfert du site préleveur vers le site de stockage -->
 				<groupbox id="gridFormPrlvtComp">

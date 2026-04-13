@@ -90,6 +90,7 @@ import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.coeur.echantillon.ECasMajDelaiCongelFromEchantillon;
 import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ModaleMajDelaiCongelationConstants;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
@@ -264,6 +265,19 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    public void doAfterCompose(final Component comp) throws Exception{
       super.doAfterCompose(comp);
 
+      //TK-520 : certains champs doivent être cachés en sérologie : 
+      boolean visible = !ContexteHelper.isContexteSerologie(SessionUtils.getCurrentContexte());
+      // /!\ en contexte Gatsbi ces champs peuvent ne pas existés. Mais si ils existent, ils seront visibles puisque le contexte sera différent de sérologie
+      if(qualiteEchanLabel != null) {
+         qualiteEchanLabel.setVisible(visible);
+         qualitesBoxEchan.setVisible(visible);
+      }
+      if(groupInfosCompEchan != null) {
+         groupInfosCompEchan.setVisible(visible);
+         //TK-782 : si le groupe est caché, il faut forcer le fait qu'il soit fermé sinon les champs qu'il contient sont quand même affichés
+         setGroupInfosCompEchanOpen(groupInfosCompEchan.isVisible());
+      }
+      
       setWaitLabel("echantillon.creation.encours");
 
       initLists();
@@ -274,12 +288,6 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       getCodesMorphoController().setIsMorpho(true);
       getCodesMorphoController().setBanque(getMainWindow().getSelectedBanque());
 
-      if(SessionUtils.getSelectedBanques(sessionScope).size() > 0 && (SessionUtils.getCurrentContexte() == EContexte.DEFAUT
-         || SessionUtils.getCurrentGatsbiContexteForEntiteId(3) != null)){
-         setGroupInfosCompEchanOpen(true);
-      }else{
-         setGroupInfosCompEchanOpen(false);
-      }
    }
 
    @Override

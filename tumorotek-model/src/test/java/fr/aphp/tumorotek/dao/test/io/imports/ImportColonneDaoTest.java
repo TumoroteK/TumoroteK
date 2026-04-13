@@ -171,12 +171,6 @@ public class ImportColonneDaoTest extends AbstractDaoTest {
 		assertTrue(liste.size() == 0);
 	}
 
-	public void testFindByTemplateAndEntiteDelegue() {
-		final ImportTemplate it1 = importTemplateDao.findById(1);
-		final Entite e2 = entiteDao.findById(2);
-		assertTrue(importColonneDao.findByTemplateAndEntiteDelegue(it1, e2).isEmpty());
-	}
-
 	/**
 	 * Test l'appel de la méthode findByTemplateAndEntite().
 	 */

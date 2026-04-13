@@ -45,12 +45,10 @@ import fr.aphp.tumorotek.dao.io.export.ChampDao;
 import fr.aphp.tumorotek.manager.coeur.annotation.AnnotationValeurManager;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.SearchedObjectIdNotExistException;
-import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.manager.io.export.ChampManager;
 import fr.aphp.tumorotek.manager.io.export.GroupementManager;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.io.export.Champ;
 
 /**
@@ -71,8 +69,6 @@ public class ChampManagerImpl implements ChampManager
    private ChampDao champDao = null;
 
    private ChampEntiteManager champEntiteManager;
-
-   private ChampDelegueManager champDelegueManager;
 
    private AnnotationValeurManager annotationValeurManager;
 
@@ -301,8 +297,6 @@ public class ChampManagerImpl implements ChampManager
             res = champEntiteManager.getValueForObjectManager(champ.getChampEntite(), obj, prettyFormat);
          }else if(null != champ.getChampAnnotation() && obj instanceof TKAnnotableObject){
             res = annotationValeurManager.findByChampAndObjetManager(champ.getChampAnnotation(), (TKAnnotableObject) obj).get(0);
-         }else if(null != champ.getChampDelegue() && obj instanceof TKDelegetableObject){
-            res = champDelegueManager.getValueForEntite(champ.getChampDelegue(), (TKDelegetableObject<T>) obj);
          }
       }
 
@@ -312,10 +306,6 @@ public class ChampManagerImpl implements ChampManager
 
    public void setChampEntiteManager(final ChampEntiteManager champEntiteManager){
       this.champEntiteManager = champEntiteManager;
-   }
-
-   public void setChampDelegueManager(final ChampDelegueManager champDelegueManager){
-      this.champDelegueManager = champDelegueManager;
    }
 
    public void setAnnotationValeurManager(final AnnotationValeurManager annotationValeurManager){

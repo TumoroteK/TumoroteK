@@ -1114,7 +1114,6 @@ public class FicheImportTemplate extends AbstractFicheCombineController
     * Alimente la liste déroulante des champs à importer si une entité a été sélectionnée :
     * collecte tous les champs non obligatoires pouvant être ajoutés à un import pour l'entité selectionnée et les décore
     * Si aucune entité n'est sélectionnée (cas du chargement de la page de création, la liste sera initialisée à vide.
-    * @since 2.2.1 ajout champ delegue contextuels
     */
    private void populateChampsBoxForSelectedEntite(){
       if(selectedEntite == null){
@@ -1898,10 +1897,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
          if(incompatibiliteTemplateBanque != null) {
             //gestion du message à afficher (on n'en affiche qu'un seul, on privilégie celui sur les champs
             //par rapport à celui sur les annotations :
-            if(incompatibiliteTemplateBanque.getChampDelegueItem() != null) {
-               populateAlerteInfo(incompatibiliteTemplateBanque.getChampDelegueItem(), retrieveImportTemplateContexte());
-            }
-            else if(incompatibiliteTemplateBanque.getChampItem() != null) {
+            if(incompatibiliteTemplateBanque.getChampItem() != null) {
                //NB : dans la majorité des cas, on sera sur un template Gatsbi mais on peut aussi remonter une erreur ici
                //dans le cas d'un modèle anapat' et un contexte sérologie si le modèle contient les champs spécifique à l'anapat' !
                populateAlerteInfo(incompatibiliteTemplateBanque.getChampItem(), retrieveImportTemplateContexte());
@@ -2074,11 +2070,7 @@ public class FicheImportTemplate extends AbstractFicheCombineController
       if(importColonneExisting.getChamp() != null) {
          if(champExisting.getChampEntite() != null) {
             newChamp = new Champ(champExisting.getChampEntite());
-         }
-         else if(champExisting.getChampDelegue() != null) {
-            newChamp = new Champ(champExisting.getChampDelegue());
-         }
-         else if(champExisting.getChampAnnotation() != null) {
+         }else if(champExisting.getChampAnnotation() != null) {
             newChamp = new Champ(champExisting.getChampAnnotation());
          }
          newImportColonne.setChamp(newChamp);

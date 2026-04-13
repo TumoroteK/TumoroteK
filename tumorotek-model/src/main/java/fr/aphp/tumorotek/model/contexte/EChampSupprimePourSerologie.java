@@ -36,6 +36,10 @@
  **/
 package fr.aphp.tumorotek.model.contexte;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import fr.aphp.tumorotek.model.systeme.EEntiteId;
 
 public enum EChampSupprimePourSerologie
@@ -63,5 +67,8 @@ public enum EChampSupprimePourSerologie
       return entiteId;
    }
    
+   public static List<String> getAllNom() {
+      return Arrays.asList(values()).stream().map(enumValue -> enumValue.getNom()).collect(Collectors.toList());
+   }
 }
 

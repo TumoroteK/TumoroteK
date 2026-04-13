@@ -430,22 +430,11 @@ public class ExecutionRechercheController extends AbstractObjectTabController
       renderer.setResultats(resultats);
       listObjets.setRowRenderer(renderer);
 
-      // getBinder().loadComponent(listObjets);
-
       objets.clear();
       if(e.getData() != null){
          objets.addAll((List<Object>) e.getData());
       }
 
-      // on génère l'affichage des résultats
-      // objAffRenderer = new ObjetsAffichageRenderer(
-      //		objets, affichage);
-      // objAffRenderer.renderGrid(listObjets);
-
-      //On rafraichit la page
-      // getBinder().loadComponent(listObjets);
-
-      // listObjets.setPageSize(affichage.getNbLignes());
       _pageSize = affichage.getNbLignes();
       _needsTotalSizeUpdate = true;
       resPaging.setActivePage(0);

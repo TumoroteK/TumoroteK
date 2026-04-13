@@ -77,6 +77,24 @@
 									sclass="formLink" />
 							</div>
 						</div>
+						
+						<div class="item item-wide" id="protocolesDiv"><!-- Protocoles -->	
+							<custom-attributes champId="274" listmodel="protocoles" />
+							<label value="${c:l('Champ.Prelevement.Protocoles')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="protocolesLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false" />
+								<label id="protocolesMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>
+						</div>
+						
+						
+						
+						
+						
 						<div class="item item-wide" id="datePrelDiv"><!-- date du prélèvement -->
 							<custom-attributes champId="30" />
 							<label value="${c:l('Champ.Prelevement.DatePrelevement')}" sclass="chpLabel formLabel" />
@@ -240,6 +258,30 @@
 									value="${c:l('general.edit.modification.multiple')}" 
 									sclass="formLink" />
 							</div>
+						</div>
+					</div>
+				</div>
+				<div class="block-separator" />
+				<div id="infosCompBlockDiv"><!-- Informations complémentaires -->
+					<div class="block-title">
+						<div class="column-container">
+							<label value="${c:l('fichePrelevement.group.infosComp')}" sclass="formSubTitle"/>
+							<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</div>
+					</div>
+					<div class="block-container" id="infosCompBlockDivContainer">
+						<div class="item item-wide" id="complementDiagnosticDiv"><!-- Complément diagnostic -->	
+							<custom-attributes champId="275" />
+							<label value="${c:l('Champ.Prelevement.ComplementDiagnostic')}" sclass="chpLabel formLabel" />
+							<div class="row-container changedValue">				
+								<label id="complDiagLabelChanged" 
+									sclass="modifmultiValue formValue"
+									visible="false"
+								/>
+								<label id="complDiagMultiLabel"
+									value="${c:l('general.edit.modification.multiple')}" 
+									sclass="formLink" />
+							</div>	
 						</div>
 					</div>
 				</div>

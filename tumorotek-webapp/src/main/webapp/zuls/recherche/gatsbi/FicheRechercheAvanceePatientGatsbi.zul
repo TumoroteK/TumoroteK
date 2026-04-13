@@ -385,7 +385,7 @@
 													rows="1"
 													model="@{fwinRechercheAvanceePatient$composer.natures}">
 													<listitem self="@{each='nature'}" value="nature">
-														<listcell label="@{nature.nature}" />
+														<listcell label="@{nature.nom}" />
 													</listitem>
 													<custom-attributes attribut="NatureId"
 														entite="Prelevement" />
@@ -432,13 +432,13 @@
 													model="@{fwinRechercheAvanceePatient$composer.consentTypes}">
 													<listitem self="@{each='consentType'}"
 														value="consentType">
-														<listcell label="@{consentType.type}" />
+														<listcell label="@{consentType.nom}" />
 													</listitem>
 													<custom-attributes
 														attribut="ConsentTypeId" entite="Prelevement" />
 												</listbox>
 											</div>
-<div class="item item-wide" id="etabPreleveurDiv"><!-- établissement du prélèvement -->
+											<div class="item item-wide" id="etabPreleveurDiv"><!-- établissement du prélèvement -->
 												<custom-attributes champId="29" /> <!-- l'affichage est dépendant de celui champ service préleveur -->
 												<label value="${c:l('prelevement.etablissement')}"
 													sclass="chpLabel formLabel" />
@@ -569,6 +569,27 @@
 													</listbox>
 												</div>
 											</div>
+											<!-- TK-520 : Protocoles et complément diagnostic -->											
+											<div class="item item-mid" id="protocolesDiv"><!-- Protocoles -->
+												<custom-attributes champId="274" listmodel="protocolesModel"/>
+												<label value="${c:l('Champ.Prelevement.Protocoles')}" sclass="chpLabel formLabel" />
+												<div>
+													<listbox id="protocolesBox" checkmark="true" multiple="true" rows="3" hflex="1" model="@{fwinRechercheAvanceePatient$composer.protocolesModel}">
+														<listitem self="@{each='protocole'}" value="protocole">
+															<listcell label="@{protocole.nom}" />
+														</listitem>
+													</listbox>
+													<checkbox id="cumulProtocolesBox" label="${c:l('general.search.cumulative')}"/>
+												</div>
+											</div>
+											<div class="item item-mid" id="complementDiagnosticDiv"><!-- complément diagnostic -->
+												<custom-attributes champId="275"
+													 />	
+												<label value="${c:l('Champ.Prelevement.ComplementDiagnostic')}" sclass="chpLabel formLabel" />
+												<textbox id="diagCompBox" width="150px" height="20px">
+													<custom-attributes attribut="ComplementDiagnostic" entite="Prelevement" />
+												</textbox>
+											</div>
 										</div>
 									</cell>
 								</row>
@@ -599,7 +620,7 @@
 													model="@{fwinRechercheAvanceePatient$composer.echantillonTypes}">
 													<listitem self="@{each='echantillonType'}"
 														value="echantillonType">
-														<listcell label="@{echantillonType.type}" />
+														<listcell label="@{echantillonType.nom}" />
 													</listitem>
 													<custom-attributes
 														attribut="EchantillonTypeId" entite="Echantillon" />
@@ -716,7 +737,7 @@
 												<custom-attributes champId="230" />
 												<hlayout style="z-valign-top">
 													<label
-														value="${c:l('Champ.Echantillon.CodeAssigne')}"
+														value="${c:l('Champ.Echantillon.CodeMorphos')}"
 														sclass="chpLabel formLabel" />
 													<image src="/images/icones/bulb.png"
 														tooltip="codesInfos" style="cursor: help" />
@@ -887,7 +908,7 @@
 													model="@{fwinRechercheAvanceePatient$composer.prodDeriveTypes}">
 													<listitem self="@{each='prodDeriveType'}"
 														value="prodDeriveType">
-														<listcell label="@{prodDeriveType.type}" />
+														<listcell label="@{prodDeriveType.nom}" />
 													</listitem>
 													<custom-attributes attribut="ProdTypeId"
 														entite="ProdDerive" />

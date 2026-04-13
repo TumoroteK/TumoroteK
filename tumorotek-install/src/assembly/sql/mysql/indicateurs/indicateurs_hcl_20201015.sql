@@ -36,11 +36,9 @@ CREATE PROCEDURE stats_count_echan_enattente(IN date_debut DATE, IN date_fin DAT
 
     SET @sql = CONCAT(@sql, ' (SELECT e.banque_id, count(distinct e.echantillon_id) as cc FROM ECHANTILLON e 
 	LEFT OUTER JOIN CODE_ASSIGNE c ON e.ECHANTILLON_ID = c.ECHANTILLON_ID 
-        LEFT OUTER JOIN PRELEVEMENT p ON e.PRELEVEMENT_ID = p.PRELEVEMENT_ID 
-        LEFT OUTER JOIN PRELEVEMENT_DELEGATE d on p.PRELEVEMENT_ID=d.PRELEVEMENT_ID 
-        LEFT JOIN PRELEVEMENT_SERO s on d.PRELEVEMENT_DELEGATE_ID=s.PRELEVEMENT_DELEGATE_ID ');
+        LEFT OUTER JOIN PRELEVEMENT p ON e.PRELEVEMENT_ID = p.PRELEVEMENT_ID ');
     SET @sql = CONCAT(@sql, ' WHERE e.DATE_STOCK BETWEEN ''', date_debut, ''' AND ''', date_fin, '''');
-    SET @sql = CONCAT(@sql, ' AND ((c.IS_MORPHO = 1 AND c.CODE like "%ATTENTE%") OR s.LIBELLE like "%EN ATTENTE%")');
+    SET @sql = CONCAT(@sql, ' AND ((c.IS_MORPHO = 1 AND c.CODE like "%ATTENTE%") OR p.COMPLEMENT_DIAGNOSTIC like "%EN ATTENTE%")');
     SET @sql = CONCAT(@sql, ' GROUP BY e.banque_id) zz ');
     SET @sql = CONCAT(@sql, ' ON b.banque_id = zz.banque_id');
 

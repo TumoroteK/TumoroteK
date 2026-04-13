@@ -54,7 +54,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -64,14 +63,11 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
-import fr.aphp.tumorotek.model.coeur.prelevement.delegate.AbstractPrelevementDelegate;
-import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.systeme.Unite;
@@ -157,7 +153,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "Prelevement.findByCodesAndBanquesInList",
       query = "SELECT p FROM Prelevement p " + "WHERE (p.code in (?1) OR p.numeroLabo in (?1)) AND p.banque in (?2)"),
    @NamedQuery(name = "Prelevement.findByComDiag",
-      query = "SELECT p FROM Prelevement p " + "JOIN p.delegate s " + "WHERE s.libelle like ?1 AND p.banque in (?2)"),
+      query = "SELECT p FROM Prelevement p WHERE complementDiagnostic like ?1 AND p.banque in (?2)"),
    @NamedQuery(name = "Prelevement.findByPatientNomOrNipInList",
       query = "SELECT p.prelevementId FROM Prelevement p " + "JOIN p.maladie as m " + "JOIN m.patient as pat "
          + "WHERE (pat.nom in (?1) or pat.nip in (?1)) " + "AND p.banque in (?2)"),
@@ -198,7 +194,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
       + "JOIN pat.patientIdentifiants i WHERE (pat.nom like ?1 OR pat.nip like ?1 or i.identifiant like ?1) "
       + "AND i.pk.banque in (?2) AND p.banque in (?2)")
 })
-public class Prelevement extends TKDelegetableObject<Prelevement> implements TKAnnotableObject, Serializable
+public class Prelevement implements TKAnnotableObject, Serializable
 {
 
    private static final long serialVersionUID = 6737874055478715763L;
@@ -207,6 +203,8 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
 
    private String code;
 
+   private Set<Protocole> protocoles = new HashSet<>();
+   
    private Date consentDate;
 
    private Calendar datePrelevement;
@@ -260,6 +258,8 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
 
    //private Unite volumeUnite;
    private ConsentType consentType;
+   
+   private String complementDiagnostic;
 
    private Maladie maladie;
 
@@ -268,8 +268,6 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    private Set<Echantillon> echantillons = new HashSet<>();
 
    private Set<Risque> risques = new HashSet<>();
-
-   private TKDelegateObject<Prelevement> delegate;
 
    public Prelevement(){}
 
@@ -302,6 +300,17 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.code = c;
    }
 
+   @ManyToMany(targetEntity = Protocole.class, fetch = FetchType.EAGER)
+   @JoinTable(name = "PRELEVEMENT_PROTOCOLE", joinColumns = @JoinColumn(name = "PRELEVEMENT_ID"),
+      inverseJoinColumns = @JoinColumn(name = "PROTOCOLE_ID"))
+   public Set<Protocole> getProtocoles(){
+      return protocoles;
+   }
+
+   public void setProtocoles(final Set<Protocole> protocoles){
+      this.protocoles = protocoles;
+   }
+   
    @Column(name = "CONSENT_DATE", nullable = true)
    public Date getConsentDate(){
       if(consentDate != null){
@@ -608,6 +617,15 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       this.consentType = type;
    }
 
+   @Column(name = "COMPLEMENT_DIAGNOSTIC", nullable = true, length = 300)
+   public String getComplementDiagnostic(){
+      return complementDiagnostic;
+   }
+
+   public void setComplementDiagnostic(final String complementDiagnostic){
+      this.complementDiagnostic = complementDiagnostic;
+   }
+   
    @ManyToOne
    @JoinColumn(name = "MALADIE_ID", nullable = true)
    public Maladie getMaladie(){
@@ -702,8 +720,10 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       clone.setCode(this.getCode());
       clone.setNature(this.getNature());
       clone.setMaladie(this.getMaladie());
+      clone.setProtocoles(protocoles);
       clone.setConsentType(this.getConsentType());
       clone.setConsentDate(this.getConsentDate());
+      clone.setComplementDiagnostic(complementDiagnostic);
       clone.setPreleveur(this.getPreleveur());
       clone.setServicePreleveur(this.getServicePreleveur());
       clone.setDatePrelevement(this.getDatePrelevement());
@@ -730,8 +750,6 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
       clone.setArchive(this.getArchive());
       clone.setRisques(getRisques());
 
-      clone.setDelegate(getDelegate());
-
       return clone;
    }
 
@@ -749,25 +767,5 @@ public class Prelevement extends TKDelegetableObject<Prelevement> implements TKA
    @Transient
    public String getPhantomData(){
       return code;
-   }
-
-   @Override
-   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-      targetEntity = AbstractPrelevementDelegate.class)
-   public TKDelegateObject<Prelevement> getDelegate(){
-      return delegate;
-   }
-
-   @Transient
-   public PrelevementSero getPrelevementSero(){
-      if(delegate instanceof PrelevementSero){
-         return (PrelevementSero) delegate;
-      }
-      return null;
-   }
-
-   @Override
-   public void setDelegate(final TKDelegateObject<Prelevement> delegate){
-      this.delegate = delegate;
    }
 }

@@ -37,7 +37,7 @@ package fr.aphp.tumorotek.manager.context;
 
 import java.util.List;
 
-import fr.aphp.tumorotek.manager.PfDependantTKThesaurusManager;
+import fr.aphp.tumorotek.manager.TKThesaurusManager;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
 
 /**
@@ -55,13 +55,11 @@ import fr.aphp.tumorotek.model.contexte.Diagnostic;
  * @version 2.0.6
  *
  */
-public interface DiagnosticManager extends PfDependantTKThesaurusManager<Diagnostic>
+public interface DiagnosticManager extends TKThesaurusManager<Diagnostic>
 {
-
    /**
-    * Recherche toutes les instances présentes dans la base.
-    * @return List contenant les Risque.
+    * Recherche tous les diagnostics présents dans la base.
+    * @return Liste de Diagnostics (fiabilités de diagonstic).
     */
    List<Diagnostic> findAllObjectsManager();
-
 }

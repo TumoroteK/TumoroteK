@@ -71,9 +71,12 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.code.CodeUtils;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
+import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
 import fr.aphp.tumorotek.action.prelevement.PrelevementConsultFromOtherBanksRenderer;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.context.DiagnosticManager;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.manager.validation.coeur.patient.MaladieValidator;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.code.CodeCommon;
@@ -82,6 +85,7 @@ import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.Diagnostic;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -120,7 +124,7 @@ public class FicheMaladie extends AbstractFicheCombineController
    protected Label codeDiagFormLabel;
 
    protected Label dateDiagFormLabel;
-
+   
    // Labels
    protected Label libelleLabel;
 
@@ -131,6 +135,9 @@ public class FicheMaladie extends AbstractFicheCombineController
    protected Label dateDebutLabel;
 
    protected Label dateDiagLabel;
+   
+   //TK-520 :
+   protected Label diagLabel;
 
    // Editable components
    protected Textbox libelleBox;
@@ -140,6 +147,8 @@ public class FicheMaladie extends AbstractFicheCombineController
    protected Datebox dateDebutBox;
 
    protected Datebox dateDiagBox;
+   
+   protected Listbox diagBox;
 
    // inca
    private Image pop1;
@@ -154,7 +163,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
    // Objets Principaux
    protected Maladie maladie = new Maladie();
-
+   
    protected Button addPrelevement;
 
    protected Toolbar toolbar;
@@ -178,6 +187,8 @@ public class FicheMaladie extends AbstractFicheCombineController
    // true si create/edit mode
    protected boolean isInEdition = false;
 
+   protected Diagnostic selectedDiag;
+   
    protected List<Prelevement> prelevements = new ArrayList<>();
 
    protected Prelevement selectedPrelevement;
@@ -269,7 +280,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       initObjLabelsComponent();
       
       setObjBoxsComponents(
-         new Component[] {this.libelleBox, this.codeDiagBox, this.dateDebutBox, this.dateDiagBox, codeAssistantButton});
+         new Component[] {this.libelleBox, this.codeDiagBox, this.dateDebutBox, this.dateDiagBox, diagBox, codeAssistantButton});
       setRequiredMarks(new Component[] {this.libelleRequired});
 
       getReferents().setFicheParent(this);
@@ -290,7 +301,7 @@ public class FicheMaladie extends AbstractFicheCombineController
     */
    protected void initObjLabelsComponent(){
       setObjLabelsComponents(new Component[] {
-         this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,
+         this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel, this.diagLabel,
          this.prelevementsMaladieGroup, this.prelevementsMaladieBox, this.prelevementsFromOtherBanksMaladieBox 
       });    
    }
@@ -406,6 +417,7 @@ public class FicheMaladie extends AbstractFicheCombineController
 
       // recupere les prelevements si objet non-vide uniquement
       if(!this.maladie.equals(new Maladie())){
+         selectedDiag = maladie.getDiagnostic();
          if(SessionUtils.getSelectedBanques(sessionScope).size() == 1){
             this.prelevements = ManagerLocator.getPrelevementManager().findByMaladieAndBanqueManager(this.maladie,
                SessionUtils.getSelectedBanques(sessionScope).get(0));
@@ -1181,4 +1193,17 @@ public class FicheMaladie extends AbstractFicheCombineController
       this.maladieValidator = maladieValidator;
    }
    
+   
+   public Diagnostic getSelectedDiag(){
+      return selectedDiag;
+   }
+
+   public List<Diagnostic> getDiagnostics(){
+      return ManagerLocator.getManager(DiagnosticManager.class).findAllObjectsManager();
+   }
+   
+   //TK-520
+   public boolean displayEchansOrganeEtCodeLesionnel() {
+      return EchantillonRowRenderer.displayEchansOrganeEtCodeLesionnel();
+   }  
 }

@@ -57,8 +57,6 @@ import org.zkoss.zul.Textbox;
 import fr.aphp.tumorotek.action.constraints.ConstFilename;
 import fr.aphp.tumorotek.action.echantillon.EchantillonConstraints;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 
 /**
@@ -167,21 +165,7 @@ public class ModificationMultipleFile extends AbstractModificationMultipleCompon
       for(final Object object : getListObjets()){
 
          try{
-
-            boolean isDelegateProperty = false;
-            TKDelegateObject<?> delegate = null;
-
-            if(object instanceof TKDelegetableObject){
-               delegate = ((TKDelegetableObject<?>) object).getDelegate();
-               isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(getChamp());
-            }
-
-            Fichier fichier = null;
-            if(isDelegateProperty){
-               fichier = (Fichier) PropertyUtils.getSimpleProperty(delegate, getChamp());
-            }else{
-               fichier = (Fichier) PropertyUtils.getSimpleProperty(object, getChamp());
-            }
+            Fichier fichier = (Fichier) PropertyUtils.getSimpleProperty(object, getChamp());
 
             if(fichier != null){
                if(!paths.contains(fichier.getPath()) || !getStringValues().contains(fichier.getNom())){

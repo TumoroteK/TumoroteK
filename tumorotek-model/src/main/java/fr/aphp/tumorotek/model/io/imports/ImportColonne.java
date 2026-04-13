@@ -67,9 +67,6 @@ import fr.aphp.tumorotek.model.io.export.Champ;
    @NamedQuery(name = "ImportColonne.findByTemplateAndEntite",
       query = "SELECT i FROM ImportColonne i "
          + "WHERE i.importTemplate = ?1 AND i.champ.champEntite.entite = ?2 ORDER BY i.ordre"),
-   @NamedQuery(name = "ImportColonne.findByTemplateAndEntiteDelegue",
-      query = "SELECT i FROM ImportColonne i "
-         + "WHERE i.importTemplate = ?1 AND i.champ.champDelegue.entite = ?2 ORDER BY i.ordre"),
    @NamedQuery(name = "ImportColonne.findByTemplateAndAnnotationEntite",
       query = "SELECT i FROM ImportColonne i " + "WHERE i.importTemplate = ?1 "
          + "AND i.champ.champAnnotation.tableAnnotation.entite = ?2 " + "ORDER BY i.ordre"),

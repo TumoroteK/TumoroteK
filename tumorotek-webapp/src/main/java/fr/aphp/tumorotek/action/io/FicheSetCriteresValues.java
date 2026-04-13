@@ -160,20 +160,11 @@ public class FicheSetCriteresValues extends GenericForwardComposer<Component>
          row.getChildren();
       }
 
-      final boolean hasDelegates = exportNodes.stream().filter(en -> en instanceof CritereNode)
-         .anyMatch(cn -> ((CritereNode) cn).getCritere().getChamp().getChampDelegue() != null);
-
       // init des banques disponibles
       if(banques.size() == 1){
          final Utilisateur user = SessionUtils.getLoggedUser(sessionScope);
          final Plateforme pf = SessionUtils.getPlateforme(sessionScope);
          availableBanques = ManagerLocator.getUtilisateurManager().getAvailableBanquesByPlateformeManager(user, pf, false);
-
-         if(hasDelegates){
-            final Contexte currentContexte = SessionUtils.getCurrentBanque(sessionScope).getContexte();
-            availableBanques =
-               availableBanques.stream().filter(b -> currentContexte.equals(b.getContexte())).collect(Collectors.toList());
-         }
 
          availableBanques.remove(banques.get(0));
 

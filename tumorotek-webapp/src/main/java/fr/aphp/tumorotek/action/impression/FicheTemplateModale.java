@@ -45,11 +45,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.jdom.Document;
 import org.jdom.Element;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.WrongValueException;
@@ -82,6 +81,7 @@ import fr.aphp.tumorotek.decorator.CederObjetDecorator;
 import fr.aphp.tumorotek.decorator.CleImpressionDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.factory.CederObjetDecoratorFactory;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.manager.impl.io.utils.RechercheUtilsManager;
 import fr.aphp.tumorotek.manager.impl.xml.CoupleSimpleValeur;
 import fr.aphp.tumorotek.manager.impl.xml.CoupleValeur;
@@ -105,11 +105,9 @@ import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
-import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
-import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Protocole;
@@ -455,10 +453,11 @@ public class FicheTemplateModale extends AbstractImpressionController
       // on récupère tous les blocs pour l'entité
       final List<BlocImpression> blocImpressions = ManagerLocator.getBlocImpressionManager().findByEntiteManager(selectedEntite);
 
-      // HACK Serologie
-      if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
+      // HACK Serologie : on retire tout le bloc (à noter qu'à d'autres endroits du code, la gestion se fera au champ à partir de EChampSupprimePourSerologie)
+      if(ContexteHelper.isContexteSerologie(SessionUtils.getCurrentContexte())) {
          blocImpressions.removeIf(b -> b.getNom().equals("bloc.echantillon.informations.complementaires"));
       }
+      //NB : le filtre sur Gatsbi est géré ci-dessous dans new BlocImpressionDecorator()
 
       for(int i = 0; i < blocImpressions.size(); i++){
          final BlocImpressionDecorator deco =
@@ -1022,14 +1021,9 @@ public class FicheTemplateModale extends AbstractImpressionController
       final CoupleValeur cp1 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Code"), prelevement.getCode());
       final CoupleValeur cp2 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.NumeroLabo"), prelevement.getNumeroLabo());
       final CoupleValeur cp3 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Nature"), (prelevement.getNature()!=null) ? prelevement.getNature().getNom() : "");
-      CoupleValeur cp4 = new CoupleValeur("", "");
-
-      // HACK Serologie
-      if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
-         cp4 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.SEROLOGIE.Protocoles"),
-            prelevement.getDelegate() != null ? ((PrelevementSero) prelevement.getDelegate()).getProtocoles().stream()
-               .map(Protocole::getNom).collect(Collectors.joining(",")) : "");
-      }
+      //TK-520 :
+      final CoupleValeur cp4 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Protocoles"),
+            prelevement.getProtocoles() != null ? prelevement.getProtocoles().stream().map(Protocole::getNom).collect(Collectors.joining(",")) : "");
 
       final LigneParagraphe li1 = new LigneParagraphe("li1", new CoupleValeur[] {cp1, cp2});
       final LigneParagraphe li1Bis = new LigneParagraphe("li1Bis", new CoupleValeur[] {cp3, cp4});
@@ -1152,25 +1146,22 @@ public class FicheTemplateModale extends AbstractImpressionController
       final CoupleValeur cp23 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.ConsentDate"),
          ObjectTypesFormatters.dateRenderer2(prelevement.getConsentDate()));
       final LigneParagraphe li13 = new LigneParagraphe("", new CoupleValeur[] {cp22, cp23});
+      final SousParagraphe sousPar3 =
+         new SousParagraphe(Labels.getLabel("Champ.Prelevement.ConsentType"), new LigneParagraphe[] {li13}, null, null);
+
+      //TK-520
+      final CoupleValeur cp26 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.ComplementDiagnostic"),
+         prelevement.getComplementDiagnostic() != null ? prelevement.getComplementDiagnostic() : "");
+      final LigneParagraphe li14 = new LigneParagraphe("li14", new CoupleValeur[] {cp26});
 
       final List<LigneParagraphe> lastLignesParagraphe = new ArrayList<>();
-      lastLignesParagraphe.add(li13);
-
-      // HACK Serologie
-      if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
-         final CoupleValeur cp26 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.SEROLOGIE.Libelle"),
-            prelevement.getDelegate() != null && ((PrelevementSero) prelevement.getDelegate()).getLibelle() != null
-               ? ((PrelevementSero) prelevement.getDelegate()).getLibelle() : "");
-         // final CoupleValeur cp27 = new CoupleValeur("","");
-         final LigneParagraphe li14 = new LigneParagraphe("li14", new CoupleValeur[] {cp26});
-         lastLignesParagraphe.add(li14);
-      }
-
-      final SousParagraphe sousPar3 =
-         new SousParagraphe(Labels.getLabel("Champ.Prelevement.ConsentType"), lastLignesParagraphe.toArray(), null, null);
+      lastLignesParagraphe.add(li14);
+      
+      final SousParagraphe sousPar4 =
+         new SousParagraphe(Labels.getLabel("fichePrelevement.group.infosComp"), lastLignesParagraphe.toArray(), null, null);
 
       final Paragraphe par3 = new Paragraphe(Labels.getLabel("bloc.prelevement.informations.prelevement"),
-         new Object[] {li6, li7, li8, li9, li10}, new SousParagraphe[] {sousPar2, sousPar3}, null, null);
+         new Object[] {li6, li7, li8, li9, li10}, new SousParagraphe[] {sousPar2, sousPar3, sousPar4}, null, null);
       ManagerLocator.getXmlUtils().addParagraphe(pageXML, par3);
    }
 
@@ -1222,16 +1213,12 @@ public class FicheTemplateModale extends AbstractImpressionController
          final List<LigneParagraphe> maladieLigneParagraphe = new ArrayList<>();
          maladieLigneParagraphe.add(li5);
 
-         // HACK Serologie
-         if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
-            final CoupleValeur cp14 = new CoupleValeur(Labels.getLabel("Champ.Maladie.SEROLOGIE.Diagnostic"),
-               prelevement.getMaladie().getDelegate() != null
-                  && ((MaladieSero) prelevement.getMaladie().getDelegate()).getDiagnostic() != null
-                     ? ((MaladieSero) prelevement.getMaladie().getDelegate()).getDiagnostic().getNom() : "");
-            final CoupleValeur cp15 = new CoupleValeur("", "");
-            final LigneParagraphe li7 = new LigneParagraphe("li7", new CoupleValeur[] {cp14, cp15});
-            maladieLigneParagraphe.add(li7);
-         }
+         //TK-520 :
+         final CoupleValeur cp14 = new CoupleValeur(Labels.getLabel("Champ.Maladie.Diagnostic"),
+            prelevement.getMaladie().getDiagnostic() != null ? prelevement.getMaladie().getDiagnostic().getNom() : "");
+         final CoupleValeur cp15 = new CoupleValeur("", "");
+         final LigneParagraphe li7 = new LigneParagraphe("li7", new CoupleValeur[] {cp14, cp15});
+         maladieLigneParagraphe.add(li7);
 
          final SousParagraphe sousPar1 =
             new SousParagraphe(Labels.getLabel("Champ.Prelevement.Maladie"), maladieLigneParagraphe.toArray(), null, null);
@@ -1500,13 +1487,9 @@ public class FicheTemplateModale extends AbstractImpressionController
          final List<CoupleValeur> vals = new ArrayList<>();
          vals.add(cp3);
 
-         // HACK Serologie
-         if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
-            final CoupleValeur cp4 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.SEROLOGIE.Protocoles"),
-               prlvt.getDelegate() != null ? ((PrelevementSero) prlvt.getDelegate()).getProtocoles().stream()
-                  .map(Protocole::getNom).collect(Collectors.joining(",")) : "");
-            vals.add(cp4);
-         }
+         final CoupleValeur cp4 = new CoupleValeur(Labels.getLabel("Champ.Prelevement.Protocoles"),
+            prlvt.getProtocoles() != null ? prlvt.getProtocoles().stream().map(Protocole::getNom).collect(Collectors.joining(",")) : "");
+         vals.add(cp4);
 
          final LigneParagraphe li2 = new LigneParagraphe("li2", vals.toArray(new CoupleValeur[] {}));
 
@@ -1570,7 +1553,7 @@ public class FicheTemplateModale extends AbstractImpressionController
       final List<CoupleValeur> cps = new ArrayList<>();
 
       // HACK Serologie
-      if(!"SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
+      if(!ContexteHelper.isContexteSerologie(SessionUtils.getCurrentContexte())){   
          // Qualité
          if(echantillon.getEchanQualite() != null){
             tmp = echantillon.getEchanQualite().getNom();
@@ -3016,7 +2999,7 @@ public class FicheTemplateModale extends AbstractImpressionController
                }else{
                   val.append("-");
                }
-            }else if(champs.get(j).getNom().equals("AdicapOrganeId")){
+            }else if(champs.get(j).getNom().equals("CodeOrganes")){
                final List<String> codes = ManagerLocator.getCodeAssigneManager()
                   .formatCodesAsStringsManager(ManagerLocator.getCodeAssigneManager().findCodesOrganeByEchantillonManager(echan));
                final StringBuffer sb = new StringBuffer();
@@ -3027,7 +3010,7 @@ public class FicheTemplateModale extends AbstractImpressionController
                   }
                }
                val.append(sb.toString());
-            }else if(champs.get(j).getNom().equals("CodeAssigneId")){
+            }else if(champs.get(j).getNom().equals("CodeMorphos")){
                final List<String> codes = ManagerLocator.getCodeAssigneManager()
                   .formatCodesAsStringsManager(ManagerLocator.getCodeAssigneManager().findCodesMorphoByEchantillonManager(echan));
                final StringBuffer sb = new StringBuffer();

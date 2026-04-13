@@ -35,6 +35,7 @@
 -->
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
+<!-- Ce zul ne semble pas utilisé... avait peut-être été initialisé pour mutualiser du code dans les FicheRechercheAvanceeXxx.zul mais cette mutualisation n'aurait pas été  finalisée ... -->
 
 <!-- Groupe échantillon -->
 <groupbox id="groupEchantillons" open="false">
@@ -63,7 +64,7 @@
 					<listitem
 						self="@{each='echantillonType'}" value="echantillonType">
 						<listcell
-							label="@{echantillonType.type}" />
+							label="@{echantillonType.nom}" />
 					</listitem>
 					<custom-attributes
 						attribut="EchantillonTypeId" entite="Echantillon" />
@@ -117,7 +118,7 @@
 		<!-- Code lésionel -->
 		<hlayout sclass="z-valign-middle" style="margin: 5px" hflex="1">
 			<hlayout style="z-valign-top" hflex="min">
-				<label value="${c:l('Champ.Echantillon.CodeAssigne')}"
+				<label value="${c:l('Champ.Echantillon.CodeMorphos')}"
 					sclass="formLabel" />
 				<image src="/images/icones/bulb.png" tooltip="codesInfos" style="cursor: help" />
 			</hlayout>
@@ -209,7 +210,7 @@
 			
 			<label hflex="min" value="${c:l('Champ.Echantillon.ConformeTraitement.Raison')}"
 				sclass="formLabel" />
-			<halyout hflex="2" style="margin: 0 10px 0 10px">
+			<hlayout hflex="2" style="margin: 0 10px 0 10px">
 				<textbox id="nonConformitesEchanTraitementBox"  hflex="1"/>
 				<listbox id="nonConformitesEchanTraitementBoxHelper" mold="select" hflex="1"
 					model="@{fwinRechercheAvanceePrelevement$composer.nCechanTraitement}">

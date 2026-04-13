@@ -35,6 +35,8 @@
 -->
 <?component name="calendarbox" macroURI="/zuls/component/CalendarBox.zul" class="fr.aphp.tumorotek.component.CalendarBox" ?>
 
+<!-- Ce zul ne semble pas utilisé... avait peut-être été initialisé pour mutualiser du code dans les FicheRechercheAvanceeXxx.zul mais cette mutualisation n'aurait pas été  finalisée ... -->
+
 <!-- Groupe prélèvement -->
 <groupbox id="groupPrelevements" open="false">
 	<caption image="/images/icones/history.png"
@@ -61,7 +63,7 @@
 					<listitem
 						self="@{each='nature'}" value="nature">
 						<listcell
-							label="@{nature.nature}" />
+							label="@{nature.nom}" />
 					</listitem>
 					<custom-attributes
 						attribut="NatureId" entite="Prelevement" />
@@ -111,7 +113,7 @@
 					<listitem
 						self="@{each='consentType'}" value="consentType">
 						<listcell
-							label="@{consentType.type}" />
+							label="@{consentType.nom}" />
 					</listitem>
 					<custom-attributes
 						attribut="ConsentTypeId" entite="Prelevement" />

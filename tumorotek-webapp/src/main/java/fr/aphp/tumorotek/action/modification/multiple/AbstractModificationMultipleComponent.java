@@ -58,8 +58,6 @@ import org.zkoss.zul.SimpleConstraint;
 
 import fr.aphp.tumorotek.action.constraints.TumoTextConstraint;
 import fr.aphp.tumorotek.action.controller.AbstractController;
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 
 /**
  * Classe Abstraite gérant les fenêtres modales pour la modification multiple.
@@ -374,21 +372,7 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
       hasNulls = false;
       for(final Object object : listObjets){
          try{
-
-            boolean isDelegateProperty = false;
-            TKDelegateObject<?> delegate = null;
-
-            if(object instanceof TKDelegetableObject){
-               delegate = ((TKDelegetableObject<?>) object).getDelegate();
-               isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(champ);
-            }
-
-            Object tmp = null;
-            if(isDelegateProperty){
-               tmp = PropertyUtils.getSimpleProperty(delegate, champ);
-            }else{
-               tmp = PropertyUtils.getSimpleProperty(object, champ);
-            }
+            Object tmp = PropertyUtils.getSimpleProperty(object, champ);
 
             // recupere les valeurs non vides
             if(tmp == null){

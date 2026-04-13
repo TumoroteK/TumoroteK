@@ -33,6 +33,9 @@
 	* avez pris connaissance de la licence CeCILL, et que vous en avez 
 	* accepté les termes. 
 -->
+
+<!-- Ce zul ne semble pas utilisé... avait peut-être été initialisé pour mutualiser du code dans les FicheRechercheAvanceeXxx.zul mais cette mutualisation n'aurait pas été  finalisée ... -->
+
 <!-- Groupe maladie -->
 <groupbox id="groupMaladies" open="false">
 	<caption image="/images/icones/history.png"

@@ -340,7 +340,6 @@ public class MaladieDaoTest extends AbstractDaoTest
          assertNull(m2.getDateDiagnostic());
       }
       assertTrue(m.getSystemeDefaut().equals(m2.getSystemeDefaut()));
-      assertTrue(m.getDelegate().equals(m2.getDelegate()));
    }
 
    public void testFindAllByPatient(){

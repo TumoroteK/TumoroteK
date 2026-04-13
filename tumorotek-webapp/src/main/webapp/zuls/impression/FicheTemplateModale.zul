@@ -106,7 +106,7 @@
 						<row spans="2">
 							<separator />
 						</row>
-
+						<!-- cas du modèle de type BLOC -->
 						<group id="groupContenu" label="${c:l('template.contenu')}" />
 						<row id="contenuStaticRow" spans="2">
 							<grid id="contenuStaticGrid" fixedLayout="true" width="5150px" sclass="gridListStyle" model="@{fwinTemplateModale$composer.blocImpressionsDecorated
@@ -135,7 +135,9 @@
 								</rows>
 							</grid>
 						</row>
+						<!-- cas du modèle de type BLOC - FIN -->
 
+						<!--  cas du modèle de type DOC -->
 						<!-- Titre de l'onglet pour l'affichage des couples clés - champs -->
 						<group id="groupClesChamps" label="${c:l('template.clesChamps')}" visible="false" />
 						<!-- Liste des couples clés - champs -->
@@ -157,7 +159,7 @@
 								</rows>
 							</grid>
 						</row>
-
+						<!-- cas du modèle de type DOC - FIN -->
 					</rows>
 				</grid>
 			</div>

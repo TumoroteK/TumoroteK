@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+
+	<changeSet id="${project.artifactId}-2.4.0.0" author="CH" context="*">
+		<tagDatabase tag="${project.parent.version}"/>
+	</changeSet>
+    
+    <changeSet id="2.4.0.0-TK-520-01" author="CH" context="*">
+        <preConditions onFail="MARK_RAN">
+        	<not>
+        		<tableExists tableName="PRELEVEMENT_PROTOCOLE" />
+        	</not>
+        </preConditions>
+        <comment>Suppression de l'utilisation des tables spécifiques au contexte "sérologie" et migration des données</comment>
+        <!-- NB : depuis la version 2.3.1.0, on ne gère plus Oracle  -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-520-serologie-01-majPrelMaladie.sql" relativeToChangelogFile="true"/>
+    </changeSet>   
+    
+    <changeSet id="2.4.0.0-TK-520-02" author="CH" context="*">
+    	<!-- pour lancer ce script, le champ entité 'Protocoles' ne doit pas exister -->
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE WHERE CHAMP_ENTITE_ID = 274;
+            </sqlCheck>
+        </preConditions>
+        <comment>Déclaration dans CHAMP_ENTITE des champs jusqu'à présent spécifiques au contexte sérologie et migration de données</comment>
+        <!-- NB : depuis la version 2.3.1.0, on ne gère plus Oracle  -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-520-serologie-02-majTableChamp.sql" relativeToChangelogFile="true"/>
+    </changeSet> 
+    
+    <changeSet id="2.4.0.0-TK-520-03" author="CH" context="*">
+    	<!-- pour lancer ce script, le champ entité 'Protocoles' ne doit être défini dans aucun contexte Gatsbi -->
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM GATSBI_CONTEXTE_CHAMP_ENTITE WHERE CHAMP_ENTITE_ID = 274;
+            </sqlCheck>
+        </preConditions>
+        <comment>Déclaration dans GATSBI_CONTEXTE_CHAMP_ENTITE des champs jusqu'à présent spécifiques au contexte sérologie et migration de données</comment>
+        <!-- NB : depuis la version 2.3.1.0, on ne gère plus Oracle  -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-520-serologie-03-impactsGatsbi.sql" relativeToChangelogFile="true"/>
+    </changeSet> 
+
+    <changeSet id="2.4.0.0-TK-520-04" author="CH" context="*">
+    	<!-- pour lancer ce script, le champ entité 'Protocoles' ne doit être défini dans les blocs d'impression -->
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE_BLOC WHERE CHAMP_ENTITE_ID = 274;
+            </sqlCheck>
+        </preConditions>
+        <!-- A noter que dans ce cas, il n'y a pas de migration de données car lors de la création d'un modèle pour la fiche prélèvement, 
+        seuls les champs liées aux échantillons et aux dérivés sont sélectionnables (table CHAMP_IMPRIME)  -->
+        <comment>Déclaration dans CHAMP_ENTITE_BLOC des champs jusqu'à présent spécifiques au contexte sérologie.</comment>
+        <!-- NB : depuis la version 2.3.1.0, on ne gère plus Oracle  -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-520-serologie-04-majBlocImpression.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+    <changeSet id="2.4.0.0-TK-520-05-TK-836" author="CH" context="*">
+        <preConditions onFail="MARK_RAN">
+	 		<columnExists tableName="DIAGNOSTIC" columnName="PLATEFORME_ID"/>
+        </preConditions>
+        <comment>Table DIAGNOSTIC : suppression de la dépendance à une plateforme + reprise de données</comment>
+        <!-- NB : depuis la version 2.3.1.0, on ne gère plus Oracle  -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-520-serologie-05-suppressionPlateformeDansDiagnostic-TK-836.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+
+    <changeSet id="2.4.0.0-TK-520-10" author="CH" context="*">
+    	<!-- il est possible de passer ce script sous surveillance. Dans ce cas, il faut insérer une ligne dans la table CESSION_DELEGATE,
+    	     qui est toujours vide et fait partie des tables à supprimer. INSERT INTO CESSION_DELEGATE values (1, (select min(cession_id) from CESSION));
+    		 Dans ce cas, le script ne passera pas mais devra être lancé manuellement -->
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CESSION_DELEGATE
+            </sqlCheck>
+        </preConditions>
+        <comment>Suppression de toutes les tables inutilisées</comment>
+        <!-- NB : depuis la version 2.3.1.0, on ne gère plus Oracle  -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-520-serologie-10-drop.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
+	<changeSet id="2.4.0.0-TK-520-20" author="CH" runAlways="false" context="*">
+		<comment>Chargement des procédures d'export qui ont été mises à jour</comment>
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+	</changeSet>
+
+</databaseChangeLog>
+
+
+
+

@@ -188,10 +188,10 @@ public interface ImportManager
     * de l'import.
     * @return True si un code a été assigné.
     */
-   boolean setCodeAssigneForEchantillon(Echantillon echan, ImportColonne colonne, Row row, ImportProperties properties);
+   void setCodeAssigneForEchantillon(Echantillon echan, ImportColonne colonne, Row row, ImportProperties properties);
 
    /**
-    * Extrait les risques (séparés par des ',') et les assigne
+    * Extrait les risques (séparés par des ';') et les assigne
     * au prélèvement.
     * @param prlvt Prelevement.
     * @param colonne Colonne actuelle.
@@ -200,8 +200,21 @@ public interface ImportManager
     * de l'import.
     * @return True si des risques ont été assignés.
     */
-   boolean setRisquesForPrelevement(Prelevement prlvt, ImportColonne colonne, Row row, ImportProperties properties) throws WrongImportValueForThesaurusException;
+   void setRisquesForPrelevement(Prelevement prlvt, ImportColonne colonne, Row row, ImportProperties properties) throws WrongImportValueForThesaurusException;
 
+   /**
+    * Extrait les protocoles (séparés par des ';') et les assigne
+    * au prélèvement.
+    * @param prlvt Prelevement.
+    * @param colonne Colonne actuelle.
+    * @param row Ligne actuelle.
+    * @param properties Objet contenant les variables globales
+    * de l'import.
+    * @return True si des risques ont été assignés.
+    */
+   void setProtocolesForPrelevement(Prelevement prlvt, ImportColonne colonne, Row row, ImportProperties properties) throws WrongImportValueForThesaurusException;
+   
+   
    /**
     * Récupère la ou les valeur(s) (thesaurusM depuis 2.0.13)
     * pour la colonne dans le fichier et la set à l'AnnotationValeur ou

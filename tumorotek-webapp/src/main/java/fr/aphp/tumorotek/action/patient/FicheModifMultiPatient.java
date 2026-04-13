@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.action.patient;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -336,7 +337,7 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
     * Si l'etat change alors nullify date Etat ou date Deces.
     */
    @Override
-   public void onGetChangeOnChamp(final Event e){
+   public void onGetChangeOnChamp(final Event e) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
       final SimpleChampValue tmp = (SimpleChampValue) e.getData();
 

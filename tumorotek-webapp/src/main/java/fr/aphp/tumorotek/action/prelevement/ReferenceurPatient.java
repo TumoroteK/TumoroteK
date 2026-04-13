@@ -41,7 +41,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
@@ -65,8 +64,6 @@ import fr.aphp.tumorotek.action.constraints.ConstCode;
 import fr.aphp.tumorotek.action.patient.FicheMaladie;
 import fr.aphp.tumorotek.action.patient.FichePatientEdit;
 import fr.aphp.tumorotek.action.patient.PatientController;
-import fr.aphp.tumorotek.action.patient.serotk.FicheMaladieSero;
-import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
 import fr.aphp.tumorotek.action.sip.SipFactory;
 import fr.aphp.tumorotek.decorator.MaladieDecorator;
 import fr.aphp.tumorotek.decorator.PatientItemRenderer;
@@ -74,7 +71,6 @@ import fr.aphp.tumorotek.manager.coeur.prelevement.RisqueManager;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
-import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.interfacage.PatientSip;
 import fr.aphp.tumorotek.model.interfacage.PatientSipSejour;
 import fr.aphp.tumorotek.model.qualite.OperationType;
@@ -264,7 +260,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
       final String critereValue = nomNipNdaBox.getValue();
 
-      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEdit();
 
       fichePrelevementEdit.getObjectTabController().setPatientSip(null);
       fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), 
@@ -303,7 +299,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
             radioGroup.setSelectedItem(newRadio);
             displayEmbeddedPatient(true, patSel);
 
-            final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+            final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEdit();
 
             fichePrelevementEdit.clearRisques();
             fichePrelevementEdit.clearProtocoles();
@@ -376,7 +372,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
 
          ficheMaladie.getBinder().loadAll();
 
-         final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+         final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEdit();
 
          fichePrelevementEdit.clearRisques();
          fichePrelevementEdit.clearProtocoles();
@@ -403,7 +399,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     */
    private void selectPatientAuto(final Patient selected){
 
-      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEdit();
       //initialisation des maladies du patient avec les maladies existantes. Permettra ensuite de gérer les
       //maladies à transmettre au back directement au niveau du patient :
       Set<Maladie> patientSelectedMaladies = new HashSet<Maladie>(ManagerLocator.getMaladieManager().findAllByPatientManager(selected));
@@ -484,18 +480,11 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    }
 
    /**
-    * Factorisation de la méthode de récupération du controller
-    * FichePrelevementEdit en fonction du contexte collection.
+    * Récupération du controller FichePrelevementEdit
     * @return
     */
-   protected FichePrelevementEdit getFichePrelevementEditFromContexte(){
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            return (FichePrelevementEditSero) self.getParent().getParent()
-               .getAttributeOrFellow("fwinPrelevementEditSero$composer", true);
-         default:
-            return (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
-      }
+   protected FichePrelevementEdit getFichePrelevementEdit(){
+      return (FichePrelevementEdit) self.getParent().getParent().getAttributeOrFellow("fwinPrelevementEdit$composer", true);
    }
 
    /**
@@ -508,7 +497,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
    }
    
    public void setFichePrelevementMaladie(Maladie mal) {
-      final FichePrelevementEdit fichePrelevement = getFichePrelevementEditFromContexte();
+      final FichePrelevementEdit fichePrelevement = getFichePrelevementEdit();
       fichePrelevement.setMaladie(mal);
    }
 
@@ -525,18 +514,9 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       createMaladieComponent(embeddedFicheMaladieDiv);
       setEmbeddedMaladieVisible(true);
 
-      final FicheMaladie ficheMaladie;
-      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            ficheMaladie = (FicheMaladieSero) embeddedFicheMaladieDiv.getFellow("fwinMaladie")
-               .getAttributeOrFellow("fwinMaladie$composer", true);
-            break;
-         default:
-            ficheMaladie =
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEdit();
+      final FicheMaladie ficheMaladie =
                (FicheMaladie) embeddedFicheMaladieDiv.getFellow("fwinMaladie").getAttributeOrFellow("fwinMaladie$composer", true);
-            break;
-      }
 
       // informe la fiche prelevement de la presence du formulaire
       ficheMaladie.setEmbedded(true);
@@ -554,7 +534,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       Components.removeAllChildren(embeddedFicheMaladieDiv);
       setEmbeddedMaladieVisible(false);
 
-      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEdit();
 
       // informe la fiche prelevement de l'absence
       fichePrelevementEdit.setMaladieEmbedded(false);
@@ -631,7 +611,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
          Components.removeAllChildren(ficheMaladieWithPatientDiv);
       }
 
-      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEdit();
 
       fichePrelevementEdit.setPatientEmbedded(show);
    }
@@ -641,17 +621,8 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       Components.removeAllChildren(embeddedFicheMaladieDiv);
       createMaladieComponent(ficheMaladieWithPatientDiv);
 
-      final FicheMaladie ficheMaladie;
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            ficheMaladie = (FicheMaladieSero) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
+      final FicheMaladie ficheMaladie = (FicheMaladie) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
                .getAttributeOrFellow("fwinMaladie$composer", true);
-            break;
-         default:
-            ficheMaladie = (FicheMaladie) ficheMaladieWithPatientDiv.getFellow("fwinMaladie")
-               .getAttributeOrFellow("fwinMaladie$composer", true);
-            break;
-      }
 
       ficheMaladie.setEmbedded(true);
 
@@ -693,7 +664,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
       }
 
 
-      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEditFromContexte();
+      final FichePrelevementEdit fichePrelevementEdit = getFichePrelevementEdit();
 
       if(show){
 
@@ -780,16 +751,7 @@ public class ReferenceurPatient extends GenericForwardComposer<Component>
     */
    protected void createMaladieComponent(final Div div){
 
-      final String zulPath;
-
-      switch(SessionUtils.getCurrentContexte()){
-         case SEROLOGIE:
-            zulPath = "/zuls/patient/serotk/FicheMaladieSero.zul";
-            break;
-         default:
-            zulPath = "/zuls/patient/FicheMaladie.zul";
-            break;
-      }
+      final String zulPath = "/zuls/patient/FicheMaladie.zul";
 
       if(div.getChildren().isEmpty()){
          Executions.createComponents(zulPath, div, null);
