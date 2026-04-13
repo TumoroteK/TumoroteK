@@ -47,9 +47,6 @@ import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
 import org.zkoss.zul.Constraint;
 
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /**
@@ -177,24 +174,8 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
       for(final Object object : allValues){
 
          try{
-
-            boolean isDelegateProperty = false;
-            TKDelegateObject<?> delegate = null;
-
-            if(object instanceof TKDelegetableObject){
-               delegate = ((TKDelegetableObject<?>) object).getDelegate();
-               isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(getChampThesaurus());
-            }
-
             if(null != object){
-
-               String stringTmp = null;
-               if(isDelegateProperty){
-                  stringTmp = (String) PropertyUtils.getSimpleProperty(delegate, getChampThesaurus());
-               }else{
-                  stringTmp = (String) PropertyUtils.getSimpleProperty(object, getChampThesaurus());
-               }
-
+               String stringTmp = (String) PropertyUtils.getSimpleProperty(object, getChampThesaurus());
                allStringValues.add(stringTmp);
 
             }

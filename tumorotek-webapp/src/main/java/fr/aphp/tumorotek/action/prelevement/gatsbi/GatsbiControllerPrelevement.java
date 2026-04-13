@@ -89,6 +89,9 @@ public class GatsbiControllerPrelevement {
          case 24: // nature
             drawNatureColumn(grid);
             break;
+         case 274: // protocoles
+            drawProtocolesColumn(grid);
+            break;
          case 44: // nda
             drawPatientNdaColumn(grid);
             break;
@@ -123,6 +126,9 @@ public class GatsbiControllerPrelevement {
             break;
          case 27: // consent date
             drawConsentDateColumn(grid);
+            break;
+         case 275: // complément diagnostic
+            drawComplementDiagnosticColumn(grid);
             break;
          case 35: // date depart
             drawDateDepartColumn(grid);
@@ -310,6 +316,13 @@ public class GatsbiControllerPrelevement {
       true);
    }
    
+   //pas de tri car concaténation des valeurs...
+   private static Column drawProtocolesColumn(Grid grid) 
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+      return GatsbiController.addColumn(grid, "Champ.Prelevement.Protocoles", null, null, null, "none",
+      true);
+   }
+   
    private static Column drawPatientNdaColumn(Grid grid) 
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
       return GatsbiController.addColumn(grid, "Champ.Prelevement.PatientNda", null, null, null, "auto(patientNda)",
@@ -366,6 +379,12 @@ public class GatsbiControllerPrelevement {
       throws ClassNotFoundException, InstantiationException, IllegalAccessException{
       return GatsbiController.addColumn(grid, "Champ.Prelevement.ConsentDate", null, null, null, "auto(consentDate)",
          true);
+   }
+   
+   private static Column drawComplementDiagnosticColumn(Grid grid) 
+      throws ClassNotFoundException, InstantiationException, IllegalAccessException{
+      return GatsbiController.addColumn(grid, "Champ.Prelevement.ComplementDiagnostic", null, null, null, "auto(complementDiagnostic)",
+         true);      
    }
    
    private static Column drawDateDepartColumn(Grid grid) 

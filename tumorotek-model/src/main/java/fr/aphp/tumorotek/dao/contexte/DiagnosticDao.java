@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.dao.contexte;
 import java.util.List;
 
 import fr.aphp.tumorotek.dao.GenericDaoJpa;
-import fr.aphp.tumorotek.dao.PfDependantTKThesaurusDao;
+import fr.aphp.tumorotek.dao.TKThesaurusDao;
 import fr.aphp.tumorotek.model.contexte.Diagnostic;
 
 /**
@@ -51,7 +51,7 @@ import fr.aphp.tumorotek.model.contexte.Diagnostic;
  * @since 2.2.0
  *
  */
-public interface DiagnosticDao extends GenericDaoJpa<Diagnostic, Integer>, PfDependantTKThesaurusDao<Diagnostic>
+public interface DiagnosticDao extends GenericDaoJpa<Diagnostic, Integer>, TKThesaurusDao<Diagnostic>
 {
 
    /**

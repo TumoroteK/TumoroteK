@@ -7,11 +7,14 @@
     <changeSet id="${project.artifactId}-1" author="MB" context="*, 2.2.1-SNAPSHOT, 2.2.2-SNAPSHOT">
         <tagDatabase tag="${project.parent.version}"/>
     </changeSet>
-	<changeSet id="${project.artifactId}-2" author="MB" runAlways="false" context="*">
+ <!-- depuis TK-520 (version 2.4.0.0) les procédures stockées ne doivent plus être appelées dans ce script car elles ne sont plus adaptées au modèle de données.
+ 	  Elles sont appelées dans le fichier db.changelog-2.4.0.0_1_TK-520.xml sachant que export_sero.sql n'existe plus.
+ -->    
+<!-- <changeSet id="${project.artifactId}-2" author="MB" runAlways="false" context="*">
 		<comment>Chargement des procédures d'export spécifiques serotk</comment>
 		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
 		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_sero.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
-	</changeSet>
+	</changeSet>  -->	
 	<changeSet id="${project.artifactId}-3" author="MB" runAlways="false" context="*">
 		<preConditions onFail="MARK_RAN">
 		    <not>

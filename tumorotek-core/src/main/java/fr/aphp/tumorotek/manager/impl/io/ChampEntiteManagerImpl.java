@@ -51,6 +51,7 @@ import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.dao.io.export.ChampEntiteDao;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.manager.io.export.AffichageManager;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
@@ -184,7 +185,7 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
          listChampEntite.removeIf(c -> c.getId().equals(272));
          
          //contexte sérologie :
-         if(banqueContexte != null && banqueContexte == EContexte.SEROLOGIE) {
+         if(ContexteHelper.isContexteSerologie(banqueContexte)) {
             // - suppression des champs non appropriés :
             if(entite.getEntiteId() == 3) {
                EChampSupprimePourSerologie[] tabEChampSupprimePourSerologie = EChampSupprimePourSerologie.values();
@@ -193,8 +194,6 @@ public class ChampEntiteManagerImpl implements ChampEntiteManager
                   listChampEntite.remove(new ChampEntite(entite, tabEChampSupprimePourSerologie[i].getNom(), null));
                }
             }
-            //NB : les champs spécifiques au contexte sérologie sont gérés comme des champs délégués et ne sont donc pas remontés
-            // par les requêtes ci-dessus faites uniquement sur la table CHAMP_ENTITE
          }
       }
       else {//cas Gatsbi

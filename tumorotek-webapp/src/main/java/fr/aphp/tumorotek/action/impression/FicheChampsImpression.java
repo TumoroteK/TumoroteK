@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.impression;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Path;
@@ -53,7 +54,10 @@ import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.BlocImpressionDecorator;
 import fr.aphp.tumorotek.decorator.ChampImpressionDecorator;
 import fr.aphp.tumorotek.decorator.ChampImpressionRowRenderer;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.model.TKdataObject;
+import fr.aphp.tumorotek.model.contexte.EChampSupprimePourSerologie;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.impression.BlocImpression;
 import fr.aphp.tumorotek.model.impression.ChampEntiteBloc;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
@@ -214,54 +218,57 @@ public class FicheChampsImpression extends AbstractFicheController
 
    public void setBlocImpressionDecorator(final BlocImpressionDecorator bDecorator){
       this.blocImpressionDecorator = bDecorator;
-
+      
+      //Aurait dû s'appeler champDecorators ...
       champs = new ArrayList<>();
-      // on récupère les champs du bloc
-      for(int i = 0; i < blocImpressionDecorator.getChampEntites().size(); i++){
-         final ChampImpressionDecorator deco = new ChampImpressionDecorator(blocImpressionDecorator.getChampEntites().get(i));
-         champs.add(deco);
-      }
 
+      // on récupère les champs du bloc qui sont à imprimer (en création dépend du contexte et mode utilisation, ceux du modèle)
+      // Ceux-ci ont été mis dans blocImpressionDecorator au niveau de FicheTemplate.java / FicheTemplaceModale.java méthode generateListeBlocs()
+      //et on crée un décorator qui par défaut à l'attribut imprimer à true :
+      //on stocke dans une liste les champ entités à imprimer pour le bloc en param. Sera utilisé ensuite dans le traitement 
+      List<ChampEntite> listSelectedChampEntite = new ArrayList<ChampEntite>();
+      for(int i = 0; i < blocImpressionDecorator.getChampEntites().size(); i++){
+         ChampEntite currentChampEntite = blocImpressionDecorator.getChampEntites().get(i);
+         final ChampImpressionDecorator deco = new ChampImpressionDecorator(currentChampEntite);
+         champs.add(deco);
+         listSelectedChampEntite.add(currentChampEntite);
+      }
+      
+      // -------------- Gestion des champs imprimables :
       // on extrait tous les champs disponibles
       final List<ChampEntiteBloc> cebs =
          ManagerLocator.getChampEntiteBlocManager().findByBlocManager(blocImpressionDecorator.getBlocImpression());
-
-      // since @gatsbi, retire tous les champs invisible
-      cebs.removeIf(c -> !GatsbiController.isChampEntiteVisible(c.getChampEntite()));
-      // ajout des champs non sélectionnés mais sélectionnables :
-      //TK-463 : gestion particulière du nom du patient dans le cas de l'impression d'une cession : en effet, pour les impressions à la volée (bouton Imprimer sur la fiche Cession > sélection "Définir un nouveau modèle"),
-      // le nom ne doit pas être coché par défaut et ne doit être proposé que pour les admin et les profils "export nominatif"... 
+      List<ChampEntite> listAllAvailableChampEntiteForBloc = cebs.stream().map(champEntiteBloc -> champEntiteBloc.getChampEntite()).collect(Collectors.toList());
+      
+      // on retire ceux à cacher en fonction du contexte :
+      // contexte sérologie (TK-520) :
+      EContexte eContexte = SessionUtils.getCurrentContexte();
+      if(ContexteHelper.isContexteSerologie(eContexte)) {
+         List<String> listNomDesChampsSupprimesEnSero = EChampSupprimePourSerologie.getAllNom();
+         listAllAvailableChampEntiteForBloc.removeIf(champEntite -> listNomDesChampsSupprimesEnSero.contains(champEntite.getNom()));
+      }
+      //contexte Gatsbi :
+      else if(EContexte.GATSBI.equals(eContexte)) {
+         // since @gatsbi, retire tous les champs invisible
+         listAllAvailableChampEntiteForBloc.removeIf(c -> !GatsbiController.isChampEntiteVisible(c));
+      }
+      //TK-463 : Gestion du cas particulier du nom du patient à ne proposer que pour les admin et les profils "export nominatif"
+      //dans le cas de l'impression d'une cession
       //NB : il faudrait revoir la classe BlocImpressionDecorator pour qu'elle porte toutes les règles spécifiques c'est-à-dire qu'elle gère également les champs "non cochés". Ainsi
       //cette classe FicheChampsImpression serait complètement générique... (à faire avec TK-591 - cf commentaire dans BlocImpressionDecorator)
       boolean droitsOK = sessionScope.containsKey("AdminPF") || getProfilExport().equals(ProfilExport.NOMINATIF);
-      for(int i = 0; i < cebs.size(); i++){
-         if(!blocImpressionDecorator.getChampEntites().contains(cebs.get(i).getChampEntite())){
-            BlocImpression blocImpression = blocImpressionDecorator.getBlocImpression();
-            //TK-483 : cas de l'exception où on ne doit pas ajouter le champ :
-            if ((blocImpression.getNom().equals("bloc.cession.echantillons") || blocImpression.getNom().equals("bloc.cession.prodDerives")) 
-                  && cebs.get(i).getChampEntite().getNom().equals("Nom")
-                  && !droitsOK) {
-               //on ne fait rien
-            }
-            else {//cas général, on ajoute
-               final ChampImpressionDecorator deco = new ChampImpressionDecorator(cebs.get(i).getChampEntite());
-               deco.setImprimer(false);
-               champs.add(deco);
-            }
-         }
-
-      }
-
-      // Vilain HACK !! contexte SEROLOGIE
-      // suppr les champs échantillons
-      if("SEROLOGIE".equalsIgnoreCase(SessionUtils.getCurrentContexte().getNom())){
-         if(blocImpressionDecorator.getBlocImpression().getNom().equals("bloc.prelevement.echantillons")){
-            champs.remove(new ChampImpressionDecorator(
-               new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "EchanQualiteId", null)));
-            champs.remove(new ChampImpressionDecorator(
-               new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "AdicapOrganeId", null)));
-            champs.remove(new ChampImpressionDecorator(
-               new ChampEntite(ManagerLocator.getEntiteManager().findByIdManager(3), "CodeAssigneId", null)));
+      BlocImpression blocImpression = blocImpressionDecorator.getBlocImpression();
+      boolean hideNom = (blocImpression.getNom().equals("bloc.cession.echantillons") || blocImpression.getNom().equals("bloc.cession.prodDerives")) && !droitsOK;
+      listAllAvailableChampEntiteForBloc.removeIf(champEntite -> hideNom && champEntite.getNom().equals("Nom"));
+      // -------------- Gestion des champs imprimables - FIN
+      
+      // ajout des champs non sélectionnés mais sélectionnables :
+      // => céation des ChampImpressionDecorator manquants avec l'attribut imprimer forcer à false :
+      for(int i = 0; i < listAllAvailableChampEntiteForBloc.size(); i++){
+         if(!listSelectedChampEntite.contains(listAllAvailableChampEntiteForBloc.get(i))){
+            final ChampImpressionDecorator deco = new ChampImpressionDecorator(listAllAvailableChampEntiteForBloc.get(i));
+            deco.setImprimer(false);
+            champs.add(deco);
          }
       }
       

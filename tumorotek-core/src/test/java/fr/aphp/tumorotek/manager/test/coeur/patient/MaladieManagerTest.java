@@ -35,7 +35,10 @@
  **/
 package fr.aphp.tumorotek.manager.test.coeur.patient;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -58,7 +61,6 @@ import fr.aphp.tumorotek.manager.test.AbstractManagerTest4;
 import fr.aphp.tumorotek.model.TKFantomableObject;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
-import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
@@ -467,48 +469,4 @@ public class MaladieManagerTest extends AbstractManagerTest4
       assertTrue(mals.contains(maladieManager.findByLibelleLikeManager("Fracture", true).get(0)));
    }
 
-   @Test
-   public void testMaladieDelegate(){
-      final Utilisateur u = utilisateurDao.findById(1);
-
-      Maladie m = new Maladie();
-      /*Champs obligatoires*/
-      final Patient p = patientDao.findById(2);
-      m.setLibelle("maldelegate");
-      m.setCode("xde");
-      MaladieSero sero = new MaladieSero();
-      sero.setDiagnostic(diagnosticDao.findById(1));
-      // sero.setContexte(contexteDao.findById(1));
-      sero.setDelegator(m);
-      m.setDelegate(sero);
-
-      maladieManager.createOrUpdateObjectManager(m, p, null, u, "creation");
-      m = maladieManager.findByCodeLikeManager("xde", true).get(0);
-      assertTrue(m.getDelegate() != null);
-
-      m.setDelegate(null);
-      maladieManager.createOrUpdateObjectManager(m, null, null, u, "modification");
-      m = maladieManager.findByCodeLikeManager("xde", true).get(0);
-      assertTrue(m.getDelegate() == null);
-
-      sero = new MaladieSero();
-      sero.setDiagnostic(diagnosticDao.findById(1));
-      // sero.setContexte(contexteDao.findById(1));
-      sero.setDelegator(m);
-      m.setDelegate(sero);
-
-      maladieManager.createOrUpdateObjectManager(m, null, null, u, "modification");
-      m = maladieManager.findByCodeLikeManager("xde", true).get(0);
-      assertTrue(m.getDelegate() != null);
-      assertTrue(((MaladieSero) m.getDelegate()).getDiagnostic().equals(diagnosticDao.findById(1)));
-
-      maladieManager.removeObjectManager(m, null, u);
-
-      //verifie que l'etat des tables modifies est revenu identique
-      testFindAllObjectsManager();
-      final List<TKFantomableObject> fs = new ArrayList<>();
-      //fs.add(p);
-      fs.add(m);
-      cleanUpFantomes(fs);
-   }
 }

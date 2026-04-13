@@ -736,9 +736,6 @@ public final class ObjectTypesFormatters
 
       if(champ.getChampEntite() != null){
          labelChamp = Labels.getLabel("Champ." + entiteNom + "." + champNom);
-      }else if(champ.getChampDelegue() != null){
-         final EContexte contexte = champ.getChampDelegue().getContexte();
-         labelChamp = Labels.getLabel("Champ." + entiteNom + "." + contexte.getNom() + "." + StringUtils.capitalize(champNom));
       }
 
       if(null == labelChamp || "".equals(labelChamp)){
@@ -775,16 +772,12 @@ public final class ObjectTypesFormatters
             nomChamp = champ.getChampEntite().getNom();
             if(nomChamp.endsWith("Id")) {
                nomChamp = nomChamp.substring(0, nomChamp.length()-2);
-            };
+            }
             propertyKey += nomEntite + "." + nomChamp;
-         }else if(champ.getChampDelegue() != null){
-            final EContexte contexte = champ.getChampDelegue().getContexte();
-            nomEntite = champ.getChampDelegue().getEntite().getNom();
-            nomChamp = champ.getChampDelegue().getNom().replace("Id", "");
-            propertyKey += nomEntite + "." + contexte.getNom() + "." + StringUtils.capitalize(nomChamp);
+            
+            label = Labels.getLabel(propertyKey);
          }
 
-         label = Labels.getLabel(propertyKey);
 
       }
 

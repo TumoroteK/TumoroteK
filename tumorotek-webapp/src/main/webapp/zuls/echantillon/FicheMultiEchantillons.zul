@@ -468,8 +468,8 @@
 								<columns sizable="true" width="100%">
 								<column width="60px" align="center"/>
 								<column label="${c:l('general.code')}" />
-								<column label="${c:l('Champ.Echantillon.Organe')}" />
-								<column label="${c:l('ficheEchantillon.codeLesionelLabel')}" />
+								<column label="${c:l('Champ.Echantillon.Organe')}" if="${fwinMultiEchantillons$composer.displayOrganeEtCodeLesionnel()}" />
+								<column label="${c:l('ficheEchantillon.codeLesionelLabel')}" if="${fwinMultiEchantillons$composer.displayOrganeEtCodeLesionnel()}" />
 								<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}" />
 								<column label="${c:l('Champ.Echantillon.Quantite')}" />
 								<column label="${c:l('Champ.Echantillon.ObjetStatut')}" />

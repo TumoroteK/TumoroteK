@@ -53,7 +53,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.stats.im.export.ExportToExcel;
 import fr.aphp.tumorotek.action.stats.im.export.ValueToExport;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.stats.Indicateur;
@@ -63,7 +62,7 @@ import fr.aphp.tumorotek.utils.Utils;
 public class ExecuteModele
 {
 
-   protected static Logger log = LoggerFactory.getLogger(ExportToExcel.class);
+   protected static Logger log = LoggerFactory.getLogger(ExecuteModele.class);
 
    private SModele model;
 

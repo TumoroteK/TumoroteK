@@ -106,6 +106,7 @@ import fr.aphp.tumorotek.manager.coeur.echantillon.EchantillonManager;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.EmplacementDoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.TKException;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.manager.helper.FileBatch;
 import fr.aphp.tumorotek.manager.impl.interfacage.ResultatInjection;
 import fr.aphp.tumorotek.manager.impl.xml.BoiteImpression;
@@ -121,6 +122,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.LaboInter;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.OperationType;
@@ -240,7 +242,7 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       getCodesOrganeController().setIsOrg(true);
       getCodesMorphoController().setIsOrg(false);
       getCodesMorphoController().setIsMorpho(true);
-
+      
       getBinder().loadAll();
    }
 
@@ -2985,4 +2987,9 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
       }
       Clients.clearWrongValue(typesBoxEchan);
    }
+   
+   //TK-520 : méthode appelée dans le zul pour gérer l'affichage des colonnes dans le tableau
+   public boolean displayOrganeEtCodeLesionnel() {
+      return !ContexteHelper.isContexteSerologie(SessionUtils.getCurrentContexte());
+   } 
 }

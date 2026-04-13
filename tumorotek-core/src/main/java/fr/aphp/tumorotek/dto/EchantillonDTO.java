@@ -145,7 +145,8 @@ public class EchantillonDTO
       return this.echantillon.getDateStock();
    }
 
-   public String getAdicapOrgane(){
+   //bizarre cette méthode, juste renommée pour TK-520 
+   public String getCodeOrganes(){
       return null;
    }
 

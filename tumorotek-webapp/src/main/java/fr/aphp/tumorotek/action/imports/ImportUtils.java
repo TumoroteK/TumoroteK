@@ -31,10 +31,8 @@ public class ImportUtils
             } else { // rendu date debut -> date de visite
                champ = Labels.getLabel("gatsbi.visite.date");
             }
-         }else if(colonne.getChamp().getChampDelegue() != null){
-            champ = Labels
-               .getLabel(colonne.getChamp().getChampDelegue().getILNLabelForChampDelegue(templateContexte));
-         }else{
+         }
+         else{
             champ = colonne.getChamp().getChampAnnotation().getNom();
          }
       }else{ // subderive header

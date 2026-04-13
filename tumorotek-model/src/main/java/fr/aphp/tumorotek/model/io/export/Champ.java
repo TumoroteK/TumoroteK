@@ -80,10 +80,11 @@ public class Champ implements Comparable<Champ>
 
    private ChampAnnotation champAnnotation;
 
-   private ChampDelegue champDelegue;
-
-   //La notion parent est utilisée par exemple pour le nom de l'opérateur : opérateur est le parent du champ nom.
+   //La notion parent est utilisée quand le champ n'est pas directement lié à l'entité d'utilisation de celui-ci :
+   //Exemple le champ "type" d'un prélèvement est en fait l'attribut nom de l'objet PrelevementType : le Champ correspondant sera donc rattaché au champ_entité Nom, de l'entité PrelevementType,
+   //et aura comme parent un champ associé au champ_entité PrelevementTypeId de l'entité Prelevement.
    //exemple dans la création des critères d'une requête : FicheAddCritere.onSelect$champsBox()
+   //L'utilisation de cet objet pour les critères de la recherche complexe amène à avoir des parents de parents (le champ parent a lui même un parent)...
    private Champ champParent;
 
    private Set<ChampLigneEtiquette> champLigneEtiquettes = new HashSet<>();
@@ -102,19 +103,12 @@ public class Champ implements Comparable<Champ>
       this.champAnnotation = chAnno;
    }
 
-   public Champ(final ChampDelegue chDel){
-      super();
-      this.champDelegue = chDel;
-   }
-
    public Champ(final AbstractTKChamp ch, final Champ champParent){
 
       if(ch instanceof ChampEntite){
          this.champEntite = (ChampEntite) ch;
       }else if(ch instanceof ChampAnnotation){
          this.champAnnotation = (ChampAnnotation) ch;
-      }else if(ch instanceof ChampDelegue){
-         this.champDelegue = (ChampDelegue) ch;
       }
 
       this.champParent = champParent;
@@ -157,16 +151,6 @@ public class Champ implements Comparable<Champ>
       this.champAnnotation = champAnno;
    }
 
-   @ManyToOne
-   @JoinColumn(name = "CHAMP_DELEGUE_ID")
-   public ChampDelegue getChampDelegue(){
-      return champDelegue;
-   }
-
-   public void setChampDelegue(final ChampDelegue champDelegue){
-      this.champDelegue = champDelegue;
-   }
-
    @OneToOne
    @JoinColumn(name = "CHAMP_PARENT_ID")
    public Champ getChampParent(){
@@ -192,7 +176,7 @@ public class Champ implements Comparable<Champ>
       int result = 1;
       result = prime * result + ((champAnnotation == null) ? 0 : champAnnotation.hashCode());
       result = prime * result + ((champEntite == null) ? 0 : champEntite.hashCode());
-      result = prime * result + ((champDelegue == null) ? 0 : champDelegue.hashCode());
+
       return result;
    }
 
@@ -208,6 +192,7 @@ public class Champ implements Comparable<Champ>
       if(null != this.champParent && null != other.champParent){
          return this.champParent.equals(other.champParent);
       }
+      
       if(champAnnotation == null){
          if(other.champAnnotation != null){
             return false;
@@ -215,13 +200,7 @@ public class Champ implements Comparable<Champ>
       }else if(!champAnnotation.equals(other.champAnnotation)){
          return false;
       }
-      if(champDelegue == null){
-         if(other.champDelegue != null){
-            return false;
-         }
-      }else if(!champDelegue.equals(other.champDelegue)){
-         return false;
-      }
+      
       if(champEntite == null){
          if(other.champEntite != null){
             return false;
@@ -232,36 +211,35 @@ public class Champ implements Comparable<Champ>
       return true;
    }
 
-   /**
-    * Méthode surchargeant le toString() de l'objet.
-    */
-   @Override
+
    public String toString(){
       if(this.champAnnotation != null){
          return this.champAnnotation.getTableAnnotation().getEntite().getNom() + " " + this.getChampAnnotation().getNom();
-      }else if(this.champDelegue != null){
-         if(this.champParent != null){
-            return champParentToString();
-         }
-         final String nomEntite = this.getChampDelegue().getEntite().getNom();
-         final String contexte = this.getChampDelegue().getContexte().getNom();
-         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-         final String nomChampDelegue = StringUtils.capitalize(this.getChampDelegue().getNom()).replaceAll("Id$", "");
-         return nomEntite + "." + contexte + "." + nomChampDelegue;
-      }else if(this.champEntite != null){
-         String champEntiteNom = this.champEntite.getNom();
-         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-         if(this.getChampEntite().getNom().matches("^[a-zA-Z]+Id$")){
-            champEntiteNom = champEntiteNom.substring(0, champEntiteNom.length() - 2);
-         }
-         if(this.champParent != null){
-            return champParentToString();
-         }
-         return this.getChampEntite().getEntite().getNom() + "." + champEntiteNom;
       }
+      if(this.champEntite != null){
+         Champ champParentCourant = champParent;
+         Entite entiteDePlusHautNiveau = champEntite.getEntite();
+         //initialisation de la fin de la chaine avec le nom du champ :
+         StringBuffer result = new StringBuffer(champEntite.getNom()); 
+         
+         while(champParentCourant != null) {
+            result.insert(0, ".");
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+            result.insert(0, champParentCourant.getChampEntite().getNom().replaceAll("Id$", ""));
+            
+            entiteDePlusHautNiveau = champParentCourant.getChampEntite().getEntite();
+            champParentCourant = champParentCourant.getChampParent();
+         }
+         
+         result.insert(0, ".");
+         result.insert(0,entiteDePlusHautNiveau.getNom());
+         
+         return result.toString(); 
+      }
+      
       return "{Empty Champ}";
    }
-
+   
    public String nom(){
       String retour = null;
       if(this.champAnnotation != null){
@@ -272,10 +250,8 @@ public class Champ implements Comparable<Champ>
          if(retour.matches("^[a-zA-Z]+Id$")){
             retour = retour.substring(0, retour.length() - 2);
          }
-      }else if(this.champDelegue != null){
-         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-         retour = this.champDelegue.getNom().replaceAll("Id$", "");
       }
+
       return retour;
    }
 
@@ -285,9 +261,8 @@ public class Champ implements Comparable<Champ>
          retour = this.champAnnotation.getDataType();
       }else if(this.champEntite != null){
          retour = this.champEntite.getDataType();
-      }else if(this.champDelegue != null){
-         retour = champDelegue.getDataType();
       }
+
       return retour;
    }
 
@@ -295,43 +270,14 @@ public class Champ implements Comparable<Champ>
       Entite retour = null;
       if(this.champAnnotation != null){
          retour = this.champAnnotation.getTableAnnotation().getEntite();
-      }else if(this.champDelegue != null){
-         retour = this.getChampDelegue().getEntite();
-      }else if(this.champEntite != null){
+      }
+
+      else if(this.champEntite != null){
          retour = this.champEntite.getEntite();
       }
       return retour;
    }
-
-   public String champParentToString(){
-
-      final String champParentNom;
-      if(this.champParent.getChampEntite() != null){
-         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-         champParentNom = this.champParent.getChampEntite().getNom().replaceAll("Id$", "");
-      }else{
-         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-         champParentNom = this.champParent.getChampDelegue().getNom().replaceAll("Id$", "");
-      }
-
-      final String entiteNom;
-      if(this.champParent.getChampEntite() != null){
-         entiteNom = this.champParent.getChampEntite().getEntite().getNom();
-      }else{
-         entiteNom = this.champParent.getChampDelegue().getEntite().getNom();
-      }
-
-      final String champNom;
-      if(this.getChampEntite() != null){
-         champNom = this.getChampEntite().getNom();
-      }else{
-         champNom = this.getChampDelegue().getNom();
-      }
-
-      return entiteNom + "." + champParentNom + "." + champNom;
-
-   }
-
+   
    @Override
    public int compareTo(final Champ champ){
       return this.nom().toLowerCase().compareTo(champ.nom().toLowerCase());
@@ -348,9 +294,7 @@ public class Champ implements Comparable<Champ>
       if(this.getChampParent() != null){
          copy.setChampParent(this.getChampParent().copy());
       }
-      if(this.getChampDelegue() != null){
-         copy.setChampDelegue(this.getChampDelegue());
-      }
+
       return copy;
    }
 }

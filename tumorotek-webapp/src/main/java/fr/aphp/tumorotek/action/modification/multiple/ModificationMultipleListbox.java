@@ -52,8 +52,6 @@ import org.zkoss.zul.Listitem;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.action.patient.PatientUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 
 /**
  * Classe gérant une fenêtre modal pour la modification multiple d'une
@@ -181,22 +179,10 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
       // champ à afficher
       for(final Object object : allValues){
          try{
-
-            boolean isDelegateProperty = false;
-            TKDelegateObject<?> delegate = null;
-
-            if(object instanceof TKDelegetableObject){
-               delegate = ((TKDelegetableObject<?>) object).getDelegate();
-               isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(getChampThesaurus());
-            }
-
             String stringTmp = null;
 
             if(null != object){
-
-               if(isDelegateProperty){
-                  stringTmp = (String) PropertyUtils.getSimpleProperty(delegate, getChampThesaurus());
-               }else if(!"bool".equals(getChamp()) && !"bool".equals(getChampThesaurus())){
+               if(!"bool".equals(getChamp()) && !"bool".equals(getChampThesaurus())){
                   stringTmp = (String) PropertyUtils.getSimpleProperty(object, getChampThesaurus());
                }else{
                   stringTmp = ObjectTypesFormatters.booleanLitteralFormatter((Boolean) object);

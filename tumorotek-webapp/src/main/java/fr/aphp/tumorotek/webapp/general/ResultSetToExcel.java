@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.webapp.general;
 
+import java.lang.reflect.Array;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.sql.ResultSet;
@@ -42,7 +43,9 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -67,6 +70,8 @@ import org.zkoss.util.resource.Labels;
 import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.ConfigManager;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.webapp.general.export.Export;
 
 /**
@@ -93,6 +98,9 @@ public class ResultSetToExcel
 
    public static final String DATE_FORMAT = "yyyyMMddHHmm";
 
+   //TK-520 :
+   protected static final  List<String> LIST_CHAMP_A_NE_PAS_AFFICHER_EN_SERO = Arrays.asList("TUMORAL", "LATERALITE", "CODE_ORGANES", "CODE_MORPHOS");
+   
    //TG-209
    //Avec Gatsbi : la position des colonnes d'id - utilisées pour les liens entre onglet de l'excel - est variable
    //=> la mécanique s'appuyant sur les écarts ne marche plus.
@@ -117,10 +125,13 @@ public class ResultSetToExcel
    // @since 2.2.3-genno anonyme -> 3 etats possibles (nominatif, anonyme, anonymestock)
    private ProfilExport profilExport;
 
+   // /!\ contient l'index de la colonne (commence à 0)
    private ArrayList<Integer> anonymeColumn = new ArrayList<>();
 
+   // /!\ contient l'index de la colonne (commence à 0)
    private final ArrayList<Integer> labo_interColumn = new ArrayList<>();
 
+   // /!\ contient l'index de la colonne (commence à 0)
    private final ArrayList<Integer> multipleValuesColumn = new ArrayList<>();
 
    private ResultSet resultLaboInter;
@@ -201,14 +212,14 @@ public class ResultSetToExcel
       setProfilExport(pE);
    }
 
-   public void generate() throws Exception{
+   public void generate(EContexte contexte) throws Exception{
 
       int currentRow = 0;
-      int numCols = 0;
+      int nbCols = 0;
       final ResultSetMetaData resultSetMetaData = resultSet.getMetaData();
       Row row = sheet.createRow(currentRow);
-      numCols = resultSetMetaData.getColumnCount();
-      formatTypes = new FormatType[numCols];
+      nbCols = resultSetMetaData.getColumnCount();
+      formatTypes = new FormatType[nbCols];///!\ le format de la colonne i est stocké en position i-1 dans le tableau car les numéros de colonne commencent à 1
 
       if(profilExport != null && !profilExport.equals(ProfilExport.NOMINATIF)){
          anonymeColumn.clear();
@@ -221,7 +232,10 @@ public class ResultSetToExcel
       String entite = "Patient";
       boolean isAnno = false;
 
-      for(int i = 0; i < numCols; i++){
+      // /!\ contient l'index de la colonne dans le resulset (qui commence à 0) et non son numéro (qui commence à 1)
+      List<Integer> listIndexColonneANePasAfficherEnSero = new ArrayList<Integer>();
+      
+      for(int i = 0; i < nbCols; i++){//TK-520 : filter les colonnes qui ne doivent pas être affichées dans certains contexte - garder les numéros pour utilisation dans la boucle qui lit les données...
          // title = alias ssi export catalogue
          String title =
             (export.getExportType() == 1) ? resultSetMetaData.getColumnName(i + 1) : resultSetMetaData.getColumnLabel(i + 1);
@@ -296,7 +310,19 @@ public class ResultSetToExcel
             entite = "Cession";
          }
 
-         writeCell(row, i, isAnno ? title : labelPrintTitle(title, entite), formatTypes[i], boldStyle);
+         //TK-520 : avant d'appeler writeCell, filtre pour ne pas prendre en compte les colonnes à ne pas afficher en sérologie !
+         //Dans l'absolu, ce n'est pas très optimal d'aller chercher les données si on ne les affiche pas : il aurait mieux fallu adapter la requête 
+         //mais c'est plus compliqué et ceci sera revu lors de l'optmisation de l'export avec sélection des colonnes à afficher.
+         //NB : les champs ci-dessous peuvent concerner l'export de différentes entité (ex : Echantillon, Prelevement et Patient pour CODE_ORGANES)
+
+         
+         if(ContexteHelper.isContexteSerologie(contexte) && LIST_CHAMP_A_NE_PAS_AFFICHER_EN_SERO.contains(title)) {
+            listIndexColonneANePasAfficherEnSero.add(i);
+            //on ne crée pas la cellule
+         }
+         else {
+            writeCell(row, i, isAnno ? title : labelPrintTitle(title, entite), formatTypes[i], boldStyle);
+         }
       }
 
       // BIOCAP export ligne champs TK
@@ -311,21 +337,32 @@ public class ResultSetToExcel
       //Si une erreur est détectée sur la création d'un lien (à date pas de lien sur cet onglet mais on ne sait jamais)
       //il ne faut pas bloquer l'export mais tracer.
       //Par contre, la trace ne doit être écrite qu'à la première détection pour cette colonne (puisque ça doit être pareil pour toutes les lignes de l'export)
-      //=> utilisation d'une map
-      Map<Integer, Boolean> hyperlinkExceptionFoundByNumColIndex = new HashMap<Integer, Boolean>();
+      //=> utilisation d'une map dont la clé est index de la colonne dans le tableau résultat
+      Map<Integer, Boolean> hyperlinkExceptionFoundByColIndexInTableauResultat = new HashMap<Integer, Boolean>();
+      //Construction de la liste des index de colonne à afficher pour ne pas avoir à faire le test sur chaque ligne de données
+      List<Integer> listIndexColonneAAfficher = new ArrayList<Integer>();
+      for(int i=0; i< nbCols; i++) {
+         if(!listIndexColonneANePasAfficherEnSero.contains(i)) {
+            listIndexColonneAAfficher.add(i); 
+         }
+      }
+      
       while(resultSet.next()){
          row = sheet.createRow(currentRow++);
-         for(int i = 0; i < numCols; i++){
-            final Object value = resultSet.getObject(i + 1);
+         for(Integer indexColonneAAfficher : listIndexColonneAAfficher) {
+            int indexColonneDansTableauResultat = 0;
+            int numeroColonneDansResultset = indexColonneAAfficher + 1;
+            final Object value = resultSet.getObject(numeroColonneDansResultset);
             //amélioration faite suite au bug TG-209
             try {
-               writeCell(row, i, value, formatTypes[i]);
+               writeCell(row, indexColonneDansTableauResultat, value, formatTypes[indexColonneAAfficher]);
+               indexColonneDansTableauResultat++;
             }
             catch(HyperlinkException hyperlinkException) {
-               if(hyperlinkExceptionFoundByNumColIndex.get(i) == null) {
-                  log.error("Erreur rencontrée lors de la génération du lien hypertext pour le champ " + resultSetMetaData.getColumnName(i + 1),
+               if(hyperlinkExceptionFoundByColIndexInTableauResultat.get(indexColonneDansTableauResultat) == null) {
+                  log.error("Erreur rencontrée lors de la génération du lien hypertext pour le champ " + resultSetMetaData.getColumnName(numeroColonneDansResultset),
                      hyperlinkException);
-                  hyperlinkExceptionFoundByNumColIndex.put(i, true);
+                  hyperlinkExceptionFoundByColIndexInTableauResultat.put(indexColonneDansTableauResultat, true);
                }
             }
          }
@@ -356,7 +393,7 @@ public class ResultSetToExcel
       }
 
       sheet.trackAllColumnsForAutoSizing();
-      for(int i = 0; i < numCols; i++){
+      for(int i = 0; i < nbCols; i++){
          sheet.autoSizeColumn((short) i);
       }
    }
@@ -406,28 +443,31 @@ public class ResultSetToExcel
    }
 
    //amélioration faite suite au bug TG-209 (throws HyperlinkException)
-   protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType) throws HyperlinkException {
-      writeCell(row, col, value, formatType, null);
+   //indexColonne commence à 0
+   protected void writeCell(final Row row, final int indexColonne, final Object value, final FormatType formatType) throws HyperlinkException {
+      writeCell(row, indexColonne, value, formatType, null);
    }
 
    //amélioration faite suite au bug TG-209 (throws HyperlinkException)
-   protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType,
+   //indexColonne commence à 0
+   protected void writeCell(final Row row, final int indexColonne, final Object value, final FormatType formatType,
       final XSSFCellStyle st) throws HyperlinkException {
-      writeCell(row, col, value, formatType, null, st);
+      writeCell(row, indexColonne, value, formatType, null, st);
    }
 
    //amélioration faite suite au bug TG-209 (throws HyperlinkException)
-   protected void writeCell(final Row row, final int col, final Object value, final FormatType formatType, final Short bgColor,
+   //indexColonne commence à 0   
+   protected void writeCell(final Row row, final int indexColonne, final Object value, final FormatType formatType, final Short bgColor,
       final XSSFCellStyle st)  throws HyperlinkException {
 
       if(value != null){
-         final Cell cell = row.createCell(col);
+         final Cell cell = row.createCell(indexColonne);
 
          if(st != null){
             cell.setCellStyle(st);
          }
 
-         if(profilExport != null && !profilExport.equals(ProfilExport.NOMINATIF) && this.anonymeColumn.contains(col)
+         if(profilExport != null && !profilExport.equals(ProfilExport.NOMINATIF) && this.anonymeColumn.contains(indexColonne)
             && row.getRowNum() != 0){
             cell.setCellType(CellType.STRING);
             cell.setCellValue("****");
@@ -467,20 +507,20 @@ public class ResultSetToExcel
          }
 
          if(hasPrelevement){
-            if(labo_interColumn.contains(col) && row.getRowNum() != 0){
+            if(labo_interColumn.contains(indexColonne) && row.getRowNum() != 0){
                if(!value.toString().contentEquals("0")){
                   cell.setCellType(CellType.STRING);
                   createHyperlink("id_", cell, row, DETAILS_LABO_INTER, indexColumnForPrelevementId);
                } 
             }
          }
-         if(col == retourE_interColumn && row.getRowNum() != 0){
+         if(indexColonne == retourE_interColumn && row.getRowNum() != 0){
             if(!value.toString().contentEquals("0")){
                cell.setCellType(CellType.STRING);
                createHyperlink("id_re_", cell, row, DETAILS_RETOUR, indexColumnForEchantillonId);
             }
          }
-         if(col == retourD_interColumn && row.getRowNum() != 0){
+         if(indexColonne == retourD_interColumn && row.getRowNum() != 0){
             if(!value.toString().contentEquals("0")){
                cell.setCellType(CellType.STRING);
                createHyperlink("id_rd_", cell, row, DETAILS_RETOUR, indexColumnForProdDeriveId);
@@ -787,9 +827,9 @@ public class ResultSetToExcel
          if(title.equals("CODE_ORGANE")){
             return Labels.getLabel("Champ.Echantillon.Organe");
          }else if(title.equals("PROTOCOLES")){
-            return Labels.getLabel("Champ.Prelevement.SEROLOGIE.Protocoles");
+            return Labels.getLabel("Champ.Prelevement.Protocoles");
          }else if(title.equals("COMPLEMENT_DIAG")){
-            return Labels.getLabel("Champ.Prelevement.SEROLOGIE.Libelle");
+            return Labels.getLabel("Champ.Prelevement.ComplementDiagnostic");
          }else if(title.equals("ETABLISSEMENT")){
             return Labels.getLabel("prelevement.etablissement");
          }else if(title.equals("RAISON_NC_TRAITEMENT")){

@@ -140,7 +140,6 @@ import fr.aphp.tumorotek.manager.interfacage.PatientSipManager;
 import fr.aphp.tumorotek.manager.interfacage.RecepteurManager;
 import fr.aphp.tumorotek.manager.interfacage.ValeurExterneManager;
 import fr.aphp.tumorotek.manager.interfacage.scan.ScanTerminaleManager;
-import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteFindManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.manager.io.export.AffichageManager;
@@ -519,13 +518,6 @@ public final class ManagerLocator
       return (ChampEntiteFindManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champEntiteFindManager");
    }
    
-   /**
-    * @since 2.2.1
-    */
-   public static ChampDelegueManager getChampDelegueManager(){
-      return (ChampDelegueManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champDelegueManager");
-   }
-
    public static ChampManager getChampManager(){
       return (ChampManager) (ContextLoader.getCurrentWebApplicationContext()).getBean("champManager");
    }

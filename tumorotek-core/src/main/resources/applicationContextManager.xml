@@ -59,7 +59,6 @@
 					ref="annotationValeurManager" />
 				<property name="importHistoriqueManager"
 					ref="importHistoriqueManager" />
-				<!-- <property name="patientDelegateDao" ref="patientDelegateDao" /> -->
 			</bean>
 		</property>
 	</bean>
@@ -290,8 +289,6 @@
 					ref="objetNonConformeManager" />
 				<property name="majDelaiCongelFromPrelevementProcessor"
 					ref="majDelaiCongelFromPrelevementProcessor" />					
-				<!-- <property name="prelevementDelegateDao" ref="prelevementDelegateDao" 
-					/> -->
 			</bean>
 		</property>
 	</bean>
@@ -364,7 +361,6 @@
 				<property name="retourManager" ref="retourManager" />
 				<property name="objetNonConformeManager"
 					ref="objetNonConformeManager" />
-				<!-- <property name="delegateDao" ref="echantillonDelegateDao" /> -->
 			</bean>
 		</property>
 	</bean>
@@ -600,7 +596,6 @@
 				<property name="transporteurDao" ref="transporteurDao" />
 				<property name="destructionMotifDao"
 					ref="destructionMotifDao" />
-				<!-- <property name="cessionDelegateDao" ref="cessionDelegateDao" /> -->
 				<property name="cederObjetManager" ref="cederObjetManager" />
 				<property name="operationManager" ref="operationManager" />
 				<property name="operationTypeDao" ref="operationTypeDao" />
@@ -1461,17 +1456,6 @@
 		<property name="champEntiteDao" ref="champEntiteDao" />
 	</bean>
 
-	<bean id="champDelegueManager" parent="txProxyTemplate">
-		<property name="target">
-			<bean
-				class="fr.aphp.tumorotek.manager.impl.io.ChampDelegueManagerImpl">
-				<property name="champDelegueDao">
-					<ref bean="champDelegueDao" />
-				</property>
-			</bean>
-		</property>
-	</bean>
-
 	<!-- Beans Manager du package coeur.annotation -->
 
 	<bean id="exportUtils" parent="txProxyTemplate">
@@ -1736,8 +1720,6 @@
 				<property name="champEntiteManager">
 					<ref bean="champEntiteManager" />
 				</property>
-				<property name="champDelegueManager"
-					ref="champDelegueManager" />
 			</bean>
 		</property>
 	</bean>

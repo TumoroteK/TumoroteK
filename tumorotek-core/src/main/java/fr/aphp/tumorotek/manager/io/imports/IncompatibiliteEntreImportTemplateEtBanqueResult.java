@@ -60,8 +60,6 @@ public class IncompatibiliteEntreImportTemplateEtBanqueResult
    private ItemForErrorResult<TableAnnotation> tableAnnotationItem = null;
    private List<ImportColonne> listImportColonneDesChampsAnnotationKO = null;
 
-   //Champs délégués présents dans le modèle mais incompatibles avec la banque (ex : modèle séro, champ protocoles pour une banque anapat')
-   private ItemForErrorResult<ImportColonne> champDelegueItem = null;
    //Champs présents dans le modèle mais incompatibles avec la banque 
    // cas 1 : modèle anapat' avec code lésionnel pour une banque séro 
    // cas 2 : modèle anapat' ou séro pour une banque Gatsbi
@@ -82,13 +80,11 @@ public class IncompatibiliteEntreImportTemplateEtBanqueResult
    public IncompatibiliteEntreImportTemplateEtBanqueResult(
          ItemForErrorResult<TableAnnotation> tableAnnotationItem, 
          List<ImportColonne> listImportColonneDesChampsAnnotationKO,
-         ItemForErrorResult<ImportColonne> champDelegueItem, 
          ItemForErrorResult<ImportColonne> champGatbsiItem,
          ItemForErrorResult<Entite> obligatoireItem,
          List<ChampEntite> listChampObligatoirePourBanqueMaisNonPresentDansModele) {
       this.tableAnnotationItem = tableAnnotationItem;
       this.listImportColonneDesChampsAnnotationKO = listImportColonneDesChampsAnnotationKO;
-      this.champDelegueItem = champDelegueItem;
       this.champItem = champGatbsiItem;
       this.obligatoireItem = obligatoireItem;
       this.listChampObligatoirePourBanqueMaisNonPresentDansModele = listChampObligatoirePourBanqueMaisNonPresentDansModele;
@@ -100,10 +96,6 @@ public class IncompatibiliteEntreImportTemplateEtBanqueResult
    
    public List<ImportColonne> getListImportColonneDesChampsAnnotationKO(){
       return listImportColonneDesChampsAnnotationKO;
-   }
-   
-   public ItemForErrorResult<ImportColonne> getChampDelegueItem(){
-      return champDelegueItem;
    }
 
    public ItemForErrorResult<ImportColonne> getChampItem(){
@@ -125,9 +117,6 @@ public class IncompatibiliteEntreImportTemplateEtBanqueResult
       List<ImportColonne> allImportColonnesKO = new ArrayList<ImportColonne>();
       if(getListImportColonneDesChampsAnnotationKO() != null) {
          allImportColonnesKO.addAll(getListImportColonneDesChampsAnnotationKO());
-      }
-      if(getChampDelegueItem() != null) {
-         allImportColonnesKO.addAll(getChampDelegueItem().getListDataInError());
       }
       if(getChampItem() != null) {
          allImportColonnesKO.addAll(getChampItem().getListDataInError());

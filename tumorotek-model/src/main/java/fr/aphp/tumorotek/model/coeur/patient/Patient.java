@@ -51,7 +51,6 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -59,9 +58,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
-import fr.aphp.tumorotek.model.coeur.patient.delegate.AbstractPatientDelegate;
 import fr.aphp.tumorotek.model.coeur.patient.gatsbi.PatientIdentifiant;
 import fr.aphp.tumorotek.model.contexte.Banque;
 
@@ -138,7 +134,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
          + "FROM PatientIdentifiant i "
          + "WHERE i.pk.patient = (?1) AND i.pk.banque in (?2) ORDER BY i.pk.banque.nom")
 })
-public class Patient extends TKDelegetableObject<Patient> implements TKAnnotableObject, Serializable
+public class Patient implements TKAnnotableObject, Serializable
 {
 
    private static final long serialVersionUID = -2015746269357055625L;
@@ -170,8 +166,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
    private Boolean etatIncomplet;
 
    private Boolean archive = false;
-
-   private TKDelegateObject<Patient> delegate;
 
    private Set<PatientLien> patientLiens = new HashSet<>();
 
@@ -370,21 +364,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       this.archive = arch;
    }
 
-   @Override
-   @OneToOne(mappedBy = "delegator", cascade = CascadeType.ALL, orphanRemoval = true,
-      targetEntity = AbstractPatientDelegate.class)
-   public TKDelegateObject<Patient> getDelegate(){
-      return delegate;
-   }
-
-   @Override
-   public void setDelegate(final TKDelegateObject<Patient> delegate){
-      this.delegate = delegate;
-   }
-
-   public void setDelegate(final AbstractPatientDelegate delegate){
-      this.delegate = delegate;
-   }
 
    @OneToMany(mappedBy = "pk.patient1", cascade = {CascadeType.ALL})
    public Set<PatientLien> getPatientLiens(){
@@ -573,8 +552,6 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
       clone.setEtatIncomplet(this.etatIncomplet);
       clone.setArchive(this.archive);
       clone.setMaladies(this.maladies);
-
-      clone.setDelegate(getDelegate());
       
       clone.getPatientIdentifiants().addAll(this.getPatientIdentifiants());
       

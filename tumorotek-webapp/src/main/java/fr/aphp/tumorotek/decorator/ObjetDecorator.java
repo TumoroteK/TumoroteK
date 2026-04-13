@@ -268,8 +268,8 @@ public class ObjetDecorator implements Comparable<Object>
                      liste.add(echDeco.getEmplacementAdrl());
                   }else if(nomChampEntite.equals("EchantillonTypeId")){
                      liste.add(echDeco.getType());
-                  }else if(nomChampEntite.equals("AdicapOrganeId")){
-                     liste.add(echDeco.getAdicapOrgane());
+                  }else if(nomChampEntite.equals("CodeOrganes")){//bizarre ajoute null à la liste !!!!
+                     liste.add(echDeco.getCodeOrganes());
                   }else if(nomChampEntite.equals("Lateralite")){
                      liste.add(echDeco.getLateralite());
                   }else if(nomChampEntite.equals("Quantite")){

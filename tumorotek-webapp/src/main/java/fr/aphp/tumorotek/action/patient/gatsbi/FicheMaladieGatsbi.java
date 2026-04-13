@@ -120,7 +120,7 @@ public class FicheMaladieGatsbi extends FicheMaladie
    @Override
    protected void initObjLabelsComponent(){
       setObjLabelsComponents(new Component[] {
-         this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,
+         this.libelleLabel, this.codeDiagLabel, this.dateDebutLabel, this.dateDiagLabel,this.diagLabel,// TK-520 ajout
          this.prelevementsMaladieGroup, this.prelevementsGrid, this.prelevementsFromOtherBanksGrid 
       });    
    }

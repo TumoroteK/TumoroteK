@@ -86,16 +86,13 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.recherche.historique.SearchHistory;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.AnnotationItemRenderer;
-import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
-import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Critere;
 import fr.aphp.tumorotek.model.systeme.Entite;
@@ -368,18 +365,8 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 			if(parent != null){
 				champ.setChampParent(parent);
 			}
-		}else if(null != current.getAttribute("champDelegue")){
-			final String champDelegueNom = (String) current.getAttribute("champDelegue");
-			final String nomEntite = (String) current.getAttribute("entite");
-			final Entite entite = ManagerLocator.getEntiteManager().findByNomManager(nomEntite).get(0);
-			final ChampDelegue champDelegue = ManagerLocator.getManager(ChampDelegueManager.class)
-					.findByNomAndEntiteAndContexte(champDelegueNom, entite, EContexte.SEROLOGIE).get(0);
-
-			champ = new Champ(champDelegue);
-			if(parent != null){
-				champ.setChampParent(parent);
-			}
-		}else{
+		}
+		else{
 			// on récup l'attribut et l'entité du composant pour extraire
 			// le ChampEntite correspondant
 			final String attribut = (String) current.getAttribute("attribut");
@@ -478,8 +465,6 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		Object obj = null;
 		// on récupère l'objet sélectionné
 		if(current.getListModel() != null){
-			//			obj = current.getListModel().getElementAt(
-			//					current.getSelectedIndex());
 			obj = ((Selectable<Object>) current.getListModel()).getSelection().iterator().next();
 		}else{
 			obj = current.getSelectedItem().getValue();

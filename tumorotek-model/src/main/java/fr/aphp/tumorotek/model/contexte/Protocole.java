@@ -53,7 +53,6 @@ import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.AbstractPfDependantThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
-import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 
 /**
  * Objet persistant mappant la table PROTOCOLE.
@@ -113,7 +112,7 @@ public class Protocole extends AbstractPfDependantThesaurusObject implements Ser
       this.description = description;
    }
 
-   @ManyToMany(mappedBy = "protocoles", targetEntity = PrelevementSero.class)
+   @ManyToMany(mappedBy = "protocoles", targetEntity = Prelevement.class)
    public Set<Prelevement> getPrelevements(){
       return prelevements;
    }

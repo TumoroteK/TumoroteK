@@ -149,7 +149,7 @@ public class ReferenceurPatientGatsbi extends ReferenceurPatient
       final String critereValue = nomNipNdaBox.getValue();
 
       final FichePrelevementEditGatsbi fichePrelevementEdit = 
-            (FichePrelevementEditGatsbi) getFichePrelevementEditFromContexte();
+            (FichePrelevementEditGatsbi) getFichePrelevementEdit();
 
       fichePrelevementEdit.getObjectTabController().setPatientSip(null);
       fichePrelevementEdit.openSelectPatientWindow(Path.getPath(self), "onGetPatientFromSelection", 

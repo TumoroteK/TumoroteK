@@ -1805,10 +1805,6 @@ public abstract class AbstractListeController2 extends AbstractController
 		   String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(1) == null ? 
             "ficheRechercheAvanceePatient": "ficheRechercheAvanceePatientGatsbi";    
 			String winDef = "fwinRechercheAvanceePatient";
-			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-				pageDef = "ficheRechercheAvanceePatientSero";
-				winDef = "fwinRechercheAvanceePatientSero";
-			}
 			ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
 			ua.setParent(win);
 			ua.setId("openRechercheAvanceePatientModale");
@@ -1824,10 +1820,6 @@ public abstract class AbstractListeController2 extends AbstractController
 			String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null ? 
 					"ficheRechercheAvanceePrelevement": "ficheRechercheAvanceePrelevementGatsbi";
 			String winDef = "fwinRechercheAvanceePrelevement";
-			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-				pageDef = "ficheRechercheAvanceePrelevementSero";
-				winDef = "fwinRechercheAvanceePrelevementSero";
-			}
 			ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
 			ua.setParent(win);
 			ua.setId("openRechercheAvanceePrelevementModale");
@@ -1841,10 +1833,6 @@ public abstract class AbstractListeController2 extends AbstractController
 			String pageDef = SessionUtils.getCurrentGatsbiContexteForEntiteId(3) == null ? 
 					"ficheRechercheAvanceeEchantillon": "ficheRechercheAvanceeEchantillonGatsbi";					
 			String winDef = "fwinRechercheAvanceeEchantillon";
-			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-				pageDef = "ficheRechercheAvanceeEchantillonSero";
-				winDef = "fwinRechercheAvanceeEchantillonSero";
-			}
 			ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
 			ua.setParent(win);
 			ua.setId("openRechercheAvanceeEchantillonModale");
@@ -1857,10 +1845,6 @@ public abstract class AbstractListeController2 extends AbstractController
 		}else if(entiteToSearch.getNom().equals("ProdDerive")){
 			String pageDef = "ficheRechercheAvanceeProdDerive";
 			String winDef = "fwinRechercheAvanceeProdDerive";
-			if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-				pageDef = "ficheRechercheAvanceeProdDeriveSero";
-				winDef = "fwinRechercheAvanceeProdDeriveSero";
-			}
 			ua = (HtmlMacroComponent) page.getComponentDefinition(pageDef, false).newInstance(page, null);
 			ua.setParent(win);
 			ua.setId("openRechercheAvanceeProdDeriveModale");

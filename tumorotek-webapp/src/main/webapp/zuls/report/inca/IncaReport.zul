@@ -151,7 +151,7 @@
 								model="@{winIncaReport$composer.natures}"
 								mold="paging" pageSize="5">
 								<listitem self="@{each='nature'}" value="@{nature}">			
-									<listcell label="@{nature.nature}" />
+									<listcell label="@{nature.nom}" />
 								</listitem>
 							</listbox>
 							<label value="${c:l('inca.ficheReport.echanTypesSainAss')}" sclass="formLabel" />
@@ -171,7 +171,7 @@
 								model="@{winIncaReport$composer.natures}"
 								mold="paging" pageSize="5">
 								<listitem self="@{each='nature'}" value="@{nature}">			
-									<listcell label="@{nature.nature}" />
+									<listcell label="@{nature.nom}" />
 								</listitem>
 							</listbox>
 							<label value="${c:l('inca.ficheReport.echanTypesSangAss')}" sclass="formLabel" />

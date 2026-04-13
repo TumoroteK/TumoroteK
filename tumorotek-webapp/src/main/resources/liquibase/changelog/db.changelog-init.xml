@@ -25,8 +25,12 @@
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_biobanques.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_BIOCAP.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_INCA.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
-        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+ <!-- depuis TK-520 (version 2.4.0.0) les procédures stockées ne doivent plus être appelées dans ce script car elles ne sont plus adaptées au modèle de données.
+ 	  Elles sont appelées dans le fichier db.changelog-2.4.0.0_1_TK-520.xml sachant que export_sero.sql n'existe plus.
+ -->          
+<!--    <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_sero.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+-->
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_TGVSO.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/getBoite.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/indicateurs.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>

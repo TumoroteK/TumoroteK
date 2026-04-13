@@ -2175,23 +2175,6 @@
 		</row>
 	</table>
 	
-	<table name="MALADIE_DELEGATE">
-		<column>MALADIE_DELEGATE_ID</column>
-		<column>MALADIE_ID</column>
-		<row>
-			<value>1</value>
-			<value>4</value>
-		</row>
-		<row>
-			<value>2</value>
-			<value>3</value>
-		</row>
-		<row>
-			<value>3</value>
-			<value>1</value>
-		</row>
-	</table>
-	
 	<table name="DIAGNOSTIC">
 		<column>DIAGNOSTIC_ID</column>
 		<column>NOM</column>
@@ -2214,75 +2197,6 @@
 			<value>SUSPECTE</value>
 			<value>SUSPECTE</value>
 			<value>1</value>
-		</row>
-	</table>
-	
-	<table name="MALADIE_SERO">
-		<column>MALADIE_DELEGATE_ID</column>
-		<column>DIAGNOSTIC_ID</column>
-		<row>
-			<value>1</value>
-			<value>1</value>
-		</row>
-		<row>
-			<value>2</value>
-			<value>2</value>
-		</row>
-		<row>
-			<value>3</value>
-			<value>3</value>
-		</row>
-	</table>
-	
-	<table name="PRELEVEMENT_DELEGATE">
-		<column>PRELEVEMENT_DELEGATE_ID</column>
-		<column>PRELEVEMENT_ID</column>
-		<row>
-			<value>1</value>
-			<value>2</value>
-		</row>
-		<row>
-			<value>2</value>
-			<value>4</value>
-		</row>
-		<row>
-			<value>3</value>
-			<value>3</value>
-		</row>
-	</table>
-	
-	<table name="PRELEVEMENT_SERO">
-		<column>PRELEVEMENT_DELEGATE_ID</column>
-		<column>LIBELLE</column>
-		<row>
-			<value>1</value>
-			<value>CODE SEROTK A</value>
-		</row>
-		<row>
-			<value>2</value>
-			<value>Libellé prélèvement séro</value>
-		</row>
-	</table>
-	
-	<table name="PRELEVEMENT_XENO">
-		<column>PRELEVEMENT_DELEGATE_ID</column>
-		<column>SOURIS</column>
-		<row>
-			<value>3</value>
-			<value>S12</value>
-		</row>
-	</table>
-	
-	<table name="PRELEVEMENT_SERO_PROTOCOLE">
-		<column>PRELEVEMENT_DELEGATE_ID</column>
-		<column>PROTOCOLE_ID</column>
-		<row>
-			<value>1</value>
-			<value>1</value>
-		</row>
-		<row>
-			<value>1</value>
-			<value>2</value>
 		</row>
 	</table>
 	
@@ -6888,34 +6802,7 @@
 		</row>
 		
 	</table> 
-	<table name="CHAMP_DELEGUE">
-		<column>CHAMP_DELEGUE_ID</column>
-		<column>NOM</column>
-		<column>DATA_TYPE_ID</column>
-		<column>ENTITE_ID</column>
-		<column>CONTEXTE</column>
-		<row>
-			<value>1</value>
-			<value>Libelle</value>
-			<value>1</value>
-			<value>2</value>
-			<value>SEROLOGIE</value>	
-		</row>
-		<row>
-			<value>2</value>
-			<value>Protocoles</value>
-			<value>7</value>
-			<value>2</value>
-			<value>SEROLOGIE</value>	
-		</row>
-		<row>
-			<value>3</value>
-			<value>Diagnostic</value>
-			<value>1</value>
-			<value>7</value>
-			<value>SEROLOGIE</value>	
-		</row>
-	</table>
+
 	<table name="CHAMP">
 		<column>CHAMP_ID</column>
 		<column>CHAMP_ENTITE_ID</column>

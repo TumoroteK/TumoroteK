@@ -47,7 +47,6 @@ import fr.aphp.tumorotek.decorator.EntiteDecoratorForOneToManyComponent;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
@@ -114,15 +113,7 @@ public abstract class AbstractImportTemplateStrategy implements ImportTemplateSt
       for(int i = 0; i < nbChampNullable; i++){
          listChampAjoutable.add(new Champ(listChampNullable.get(i)));
       }
-      
-      //ajout des champs délégué :
-      List<ChampDelegue> listChampDelegue = ManagerLocator.getChampDelegueManager()
-         .findByEntiteAndContexte(entite, EContexte.valueOf(banque.getContexte().getNom()));
-      int nbChampDelegue = listChampDelegue.size();
-      for(int i = 0; i < nbChampDelegue; i++){
-         listChampAjoutable.add(new Champ(listChampDelegue.get(i)));
-      }
-      
+     
       //ajout des champs d'annotation :
       listChampAjoutable.addAll(ImportUtils.retrieveAllChampAnnotationForEntite(entite, banque));
       

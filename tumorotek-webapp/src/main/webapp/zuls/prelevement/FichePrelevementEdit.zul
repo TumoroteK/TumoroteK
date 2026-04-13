@@ -69,7 +69,7 @@
 		        			save-when='validate.onClick, create.onClick, next.onClick'}" width="150px" constraint="${fwinPrelevementEdit$composer.codeNullConstraint}" />
 					</row>
 
-					<row spans="1,3">
+					<row>
 						<!-- Nature du prélèvement -->
 						<hbox>
 							<label value="${c:l('Champ.Prelevement.Nature')}" sclass="formLabel" />
@@ -78,6 +78,14 @@
 						<listbox id="naturesBoxPrlvt" mold="select" rows="1" width="150px" model="@{fwinPrelevementEdit$composer.natures}" selectedItem="@{fwinPrelevementEdit$composer.selectedNature}">
 							<listitem self="@{each='naturePrlvt'}" value="@{naturePrlvt}">
 								<listcell label="@{naturePrlvt.nature}" />
+							</listitem>
+						</listbox>
+						
+						<!-- Protocoles -->
+						<label value="${c:l('Champ.Prelevement.Protocoles')}" sclass="formLabel" />
+						<listbox id="protocolesBox" mold="select" multiple="true" rows="2" width="150px" model="@{fwinPrelevementEdit$composer.protocoles}" >
+							<listitem self="@{each='proto'}" value="@{proto.nom}">
+								<listcell label="@{proto.nom}" />
 							</listitem>
 						</listbox>
 					</row>
@@ -229,7 +237,7 @@
 							save-when='validate.onClick, create.onClick, next.onClick'}" constraint="no negative" />
 					</row>
 					<row spans="1, 3">
-						<!-- Mileu de Condit -->
+						<!-- Milieu de Condit -->
 						<label value="${c:l('Champ.Prelevement.ConditMilieu')}" sclass="formLabel" />
 						<listbox id="conditMilieusBoxPrlvt" mold="select" rows="1" model="@{fwinPrelevementEdit$composer.conditMilieus}" selectedItem="@{fwinPrelevementEdit$composer.selectedConditMilieu}">
 							<listitem self="@{each='conditMilieuPrlvt'}" value="@{conditMilieuPrlvt}">
@@ -265,6 +273,19 @@
 
 						<datebox id="dateConsentBoxPrlvt" format="${c:l('validation.date.format.simple')}" value="@{fwinPrelevementEdit$composer.object.consentDate,
 									save-when='validate.onClick, create.onClick, next.onClick'}" lenient="true" />
+					</row>
+					<!-- Informations complémentaires -->
+					<row spans="4">
+						<vlayout>
+							<label value="${c:l('fichePrelevement.group.infosComp')}" sclass="formSubTitle"/>
+							<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vlayout>
+					</row>
+					<!-- Complément diagnostic -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.Prelevement.ComplementDiagnostic')}" sclass="formLabel" />
+						<textbox cols="150" value="@{fwinPrelevementEdit$composer.object.complementDiagnostic, 
+											save-when='validate.onClick, create.onClick, next.onClick'}" constraint="${fwinPrelevementEdit$composer.complementDiagnosticConstraint}" />
 					</row>
 				</rows>
 			</grid>

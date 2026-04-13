@@ -36,27 +36,13 @@
 package fr.aphp.tumorotek.action.imports.strategy;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
-import fr.aphp.tumorotek.action.imports.ImportColonneDecorator;
 import fr.aphp.tumorotek.decorator.EntiteDecoratorForOneToManyComponent;
 import fr.aphp.tumorotek.decorator.factory.EntiteDecoratorFactory;
-import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
-import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
-import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.EContexte;
-import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
-import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.EImportTemplateType;
-import fr.aphp.tumorotek.model.io.imports.ImportColonne;
-import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
-import fr.aphp.tumorotek.model.systeme.Entite;
-import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * stratégie liée à l'import de création multi entité 

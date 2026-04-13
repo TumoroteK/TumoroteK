@@ -61,7 +61,6 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.cession.delegate.AbstractCessionDelegate;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Service;
@@ -154,9 +153,6 @@ public class Cession implements TKAnnotableObject, Serializable
 
    // @since 2.1
    private Calendar lastScanCheckDate;
-
-   /** @since 2.2.0 */
-   private AbstractCessionDelegate delegate;
 
    private Banque banque;
 
@@ -487,15 +483,6 @@ public class Cession implements TKAnnotableObject, Serializable
       this.cederObjets = cederObjs;
    }
 
-   @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
-   public AbstractCessionDelegate getDelegate(){
-      return delegate;
-   }
-
-   public void setDelegate(final AbstractCessionDelegate delegate){
-      this.delegate = delegate;
-   }
-
    /**
     * 2 cessions sont considérées comme égales si elles ont le même
     * numéro et la même banque.
@@ -595,7 +582,6 @@ public class Cession implements TKAnnotableObject, Serializable
       clone.setEtatIncomplet(this.getEtatIncomplet());
       clone.setArchive(this.getArchive());
       clone.setLastScanCheckDate(this.getLastScanCheckDate());
-      clone.setDelegate(this.getDelegate());
 
       return clone;
 

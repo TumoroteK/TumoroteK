@@ -346,7 +346,7 @@
 										<listitem
 											self="@{each='echantillonType'}" value="echantillonType">
 											<listcell
-												label="@{echantillonType.type}" />
+												label="@{echantillonType.nom}" />
 										</listitem>
 										<custom-attributes
 											attribut="EchantillonTypeId" entite="Echantillon" />

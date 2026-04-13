@@ -37,6 +37,7 @@ package fr.aphp.tumorotek.action.echantillon;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -533,7 +534,7 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
     * Si l'etat change alors nullify date Etat ou date Deces.
     */
    @Override
-   public void onGetChangeOnChamp(final Event e){
+   public void onGetChangeOnChamp(final Event e) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
       final SimpleChampValue tmp = (SimpleChampValue) e.getData();
 

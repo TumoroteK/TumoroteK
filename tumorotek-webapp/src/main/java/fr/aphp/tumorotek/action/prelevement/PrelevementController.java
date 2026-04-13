@@ -35,9 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.prelevement;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.SEROLOGIE;
-import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -45,8 +42,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import fr.aphp.tumorotek.utils.MessagesUtils;
-import fr.aphp.tumorotek.utils.TKDateUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.util.resource.Labels;
@@ -70,13 +65,8 @@ import fr.aphp.tumorotek.action.echantillon.FicheMultiEchantillons;
 import fr.aphp.tumorotek.action.patient.MaladieConstraints;
 import fr.aphp.tumorotek.action.patient.PatientConstraints;
 import fr.aphp.tumorotek.action.patient.PatientController;
-import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementEditSero;
-import fr.aphp.tumorotek.action.prelevement.serotk.FichePrelevementStaticSero;
-import fr.aphp.tumorotek.action.prelevement.serotk.ListePrelevementSero;
-import fr.aphp.tumorotek.action.prelevement.serotk.PrelevementSeroRowRenderer;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.dto.MajDelaiCongelFromPrelevementDTO;
-import fr.aphp.tumorotek.manager.impl.coeur.echantillon.ETypeDelaiCongelation;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
@@ -190,22 +180,14 @@ public class PrelevementController extends AbstractObjectTabController
       setEditDiv(divPrelevementEdit);
       setModifMultiDiv(modifMultiDiv);
 
-      switch(getCurrentContexte()){
-         case SEROLOGIE:
-            setListZulPath("/zuls/prelevement/serotk/ListePrelevementSero.zul");
-            setMultiEditZulPath("/zuls/prelevement/serotk/FicheModifMultiPrelevementSero.zul");
-            break;
-         default:
-            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
-               setListZulPath("/zuls/prelevement/ListePrelevement.zul");
-               setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
-            }else{
-               setListZulPath("/zuls/prelevement/gatsbi/ListePrelevementGatsbi.zul");
-               setMultiEditZulPath("/zuls/prelevement/gatsbi/FicheModifMultiPrelevementGatsbi.zul");
-            }
-            break;
+      if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+         setListZulPath("/zuls/prelevement/ListePrelevement.zul");
+         setMultiEditZulPath("/zuls/prelevement/FicheModifMultiPrelevement.zul");
+      }else{
+         setListZulPath("/zuls/prelevement/gatsbi/ListePrelevementGatsbi.zul");
+         setMultiEditZulPath("/zuls/prelevement/gatsbi/FicheModifMultiPrelevementGatsbi.zul");
       }
-
+               
       // seul le choix du composant pour edit est factorisé
       setEditZulPath(getFichePrelevementEditZulPath());
 
@@ -230,15 +212,10 @@ public class PrelevementController extends AbstractObjectTabController
     * @return FichePrelevementEdit zul path
     */
    private String getFichePrelevementEditZulPath() {
-      switch(getCurrentContexte()){
-         case SEROLOGIE:
-            return "/zuls/prelevement/serotk/FichePrelevementEditSero.zul";
-         default:
-            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
-               return "/zuls/prelevement/FichePrelevementEdit.zul";
-            }else{
-               return "/zuls/prelevement/gatsbi/FichePrelevementEditGatsbi.zul";
-            }
+      if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+         return "/zuls/prelevement/FichePrelevementEdit.zul";
+      }else{
+         return "/zuls/prelevement/gatsbi/FichePrelevementEditGatsbi.zul";
       }
    }
 
@@ -249,44 +226,29 @@ public class PrelevementController extends AbstractObjectTabController
 
    @Override
    public void populateFicheStatic(){
-      if(SEROLOGIE.equals(getCurrentContexte())){
-         setStaticZulPath("/zuls/prelevement/serotk/FichePrelevementStaticSero.zul");
+      if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
+         setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
       }else{
-         if(SessionUtils.getCurrentGatsbiContexteForEntiteId(2) == null){
-            setStaticZulPath("/zuls/prelevement/FichePrelevementStatic.zul");
-         }else{
-            setStaticZulPath("/zuls/prelevement/gatsbi/FichePrelevementStaticGatsbi.zul");
-         }
+         setStaticZulPath("/zuls/prelevement/gatsbi/FichePrelevementStaticGatsbi.zul");
       }
+
       super.populateFicheStatic();
    }
 
    @Override
    public FichePrelevementStatic getFicheStatic(){
-      if(SEROLOGIE.equals(getCurrentContexte())){
-         return ((FichePrelevementStaticSero) this.self.getFellow("divPrelevementStatic").getFellow("fwinPrelevementStaticSero")
-            .getAttributeOrFellow("fwinPrelevementStaticSero$composer", true));
-      }
       return ((FichePrelevementStatic) this.self.getFellow("divPrelevementStatic").getFellow("fwinPrelevementStatic")
          .getAttributeOrFellow("fwinPrelevementStatic$composer", true));
    }
 
    @Override
    public FichePrelevementEdit getFicheEdit(){
-      if(SEROLOGIE.equals(getCurrentContexte())){
-         return ((FichePrelevementEditSero) this.self.getFellow("divPrelevementEdit").getFellow("fwinPrelevementEditSero")
-            .getAttributeOrFellow("fwinPrelevementEditSero$composer", true));
-      }
       return ((FichePrelevementEdit) this.self.getFellow("divPrelevementEdit").getFellow("fwinPrelevementEdit")
          .getAttributeOrFellow("fwinPrelevementEdit$composer", true));
    }
 
    @Override
    public ListePrelevement getListe(){
-      if(SEROLOGIE.equals(getCurrentContexte())){
-         return ((ListePrelevementSero) self.getFellow("lwinPrelevementSero").getAttributeOrFellow("lwinPrelevementSero$composer",
-            true));
-      }
       return ((ListePrelevement) self.getFellow("lwinPrelevement").getAttributeOrFellow("lwinPrelevement$composer", true));
 
    }
