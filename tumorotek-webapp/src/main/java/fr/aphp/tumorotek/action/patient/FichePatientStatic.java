@@ -563,9 +563,7 @@ public class FichePatientStatic extends AbstractFicheStaticController
       // @since gatsbi
       if (SessionUtils.getCurrentGatsbiContexteForEntiteId(7) != null) {
          compDef = "maladieGatsbiPanel";
-      } else if(SessionUtils.getCurrentContexte() == EContexte.SEROLOGIE){
-         compDef = "maladieSeroPanel";
-      }
+      } 
 
       ua = (HtmlMacroComponent) page.getComponentDefinition(compDef, false).newInstance(page, null);
       ua.setParent(malaDiv);

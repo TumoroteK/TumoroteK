@@ -102,6 +102,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Contexte;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
@@ -1042,16 +1043,24 @@ public class BanqueManagerImpl implements BanqueManager
       if(p != null && u != null){
          final List<Banque> adminBanks = new ArrayList<>();
 
-         // premiere restriction sur les banques de la plateforme
-         // TK-254 et stream filter restriction sur le contexte
-         adminBanks.addAll(findByUtilisateurIsAdminManager(u, p.getBanque().getPlateforme()).stream()
-            .filter(b -> b.getContexte().equals(p.getBanque().getContexte())).collect(Collectors.toList()));
-
+         // premiere restriction sur les banques de la plateforme en fonction du contexte :
+         // - cas standard, hors contexte Gatsbi, 
+         //   Depuis TK-520 : le transfert peut se faire vers une collection d'un autre contexte tant que ce n'est pas un contexte Gatsbi (annule TK-254)
+         // - Pour les contextes de type Gatsbi, transfert possible uniquement vers une collection rattachée à la même étude
+         List<Banque> allBanqueForPlateforme = findByUtilisateurIsAdminManager(u, p.getBanque().getPlateforme());
          // @since 2.3.0-gatsbi
          // filtre gatsbi même étude
          // banque de contexte non gatsbi sont déja filtrées
-         if(p.getBanque().getEtude() != null){
+         if(p.getBanque().getEtude() != null){//cas spécifique du contexte Gatsbi
+            adminBanks.addAll(allBanqueForPlateforme);
             adminBanks.removeIf(b -> !p.getBanque().getEtude().equals(b.getEtude()));
+         }
+         else {//cas standard : on retire juste les contextes Gatsbi et la collection du prélèvement
+            adminBanks.addAll(
+               allBanqueForPlateforme.stream()
+               .filter( banque -> !banque.getContexte().getNom().equals(EContexte.GATSBI.getNom()) && banque.getBanqueId() !=  p.getBanque().getBanqueId() ) 
+               .collect(Collectors.toList())
+            );
          }
 
          // deuxieme restriction sur les banques - conteneurs.

@@ -63,14 +63,11 @@ import javax.persistence.Transient;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKFileSettableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.code.CodeAssigne;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
-import fr.aphp.tumorotek.model.coeur.echantillon.delegate.AbstractEchantillonDelegate;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
@@ -198,7 +195,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
          + "JOIN pat.patientIdentifiants i WHERE (pat.nom like ?1 or pat.nip like ?1 or i.identifiant like ?1) "
          + "AND i.pk.banque in (?2) AND e.banque in (?2)")
 })
-public class Echantillon extends TKDelegetableObject<Echantillon> implements TKStockableObject, Serializable, TKFileSettableObject
+public class Echantillon implements TKStockableObject, Serializable, TKFileSettableObject
 {
 
    private static final long serialVersionUID = 7561274704258954965L;
@@ -252,8 +249,6 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
    private Prelevement prelevement;
 
    private Set<CodeAssigne> codesAssignes = new HashSet<>();
-
-   private TKDelegateObject<Echantillon> delegate;
 
    // stream utilise pour enregistre Cr anapath
    private InputStream anapathStream;
@@ -518,13 +513,6 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
       this.codesAssignes = cs;
    }
 
-   @Override
-   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-      targetEntity = AbstractEchantillonDelegate.class)
-   public TKDelegateObject<Echantillon> getDelegate(){
-      return delegate;
-   }
-
    /**
     * 2 échantillons sont considérés comme égaux s'ils ont le même
     * code et la même Banque.
@@ -624,14 +612,8 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
       clone.setLateralite(this.getLateralite());
       clone.setEtatIncomplet(this.getEtatIncomplet());
       clone.setArchive(this.getArchive());
-      // clone.setCodeOrganes(this.getCodeOrganes());
-      // clone.setCodeMorphos(this.getCodeMorphos());
-      // clone.setCodeOrganeExport(this.getCodeOrganeExport());
-      // clone.setCodeLesExport(this.getCodeLesExport());
       clone.setCodesAssignes(getCodesAssignes());
       clone.setAnapathStream(getAnapathStream());
-
-      clone.setDelegate(getDelegate());
 
       return clone;
    }
@@ -691,10 +673,5 @@ public class Echantillon extends TKDelegetableObject<Echantillon> implements TKS
    @Transient
    public void setFile(final Fichier f){
       setCrAnapath(f);
-   }
-
-   @Override
-   public void setDelegate(final TKDelegateObject<Echantillon> _d){
-      this.delegate = _d;
    }
 }

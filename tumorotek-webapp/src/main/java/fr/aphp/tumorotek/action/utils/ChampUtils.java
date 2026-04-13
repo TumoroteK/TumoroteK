@@ -94,8 +94,6 @@ public abstract class ChampUtils
          if("calcule".equals(dataType.getType())){
             dataType = champ.getChampAnnotation().getChampCalcule().getDataType();
          }
-      }else if(champ.getChampDelegue() != null){
-         dataType = champ.getChampDelegue().getDataType();
       }else if(champ.getChampEntite().getQueryChamp() == null){
          dataType = champ.getChampEntite().getDataType();
       }else{
@@ -117,8 +115,6 @@ public abstract class ChampUtils
 
       if(champ.getChampAnnotation() != null){
          nom = champ.getChampAnnotation().getNom();
-      }else if(champ.getChampDelegue() != null){
-         nom = champ.getChampDelegue().getNom();
       }else if(champ.getChampEntite().getQueryChamp() == null){
          nom = champ.getChampEntite().getNom();
       }else{
@@ -129,23 +125,20 @@ public abstract class ChampUtils
 
    }
 
+ //TK-520 : méthode qui ressemble beaucoup à TraitementQueryManagerImpl.getNomEntiteAncetre() mais ne semble pas renvoyer tout à fait la même chose. A CREUSER
    public static String getNomEntiteAncetre(final Champ champ){
 
       String nomEntiteAncetre = null;
       Champ parent = champ.getChampParent();
       AbstractTKChamp ceParent = null;
 
-      while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+      while(parent != null && parent.getChampEntite() != null){
 
          if(null != parent.getChampEntite()){
             ceParent = parent.getChampEntite();
             nomEntiteAncetre = parent.getChampEntite().getEntite().getNom();
-         }else if(null != parent.getChampDelegue()){
-            ceParent = parent.getChampDelegue();
-            nomEntiteAncetre = parent.getChampDelegue().getEntite().getNom();
+            parent = parent.getChampParent();
          }
-
-         parent = parent.getChampParent();
       }
       // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
       return nomEntiteAncetre.replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());

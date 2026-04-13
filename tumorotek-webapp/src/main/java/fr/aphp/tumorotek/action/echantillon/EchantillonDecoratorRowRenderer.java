@@ -35,10 +35,16 @@
  **/
 package fr.aphp.tumorotek.action.echantillon;
 
+import java.lang.reflect.InvocationTargetException;
+import java.text.ParseException;
+
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.dto.EchantillonDTO;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * EchantillonDecoratorRenderer affiche dans la grid temporaire
@@ -54,17 +60,40 @@ import fr.aphp.tumorotek.dto.EchantillonDTO;
 public class EchantillonDecoratorRowRenderer extends AbstractEchantillonDecoratorRowRenderer
 {
 
+   /**
+    * Rendu des colonnes spécifiques échantillon, sera surchargé par Gatsbi.
+    *
+    * @param row
+    * @param deco
+    */
    @Override
-   public void render(final Row row, final EchantillonDTO deco, final int index){
+   protected void renderEchantillon(final Row row, final EchantillonDTO deco)
+      throws IllegalAccessException, InvocationTargetException, NoSuchMethodException, ParseException{
+      
+      //l'affichage des colonnes organes et codes lésionnels est conditionné au contexte - récupération de la condition dans EchantillonRowRenderer
+      //pour être sûr d'avoir la même règle de gestion dans tous les tableaux affichant des données échantillons !
+      if(EchantillonRowRenderer.displayEchansOrganeEtCodeLesionnel()) {
+         // codes organes : liste des codes exportés pour échantillons
+         ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesOrgsToCreateOrEdit(), row, null, false, 2);
+   
+         // codes lésionnels : liste des codes exportés pour échantillons
+         ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesLesToCreateOrEdit(), row, null, false, 3);
+      }
+      
+      // type
+      if(deco.getType() != null){
+         new Label(deco.getType()).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
 
-      super.render(row, deco, index);
-
-      // codes organes : liste des codes exportés pour échantillons
-      ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesOrgsToCreateOrEdit(), row, null, false, 2);
-
-      // codes lésionnels : liste des codes exportés pour échantillons
-      ObjectTypesFormatters.drawCodesExpLabel(deco.getCodesLesToCreateOrEdit(), row, null, false, 3);
+      // quantité
+      if(deco.getOnlyQuantiteInit() != null){
+         new Label(deco.getOnlyQuantiteInit()).setParent(row);
+      }else{
+         new Label().setParent(row);
+      }
 
    }
-
+   
 }

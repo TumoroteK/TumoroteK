@@ -225,7 +225,6 @@ public class ChampDaoTest extends AbstractDaoTest
          hash = 31 * hash + hashChampDelegue;
          champ.setChampAnnotation(champAnnotation);
          champ.setChampEntite(champEntite);
-         champ.setChampDelegue(null);
          //On vérifie que le hashCode est bon
          assertTrue(champ.hashCode() == hash);
          assertTrue(champ.hashCode() == hash);

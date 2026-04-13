@@ -56,12 +56,9 @@ import javax.persistence.Transient;
 
 import org.hibernate.annotations.GenericGenerator;
 
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKStockableObject;
 import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.ObjetStatut;
-import fr.aphp.tumorotek.model.coeur.prodderive.delegate.AbstractProdDeriveDelegate;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
@@ -166,7 +163,7 @@ import fr.aphp.tumorotek.model.utils.Utils;
    @NamedQuery(name = "ProdDerive.findByBanksAndImpact",
    query = "SELECT e.prodDeriveId FROM ProdDerive e, Retour r " + "WHERE e.prodDeriveId = r.objetId "
       + "and e.banque in (?1)"+ "and r.impact in (?2) ")})
-public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKStockableObject, Serializable
+public class ProdDerive implements TKStockableObject, Serializable
 {
 
    private static final long serialVersionUID = 1110628569548421522L;
@@ -220,9 +217,6 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
    private Transformation transformation;
 
    private ModePrepaDerive modePrepaDerive;
-
-   private TKDelegateObject<ProdDerive> delegate;
-   // private AbstractProdDeriveDelegate delegate;
 
    public ProdDerive(){
       super();
@@ -506,26 +500,6 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       this.conformeCession = conforme;
    }
 
-   @Override
-   @OneToOne(optional = true, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "delegator",
-      targetEntity = AbstractProdDeriveDelegate.class)
-   // @OneToOne(mappedBy = "delegator", cascade = CascadeType.MERGE, orphanRemoval = true)
-   public TKDelegateObject<ProdDerive> getDelegate(){
-      return delegate;
-   }
-
-   @Override
-   public void setDelegate(final TKDelegateObject<ProdDerive> _d){
-      this.delegate = _d;
-   }
-
-   //   /**
-   //    * @param delegate the delegate to set
-   //    */
-   //   public void setDelegate(AbstractProdDeriveDelegate delegate){
-   //      this.delegate = delegate;
-   //   }
-
    /**
     * 2 produits dérivés sont considérés comme égaux s'ils ont le même code
     * et la même banque.
@@ -611,8 +585,6 @@ public class ProdDerive extends TKDelegetableObject<ProdDerive> implements TKSto
       clone.setArchive(this.getArchive());
       clone.setConformeTraitement(this.getConformeTraitement());
       clone.setConformeCession(this.getConformeCession());
-
-      clone.setDelegate(getDelegate());
 
       return clone;
    }

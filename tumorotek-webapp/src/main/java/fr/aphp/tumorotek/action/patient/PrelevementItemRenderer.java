@@ -43,11 +43,14 @@ import org.zkoss.zul.Listitem;
 import org.zkoss.zul.ListitemRenderer;
 
 import fr.aphp.tumorotek.action.ManagerLocator;
+import fr.aphp.tumorotek.action.echantillon.EchantillonRowRenderer;
 import fr.aphp.tumorotek.action.prelevement.PrelevementConsultFromOtherBanksRenderer;
 import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * PrelevementRenderer affiche dans le listitem
@@ -109,17 +112,30 @@ public class PrelevementItemRenderer implements ListitemRenderer<Prelevement>, P
          new Listcell().setParent(li);
       }
 
-      // affiche diagnostic anapath
       if(getOtherConsultBanks() == null){
-         // organe
-         ObjectTypesFormatters.drawCodesExpLabel(
-            ManagerLocator.getCodeAssigneManager().findFirstCodesOrgByPrelevementManager(prel), null, li, true);
-
-         // diagnostic
-         ObjectTypesFormatters.drawCodesExpLabel(
-            ManagerLocator.getCodeAssigneManager().findFirstCodesLesByPrelevementManager(prel), null, li, true);
+         //TK-520 : affichage de la colonne organe sous condition :
+         if(EchantillonRowRenderer.displayEchansOrganeEtCodeLesionnel()) {
+            ObjectTypesFormatters.drawCodesExpLabel(
+               ManagerLocator.getCodeAssigneManager().findFirstCodesOrgByPrelevementManager(prel), null, li, true);
+         }
+         //TK-520 : la colonne Diagnostic est toujours affichée mais son contenu dépendant du contexte :
+         //- en sérologie, complément diagnostic
+         //- sinon : codes lésionnels
+         if(ContexteHelper.isContexteSerologie(SessionUtils.getCurrentContexte())) {
+            ObjectTypesFormatters.drawComplementDiagnosticLabel(prel.getComplementDiagnostic(), null, li);
+         }
+         else {
+            // diagnostic anapth : code lésion
+            ObjectTypesFormatters.drawCodesExpLabel(
+               ManagerLocator.getCodeAssigneManager().findFirstCodesLesByPrelevementManager(prel), null, li, true);
+            //
+         }
+         
+         //TK-520 : on affiche les protocoles dans tous les cas
+         ObjectTypesFormatters.drawProtocolesLabel(prel.getProtocoles(), null, li);
 
       }else{ // pour foreign bank, le service preleveur
+         //cas anapath et sérologie :
          new Listcell(prel.getServicePreleveur() != null ? prel.getServicePreleveur().getEtablissement().getNom() : "")
             .setParent(li);
       }

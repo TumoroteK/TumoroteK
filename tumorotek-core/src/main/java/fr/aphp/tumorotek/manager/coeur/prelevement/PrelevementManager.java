@@ -61,6 +61,7 @@ import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.contexte.Plateforme;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.contexte.Service;
 import fr.aphp.tumorotek.model.contexte.Transporteur;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
@@ -551,6 +552,13 @@ public interface PrelevementManager
     */
    Set<Risque> getRisquesManager(Prelevement prelevement);
 
+   /**
+    * Recherche les protocoles associés au prelevement  passé en paramètre.
+    * @param prelevement Prelevement pour lequel on recherche les protocoles.
+    * @return Liste de protocoles.
+    */
+   Set<Protocole> getProtocolesManager(Prelevement prelevement);
+   
    /**
     * Trouve tous les objets dérivant d'un prélèvement, echantillons et
     * dérivés de manière récursives.

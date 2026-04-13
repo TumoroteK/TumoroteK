@@ -84,6 +84,19 @@
 								</listitem>
 							</listbox>
 						</div>
+						<div class="item item-mid" id="protocolesDiv"><!-- Protocoles -->	
+							<custom-attributes champId="274" listmodel="protocoles" />
+							<div class="row-container chpLabel">
+								<label value="${c:l('Champ.Prelevement.Protocoles')}" sclass="formLabel" />
+								<label value="*" sclass="requiredMark"/>
+							</div>
+							<!-- TG-251 : la hauteur du composant est forcé dans le doAfterCompose : l'attribut rows ne peut être utilisé car la liste des données est alimentée après la création du composant  -->
+							<listbox id="protocolesBox" mold="select" multiple="true" width="150px" model="@{fwinPrelevementEdit$composer.protocoles}">
+								<listitem self="@{each='protocole'}" value="@{protocole.nom}">
+									<listcell label="@{protocole.nom}" />
+								</listitem>
+							</listbox>
+						</div>
 					</div>
 				</div>
 				<div class="block-separator" />
@@ -327,6 +340,23 @@
 								<datebox id="dateConsentBoxPrlvt" format="${c:l('validation.date.format.simple')}" 
 										value="@{fwinPrelevementEdit$composer.object.consentDate,
 											save-when='validate.onClick, create.onClick, next.onClick'}" lenient="true" />
+							</div>
+						</div>
+					</div>
+					<div class="block-separator" />
+					<div id="infosCompBlockDiv"><!-- Informations complémentaires -->
+						<div class="block-title">
+							<div class="column-container">
+								<label value="${c:l('fichePrelevement.group.infosComp')}" sclass="formSubTitle"/>
+								<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+							</div>
+						</div>
+						<div class="block-container" id="infosCompBlockDivContainer">
+							<div class="item item-wide" id="complementDiagnosticDiv"><!-- Complément diagnostic -->
+								<custom-attributes champId="275" />
+								<label value="${c:l('Champ.Prelevement.ComplementDiagnostic')}" sclass="chpLabel formLabel"/>
+									<textbox cols="150" style="height:20px" value="@{fwinPrelevementEdit$composer.object.complementDiagnostic, 
+											save-when='validate.onClick, create.onClick, next.onClick'}" constraint="${fwinPrelevementEdit$composer.complementDiagnosticConstraint}" />
 							</div>
 						</div>
 					</div>

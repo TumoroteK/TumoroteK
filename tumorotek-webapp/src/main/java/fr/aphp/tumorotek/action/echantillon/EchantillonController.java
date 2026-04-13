@@ -35,7 +35,6 @@
  **/
 package fr.aphp.tumorotek.action.echantillon;
 
-import static fr.aphp.tumorotek.model.contexte.EContexte.SEROLOGIE;
 import static fr.aphp.tumorotek.webapp.general.SessionUtils.getCurrentContexte;
 
 import java.util.ArrayList;
@@ -48,7 +47,6 @@ import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Components;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.Page;
-import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Box;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Hbox;
@@ -64,7 +62,6 @@ import fr.aphp.tumorotek.action.cession.CessionController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
-import fr.aphp.tumorotek.action.echantillon.serotk.ListeEchantillonSero;
 import fr.aphp.tumorotek.action.prelevement.PrelevementController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -111,29 +108,18 @@ public class EchantillonController extends AbstractObjectTabController
       setEditDiv(divEchantillonEdit);
       setModifMultiDiv(modifMultiDiv);
 
-      switch(getCurrentContexte()){
-         case SEROLOGIE:
-            setEditZulPath("/zuls/echantillon/serotk/FicheEchantillonEditSero.zul");
-            createZulPath = "/zuls/echantillon/serotk/FicheMultiEchantillonsSero.zul";
-            setMultiEditZulPath("/zuls/echantillon/serotk/FicheModifMultiEchantillonSero.zul");
-            setStaticZulPath("/zuls/echantillon/serotk/FicheEchantillonStaticSero.zul");
-            setListZulPath("/zuls/echantillon/serotk/ListeEchantillonSero.zul");
-            break;
-         default:
-            if(SessionUtils.getCurrentGatsbiContexteForEntiteId(3) == null){
-               createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
-               setEditZulPath("/zuls/echantillon/FicheEchantillonEdit.zul");
-               setMultiEditZulPath("/zuls/echantillon/FicheModifMultiEchantillon.zul");
-               setStaticZulPath("/zuls/echantillon/FicheEchantillonStatic.zul");
-               setListZulPath("/zuls/echantillon/ListeEchantillon.zul");
-            }else{
-               createZulPath = "/zuls/echantillon/gatsbi/FicheMultiEchantillonsGatsbi.zul";
-               setEditZulPath("/zuls/echantillon/gatsbi/FicheEchantillonEditGatsbi.zul");
-               setStaticZulPath("/zuls/echantillon/gatsbi/FicheEchantillonStaticGatsbi.zul");
-               setMultiEditZulPath("/zuls/echantillon/gatsbi/FicheModifMultiEchantillonGatsbi.zul");
-               setListZulPath("/zuls/echantillon/gatsbi/ListeEchantillonGatsbi.zul");
-            }
-            break;
+      if(SessionUtils.getCurrentGatsbiContexteForEntiteId(3) == null){
+         createZulPath = "/zuls/echantillon/FicheMultiEchantillons.zul";
+         setEditZulPath("/zuls/echantillon/FicheEchantillonEdit.zul");
+         setMultiEditZulPath("/zuls/echantillon/FicheModifMultiEchantillon.zul");
+         setStaticZulPath("/zuls/echantillon/FicheEchantillonStatic.zul");
+         setListZulPath("/zuls/echantillon/ListeEchantillon.zul");
+      }else{
+         createZulPath = "/zuls/echantillon/gatsbi/FicheMultiEchantillonsGatsbi.zul";
+         setEditZulPath("/zuls/echantillon/gatsbi/FicheEchantillonEditGatsbi.zul");
+         setStaticZulPath("/zuls/echantillon/gatsbi/FicheEchantillonStaticGatsbi.zul");
+         setMultiEditZulPath("/zuls/echantillon/gatsbi/FicheModifMultiEchantillonGatsbi.zul");
+         setListZulPath("/zuls/echantillon/gatsbi/ListeEchantillonGatsbi.zul");
       }
 
       drawListe();

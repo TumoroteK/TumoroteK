@@ -38,12 +38,16 @@ package fr.aphp.tumorotek.action.prelevement.gatsbi;
 
 import java.lang.reflect.InvocationTargetException;
 import java.text.ParseException;
+import java.util.List;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
 
 import fr.aphp.tumorotek.action.prelevement.PrelevementRowRenderer;
+import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.model.TKThesaurusObject;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Contexte;
 import fr.aphp.tumorotek.webapp.gatsbi.RowRendererGatsbi;
@@ -126,6 +130,9 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
          case 24: // nature
             renderThesObjectProperty(row, prel, "nature");
             break;
+         case 274: // Protocoles
+            ObjectTypesFormatters.drawProtocolesLabel(prel.getProtocoles(), row, null);
+            break;            
          case 44: // nda
             renderAlphanumPropertyAsStringNoFormat(row, prel, "patientNda");
             break;
@@ -160,6 +167,9 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
             break;
          case 27: // consent date
             renderDateProperty(row, prel, "consentDate");
+            break;
+         case 275: // complément diagnostic
+            renderAlphanumPropertyAsStringNoFormat(row, prel, "complementDiagnostic");
             break;
          case 35: // date depart
             renderDateProperty(row, prel, "dateDepart");
@@ -271,4 +281,5 @@ public class PrelevementRowRendererGatsbi extends PrelevementRowRenderer impleme
    public void setContexte(Contexte _c){
       this.contexte = _c;
    }
+   
 }

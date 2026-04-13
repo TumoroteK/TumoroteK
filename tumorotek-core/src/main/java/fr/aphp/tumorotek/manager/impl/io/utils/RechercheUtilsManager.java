@@ -24,16 +24,13 @@ import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
 import fr.aphp.tumorotek.model.coeur.patient.Patient;
-import fr.aphp.tumorotek.model.coeur.patient.serotk.MaladieSero;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
-import fr.aphp.tumorotek.model.coeur.prelevement.delegate.PrelevementSero;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.impression.CleImpression;
 import fr.aphp.tumorotek.model.io.export.Affichage;
 import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.export.Resultat;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
@@ -178,10 +175,8 @@ public class RechercheUtilsManager
       final List<Object> liste = new ArrayList<>();
       if(champ.getChampEntite() != null){
          liste.addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampEntite(), champ.getChampParent(), reservedEntite));
-      }else if(champ.getChampDelegue() != null){
-         liste
-            .addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampDelegue(), champ.getChampParent(), reservedEntite));
-      }else if(champ.getChampAnnotation() != null){
+      }
+      else if(champ.getChampAnnotation() != null){
          liste.addAll(getListeObjetsCorrespondants(objetInitial, champ.getChampAnnotation(), reservedEntite));
       }
 
@@ -214,36 +209,6 @@ public class RechercheUtilsManager
       }
 
       return liste;
-   }
-
-   /**
-    * Retourne la liste des objets liés à un objet passé en paramètre en fonction d'un champ recherché
-    * @param objetInitial objet initial
-    * @param champDelegue le champ recherché
-    * @param reservedEntite entité reservée ???
-    * @return liste des objets liés à un objet initial
-    */
-   public static List<Object> getListeObjetsCorrespondants(final Object objetInitial, final ChampDelegue champDelegue,
-
-      final Champ champParent, final String reservedEntite){
-      Entite entite = null;
-      final List<Object> liste = new ArrayList<>();
-      if(champDelegue != null){
-         entite = champDelegue.getEntite();
-         // On récupère l'entité parente s'il y en a !
-         Champ parent = champParent;
-         while(parent != null){
-            entite = champParent.getChampEntite().getEntite();
-            parent = parent.getChampParent();
-         }
-
-         if(entite != null){
-            liste.addAll(getListeObjetsCorrespondants(objetInitial, entite, reservedEntite));
-         }
-      }
-
-      return liste;
-
    }
 
    /**
@@ -323,8 +288,6 @@ public class RechercheUtilsManager
                   }
                }else if(res.getChamp().getChampAnnotation() != null){
                   entite = res.getChamp().getChampAnnotation().getTableAnnotation().getEntite();
-               }else if(res.getChamp().getChampDelegue() != null){
-                  entite = res.getChamp().getChampDelegue().getEntite();
                }else{
                   liste.add(null);
                }
@@ -433,9 +396,8 @@ public class RechercheUtilsManager
             entite = parent.getChampEntite().getEntite();
             temp = parent.getChampParent();
          }
-      }else if(champ.getChampDelegue() != null){
-         entite = champ.getChampDelegue().getEntite();
-      }else if(champ.getChampAnnotation() != null){
+      }
+      else if(champ.getChampAnnotation() != null){
          entite = champ.getChampAnnotation().getTableAnnotation().getEntite();
       }
 
@@ -505,7 +467,7 @@ public class RechercheUtilsManager
     */
    public static Object getChampValueFromPatient(final Patient pat, final Champ chp){
       if(pat != null && chp != null){
-         if(chp.getChampEntite() != null || chp.getChampDelegue() != null){
+         if(chp.getChampEntite() != null){
             return getChampValueForObject(chp, pat, false);
          }else if(chp.getChampAnnotation() != null){
             return getChampValueFromPatient(pat, chp.getChampAnnotation(), true);
@@ -537,28 +499,15 @@ public class RechercheUtilsManager
    public static Object getChampValueFromMaladie(final Maladie maladie, final Champ chp, final Champ parent){
 
       if(maladie != null && chp != null){
-
-         //Cas particulier du champ délégué diagnostic (contexte SéroTK)
-         if(chp.getChampDelegue() != null){
-
-            if("Diagnostic".equals(chp.getChampDelegue().getNom()) && maladie.getDelegate() != null){
-               final MaladieSero prelSero = ((MaladieSero) maladie.getDelegate());
-               if(prelSero.getDiagnostic() != null){
-                  return prelSero.getDiagnostic().getNom();
-               }
-            }
-
-         }
-
          //Cas général
          if(chp.getChampEntite() != null){
             if(parent == null){
                return getChampValueForObject(chp, maladie, false);
             }
             // Traitement des sousChamps de patient
-            if(parent.getChampEntite().getNom().equals("PatientId")){
+            //if(parent.getChampEntite().getNom().equals("PatientId")){ //TK-520 : pourquoi filtre sur PatientId ? il faut gérer toutes les dépendances dont le diagnostic
                return getChampValueForObject(parent, maladie, false);
-            }
+            //}
          }
       }
 
@@ -591,23 +540,22 @@ public class RechercheUtilsManager
     */
    public static Object getChampValueFromPrelevement(final Prelevement prel, final Champ chp, final Champ parent){
       if(prel != null && chp != null){
-         if(chp.getChampDelegue() != null){
+         if(chp.getChampEntite() != null){
 
-            if("Protocoles".equals(chp.getChampDelegue().getNom()) && prel.getDelegate() != null){
-               final PrelevementSero prelSero = ((PrelevementSero) prel.getDelegate());
-               if(prelSero.getProtocoles() != null){
-                  return prelSero.getProtocoles().stream().map(Protocole::getNom).sorted().collect(Collectors.joining(","));
-               }
-            }
-
-            return getChampValueForObject(chp, prel, false);
-         }else if(chp.getChampEntite() != null){
-
+            //gestion des champs associés à des listes à choix multiple :
+            //Mais /!\ le code passe-t-il vraiment dans ces if car pour que le nom du champ vale "Risques", il faut être sur un champ "parent" 
+            //c'est pour cela qu'on retrouve plus bas un test sur "Risques" pour un champ parent. A noter que dans la recherche complexe, les valeurs des risques sont bien 
+            //affichées avec le séparateur ; donc le code est bien passé dans le code lié au parent...
             if("Risques".equals(chp.getChampEntite().getNom())){
                return prel.getRisques().stream().map(Risque::getNom).collect(Collectors.joining(","));
             }
+            if("Protocoles".equals(chp.getChampEntite().getNom())){
+               return prel.getProtocoles().stream().map(Protocole::getNom).sorted().collect(Collectors.joining(","));
+            }
+            //
 
             if(parent == null){
+               //cas de l'établissement qui n'est pas une notion stockée au niveau du prélèvement : ça correspond à l'établissement du service rattaché au prélèvement
                if(chp.getChampEntite().getNom().equals("EtablissementId")){
                   if(prel.getServicePreleveur() != null){
                      return prel.getServicePreleveur().getEtablissement().getNom();
@@ -631,7 +579,18 @@ public class RechercheUtilsManager
                   }
                }
                return sb.toString();
-            }else if(parent.getChampEntite().getNom().equals("ConformeArrivee.Raison")){
+            }else if(parent.getChampEntite().getNom().equals("Protocoles")){
+               final Iterator<Protocole> protocolesIt = prelevementManager.getProtocolesManager(prel).iterator();
+               final StringBuffer sb = new StringBuffer();
+               while(protocolesIt.hasNext()){
+                  sb.append(protocolesIt.next().getNom());
+                  if(protocolesIt.hasNext()){
+                     sb.append(";");
+                  }
+               }
+               return sb.toString();
+            }
+            else if(parent.getChampEntite().getNom().equals("ConformeArrivee.Raison")){
                return formatNonConformites(prel, parent.getChampEntite());
             }else{
                return getChampValueForObject(parent, prel, false);

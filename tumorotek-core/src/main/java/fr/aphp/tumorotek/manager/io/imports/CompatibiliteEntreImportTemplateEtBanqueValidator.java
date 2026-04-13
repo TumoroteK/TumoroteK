@@ -37,7 +37,6 @@
 package fr.aphp.tumorotek.manager.io.imports;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -47,6 +46,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.model.coeur.annotation.TableAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.model.contexte.EChampSupprimePourSerologie;
 import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.contexte.gatsbi.Etude;
 import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
 import fr.aphp.tumorotek.model.io.imports.ImportTemplate;
@@ -71,13 +70,8 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
 
    private final Logger log = LoggerFactory.getLogger(CompatibiliteEntreImportTemplateEtBanqueValidator.class);
    
-   private static final Integer MAP_KEY__CHAMP_DELEGUE = 1;
-   private static final Integer MAP_KEY__CHAMP = 2;
-  
    private static final String I18N_KEY__ANNOTATION_ERROR = "import.modele.incoherence.annotation.error";
    private static final String I18N_KEY__ANNOTATION_TODO = "import.modele.incoherence.annotation.todo";
-   private static final String I18N_KEY__CHAMP_DELEGUE_ERROR = "import.modele.incoherence.champDelegue.error";
-   private static final String I18N_KEY__CHAMP_DELEGUE_TODO = "import.modele.incoherence.champDelegue.todo";
    private static final String I18N_KEY__CHAMP_ERROR = "import.modele.incoherence.champ.error";
    private static final String I18N_KEY__CHAMP_TODO = "import.modele.incoherence.champ.todo";
    private static final String I18N_KEY__CHAMP_TODO2 = "import.modele.incoherence.champ.todo2";
@@ -89,11 +83,9 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
    private ChampEntiteManager champEntiteManager;
    
    //Sauvegarde du lien champs / importColonne dans une map :
-   // - clé type du champ 
-   // - valeur : une map : 
-   //              - clé id du champ
-   //              - valeur : importColonne
-   Map<Integer, Map<Integer, ImportColonne>> mapLienChampEtImportColonne = new HashMap<Integer, Map<Integer,ImportColonne>>();
+   //  - clé id du champ
+   //  - valeur : importColonne
+   Map<Integer, ImportColonne> mapLienChampEtImportColonne = new HashMap<Integer,ImportColonne>();
 
    public void setImportColonneManager(ImportColonneManager importColonneManager){
       this.importColonneManager = importColonneManager;
@@ -133,17 +125,13 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
          log.debug("validation des champs d'annotation");
          InfoErrorColonneAnnotation infoErrorColonneAnnotation = validateTableAnnotation(colonneSortingResult.getInfoColonneAnnotation(), banque);
          
-         //contrôles liés aux champs délégués présents dans le modèle :
-         log.debug("validation des champs délégués");
-         ItemForErrorResult<ImportColonne> itemChampDelegue = validateChampDelegue(colonneSortingResult.getListChampDelegueForTemplate(), banque);
-         
          //Autres contrôles liés aux particularités du contexte de banque passée en paramètre :
          log.debug("contrôles dépendant des particularités du contexte de la banque");
          ItemForErrorResult<ImportColonne> itemChampEntite = null;
          EContexte banqueEContexte = EContexte.findByNom(banque.getContexte().getNom());
           
          //   - 1) la banque est de contexte sérologie (des champs sont "supprimés" dans ce contexte)
-         if(banqueEContexte.equals(EContexte.SEROLOGIE)) {
+         if(ContexteHelper.isContexteSerologie(banqueEContexte)) {
             log.debug("validation pour une banque de contexte sérologie");
             itemChampEntite =  validateChampSerologie(colonneSortingResult.getListChampEntiteForTemplate(), banque);
          }
@@ -170,7 +158,7 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
          
          //construction du résutat
          log.debug("construction du résultat");
-         if(infoErrorColonneAnnotation !=null || itemChampDelegue != null || itemChampEntite != null || infoChampObligatoire != null) {
+         if(infoErrorColonneAnnotation !=null || itemChampEntite != null || infoChampObligatoire != null) {
             ItemForErrorResult<TableAnnotation> itemTableAnnotations = null;
             List<ImportColonne> listImportColonnesAnnotation = null;
             if(infoErrorColonneAnnotation != null) {
@@ -186,18 +174,15 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
                //si itemChampDelegue ou itemChampEntite sont non null et listChampObligatoirePourBanqueMaisNonPresentDansModele non vide, 
                //on change le toDo pour préciser que les champs obligatoires manquants seront ajoutés.
                if(listChampObligatoirePourBanqueMaisNonPresentDansModele != null && listChampObligatoirePourBanqueMaisNonPresentDansModele.size() > 0) {
-                  if(itemChampDelegue != null) {
-                     itemChampDelegue.setTodoKeyI18n(I18N_KEY__CHAMP_TODO2);
-                  }
-                  else if(itemChampEntite != null ) {
+                  if(itemChampEntite != null ) {
                      itemChampEntite.setTodoKeyI18n(I18N_KEY__CHAMP_TODO2);
                   }
                }
             }
             
             result = new IncompatibiliteEntreImportTemplateEtBanqueResult(itemTableAnnotations, listImportColonnesAnnotation,
-                                                                           itemChampDelegue, itemChampEntite,
-                                                                           itemObligation, listChampObligatoirePourBanqueMaisNonPresentDansModele);
+                                                                           itemChampEntite, itemObligation, 
+                                                                           listChampObligatoirePourBanqueMaisNonPresentDansModele);
             log.debug("fin de la construction du résultat");
          }
          
@@ -219,7 +204,6 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
    private ColonneSortingResult sortImportColonneByType(List<ImportColonne> listImportColonne) {
       ColonneSortingResult result = new ColonneSortingResult();
       for(ImportColonne importColonne : listImportColonne) {
-         Integer mapKey = null; 
          Integer champId = null;
          if(importColonne.getChamp().getChampAnnotation() != null) {
             result.getListImportColonneAnnotationForTemplate().add(importColonne);
@@ -228,20 +212,13 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
                result.getListTableAnnotationForTemplate().add(tableAnnotation);
             }
          }
-         else if(importColonne.getChamp().getChampDelegue() != null) {
-            ChampDelegue champDelegue = importColonne.getChamp().getChampDelegue();
-            result.getListChampDelegueForTemplate().add(champDelegue);
-            mapKey = MAP_KEY__CHAMP_DELEGUE;
-            champId = champDelegue.getId();
-         }         
          else if(importColonne.getChamp().getChampEntite() != null) {
             ChampEntite champEntite = importColonne.getChamp().getChampEntite();
             result.getListChampEntiteForTemplate().add(champEntite);
-            mapKey = MAP_KEY__CHAMP;
             champId = champEntite.getId();
          }
-         if(mapKey != null && champId != null) {
-            getMapLienChampEtImportColonne(mapKey).put(champId, importColonne);
+         if(champId != null) {
+            mapLienChampEtImportColonne.put(champId, importColonne);
          }
       }      
    
@@ -264,32 +241,17 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
       return null;
    }
    
-   private ItemForErrorResult<ImportColonne> validateChampDelegue(List<ChampDelegue> listChampDelegueForTemplate, Banque banque) {
-      if(!listChampDelegueForTemplate.isEmpty()) {
-         String nomContexteForCurrentBanque = banque.getContexte().getNom();
-         for(ChampDelegue champDelegue : listChampDelegueForTemplate) {
-            if(!champDelegue.getContexte().getNom().equals(nomContexteForCurrentBanque)) {
-               //tous les champs délégués appartiennent au même contexte donc si la collection courante n'a pas le même contexte, 
-               //tous les champs délégués sont incompatibles
-               return buildImportErrorResult(listChampDelegueForTemplate, MAP_KEY__CHAMP_DELEGUE,
-                  I18N_KEY__CHAMP_DELEGUE_ERROR, I18N_KEY__CHAMP_DELEGUE_TODO);
-            }
-         }
-      }
-      return null;
-   }
-   
-   //valide que les champs à ne pas afficher dans un contexte sérologie ne font pas partie de la liste des champ du modèle
+   //valide que les champs à ne pas afficher dans un contexte sérologie ne font pas partie de la liste des champs du modèle
    private ItemForErrorResult<ImportColonne> validateChampSerologie(List<ChampEntite> listChampEntiteForTemplate, Banque banque) {
-      List<String> listContexteNom = Arrays.asList(EChampSupprimePourSerologie.values()).stream().map(enumValue -> enumValue.getNom()).collect(Collectors.toList());
+      List<String> listChampSupprimeNom = EChampSupprimePourSerologie.getAllNom();
       List<ChampEntite> listchampEntiteKO = new ArrayList<ChampEntite>();
       for(ChampEntite champEntiteForTemplate : listChampEntiteForTemplate) {
-         if(listContexteNom.contains(champEntiteForTemplate.getNom())) {
+         if(listChampSupprimeNom.contains(champEntiteForTemplate.getNom())) {
             listchampEntiteKO.add(champEntiteForTemplate);
          }
       }
       if(listchampEntiteKO.size() > 0) {
-         return buildImportErrorResult(listchampEntiteKO, MAP_KEY__CHAMP, I18N_KEY__CHAMP_ERROR, I18N_KEY__CHAMP_TODO);
+         return buildImportErrorResult(listchampEntiteKO, I18N_KEY__CHAMP_ERROR, I18N_KEY__CHAMP_TODO);
       }
       return null;
    }
@@ -345,8 +307,7 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
          List<ChampEntite> listChampEntiteForTemplateNonVisibleInBanque = createNewListFromList1MinusList2(listChampEntiteForTemplate, listChampEntiteForBanque);
          if(listChampEntiteForTemplateNonVisibleInBanque.size() > 0) {
             //récupération des importColonnes associés et construction de l'objet à retourner ItemForErrorResult<ImportColonne>
-            return buildImportErrorResult(listChampEntiteForTemplateNonVisibleInBanque, MAP_KEY__CHAMP,
-               I18N_KEY__CHAMP_ERROR, I18N_KEY__CHAMP_TODO);
+            return buildImportErrorResult(listChampEntiteForTemplateNonVisibleInBanque, I18N_KEY__CHAMP_ERROR, I18N_KEY__CHAMP_TODO);
          }
       }
       return null;
@@ -359,7 +320,7 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
    //car cette notion obligatoire au niveau du modèle est utilisée :
    // - pour la modification d'un modèle. Or pour un modèle partagé, la modification est impossible.
    // - lors de l'exécution du modèle mais dans ce cas, c'est bien la notion obligatoire du champ dans le contexte d'exécution qui est pris en compte
- //Mais le fait de contrôler la parfaite exactitude de la notion "obligatoire" permet d'être cohérent entre ce qui sera pris en compte et ce qui est affiché sur la fiche du modèle.
+   //Mais le fait de contrôler la parfaite exactitude de la notion "obligatoire" permet d'être cohérent entre ce qui sera pris en compte et ce qui est affiché sur la fiche du modèle.
    private InfoErrorChampObligatoire validateChampObligatoire(final List<ChampEntite> listChampEntiteForTemplate,
       Banque templateBanque, Banque banque) {   
       EContexte templateEContexte = EContexte.findByNom(templateBanque.getContexte().getNom());
@@ -440,9 +401,9 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
       return result;
    }
    
-   private <T extends AbstractTKChamp> ItemForErrorResult<ImportColonne> buildImportErrorResult(List<T> listChampKO, Integer keyMapLienChampColonne, String erreurKeyI18n, String todoKeyI18n) {
+   private <T extends AbstractTKChamp> ItemForErrorResult<ImportColonne> buildImportErrorResult(List<T> listChampKO, String erreurKeyI18n, String todoKeyI18n) {
       List<ImportColonne> listImportColonneKO = new ArrayList<ImportColonne>();
-      Map<Integer, ImportColonne> mapLienChampColonne = getMapLienChampEtImportColonne(keyMapLienChampColonne);
+      Map<Integer, ImportColonne> mapLienChampColonne = mapLienChampEtImportColonne;
       for(AbstractTKChamp champKO : listChampKO) {
          listImportColonneKO.add((ImportColonne)mapLienChampColonne.get(champKO.getId()));
       }
@@ -451,24 +412,11 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
          erreurKeyI18n, listImportColonneKO, todoKeyI18n);
    }
    
-   
-   private Map<Integer, ImportColonne> getMapLienChampEtImportColonne(Integer key){
-      if(mapLienChampEtImportColonne.get(key) == null) {
-         Map<Integer,ImportColonne> result = new HashMap<Integer,ImportColonne>();
-         mapLienChampEtImportColonne.put(key,result);
-         return result;
-      }
-      return mapLienChampEtImportColonne.get(key);
-   }
-   
-   
-   
    private class ColonneSortingResult {
       
       //résultat du tri des colonnes par type de champ. 
       //Pour les annotations, on aura besoin des tables d'annotation associées en plus des champs
       InfoColonneAnnotation infoColonneAnnotation = new InfoColonneAnnotation();
-      List<ChampDelegue> listChampDelegueForTemplate = new ArrayList<ChampDelegue>();
       List<ChampEntite> listChampEntiteForTemplate = new ArrayList<ChampEntite>();
       
       public InfoColonneAnnotation getInfoColonneAnnotation(){
@@ -480,10 +428,6 @@ public class CompatibiliteEntreImportTemplateEtBanqueValidator
       }
       public List<TableAnnotation> getListTableAnnotationForTemplate(){
          return getInfoColonneAnnotation().getListTableAnnotation();
-      }
-      
-      public List<ChampDelegue> getListChampDelegueForTemplate(){
-         return listChampDelegueForTemplate;
       }
 
       public List<ChampEntite> getListChampEntiteForTemplate(){

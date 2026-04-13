@@ -54,7 +54,6 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.constraints.ConstWord;
 import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.decorator.ObjetsAffichageRenderer;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Affichage;
@@ -103,8 +102,6 @@ public class FicheRecherche extends AbstractFicheCombineController
    private List<Banque> banques;
 
    private List<Banque> banquesDeRecherche;
-
-   private ObjetsAffichageRenderer objAffRenderer;
 
    private Recherche recherche;
 
@@ -580,10 +577,6 @@ public class FicheRecherche extends AbstractFicheCombineController
 
    public void setBanquesDeRecherche(final List<Banque> banquesDeRech){
       this.banquesDeRecherche = banquesDeRech;
-   }
-
-   public ObjetsAffichageRenderer getObjAffRenderer(){
-      return objAffRenderer;
    }
 
    /**

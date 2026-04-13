@@ -1522,12 +1522,8 @@ public class EchantillonManagerImpl implements EchantillonManager
          while(derivesIt.hasNext()){
             prodDeriveManager.switchBanqueCascadeManager(derivesIt.next(), bank, doValidation, u, filesToDelete, filesToMove);
          }
-
-         //Suppression du délégué si la banque de destination n'est pas dans le même contexte que la banque d'origine
-         if(!bank.getContexte().equals(echan.getBanque().getContexte())){
-            echan.setDelegate(null);
-         }
-
+         // /!\ si des dérivés sont faits à partir de ces dérivés ? (TK-837 A FAIRE ?) 
+         
          echan.setBanque(bank);
 
          if(findDoublonManager(echan)){

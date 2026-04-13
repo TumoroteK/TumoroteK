@@ -45,7 +45,6 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.utils.ChampUtils;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.TableAnnotationManager;
-import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -127,10 +126,6 @@ public class EntiteNode extends TumoTreeNode
          .map(table -> ManagerLocator.getManager(ChampAnnotationManager.class).findByTableManager(table))
          .flatMap(listChampsFromTable -> listChampsFromTable.stream()).filter(dataTypeAutorise).map(Champ::new)
          .filter(notSelected).map(ChampNode::new).forEach(children::add);
-
-      //Ajout des noeuds "champ délégué"
-      ManagerLocator.getManager(ChampDelegueManager.class).findByEntiteAndContexte(entite, SessionUtils.getCurrentContexte())
-         .stream().filter(dataTypeAutorise).map(Champ::new).filter(notSelected).map(ChampNode::new).forEach(children::add);
 
       //Tri de la liste
       children.sort(Comparator.comparing(node -> ChampUtils.getChampNom(((ChampNode) node).getChamp()).toLowerCase()));

@@ -75,6 +75,9 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
 
+//Cette classe ne semble pas utilisée ... c'est la classe Export_MySQL fille de Export qui étend aussi Thread par lequel passe l'exécution de l'export 
+//depuis l'interface graphique ! 
+
 /**
  * Thread permettant un affichage dynamique de l'évolution du processus
  * d'export (qui peut etre assez long).
@@ -122,7 +125,7 @@ public class ExportThread extends Thread
     * Méthode principale lançant l'export.
     */
    @Override
-   public void run(){
+   public void run(){/// On ne passe pas dans cette méthode lors d'un export depuis TK
       // Compute Time
       long startTime = System.nanoTime();
       startTime = System.nanoTime();
@@ -932,6 +935,8 @@ public class ExportThread extends Thread
       return entetes;
    }
 
+   
+   //Ce code ne semble jamais appelé....
    /**
     * Ajoute à une liste les entêtes des colonnes pour l'export
     * d'un échantillon.

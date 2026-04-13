@@ -476,8 +476,6 @@ public class Export extends Thread
 	protected String initCessionObjsExportSQL() {
 		if (ctx != null) {
 			switch(ctx)	{
-				case SEROLOGIE:
-					return "{call select_cession_data_sero(?,?)}";
 				case GATSBI:
 				   return "{call select_cession_data_gatsbi(?,?, " + etudeId + ")}";
 				default:
@@ -1143,12 +1141,12 @@ public class Export extends Thread
 				final ResultSetToExcel resultSetToExcel = new ResultSetToExcel(getWb(), this, getMainRset(), getLaboRset(),
 						getRetourEchanRset(), getDeriveRetourRset(), profilExport, hasPrelevement, sheetName, cession != null);
 				resultSetToExcel.setUpdateThread(this);
-				resultSetToExcel.generate();
+				resultSetToExcel.generate(ctx);
 				setExportDetails(100, null, null, END_PROGRESS, null, null);
 
 				downloadExportFileXls(wb, sb.toString());
 			}else{
-				downloadExportFileCSV(getMainRset(), profilExport, sb.toString());
+				downloadExportFileCSV(getMainRset(), profilExport, sb.toString(), ctx);
 			}
 
 			saveOperations(objsId, user, entite, exportType, profilExport);
@@ -1232,12 +1230,12 @@ public class Export extends Thread
 	}
 
 	public void downloadExportFileCSV(final ResultSet rSet, final ProfilExport pExport, 
-														final String fileName) throws Exception{
+														final String fileName, EContexte contexte) throws Exception{
 		if(Thread.interrupted()){
 			throw new InterruptedException();
 		}
 
-		new ResultSetToCsv(getOutStr(), this, getMainRset(), pExport, "|").generate();
+		new ResultSetToCsv(getOutStr(), this, getMainRset(), pExport, "|").generate(contexte);
 
 		final AMedia media = new AMedia(fileName, "csv",
 				// (hasMultipleCollection == 0) ? ConfigManager.OFFICE_EXCEL_MIME_TYPE :
@@ -1336,10 +1334,6 @@ public class Export extends Thread
             }
 			} else if (entiteId == 7) { // MALADIE
 				switch(ctx)	{
-					case SEROLOGIE:
-						create = "{call create_tmp_maladie_table_sero()}";
-						fill = "{call fill_tmp_table_maladie_sero(?)}";
-						break;
 					case GATSBI:
                   create = "{call create_tmp_maladie_table_gatsbi(" + etudeId + ")}";
                   fill = "{call fill_tmp_table_maladie_gatsbi(?, " + etudeId + ")}";
@@ -1350,10 +1344,6 @@ public class Export extends Thread
 				}
 			} else if (entiteId == 2) { // PRELEVEMENT
 				switch(ctx) {
-					case SEROLOGIE:
-						create = "{call create_tmp_prel_sero_table()}";
-						fill = "{call fill_tmp_table_prel_sero(?)}";
-						break;
 					case GATSBI:
                   create = "{call create_tmp_prelevement_table_gatsbi(" + etudeId + ")}";
                   fill = "{call fill_tmp_table_prel_gatsbi(?, " + etudeId + ")}";
@@ -1364,16 +1354,15 @@ public class Export extends Thread
 				}
 			} else if (entiteId == 3) { // ECHANTILLON
 				switch(ctx){
-					case SEROLOGIE:
-						create = "{call create_tmp_echan_table_sero()}";
-						fill = "{call fill_tmp_table_echan_sero(?)}";
-						break;
 					case GATSBI:
                   create = "{call create_tmp_echantillon_table_gatsbi(" + etudeId + ")}";
                   fill = "{call fill_tmp_table_echan_gatsbi(?, " + etudeId + ")}";
                   break;
 					default:
-						create = "{call create_tmp_echantillon_table()}";
+						// NB : le fait de ne pas ramener les données du bloc "informations complémentaires" dans un contexte Sérologie
+					   // est géré pour le moment le plus simplement possible : c'est-à-dire que les données sont récupérées
+					   // mais elles ne seront pas affichées dans l'export (ResultSetToExcel.generate()). 
+					   create = "{call create_tmp_echantillon_table()}"; 
 						fill = "{call fill_tmp_table_echan(?)}";
 				}
 			} else if (entiteId == 8) { // DERIVE

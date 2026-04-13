@@ -59,7 +59,6 @@ import fr.aphp.tumorotek.dao.qualite.NonConformiteDao;
 import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampCalculeManager;
 import fr.aphp.tumorotek.manager.coeur.prelevement.PrelevementManager;
-import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.io.utils.CorrespondanceIdManager;
 import fr.aphp.tumorotek.manager.io.utils.TraitementQueryManager;
 import fr.aphp.tumorotek.manager.qualite.ObjetNonConformeManager;
@@ -220,7 +219,6 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
                   String nomEntiteAvec1eLettreEnMajuscule = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
                   String nomChampAvec1eLettreEnMinuscule = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
-                  boolean delegate = false;
 
                   List<String> joins = new ArrayList<>();
 
@@ -231,40 +229,34 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   joins = (buildJoinsList(champ, joins));
 
                   Champ parent = champ.getChampParent();
-                  if(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+                  if(parent != null && parent.getChampEntite() != null){
                      nomEntiteAvec1eLettreEnMajuscule = getNomEntiteAncetre(champ);
                   }
 
-                  while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
-
-                     final AbstractTKChamp ceParent;
-                     final String nomEntiteParent;
-
+                  while(parent != null && parent.getChampEntite() != null){
                      if(parent.getChampEntite() != null){
-                        ceParent = parent.getChampEntite();
-                        nomEntiteParent = parent.getChampEntite().getEntite().getNom();
-                     }else{
-                        ceParent = parent.getChampDelegue();
-                        nomEntiteParent = parent.getChampDelegue().getEntite().getNom();
-                        delegate = true;
+                        final AbstractTKChamp ceParent = parent.getChampEntite();
+                        final String nomEntiteParent = parent.getChampEntite().getEntite().getNom();
+                        
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                        String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+                        // On enlève le suffixe "Id"
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                        nomParent = nomParent.replaceFirst("Id$", "");
+
+                        if(!critere.getOperateur().equals("is null")){
+                           nomChampAvec1eLettreEnMinuscule = nomParent + "." + nomChampAvec1eLettreEnMinuscule;
+                        }else{
+                           nomChampAvec1eLettreEnMinuscule = nomParent;
+                        }
+
+                        // On change le nom de l'entiteMajFirst
+                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                        nomEntiteAvec1eLettreEnMajuscule = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
+
+                        parent = parent.getChampParent();
                      }
-                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                     String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
-                     // On enlève le suffixe "Id"
-                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                     nomParent = nomParent.replaceFirst("Id$", "");
 
-                     if(!critere.getOperateur().equals("is null")){
-                        nomChampAvec1eLettreEnMinuscule = nomParent + "." + nomChampAvec1eLettreEnMinuscule;
-                     }else{
-                        nomChampAvec1eLettreEnMinuscule = nomParent;
-                     }
-
-                     // On change le nom de l'entiteMajFirst
-                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                     nomEntiteAvec1eLettreEnMajuscule = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
-
-                     parent = parent.getChampParent();
                   }
 
                   // exception impliquant l'appel de méthodes de requêtes
@@ -288,7 +280,17 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      }else{
                         sb.append("SELECT DISTINCT e From " + "Prelevement as e " + "LEFT JOIN e.risques r " + "WHERE r is null");
                      }
-                  }else if(nomChampAvec1eLettreEnMinuscule.equals("ageAuPrelevement")){
+                  }else if(nomChampAvec1eLettreEnMinuscule.equals("protocoles")){
+                     if(!critere.getOperateur().equals("is null")){
+                        sb.append("SELECT DISTINCT e From " + "Prelevement as e " + "JOIN e.protocoles pro " + "WHERE pro.nom "
+                           + critere.getOperateur());
+   
+                        sb.append(" :valeur");
+                     }else{
+                        sb.append("SELECT DISTINCT e From " + "Prelevement as e " + "LEFT JOIN e.protocoles pro " + "WHERE pro is null");
+                     }
+                  }
+                  else if(nomChampAvec1eLettreEnMinuscule.equals("ageAuPrelevement")){
                      objets = new ArrayList<>();
                      // hack age au prelevement
                      if(!critere.getOperateur().equals("is null")){
@@ -350,7 +352,8 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         critere.getOperateur(), banks, false));
                      return objets;
                   }else{
-
+                     //CHT : bizarre cette variable query... ne semble pas utilisée.
+                     //C'est sb (mal nommé :-( ) qui contient la requête hql mais le contenu de query et de sb n'est pas tout à fait identique ... A CREUSER !
                      final StringBuffer query = new StringBuffer("SELECT DISTINCT e FROM " + nomEntiteAvec1eLettreEnMajuscule + " ");
 
                      for(int j = 0; j < joins.size(); j++){
@@ -359,56 +362,9 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
 
                      query.append("WHERE e." + nomChampAvec1eLettreEnMinuscule);
 
-                     //Construction de la requête pour un champ délégué
-                     if(delegate){
+                     sb.append("SELECT DISTINCT e From " + nomEntiteAvec1eLettreEnMajuscule + " as e WHERE" + " e." + nomChampAvec1eLettreEnMinuscule + " "
+                        + critere.getOperateur());
 
-                        if("is null".equals(critere.getOperateur())){
-                           sb.append("SELECT DISTINCT e From " + nomEntiteAvec1eLettreEnMajuscule + " e LEFT JOIN e.delegate d WHERE d."
-                              + nomChampAvec1eLettreEnMinuscule + " " + critere.getOperateur() + " OR e."
-                              + StringUtils.uncapitalize(nomEntiteAvec1eLettreEnMajuscule) + "Id NOT IN (SELECT d.delegator."
-                              + StringUtils.uncapitalize(nomEntiteAvec1eLettreEnMajuscule) + "Id FROM Abstract" + nomEntiteAvec1eLettreEnMajuscule
-                              + "Delegate d" + ")");
-                        }else{
-
-                           //On crée un champ pour représenter l'objet délégué
-                           final ChampEntite chpEntiteDelegate = new ChampEntite();
-                           chpEntiteDelegate.setNom("Delegate");
-                           final Champ champDelegate = new Champ(chpEntiteDelegate);
-
-                           //On ajoute de champ représentant le délégué comme cahmp ancêtre de la hiérarchie du champ
-                           //sur lequel on fait la recherche afin d'avoir le délégué dans la liste des jointures
-                           Champ ancetre = null;
-                           if(champ.getChampParent() != null){
-                              ancetre = champ.getChampParent();
-                              while(ancetre.getChampParent() != null){
-                                 ancetre = ancetre.getChampParent();
-                              }
-                              ancetre.setChampParent(champDelegate);
-                           }
-
-                           champ.getChampParent().setChampParent(champDelegate);
-
-                           final List<String> delegateJoins = buildJoinsList(champ, null);
-
-                           //Constructin de la requête
-                           sb.append("SELECT DISTINCT e FROM " + nomEntiteAvec1eLettreEnMajuscule + " e ");
-
-                           for(final String join : delegateJoins){
-                              sb.append(join);
-                           }
-
-                           sb.append("WHERE p" + delegateJoins.size() + ".nom " + critere.getOperateur());
-
-                           //On remet la hiérarchie du champ dans son état initial
-                           ancetre.setChampParent(null);
-
-                        }
-
-                        //Construction de la requête pour un champ entité
-                     }else{
-                        sb.append("SELECT DISTINCT e From " + nomEntiteAvec1eLettreEnMajuscule + " as e WHERE" + " e." + nomChampAvec1eLettreEnMinuscule + " "
-                           + critere.getOperateur());
-                     }
 
                      if(!critere.getOperateur().equals("is null")){
                         sb.append(" :valeur");
@@ -426,37 +382,6 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   }
                }
             }
-         }else if(champ.getChampDelegue() != null){
-
-            final long nbContextes = banks.stream().map(b -> b.getContexte()).distinct().count();
-            if(nbContextes != 1){
-               throw new TKException(
-                  "Impossible d'effectuer une recherche sur plusieurs contextes avec un paramètre de recherche lié au contexte");
-            }
-
-            final String entiteNom = StringUtils.uncapitalize(champ.getChampDelegue().getEntite().getNom());
-            final String capitalizedEntiteNom = StringUtils.capitalize(champ.getChampDelegue().getEntite().getNom());
-            final String nomChamp = StringUtils.uncapitalize(champ.getChampDelegue().getNom());
-
-            //Cas particulier des thésauri
-            if("thesaurusM".equals(champ.getChampDelegue().getDataType().getType())){
-
-               sb.append("SELECT DISTINCT e FROM " + capitalizedEntiteNom + " e LEFT JOIN e.delegate d JOIN d." + nomChamp
-                  + " t WHERE t.nom " + critere.getOperateur() + " :valeur");
-
-            }else if(!"is null".equals(critere.getOperateur())){
-
-               sb.append("SELECT DISTINCT e FROM " + capitalizedEntiteNom + " e JOIN e.delegate d WHERE d." + nomChamp + " "
-                  + critere.getOperateur() + " :valeur");
-
-            }else{
-
-               sb.append("SELECT DISTINCT e From " + capitalizedEntiteNom + " e LEFT JOIN e.delegate d WHERE d." + nomChamp + " "
-                  + critere.getOperateur() + " OR e." + entiteNom + "Id NOT IN (SELECT d.delegator." + entiteNom
-                  + "Id FROM Abstract" + capitalizedEntiteNom + "Delegate d" + ")");
-
-            }
-
          }else{
             throw new IllegalArgumentException();
          }
@@ -675,7 +600,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                   ++nbWhere;
                }
             }
-         }else if(champ.getChampEntite() != null || null != champ.getChampDelegue()){
+         }else if(champ.getChampEntite() != null){
             AbstractTKChamp ce = null;
             Entite entite = null;
             ChampEntite queryChamp = null;
@@ -683,203 +608,183 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                ce = champ.getChampEntite();
                entite = champ.getChampEntite().getEntite();
                queryChamp = champ.getChampEntite().getQueryChamp();
-            }else if(null != champ.getChampDelegue()){
-               ce = champ.getChampDelegue();
-               entite = champ.getChampDelegue().getEntite();
-            }
-            if(ce != null && entite != null){
+               
+               if(ce != null && entite != null){//
 
-               final String nomEntite = entite.getNom();
+                  final String nomEntite = entite.getNom();
 
-               if(nomEntite != null){
-                  // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                  nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
-                  String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
-
-                  if(nomChampMinFirst.endsWith("Id")){
-                     nomChampMinFirst = nomChampMinFirst.substring(0, nomChampMinFirst.length() - 2);
-                  }else if(nomChampMinFirst.endsWith("s") && queryChamp != null){
-                     // ne concerne donc que les champ entite Maladie.Collaborateurs .
-                     nomChampMinFirst = "";
-                  }
-
-                  Champ parent = champ.getChampParent();
-
-                  final List<Champ> parents = new ArrayList<>();
-                  while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
-                     parents.add(0, parent);
-
-                     AbstractTKChamp ceParent = null;
-                     String nomEntiteParent = null;
-                     if(null != parent.getChampEntite()){
-                        ceParent = parent.getChampEntite();
-                        nomEntiteParent = parent.getChampEntite().getEntite().getNom();
-                     }else if(null != parent.getChampDelegue()){
-                        ceParent = parent.getChampDelegue();
-                        nomEntiteParent = parent.getChampDelegue().getEntite().getNom();
-                     }
+                  if(nomEntite != null){
                      // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                     String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
-                     // On enlève le suffixe "Id"
-                     if(nomParent.endsWith("Id")){
-                        nomParent = nomParent.substring(0, nomParent.length() - 2);
+                     nomEntiteMajFirst = nomEntite.replaceFirst(".", (nomEntite.charAt(0) + "").toUpperCase());
+                     String nomChampMinFirst = ce.getNom().replaceFirst(".", (ce.getNom().charAt(0) + "").toLowerCase());
+
+                     if(nomChampMinFirst.endsWith("Id")){
+                        nomChampMinFirst = nomChampMinFirst.substring(0, nomChampMinFirst.length() - 2);
+                     }else if(nomChampMinFirst.endsWith("s") && queryChamp != null){
+                        // ne concerne donc que les champ entite Maladie.Collaborateurs .
+                        nomChampMinFirst = "";
                      }
-                     // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                     nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
 
-                     parent = parent.getChampParent();
-                  }
-                  // quand un parent est trouvé
-                  // incrémente z pour pouvoir assigner 
-                  // p + cpt au bon niveau de joins
-                  String correspParent = "";
+                     Champ parent = champ.getChampParent();
 
-                  String prefixe = "e";
+                     final List<Champ> parents = new ArrayList<>();
+                     while(parent != null && parent.getChampEntite() != null){
+                        parents.add(0, parent);
 
-                  for(int i = 0; i < parents.size(); i++){
-                     parent = parents.get(i);
-                     if(!allParents.containsKey(parent)){
-                        allParents.put(parent, "p" + cpt);
                         AbstractTKChamp ceParent = null;
+                        String nomEntiteParent = null;
                         if(null != parent.getChampEntite()){
                            ceParent = parent.getChampEntite();
-                        }else if(null != parent.getChampDelegue()){
-                           ceParent = parent.getChampDelegue();
-                        }
-                        // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                        String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
-                        // On enlève le suffixe "Id"
-                        if(nomParent.endsWith("Id")){
-                           nomParent = nomParent.substring(0, nomParent.length() - 2);
-                        }
-
-                        // Création des joins
-                        final StringBuffer join = new StringBuffer();
-                        if(i == 0){
-                           join.append("JOIN e.");
-                           join.append(nomParent);
-                           join.append(" as p");
-                           join.append(cpt);
-                           join.append(" ");
-
-                        }else{
-                           //HERE A TESTER
-                           if(!correspParent.equals("")){
-                              join.append("JOIN " + correspParent);
-                              correspParent = "";
-                           }else{
-                              join.append("JOIN p");
-                              join.append(cpt - 1);
-
+                           nomEntiteParent = parent.getChampEntite().getEntite().getNom();
+                           
+                           // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                           String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+                           // On enlève le suffixe "Id"
+                           if(nomParent.endsWith("Id")){
+                              nomParent = nomParent.substring(0, nomParent.length() - 2);
                            }
-                           join.append(".");
-                           join.append(nomParent);
-                           join.append(" as p");
-                           join.append(cpt);
-                           join.append(" ");
+                           // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                           nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
+
+                           parent = parent.getChampParent();
                         }
-                        ++cpt;
-                        joins.add(join.toString());
-                     }else{
-                        correspParent = allParents.get(parent);
                      }
-                  }
+                     // quand un parent est trouvé
+                     // incrémente z pour pouvoir assigner 
+                     // p + cpt au bon niveau de joins
+                     String correspParent = "";
 
-                  String clause = "";
-                  if(nbWhere == 1){
-                     clause = "WHERE ";
-                  }else{
-                     clause = " AND ";
-                  }
+                     String prefixe = "e";
 
-                  // si des jointures ont été faites
-                  final StringBuffer where = new StringBuffer();
-                  where.append(clause);
+                     for(int i = 0; i < parents.size(); i++){
+                        parent = parents.get(i);
+                        if(!allParents.containsKey(parent)){
+                           allParents.put(parent, "p" + cpt);
+                           AbstractTKChamp ceParent = null;
+                           if(null != parent.getChampEntite()){
+                              ceParent = parent.getChampEntite();
+                              
+                              // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                              String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+                              // On enlève le suffixe "Id"
+                              if(nomParent.endsWith("Id")){
+                                 nomParent = nomParent.substring(0, nomParent.length() - 2);
+                              }
 
-                  if(values.get(k) instanceof Calendar && ((Calendar) values.get(k)).get(Calendar.HOUR_OF_DAY) == 0
-                     && ((Calendar) values.get(k)).get(Calendar.MINUTE) == 0 && criteres.get(k).getOperateur().equals("=")){
-                     final String[] calOps = new String[] {"year", "month", "day"};
-                     for(final String op : calOps){
-                        where.append(op + "(");
+                              // Création des joins
+                              final StringBuffer join = new StringBuffer();
+                              if(i == 0){
+                                 join.append("JOIN e.");
+                                 join.append(nomParent);
+                                 join.append(" as p");
+                                 join.append(cpt);
+                                 join.append(" ");
+
+                              }else{
+                                 //HERE A TESTER
+                                 if(!correspParent.equals("")){
+                                    join.append("JOIN " + correspParent);
+                                    correspParent = "";
+                                 }else{
+                                    join.append("JOIN p");
+                                    join.append(cpt - 1);
+
+                                 }
+                                 join.append(".");
+                                 join.append(nomParent);
+                                 join.append(" as p");
+                                 join.append(cpt);
+                                 join.append(" ");
+                              }
+                              ++cpt;
+                              joins.add(join.toString());
+                           }
+                        }else{
+                           correspParent = allParents.get(parent);
+                        }
+                     }//fin du for
+
+                     String clause = "";
+                     if(nbWhere == 1){
+                        clause = "WHERE ";
+                     }else{
+                        clause = " AND ";
+                     }
+
+                     // si des jointures ont été faites
+                     final StringBuffer where = new StringBuffer();
+                     where.append(clause);
+
+                     if(values.get(k) instanceof Calendar && ((Calendar) values.get(k)).get(Calendar.HOUR_OF_DAY) == 0
+                        && ((Calendar) values.get(k)).get(Calendar.MINUTE) == 0 && criteres.get(k).getOperateur().equals("=")){
+                        final String[] calOps = new String[] {"year", "month", "day"};
+                        for(final String op : calOps){
+                           where.append(op + "(");
+                           if(parents.size() > 0){
+                              prefixe = allParents.get(parents.get(parents.size() - 1));
+                              where.append(prefixe);
+                           }else{
+                              where.append("e");
+                           }
+                           where.append("." + nomChampMinFirst + ") " + criteres.get(k).getOperateur() + " " + op + "(:valeur"
+                              + nbWhere + ")");
+                           if(!op.equals("day")){
+                              where.append(" AND ");
+                           }
+                        }
+                     }else{
                         if(parents.size() > 0){
                            prefixe = allParents.get(parents.get(parents.size() - 1));
                            where.append(prefixe);
                         }else{
                            where.append("e");
                         }
-                        where.append("." + nomChampMinFirst + ") " + criteres.get(k).getOperateur() + " " + op + "(:valeur"
-                           + nbWhere + ")");
-                        if(!op.equals("day")){
-                           where.append(" AND ");
+
+                        if(!nomChampMinFirst.equals("")){
+                           where.append("." + nomChampMinFirst + " " + criteres.get(k).getOperateur() + " :valeur" + nbWhere);
+                        }else{
+                           where.append(" " + criteres.get(k).getOperateur() + " :valeur" + nbWhere);
                         }
                      }
-                  }else{
-                     if(parents.size() > 0){
+                     // 2.0.10.2 Recherche patient implique 
+                     if(parents.size() > 0 && nomEntiteMajFirst.equals("Patient") && !nomEntite.equals("Patient")
+                        && !nomEntite.equals("Maladie") && null != parents.get(parents.size() - 1).getChampEntite()
+                        && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("PatientMedecins")
+                        && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Diagnostic")
+                        && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Collaborateurs")
+                        && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("ServicePreleveurId")
+                        && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Risques")
+                        && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Protocoles"))
+                     {
+
+                        //ajout de la condition sur la banque que si elle n'est pas déjà présente dans la liste des clauses where
+                        //en effet dans le cas d'une recherche sur plusieurs critères, on passe dans ce code pour chaque critère
                         prefixe = allParents.get(parents.get(parents.size() - 1));
-                        where.append(prefixe);
-                     }else{
-                        where.append("e");
+                        StringBuilder champClauseBanque = new StringBuilder(prefixe);
+                        champClauseBanque.append(".banque");
+                        boolean clauseExistante = false;
+                        int i=0;
+                        while(!clauseExistante && i<wheres.size()) {
+                           clauseExistante = wheres.get(i).indexOf(champClauseBanque.toString()) != -1;
+                           i++;
+                        }
+                        //si clause non trouvée, ajout :
+                        if(!clauseExistante) {
+                           where.append(" AND ");
+                                where.append(champClauseBanque);
+                                where.append(" in (:list");
+                                where.append(nbBanquesInCriteres);
+                                where.append(")");
+                                ++nbBanquesInCriteres;
+                        }
                      }
-
-                     if(!nomChampMinFirst.equals("")){
-                        where.append("." + nomChampMinFirst + " " + criteres.get(k).getOperateur() + " :valeur" + nbWhere);
-                     }else{
-                        where.append(" " + criteres.get(k).getOperateur() + " :valeur" + nbWhere);
-                     }
+                     
+                     wheres.add(where.toString());
+                     ++nbWhere;
                   }
-                  // 2.0.10.2 Recherche patient implique 
-                  if(parents.size() > 0 && nomEntiteMajFirst.equals("Patient") && !nomEntite.equals("Patient")
-                     && !nomEntite.equals("Maladie") && null != parents.get(parents.size() - 1).getChampEntite()
-                     && null == parents.get(parents.size() - 1).getChampDelegue()
-                     && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("PatientMedecins")
-                     && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Collaborateurs")
-                     && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("ServicePreleveurId")
-                     && !parents.get(parents.size() - 1).getChampEntite().getNom().equals("Risques")){
-
-						   //2 types de champs peuvent être délégués :
-						   //- un champ "simple" (type primitive), dans ce cas, le critère porte bien sur ce champ
-						   //- un champ de type objet, dans ce cas, le critère saisi porte sur un champ de celui-ci, il faut donc remonter au parent
-						   //pour savoir s'il s'agit d'un champ délégué
-						   //initialisation du boolean isFromDelegate avec le premier cas :
-						   Boolean isFromDelegate = (champ.getChampDelegue() != null) ;
-						   //traitement des autres cas :
-						   Champ parentTest = parents.get(parents.size() - 1);
-						   while(!isFromDelegate && null != parentTest){
-						      parentTest = parentTest.getChampParent();
-						      if(null != parentTest && null != parentTest.getChampDelegue()){
-						         isFromDelegate = true;
-						         break;
-						      }
-						   }
-						   
-							if(!isFromDelegate){
-							   //ajout de la condition sur la banque que si elle n'est pas déjà présente dans la liste des clauses where
-							   //en effet dans le cas d'une recherche sur plusieurs critères, on passe dans ce code pour chaque critère
-							   prefixe = allParents.get(parents.get(parents.size() - 1));
-							   StringBuilder champClauseBanque = new StringBuilder(prefixe);
-							   champClauseBanque.append(".banque");
-							   boolean clauseExistante = false;
-							   int i=0;
-							   while(!clauseExistante && i<wheres.size()) {
-							      clauseExistante = wheres.get(i).indexOf(champClauseBanque.toString()) != -1;
-							      i++;
-							   }
-							   //si clause non trouvée, ajout :
-							   if(!clauseExistante) {
-							      where.append(" AND ");
-	                       		  where.append(champClauseBanque);
-	                        	  where.append(" in (:list");
-	                        	  where.append(nbBanquesInCriteres);
-	                        	  where.append(")");
-	                        	  ++nbBanquesInCriteres;
-							   }
-						    }
-					}
-                  
-                    wheres.add(where.toString());
-                    ++nbWhere;
-               }
+               }//
             }
+
          }
       }
 
@@ -1094,6 +999,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       return result;
    }
 
+   //TK-520 : méthode qui ressemble beaucoup à ChampUtils.getNomEntiteAncetre() mais ne semble pas renvoyer tout à fait la même chose. A CREUSER
    /**
     * Retourne le nom de l'entité correspondant au champ 
     * @param champ
@@ -1104,38 +1010,15 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       String nomEntiteAncetre = null;
       Champ parent = champ.getChampParent();
 
-      while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+      while(parent != null && parent.getChampEntite() != null ){
 
          if(null != parent.getChampEntite()){
             nomEntiteAncetre = parent.getChampEntite().getEntite().getNom();
-         }else if(null != parent.getChampDelegue()){
-            nomEntiteAncetre = parent.getChampDelegue().getEntite().getNom();
+            parent = parent.getChampParent();
          }
-
-         parent = parent.getChampParent();
       }
 
       return StringUtils.capitalize(nomEntiteAncetre);
-
-   }
-
-   /**
-    * Retourne l'ensemble des champs ancêtres d'un champ
-    * @param champ
-    * @return
-    */
-   private List<Champ> getChampAncestors(final Champ champ){
-
-      final List<Champ> ancestors = new ArrayList<>();
-
-      Champ parent = champ.getChampParent();
-
-      while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
-         ancestors.add(0, parent);
-         parent = parent.getChampParent();
-      }
-
-      return ancestors;
 
    }
 
@@ -1156,23 +1039,22 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       final Hashtable<Champ, String> allParents = new Hashtable<>();
 
       final List<Champ> parents = new ArrayList<>();
-      while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+      while(parent != null && parent.getChampEntite() != null){
          parents.add(0, parent);
 
          AbstractTKChamp ceParent = null;
          if(null != parent.getChampEntite()){
             ceParent = parent.getChampEntite();
-         }else if(null != parent.getChampDelegue()){
-            ceParent = parent.getChampDelegue();
-         }
-         // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-         String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
-         // On enlève le suffixe "Id"
-         if(nomParent.endsWith("Id")){
-            nomParent = nomParent.substring(0, nomParent.length() - 2);
-         }
 
-         parent = parent.getChampParent();
+            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+            String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+            // On enlève le suffixe "Id"
+            if(nomParent.endsWith("Id")){
+               nomParent = nomParent.substring(0, nomParent.length() - 2);
+            }
+   
+            parent = parent.getChampParent();
+         }
       }
 
       String correspParent = "";
@@ -1187,42 +1069,41 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
             AbstractTKChamp ceParent = null;
             if(null != parent.getChampEntite()){
                ceParent = parent.getChampEntite();
-            }else if(null != parent.getChampDelegue()){
-               ceParent = parent.getChampDelegue();
-            }
-            // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-            String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
-            // On enlève le suffixe "Id"
-            if(nomParent.endsWith("Id")){
-               nomParent = nomParent.substring(0, nomParent.length() - 2);
-            }
-
-            // Création des joins
-            final StringBuffer join = new StringBuffer();
-            if(i == 0){
-               join.append("JOIN e.");
-               join.append(nomParent);
-               join.append(" as p");
-               join.append(idx);
-               join.append(" ");
-
-            }else{
-               //HERE A TESTER
-               if(!correspParent.equals("")){
-                  join.append("JOIN " + correspParent);
-                  correspParent = "";
-               }else{
-                  join.append("JOIN p");
-                  join.append(idx - 1);
-
+               
+               // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+               String nomParent = ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+               // On enlève le suffixe "Id"
+               if(nomParent.endsWith("Id")){
+                  nomParent = nomParent.substring(0, nomParent.length() - 2);
                }
-               join.append(".");
-               join.append(nomParent);
-               join.append(" as p");
-               join.append(idx);
-               join.append(" ");
+
+               // Création des joins
+               final StringBuffer join = new StringBuffer();
+               if(i == 0){
+                  join.append("JOIN e.");
+                  join.append(nomParent);
+                  join.append(" as p");
+                  join.append(idx);
+                  join.append(" ");
+
+               }else{
+                  //HERE A TESTER
+                  if(!correspParent.equals("")){
+                     join.append("JOIN " + correspParent);
+                     correspParent = "";
+                  }else{
+                     join.append("JOIN p");
+                     join.append(idx - 1);
+
+                  }
+                  join.append(".");
+                  join.append(nomParent);
+                  join.append(" as p");
+                  join.append(idx);
+                  join.append(" ");
+               }
+               joins.add(join.toString());
             }
-            joins.add(join.toString());
          }else{
             correspParent = allParents.get(parent);
          }
@@ -1399,7 +1280,7 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
          if(criteres.get(k) != null){
             final Champ champ = criteres.get(k).getChamp();
             if(champ != null){
-               if(champ.getChampEntite() != null || null != champ.getChampDelegue()){
+               if(champ.getChampEntite() != null){
                   AbstractTKChamp ce = null;
                   Entite entite = null;
                   ChampEntite queryChamp = null;
@@ -1407,9 +1288,6 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                      ce = champ.getChampEntite();
                      entite = champ.getChampEntite().getEntite();
                      queryChamp = champ.getChampEntite().getQueryChamp();
-                  }else if(null != champ.getChampDelegue()){
-                     ce = champ.getChampDelegue();
-                     entite = champ.getChampDelegue().getEntite();
                   }
                   if(ce != null && entite != null){
                      final String nomEntite = entite.getNom();
@@ -1425,33 +1303,32 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                         }
                         Champ parent = champ.getChampParent();
                         final List<Champ> parents = new ArrayList<>();
-                        while(parent != null && (parent.getChampEntite() != null || parent.getChampDelegue() != null)){
+                        while(parent != null && parent.getChampEntite() != null){
                            AbstractTKChamp ceParent = null;
                            String nomEntiteParent = null;
                            if(null != parent.getChampEntite()){
                               ceParent = parent.getChampEntite();
                               nomEntiteParent = parent.getChampEntite().getEntite().getNom();
-                           }else if(null != parent.getChampDelegue()){
-                              ceParent = parent.getChampDelegue();
-                              nomEntiteParent = parent.getChampDelegue().getEntite().getNom();
+                              
+                              if(!ceParent.getNom().contains("ProdDerives")){
+                                 parents.add(0, parent);
+                              }else{
+                                 entiteTransformation = parent.getChampEntite().getEntite();
+                              }
+                              // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                              String nomParent =
+                                 ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+                              // On enlève le suffixe "Id"
+                              if(nomParent.endsWith("Id")){
+                                 nomParent = nomParent.substring(0, nomParent.length() - 2);
+                              }
+                              // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                              nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
+
+                              parent = parent.getChampParent();
+                              
                            }
 
-                           if(!ceParent.getNom().contains("ProdDerives")){
-                              parents.add(0, parent);
-                           }else{
-                              entiteTransformation = parent.getChampEntite().getEntite();
-                           }
-                           // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                           String nomParent =
-                              ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
-                           // On enlève le suffixe "Id"
-                           if(nomParent.endsWith("Id")){
-                              nomParent = nomParent.substring(0, nomParent.length() - 2);
-                           }
-                           // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                           nomEntiteMajFirst = nomEntiteParent.replaceFirst(".", (nomEntiteParent.charAt(0) + "").toUpperCase());
-
-                           parent = parent.getChampParent();
                         }
 
                         // quand un parent est trouvé
@@ -1466,43 +1343,43 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                               AbstractTKChamp ceParent = null;
                               if(null != parent.getChampEntite()){
                                  ceParent = parent.getChampEntite();
-                              }else if(null != parent.getChampDelegue()){
-                                 ceParent = parent.getChampDelegue();
-                              }
-                              // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
-                              String nomParent =
-                                 ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
-                              // On enlève le suffixe "Id"
-                              if(nomParent.endsWith("Id")){
-                                 nomParent = nomParent.substring(0, nomParent.length() - 2);
-                              }
-
-                              // Création des joins
-                              final StringBuffer join = new StringBuffer();
-                              if(i == 0){
-                                 join.append("JOIN e.");
-                                 join.append(nomParent);
-                                 join.append(" as p1 ");
-                              }else{
-                                 if(!correspParent.equals("")){
-                                    join.append("JOIN " + correspParent);
-                                    correspParent = "";
-                                 }else{
-                                    join.append("JOIN p");
-                                    join.append(cpt - 1);
+                                 
+                                 // TK-491: regex safe d'après ReDoS checker (analyse faite en décembre 2024)
+                                 String nomParent =
+                                    ceParent.getNom().replaceFirst(".", (ceParent.getNom().charAt(0) + "").toLowerCase());
+                                 // On enlève le suffixe "Id"
+                                 if(nomParent.endsWith("Id")){
+                                    nomParent = nomParent.substring(0, nomParent.length() - 2);
                                  }
 
-                                 join.append(".");
-                                 join.append(nomParent);
-                                 join.append(" as p");
-                                 join.append(cpt);
-                                 join.append(" ");
+                                 // Création des joins
+                                 final StringBuffer join = new StringBuffer();
+                                 if(i == 0){
+                                    join.append("JOIN e.");
+                                    join.append(nomParent);
+                                    join.append(" as p1 ");
+                                 }else{
+                                    if(!correspParent.equals("")){
+                                       join.append("JOIN " + correspParent);
+                                       correspParent = "";
+                                    }else{
+                                       join.append("JOIN p");
+                                       join.append(cpt - 1);
+                                    }
+
+                                    join.append(".");
+                                    join.append(nomParent);
+                                    join.append(" as p");
+                                    join.append(cpt);
+                                    join.append(" ");
+
+                                 }
+                                 if(!join.toString().contains("prodDerive")){
+                                    joins.add(join.toString());
+                                 }
+                                 ++cpt;
 
                               }
-                              if(!join.toString().contains("prodDerive")){
-                                 joins.add(join.toString());
-                              }
-                              ++cpt;
                            }else{
                               correspParent = allParents.get(parent);
                            }

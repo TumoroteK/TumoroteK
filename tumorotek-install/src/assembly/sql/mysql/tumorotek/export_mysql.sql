@@ -288,7 +288,7 @@ CREATE PROCEDURE `create_tmp_patient_table`()
       DATE_ETAT          date,
       DATE_DECES         date,
       MEDECIN_PATIENT    varchar(300),
-      CODE_ORGANE        VARCHAR(500),
+      CODE_ORGANES        VARCHAR(500),
       NOMBRE_PRELEVEMENT int(4),
       DATE_HEURE_SAISIE  datetime,
       UTILISATEUR_SAISIE varchar(100),
@@ -470,10 +470,11 @@ CREATE PROCEDURE `create_tmp_maladie_table`()
     DROP TEMPORARY TABLE IF EXISTS TMP_MALADIE_EXPORT;
     CREATE TEMPORARY TABLE TMP_MALADIE_EXPORT (
       -- MALADIE_ID int(10),
-      LIBELLE         varchar(1000),
-      CODE_MALADIE    varchar(1000),
-      DATE_DIAGNOSTIC varchar(1000),
-      DATE_DEBUT      varchar(1000),
+      LIBELLE         varchar(200),
+      CODE_MALADIE    varchar(200),
+      DIAGNOSTIC 	  varchar(200), -- new TK-520 correspond à la fiabilité du diagnostic
+      DATE_DIAGNOSTIC varchar(200),
+      DATE_DEBUT      varchar(200),
       --	MEDECIN_MALADIE varchar(300),
       PATIENT_ID      int(10),
       PRIMARY KEY (PATIENT_ID)
@@ -488,15 +489,17 @@ DROP PROCEDURE IF EXISTS `fill_tmp_table_maladie`&&
 CREATE PROCEDURE `fill_tmp_table_maladie`(IN id INTEGER)
   BEGIN
     INSERT INTO TMP_MALADIE_EXPORT (-- MALADIE_ID,
-                                    LIBELLE, CODE_MALADIE, DATE_DIAGNOSTIC, DATE_DEBUT, --  MEDECIN_MALADIE,
+                                    LIBELLE, CODE_MALADIE, DIAGNOSTIC, DATE_DIAGNOSTIC, DATE_DEBUT, --  MEDECIN_MALADIE,
                                     PATIENT_ID)
     select LEFT(GROUP_CONCAT(libelle SEPARATOR ' ; '), 200),
            LEFT(GROUP_CONCAT(code SEPARATOR ' ; '), 200),
+           LEFT(GROUP_CONCAT(diag.nom SEPARATOR ' ; '), 200), -- new TK-520
            LEFT(GROUP_CONCAT(date_diagnostic SEPARATOR ' ; '), 200),
            LEFT(GROUP_CONCAT(date_debut SEPARATOR ' ; '), 200),
 -- (select GROUP_CONCAT(c.nom) FROM MALADIE m JOIN MALADIE_MEDECIN mm JOIN COLLABORATEUR c WHERE m.maladie_id = mm.maladie_id AND mm.collaborateur_id = c.collaborateur_id AND m.patient_id = id),
            patient_id
-    FROM MALADIE
+    FROM MALADIE m
+    LEFT OUTER JOIN DIAGNOSTIC diag on m.diagnostic_id = diag.diagnostic_id
     WHERE patient_id = id
     group by patient_id;
 
@@ -520,6 +523,7 @@ CREATE PROCEDURE `create_tmp_prelevement_table`()
       CODE                 varchar(50),
       NUMERO_LABO          varchar(50),
       NATURE               varchar(200),
+      PROTOCOLES           varchar(200), -- new TK-520
       DATE_PRELEVEMENT     datetime,
       PRELEVEMENT_TYPE     varchar(200),
       STERILE              boolean,
@@ -534,6 +538,7 @@ CREATE PROCEDURE `create_tmp_prelevement_table`()
       CONDIT_MILIEU        varchar(200),
       CONSENT_TYPE         varchar(200),
       CONSENT_DATE         date,
+      COMPLEMENT_DIAGNOSTIC varchar(300), -- new TK-520
       DATE_DEPART          datetime,
       TRANSPORTEUR         varchar(50),
       TRANSPORT_TEMP       DECIMAL(12, 3),
@@ -545,8 +550,10 @@ CREATE PROCEDURE `create_tmp_prelevement_table`()
       QUANTITE             DECIMAL(12, 3),
       QUANTITE_UNITE       varchar(25),
       PATIENT_NDA          varchar(20),
-      DIAGNOSTIC           varchar(500),
-      CODE_ORGANE          VARCHAR(500),
+      FIABILITE_DIAGNOSTIC    varchar(200), -- TK-520 (avant en anapath correspond au code lésion, en sero fiabilite du diagnostic)
+      CODE_ORGANES          VARCHAR(500), -- TK-520 en anapth correspond au code organe mais /!\ ne doit pas être affiché en séro ...
+      -- DIAGNOSTIC ?????          VARCHAR(500), -- TK-520 en anapth correspond au code lésion mais /!\ ne doit pas être affiché en séro ...
+      CODE_MORPHOS          VARCHAR(500), -- TK-520 en anapth correspond au code lésion mais /!\ ne doit pas être affiché en séro ...
       ECHAN_TOTAL          int(4),
       ECHAN_RESTANT        int(4),
       ECHAN_STOCKE         int(4),
@@ -580,6 +587,7 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
                                         CODE,
                                         NUMERO_LABO,
                                         NATURE,
+                                        PROTOCOLES, -- new TK-520
                                         DATE_PRELEVEMENT,
                                         PRELEVEMENT_TYPE,
                                         STERILE,
@@ -594,6 +602,7 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
                                         CONDIT_MILIEU,
                                         CONSENT_TYPE,
                                         CONSENT_DATE,
+                                        COMPLEMENT_DIAGNOSTIC, -- new TK-520
                                         DATE_DEPART,
                                         TRANSPORTEUR,
                                         TRANSPORT_TEMP,
@@ -605,8 +614,9 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
                                         QUANTITE,
                                         QUANTITE_UNITE,
                                         PATIENT_NDA,
-                                        CODE_ORGANE,
-                                        DIAGNOSTIC,
+                                        FIABILITE_DIAGNOSTIC, -- new TK-520
+                                        CODE_ORGANES, -- TK-520 /!\ dépend du contexte
+                                        CODE_MORPHOS, --  TK-520 /!\ dépend du contexte
                                         ECHAN_TOTAL,
                                         ECHAN_RESTANT,
                                         ECHAN_STOCKE,
@@ -626,6 +636,9 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
            p.code,
            p.numero_labo                                                                                 as laboratoire,
            n.nature,
+           LEFT((SELECT GROUP_CONCAT(pt.nom)
+            FROM PRELEVEMENT prlt JOIN PROTOCOLE pt ON pt.PROTOCOLE_ID = prlt.PROTOCOLE_ID
+            WHERE prlt.PRELEVEMENT_ID = id), 200)														as 'protocoles', -- new TK-520
            p.date_prelevement,
            pt.type,
            p.sterile,
@@ -649,6 +662,7 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
            cm.milieu,
            consent.type                                                                                  as 'Statut_juridique',
            p.consent_date                                                                                as 'date_du_statut',
+           p.COMPLEMENT_DIAGNOSTIC, -- new TK-520
            p.date_depart,
            tr.nom                                                                                        as 'Transporteur',
            p.transport_temp                                                                              as 'Temps_de_transport',
@@ -660,16 +674,19 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
            p.quantite,
            u.unite,
            p.patient_nda                                                                                 as 'Num_Dossier_Patient',
+           diag.nom																						 as 'Fiabilité_du_diagnostic',
+           -- TK-520 l'affichage de ces champs sera conditionné au contexte (fait en java lors de la génération de l'excel)
            LEFT((SELECT GROUP_CONCAT(distinct(ca.code) ORDER BY ca.ordre)
             FROM CODE_ASSIGNE ca
                    INNER JOIN ECHANTILLON e ON e.echantillon_id = ca.echantillon_id
             WHERE ca.IS_ORGANE = 1
-              AND e.prelevement_id = id), 500),
+              AND e.prelevement_id = id), 500)															 as 'code _organe',
            LEFT((SELECT GROUP_CONCAT(distinct(ca.code) ORDER BY ca.ordre)
             FROM CODE_ASSIGNE ca
                    INNER JOIN ECHANTILLON e ON e.echantillon_id = ca.echantillon_id
             WHERE ca.IS_MORPHO = 1
-              AND e.prelevement_id = id), 500),
+              AND e.prelevement_id = id), 500)															 as 'code_lesion', 
+            --
            (SELECT count(e.prelevement_id) FROM ECHANTILLON e WHERE e.prelevement_id = p.prelevement_id) AS 'Total_Echantillons',
            (SELECT count(e1.prelevement_id) FROM ECHANTILLON e1 WHERE e1.prelevement_id = p.prelevement_id
                                                                   AND e1.quantite > 0)                   AS 'Echantillons_restants',
@@ -709,6 +726,8 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
            LEFT JOIN PRELEVEMENT_TYPE pt
              ON p.prelevement_type_id = pt.prelevement_type_id -- LEFT JOIN OBJET_NON_CONFORME onc ON p.prelevement_id = onc.objet_id
              -- LEFT JOIN NON_CONFORMITE nc ON onc.non_conformite_id = nc.non_conformite_id
+           LEFT JOIN DIAGNOSTIC diag
+             ON p.diagnostic_id = diag.diagnostic_id
            LEFT JOIN SERVICE s ON p.service_preleveur_id = s.service_id
            LEFT JOIN ETABLISSEMENT et ON s.etablissement_id = et.etablissement_id
            LEFT JOIN COLLABORATEUR co ON p.preleveur_id = co.collaborateur_id
@@ -832,10 +851,12 @@ CREATE PROCEDURE `create_tmp_echantillon_table`()
       RAISON_NC_TRAITEMENT varchar(1000),
       CONFORME_CESSION     boolean,
       RAISON_NC_CESSION    varchar(1000),
+      -- TK-520 l'affichage de ces champs sera conditionné au contexte (fait en java lors de la génération de l'excel)
       TUMORAL              boolean,
       LATERALITE           char(1),
       CODE_ORGANES         varchar(300),
       CODE_MORPHOS         varchar(300),
+      --
       NOMBRE_DERIVES       int(4),
       EVTS_STOCK_E         varchar(3),
       DATE_HEURE_SAISIE    datetime,
@@ -874,10 +895,12 @@ CREATE PROCEDURE `fill_tmp_table_echan`(IN id INTEGER)
                                         RAISON_NC_TRAITEMENT,
                                         CONFORME_CESSION,
                                         RAISON_NC_CESSION,
+                                        -- TK-520 l'affichage de ces champs sera conditionné au contexte (fait en java lors de la génération de l'excel)
                                         TUMORAL,
                                         LATERALITE,
                                         CODE_ORGANES,
                                         CODE_MORPHOS,
+                                        --
                                         NOMBRE_DERIVES,
                                         EVTS_STOCK_E,
                                         DATE_HEURE_SAISIE,
@@ -913,12 +936,14 @@ CREATE PROCEDURE `fill_tmp_table_echan`(IN id INTEGER)
                    LEFT JOIN CONFORMITE_TYPE ct ON nc.conformite_type_id = ct.conformite_type_id
             WHERE ct.conformite_type_id = 3
               AND e.echantillon_id = onc.objet_id), 200)                                                        as 'Raison_de_non_conformité_pour_la_cession',
+           -- TK-520 l'affichage de ces champs sera conditionné au contexte (fait en java lors de la génération de l'excel)
            tumoral,
            lateralite,
            LEFT((SELECT GROUP_CONCAT(ca.code ORDER BY ca.ordre) FROM CODE_ASSIGNE ca WHERE ca.IS_ORGANE = 1
-                                                                              AND ca.echantillon_id = id), 500) as 'code_organe',
+                                                                              AND ca.echantillon_id = id), 300) as 'code_organe',
            lEFT((SELECT GROUP_CONCAT(ca.code ORDER BY ca.ordre) FROM CODE_ASSIGNE ca WHERE ca.IS_MORPHO = 1
-                                                                              AND ca.echantillon_id = id), 500) as 'codes_lésionnels',
+                                                                              AND ca.echantillon_id = id), 300) as 'codes_lésionnels',
+           --
            (SELECT COUNT(tr.objet_id)
             FROM TRANSFORMATION tr
                    INNER JOIN PROD_DERIVE pd ON tr.TRANSFORMATION_ID = pd.TRANSFORMATION_ID
@@ -1971,7 +1996,7 @@ CREATE PROCEDURE `select_cession_data`(IN entite_id INTEGER, IN count_annotation
 
     SET @annocols = get_anno_cols(count_annotation, entite_id);
 
-    IF entite_id = 3
+    IF entite_id = 3 -- TK-520 à conditionner en fonction du contexte pour TUMORAL..CODE_MORPHO
     THEN
       SET @sql = 'SELECT a.cession_id, a.numero,
 			tee.ECHANTILLON_ID,

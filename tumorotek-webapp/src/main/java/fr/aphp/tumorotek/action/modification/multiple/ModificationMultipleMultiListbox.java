@@ -54,12 +54,7 @@ import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
-
-//import fr.aphp.tumorotek.model.coeur.annotation.AnnotationValeur;
-//import fr.aphp.tumorotek.model.coeur.annotation.Item;
 
 /**
  * Classe gérant une fenêtre modal pour la modification multiple d'une
@@ -261,21 +256,7 @@ public class ModificationMultipleMultiListbox extends AbstractModificationMultip
             if(object instanceof List<?>){
                vals = (List<? extends Object>) object;
             }else{
-
-               boolean isDelegateProperty = false;
-               TKDelegateObject<?> delegate = null;
-
-               if(object instanceof TKDelegetableObject){
-                  delegate = ((TKDelegetableObject<?>) object).getDelegate();
-                  isDelegateProperty = delegate != null && PropertyUtils.describe(delegate).keySet().contains(getChamp());
-               }
-
-               if(isDelegateProperty){
-                  vals = new ArrayList<>((Set<? extends Object>) PropertyUtils.getSimpleProperty(delegate, getChamp()));
-               }else{
-                  vals = new ArrayList<>((Set<? extends Object>) PropertyUtils.getSimpleProperty(object, getChamp()));
-               }
-
+               vals = new ArrayList<>((Set<? extends Object>) PropertyUtils.getSimpleProperty(object, getChamp()));
             }
             Object tmp = null;
             final Set<Object> its = new HashSet<>();

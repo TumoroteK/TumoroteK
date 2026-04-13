@@ -73,14 +73,17 @@
 						/>
 					</row>
 					
-					<row spans="1,3">
-						<!-- Type du prélèvement -->
+					<row>
+						<!-- Nature du prélèvement -->
 						<label value="${c:l('Champ.Prelevement.Nature')}" 
 							sclass="formLabel"/>
 						<label id="typeLabelPrlvt" 
 							value="@{fwinPrelevementStatic$composer.object.nature.nature}"
 							sclass="formValue"
 						/>
+						<!-- Protocoles -->
+						<label value="${c:l('Champ.Prelevement.Protocoles')}" sclass="formLabel"/>	
+						<vbox id="protocolesBox" />						
 					</row>
 					<row spans="4">
 						<separator/>
@@ -240,7 +243,7 @@
 						<label value="${c:l('Champ.Prelevement.ConsentType')}" 
 							sclass="formLabel"/>
 						<label id="consentTypeLabelPrlvt" 
-							value="@{fwinPrelevementStatic$composer.object.consentType.type}"
+							value="@{fwinPrelevementStatic$composer.object.consentType.nom}"
 							sclass="formValue"
 						/>
 						
@@ -251,6 +254,19 @@
 							sclass="formValue"
 						/>
 					</row>
+					<!-- Informations complémentaires -->
+					<row spans="4">
+						<vlayout>
+							<label value="${c:l('fichePrelevement.group.infosComp')}" sclass="formSubTitle"/>
+							<image width="100%" height="1px" src="/images/pixelble.gif" style="background-repeat: repeat-x;"/>
+						</vlayout>
+					</row>
+					<!-- Complément diagnostic -->
+					<row spans="1,3">
+						<label value="${c:l('Champ.Prelevement.ComplementDiagnostic')}" sclass="formLabel"/>
+						<label value="@{fwinPrelevementStatic$composer.object.complementDiagnostic}"
+							sclass="formValue" />
+					</row>					
 				</rows>
 			</grid>
 			<grid fixedLayout="true" sclass="gridForm1" id="gridFormPrlvtComp" span="true">
@@ -551,17 +567,16 @@
 								<column align="center" width="70px"/>
 								<column label="${c:l('general.code')}" />
 								<column label="${c:l('Entite.Banque')}" visible="@{fwinPrelevementStatic$composer.ttesCollections}" />
-								<column label="${c:l('Champ.Echantillon.DateStock')}" width="130px" />
-								<column label="${c:l('Champ.Echantillon.Organe')}"/>
-								<column label="${c:l('Champ.Echantillon.CodeLes')}"/>
+								<column label="${c:l('Champ.Echantillon.DateStock')}" />
+								<column label="${c:l('Champ.Echantillon.DelaiCgl')}"/>
+								<column label="${c:l('Champ.Echantillon.Organe')}" if="${fwinPrelevementStatic$composer.displayEchansOrganeEtCodeLesionnel()}" />
+								<column label="${c:l('Champ.Echantillon.CodeLes')}" if="${fwinPrelevementStatic$composer.displayEchansOrganeEtCodeLesionnel()}" />
 								<column label="${c:l('Champ.Echantillon.EchantillonType.Type')}"/>
-								<column label="${c:l('Champ.Echantillon.Quantite')}" width="130px"/>
+								<column label="${c:l('Champ.Echantillon.Quantite')}" />
 								<column label="${c:l('Champ.Echantillon.ObjetStatut')}"/>
 								<column label="${c:l('Champ.Echantillon.Emplacement')}" />
-								<column label="${c:l('derives.nb')}" width="100px"
-									visible="false"/>
-								<column label="${c:l('cession.nb')}" width="100px"
-									visible="false"/>
+								<column label="${c:l('derives.nb')}" visible="false"/>
+								<column label="${c:l('cession.nb')}" visible="false"/>
 							</columns>
 							<rows id="echansRows">
 								<row self="@{each='currEchantillon'}" value="currEchantillon"/>

@@ -35,6 +35,7 @@
  **/
 package fr.aphp.tumorotek.action.controller;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,15 +49,10 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Messagebox;
 
-import fr.aphp.tumorotek.action.factory.DelegateFactory;
 import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
-import fr.aphp.tumorotek.model.TKDelegateObject;
-import fr.aphp.tumorotek.model.TKDelegetableObject;
 import fr.aphp.tumorotek.model.TKdataObject;
-import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
-import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  *
@@ -108,52 +104,23 @@ public abstract class AbstractFicheModifMultiController extends AbstractFicheCon
     *
     * @param e
     */
-   public void onGetChangeOnChamp(final Event e){
+   public void onGetChangeOnChamp(final Event e) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
-      boolean isDelegateProperty = false;
       final SimpleChampValue tmp = (SimpleChampValue) e.getData();
 
-      TKDelegateObject<? extends TKdataObject> delegate = null;
-      if(!EContexte.DEFAUT.equals(SessionUtils.getCurrentContexte()) && getObject() instanceof TKDelegetableObject){
+      if(!(tmp.getValue() instanceof List)){
+         PropertyUtils.setSimpleProperty(getObject(), tmp.getChamp(), tmp.getValue());
+      }else{
+         PropertyUtils.setSimpleProperty(getObject(), tmp.getChamp(), ((List<Object>) tmp.getValue()).get(0));
 
-         delegate = DelegateFactory.getDelegate(getObject(), SessionUtils.getCurrentContexte());
-
-         ((TKDelegetableObject) getObject()).setDelegate(delegate);
-
-         try{
-            isDelegateProperty = PropertyUtils.describe(delegate).keySet().contains(tmp.getChamp());
-         }catch(final Exception ex){
-            log.error(ex.getMessage(), ex);
-         }
-
-      }
-
-      try{
-
-         final Object beanToModify;
-         if(!isDelegateProperty){
-            beanToModify = getObject();
+         if(tmp.getChamp().contains("Init")){
+            PropertyUtils.setSimpleProperty(getObject(), tmp.getChamp().replace("Init", "Unite"),
+               ((List<Object>) tmp.getValue()).get(1));
          }else{
-            beanToModify = delegate;
+            PropertyUtils.setSimpleProperty(getObject(), tmp.getChamp() + "Unite", ((List<Object>) tmp.getValue()).get(1));
          }
-
-         if(!(tmp.getValue() instanceof List)){
-            PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp(), tmp.getValue());
-         }else{
-            PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp(), ((List<Object>) tmp.getValue()).get(0));
-
-            if(tmp.getChamp().contains("Init")){
-               PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp().replace("Init", "Unite"),
-                  ((List<Object>) tmp.getValue()).get(1));
-            }else{
-               PropertyUtils.setSimpleProperty(beanToModify, tmp.getChamp() + "Unite", ((List<Object>) tmp.getValue()).get(1));
-            }
-         }
-
-      }catch(final Exception ex){
-         log.error(ex.getMessage(), ex);
       }
-
+      
       final StringBuffer sb = new StringBuffer();
       sb.append("[");
       if(tmp.getPrintValue() != null){

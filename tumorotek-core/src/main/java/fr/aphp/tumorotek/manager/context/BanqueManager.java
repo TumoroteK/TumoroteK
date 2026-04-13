@@ -151,8 +151,8 @@ public interface BanqueManager
    List<Banque> findByAutoriseCrossPatientManager(boolean cross);
 
    /**
-    * Trouve les banques pour lesquelles l'utilisateur a un droit
-    * d'administrateur pour la plateforme spécifiée.
+    * Trouve les banques de la plateforme passée en paramètre pour lesquelles l'utilisateur a un droit
+    * d'administrateur de plateforme ou de collection.
     * @param user
     * @param plateforme
     */
@@ -268,7 +268,7 @@ public interface BanqueManager
     * Les banques doivent être administrées par l'utilisateur 
     * et partager les conteneurs des emplacements attribués 
     * aux objets issus du prelevement.
-    * @since 2.2.1 les banques doivent être de même contexte
+    * @since 2.4.0.0 (TK-520) les banques proposées sont de contexte anapat' et sérologie quel que soit le contexte d'origine
     * @param p Prelevement
     * @param utilisateur 
     * @return liste de Banque

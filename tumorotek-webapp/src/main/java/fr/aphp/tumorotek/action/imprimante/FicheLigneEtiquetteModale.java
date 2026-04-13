@@ -66,7 +66,6 @@ import fr.aphp.tumorotek.action.imports.ImportChampDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.manager.ConfigManager;
 import fr.aphp.tumorotek.manager.coeur.annotation.ChampAnnotationManager;
-import fr.aphp.tumorotek.manager.io.ChampDelegueManager;
 import fr.aphp.tumorotek.manager.io.ChampEntiteManager;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
@@ -74,7 +73,6 @@ import fr.aphp.tumorotek.model.imprimante.ChampLigneEtiquette;
 import fr.aphp.tumorotek.model.imprimante.LigneEtiquette;
 import fr.aphp.tumorotek.model.io.export.AbstractTKChamp;
 import fr.aphp.tumorotek.model.io.export.Champ;
-import fr.aphp.tumorotek.model.io.export.ChampDelegue;
 import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.webapp.gatsbi.GatsbiController;
@@ -520,12 +518,9 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
 
          final List<AbstractTKChamp> listChamps = new ArrayList<>();
          // @since gatsbi
-         // final List<ChampEntite> ces = ManagerLocator.getChampEntiteManager().findByEntiteAndImportManager(selectedEntite, true);
-         final List<ChampEntite> ces = GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite, true, null);
+         final List<ChampEntite> ces = GatsbiController.findByEntiteImportAndIsNullableManager(selectedEntite, true, null, SessionUtils.getCurrentBanque(sessionScope));
          final List<ChampAnnotation> chAnnoList =
             ManagerLocator.getManager(ChampAnnotationManager.class).findByEntiteManager(selectedEntite);
-         final List<ChampDelegue> chDelegueList = ManagerLocator.getManager(ChampDelegueManager.class)
-            .findByEntiteAndContexte(selectedEntite, SessionUtils.getCurrentContexte());
 
          //Ajout du champ banqueId (collection) s'il existe pour l'entité sélectionnée
          final List<ChampEntite> champCollectionList =
@@ -536,7 +531,6 @@ public class FicheLigneEtiquetteModale extends AbstractFicheCombineController
 
          listChamps.addAll(ces);
          listChamps.addAll(chAnnoList);
-         listChamps.addAll(chDelegueList);
 
          listChamps.stream().map(Champ::new).map(ImportChampDecorator::new)
             .sorted(Comparator.comparing(ImportChampDecorator::getNom, String.CASE_INSENSITIVE_ORDER))

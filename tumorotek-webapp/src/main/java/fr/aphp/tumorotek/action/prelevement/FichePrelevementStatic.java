@@ -77,6 +77,7 @@ import fr.aphp.tumorotek.action.prodderive.ProdDeriveController;
 import fr.aphp.tumorotek.action.prodderive.ProdDeriveRowRenderer;
 import fr.aphp.tumorotek.decorator.LaboInterDecorator;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.echantillon.Echantillon;
 import fr.aphp.tumorotek.model.coeur.patient.Maladie;
@@ -86,6 +87,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.Etablissement;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -150,6 +152,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
 
    private Menuitem importDossier;
 
+   protected Vbox protocolesBox;
+   
    protected Vbox selectAllDerivesVbox;
 
 
@@ -290,7 +294,8 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       }
 
       drawRisquesFormatted();
-
+      drawProtocolesFormatted();
+      
       // congelation
       if(prelevement.getCongArrivee() != null && prelevement.getCongArrivee()){
          congArriveeLabel.setValue(Labels.getLabel("Champ.Prelevement.CongArrivee"));
@@ -724,6 +729,24 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
       }
    }
 
+   /**
+    * Dessine les protocoles associés au prélèvement.
+    */
+   private void drawProtocolesFormatted(){
+      Components.removeAllChildren(protocolesBox);
+      if(getObject().getPrelevementId() != null){
+         final Iterator<Protocole> protosIt = getObject().getProtocoles().iterator();
+         Protocole pt;
+         Label lab;
+         while(protosIt.hasNext()){
+            pt = protosIt.next();
+            lab = new Label(pt.getNom());
+            lab.setSclass("formValue");
+            protocolesBox.appendChild(lab);
+         }
+      }
+   }
+   
    /*************************************************************************/
    /************************** GROUPS ***************************************/
    /*************************************************************************/
@@ -1448,7 +1471,12 @@ public class FichePrelevementStatic extends AbstractFicheStaticController
             ((Group) groupDerives).setOpen(b);
       }else{
             ((Groupbox) groupDerives).setOpen(b);
-      }      
+      } 
    }
 
+   //TK-520
+   public boolean displayEchansOrganeEtCodeLesionnel() {
+      return EchantillonRowRenderer.displayEchansOrganeEtCodeLesionnel();
+   }   
+   
 }

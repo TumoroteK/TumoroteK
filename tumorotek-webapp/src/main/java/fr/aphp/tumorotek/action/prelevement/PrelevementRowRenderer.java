@@ -49,8 +49,11 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.utils.PrelevementUtils;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
+import fr.aphp.tumorotek.manager.helper.ContexteHelper;
 import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
+import fr.aphp.tumorotek.model.contexte.EContexte;
 import fr.aphp.tumorotek.model.interfacage.Emetteur;
+import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
  * PrelevementRenderer affiche dans le Row
@@ -217,8 +220,11 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
 
       renderThesObjectProperty(row, prel, "nature");
 
-      renderCodeLesionnels(row, prel);
+      // /!\ en fonction du contexte, la colonne Diagnostic est alimenté par des données différentes :
+      renderColumnDiagnosticContent(row, prel);
 
+      renderProtocoles(row, prel);
+      
       renderNbEchans(row, prel);
 
       renderThesObjectProperty(row, prel, "consentType");
@@ -289,6 +295,23 @@ public class PrelevementRowRenderer extends TKSelectObjectRenderer<Prelevement>
 
    /*********** prelevement specific rendering information methods ***********/
 
+   private void renderColumnDiagnosticContent(final Row row, final Prelevement prel){
+      EContexte contexte = SessionUtils.getCurrentContexte();
+      //TK-520: bien que le complément diagostic concerne désormais tous les contextes
+      //par manque de place dans le tableau et pour garder l'affichage des codes lésionnels, 
+      //on ne l'affiche que pour le contexte sérologie (comme avant TK-520)
+      if(ContexteHelper.isContexteSerologie(contexte)) {
+         ObjectTypesFormatters.drawComplementDiagnosticLabel(prel.getComplementDiagnostic(), row, null);
+      }
+      else {
+         renderCodeLesionnels(row, prel);
+      }
+   }
+   
+   private void renderProtocoles(final Row row, final Prelevement prel) {
+      ObjectTypesFormatters.drawProtocolesLabel(prel.getProtocoles(), row, null);
+   }
+   
    // codes lésionnels : liste des codes exportés pour échantillons
    protected void renderCodeLesionnels(final Row row, final Prelevement prel){
       ObjectTypesFormatters.drawCodesExpLabel(ManagerLocator.getCodeAssigneManager().findFirstCodesLesByPrelevementManager(prel),

@@ -443,7 +443,6 @@
 						<include>**/AffichageDaoTest.java</include>
 						<!-- <include>**/ChampDaoTest.java</include> -->
 						<include>**/ChampEntiteDaoTest.java</include>
-						<include>**/ChampDelegueDaoTest.java</include>
 						<include>**/CombinaisonDaoTest.java</include>
 						<include>**/CritereDaoTest.java</include>
 						<include>**/GroupementDaoTest.java</include>
