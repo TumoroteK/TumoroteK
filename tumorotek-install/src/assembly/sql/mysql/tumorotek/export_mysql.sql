@@ -1636,7 +1636,7 @@ CREATE PROCEDURE `fill_tmp_table_annotation`(IN collection_id INTEGER, IN entite
     DEALLOCATE PREPARE stmt;
 
     SET @insert = CONCAT('INSERT INTO ', @CORRESP_TABLE, ' (OBJET_ID, CHAMP_ID, CHAMP_NOM, NUM_VALEUR)  
-	SELECT av.objet_id, av.CHAMP_ANNOTATION_ID, ca.nom, convert(convert(av.alphanum,decimal(10,5)),char) FROM ANNOTATION_VALEUR av 
+	SELECT av.objet_id, av.CHAMP_ANNOTATION_ID, ca.nom, convert(convert(av.alphanum,decimal(60,5)),char) FROM ANNOTATION_VALEUR av 
 		INNER JOIN CHAMP_ANNOTATION ca ON ca.CHAMP_ANNOTATION_ID = av.CHAMP_ANNOTATION_ID 
    	 	INNER JOIN TABLE_ANNOTATION ta ON ta.TABLE_ANNOTATION_ID = ca.TABLE_ANNOTATION_ID 
     	INNER JOIN TMP_TABLE_ANNOTATION_RESTRICT r ON ta.TABLE_ANNOTATION_ID = r.TABLE_ANNOTATION_ID 
@@ -1723,7 +1723,7 @@ CREATE PROCEDURE `fill_tmp_table_annotation`(IN collection_id INTEGER, IN entite
               SET @sql = CONCAT('ALTER TABLE ', @CURRENT_TABLE, ' add ', @columname, ' boolean');
             END IF;
           ELSE
-            SET @sql = CONCAT('ALTER TABLE ', @CURRENT_TABLE, ' add ', @columname, ' decimal(10,5)');
+            SET @sql = CONCAT('ALTER TABLE ', @CURRENT_TABLE, ' add ', @columname, ' decimal(60,5)');
           END IF;
         ELSE
           SET @sql = CONCAT('ALTER TABLE ', @CURRENT_TABLE, ' add ', @columname, ' datetime');
