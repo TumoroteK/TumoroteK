@@ -22,6 +22,10 @@
          <outputDirectory>localhost</outputDirectory>
       </fileSet>
       <fileSet>
+         <directory>src/assembly/nginx</directory>
+         <outputDirectory>nginx</outputDirectory>
+      </fileSet>      
+      <fileSet>
          <directory>${build.directory}/site</directory>
          <outputDirectory>tumorotek-site-static</outputDirectory>
       </fileSet>

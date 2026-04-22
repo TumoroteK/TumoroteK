@@ -1,0 +1,29 @@
+# si nginx est utilisé pour gérer la connextion HTTPs, il faut :
+# - sous windows :
+#	- décommenter le bloc "server" associé à l'écoute du port 443 dans le fichier [NGINX_HOME]/nginx.conf
+# - sous Linux :
+#  	- dans  [NGINX_HOME]/conf.d, créer un fichier ssl.conf 
+#  	- copier dans ssl.conf, le bloc "server" associé à l'écoute du port 443, présent le fichier [NGINX_HOME]/nginx.conf
+#  	- décommenter ce bloc server
+#
+# Et sous windows et Linux et l'adapter en :
+#  	- renseignant les chemins pour le certificat (/!\ toujours utiliser des / dans les chemins
+#  	- ajoutant une location pour /tumorotek et une autre pour /gatsbi si le module gatsbi est déployé
+ 
+# ====================================================
+
+location /tumorotek {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_pass http://localhost:8080;  # valeur 8080 par défaut à adapter selon le contexte de déploiement (plusieurs TK sur la machine ...)
+}
+
+location /gatsbi {
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_pass http://localhost:88;  # valeur 88 par défaut à adapter selon le contexte de déploiement (plusieurs TK sur la machine ...)
+}
+
+# ====================================================  	
+
+
+
+# A noter que les valeurs par défaut de certains paramètres doivent être ajustés dans la section http (cf fichier 1-modifSectionHttpForSSL.txt)

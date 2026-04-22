@@ -1,0 +1,18 @@
+# si nginx est utilisé pour l'accès HTTPs, 
+# il faut modifier les valeurs par défaut pour les paramètres ci-dessous dans la section http (fichier [NGINX_HOME]/nginx.conf) :
+
+# =================================================================
+
+# sendfile      on; # valeur par défaut
+sendfile        off;
+ 
+# taille max autorisée pour les CR anapat : 10 mo
+client_max_body_size 10m;
+ 
+# valeur en secondes : cette valeur assez élevée (5 minutes) est nécessaire pour éviter une erreur 504 
+# lors des opérations qui prennent du temps dans TK et affichent un loader qui ne rend jamais la main sinon
+proxy_read_timeout  300;
+
+# ==================================================================
+
+# et définir une section server associée à l'écoute du port 443 : cf fichier 2-sectionServerForSSL.txt
