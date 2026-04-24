@@ -85,7 +85,7 @@ public class MyUserDetailsService implements UserDetailsService
          // sinon throw Exception
          
       }catch(final DataAccessException e){
-         log.info("La tentative de connection {} a échoué car les paramètres de connection sont invalides", username);
+         log.error("La tentative de connection {} a échoué car les paramètres de connection sont invalides", username);
          throw new UsernameNotFoundException("authentication error");
       }
       MDC.remove("client");
