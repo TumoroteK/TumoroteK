@@ -142,7 +142,11 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
       throws IOException{
 
       Emetteur emetteurObj = null;
-
+      
+      log.debug("fileXml : " + fileXml);
+      log.debug("file : " + file);
+      log.debug("boiteFtp : " + boiteFtp);
+      
       if(file != null && fileXml != null && boiteFtp != null){
          // On crée une instance de SAXBuilder
          final SAXBuilder sxb = new SAXBuilder();
@@ -150,17 +154,21 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
          try{
             //On crée un nouveau document JDOM avec en
             // argument le fichier XML
+            log.debug("avant la lecture de inboxes.xml ");
             document = sxb.build(new File(fileXml));
+            log.debug("après la lecture de inboxes.xml ");
 
             // On initialise un nouvel élément racine avec
             // l'élément racine du document.
             final Element racine = document.getRootElement();
             // on récupère toutes les boites ftp que l'on va parcourir
             final List<?> boites = racine.getChildren("BoiteFtp");
+            log.debug("debut de la lecture des BoiteFtp");
             for(int i = 0; i < boites.size(); i++){
                final Element boite = (Element) boites.get(i);
                // on va traiter la boite correspondant à celle passée
                // en paramètre
+               log.debug("nom de la boite : " + (boite == null ? "null" : boite.getAttributeValue("nom")));
                if(boite.getAttributeValue("nom").equals(boiteFtp)){
                   // init de la config pour parser le message
                   final ConfigurationParsing config = initConfigurationParsing(boite);
@@ -168,8 +176,10 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                   // EXTRACTION DE L'EMETTEUR
                   // extraction du bloc
                   String bloc = boite.getChild("Emetteur").getChildText("Bloc");
+                  log.debug("bloc de l'émetteur : " + bloc);
                   // extraction de l'emplacement
                   String emplacement = boite.getChild("Emetteur").getChildText("Emplacement");
+                  log.debug("emplacement de l'emetteur : " + emplacement);
 
                   // prepare le contenu du message pour l'extraction des informations
                   final List<Hashtable<String, List<String>>> contenu = parseFileToInjectInTk(config, file);
@@ -178,23 +188,28 @@ public class InterfacageParsingUtilsImpl implements InterfacageParsingUtils
                   if(bloc != null && emplacement != null){
                      // les infos sont dans le premier segment MSH (avant les ORC)
                      emetteur = getValueFromBlocAndEmplacement(contenu.get(0), config, bloc, emplacement);
+                     log.debug("emetteur : " + emetteur);
                   }
 
                   // EXTRACTION DU SERVICE
                   // extraction du bloc
                   bloc = boite.getChild("Service").getChildText("Bloc");
+                  log.debug("bloc du service : " + bloc);
                   // extraction de l'emplacement
                   emplacement = boite.getChild("Service").getChildText("Emplacement");
+                  log.debug("emplacement du service : " + emplacement);                  
 
                   String service = null;
                   if(bloc != null && emplacement != null){
                      // les infos sont dans le premier segment MSH (avant les ORC)
                      service = getValueFromBlocAndEmplacement(contenu.get(0), config, bloc, emplacement);
+                     log.debug("service : " + service);
                   }
 
                   // recherche de l'emetteur en fct de son nom
                   // et de son service
                   final List<Emetteur> emts = emetteurManager.findByIdentificationAndServiceManager(emetteur, service);
+                  log.debug("nb emetteurs : " + emts.size());
 
                   if(emts.size() == 1){
                      emetteurObj = emts.get(0);
