@@ -65,6 +65,7 @@
 <?component name="modificationMultipleCodeAssigne" macroURI="/zuls/modification_multiple/ModificationMultipleCodeAssigne.zul" ?>
 <?component name="modificationMultipleFile" macroURI="/zuls/modification_multiple/ModificationMultipleFile.zul" ?>
 <?component name="modificationMultipleNonConformites" macroURI="/zuls/modification_multiple/ModificationMultipleNonConformites.zul" ?>
+<?component name="modificationMultipleDuree" macroURI="/zuls/modification_multiple/ModificationMultipleDuree.zul" ?>
 <?component name="codesModale" macroURI="/zuls/code/Codes.zul" ?>
 <?component name="champImpression" macroURI="/zuls/impression/FicheChampImpression.zul" ?>
 <?component name="ficheTemplateModale" macroURI="/zuls/impression/FicheTemplateModale.zul"?>
