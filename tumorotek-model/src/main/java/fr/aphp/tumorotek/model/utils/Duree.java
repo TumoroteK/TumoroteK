@@ -50,8 +50,13 @@ import java.util.Date;
 public class Duree
 {
 
+   public static int NB_JOURS_DANS_MOIS = 30;
+   public static int NB_JOURS_DANS_ANNEE = 365;
+   
    public static Long MILLISECONDE = 1L;
 
+   //valeurs des différentes "unités" en millisecondes car la durée est stockée en millisecondes dans cette classe
+   //Mais /!\ elle est stockée en secondes en base de données dans CHAMP_CALCULE champ VALEUR
    public static Long SECONDE = 1000 * MILLISECONDE;
 
    public static Long MINUTE = SECONDE * 60;
@@ -60,14 +65,20 @@ public class Duree
 
    public static Long JOUR = HEURE * 24;
 
+   //pas utilisé
    public static Long SEMAINE = JOUR * 7;
 
-   public static Long MOIS = JOUR * 30;
+   public static Long MOIS = JOUR * NB_JOURS_DANS_MOIS;
 
-   public static Long ANNEE = JOUR * 365;
-
+   public static Long ANNEE = JOUR * NB_JOURS_DANS_ANNEE;
+   //
+   
+   // /!\ en java la division de 2 entiers renvoient la partie entière mais comme c'est la classe qui a forcé
+   // les secondes en millisecondes, pas de risque d'erreur !
+   public static Long JOUR_EN_SECONDES = JOUR / 1000;
+   
    private Long millisecondes;
-
+   
    /**
     * Initialise une durée selon l'unité
     * @param temps temps
@@ -105,11 +116,16 @@ public class Duree
       this.millisecondes = dateEnd.getTimeInMillis() - dateStart.getTimeInMillis();
    }
 
+   protected Long getMillisecondes(){
+      return millisecondes;
+   }
+   
    /**
     * Retourne la duree selon le type
     * @param unite utiliser les Duree.TYPE
     * @return le temps selon le type
     */
+   //Rappel : en java la division d'entier ramène la partie entière.
    public Long getTemps(final Long unite){
       return millisecondes / unite;
    }

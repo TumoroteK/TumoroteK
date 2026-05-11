@@ -65,6 +65,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.utils.Duree;
+import fr.aphp.tumorotek.model.utils.DureeForChampCalcule;
 
 /**
  * MacroComponent dessinant les composant editables permettant à
@@ -140,7 +141,8 @@ public class ChampCalculeComponent extends Div
 
    private final Textbox valeurCell = new Textbox();
 
-   DureeComponent dureeCell = new DureeComponent();
+   //TK-864 :
+   DureeForChampCalculeComponent dureeCell = new DureeForChampCalculeComponent();
 
    /**
     * Initialise le composant ChampCalculé
@@ -443,7 +445,7 @@ public class ChampCalculeComponent extends Div
    }
 
    /**
-    * Rempli le composant avec les valeurs du champCalcule
+    * Remplit le composant avec les valeurs du champCalcule
     */
    private void fillupComponent(){
       if(null != champCalcule){
@@ -466,9 +468,13 @@ public class ChampCalculeComponent extends Div
          }
          if(null != champCalcule.getDataType() && null != champCalcule.getValeur() && !"".equals(champCalcule.getValeur())){
             final String dataType = champCalcule.getDataType().getType();
-            if("duree".equals(dataType) || "date".equals(dataType) || "datetime".equals(dataType)){
+            if("duree".equals(dataType)){
                dureeCell.setDuree(new Duree(new Long(champCalcule.getValeur()), Duree.SECONDE));
-            }else{
+            }
+            else if ("date".equals(dataType) || "datetime".equals(dataType)){
+               dureeCell.setDuree(new DureeForChampCalcule(new Long(champCalcule.getValeur()), Duree.SECONDE, champCalcule.getValeurAForcerEnJours()));
+            }
+            else{
                valeurCell.setValue(champCalcule.getValeur());
             }
          }
@@ -478,15 +484,18 @@ public class ChampCalculeComponent extends Div
    }
 
    /**
-    * Rempli le champCalcule avec les valeurs du composant
+    * Remplit le champCalcule avec les valeurs du composant
     */
    private void fillupChampCalcule(){
       if(null != champCalcule.getChamp1() && null != champCalcule.getChamp1().dataType()){
          if(null != valeurCell.getValue() && !"".equals(valeurCell.getValue())){
             champCalcule.setValeur(valeurCell.getValue());
          }
-         if(null != dureeCell.getDuree() && 0 != dureeCell.getDuree().getTemps(Duree.SECONDE)){
-            champCalcule.setValeur(dureeCell.getDuree().getTemps(Duree.SECONDE).toString());
+         DureeForChampCalcule duree = dureeCell.getDureeForChampCalcule();
+         if(null != duree && 0 != duree.getTemps(Duree.SECONDE)){
+            champCalcule.setValeur(duree.getTemps(Duree.SECONDE).toString());
+            //TK-864 :
+            champCalcule.setValeurAForcerEnJours(duree.getForceEnJours());
          }
          generateChampCalculeType(champCalcule);
       }
@@ -541,7 +550,7 @@ public class ChampCalculeComponent extends Div
    }
 
    /**
-    * Rempli le composent selon les propriétés du champCalcule
+    * Remplit le composent selon les propriétés du champCalcule
     * @param champCalcule le champ calculé
     */
    public void setChampCalcule(final ChampCalcule champCalcule){

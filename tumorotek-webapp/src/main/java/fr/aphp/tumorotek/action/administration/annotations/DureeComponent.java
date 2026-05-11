@@ -63,7 +63,7 @@ public class DureeComponent extends Div
    /**
     * Durée lié au composant
     */
-   private Duree duree = new Duree(0L, Duree.SECONDE);
+   protected Duree duree = new Duree(0L, Duree.SECONDE);
 
    /**
     * Désactivation du composant (grisage des différents champs)
@@ -72,7 +72,7 @@ public class DureeComponent extends Div
 
    private final Label anneesLabel = new Label(Labels.getLabel("date.annees") + " ");
 
-   private final Longbox anneesBox = new Longbox();
+   final Longbox anneesBox = new Longbox();
 
    Label moisLabel = new Label(Labels.getLabel("date.months") + " ");
 
@@ -179,7 +179,7 @@ public class DureeComponent extends Div
    /**
     * Rempli le composant en fonction de la durée
     */
-   private void fillupComponent(){
+   protected void fillupComponent(){
       if(this.duree != null){
          final Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
          final Long annees = dureeDecompte.getTemps(Duree.ANNEE);
@@ -209,14 +209,16 @@ public class DureeComponent extends Div
    /**
     * Génère la durée en fonction des valeurs du composant
     */
-   private void fillupDuree(){
-      final Duree duree = new Duree(0L, Duree.SECONDE);
+   protected void fillupDuree(){
+      reinit();
       duree.addTemps(minutesBox.getValue(), Duree.MINUTE);
       duree.addTemps(heuresBox.getValue(), Duree.HEURE);
       duree.addTemps(joursBox.getValue(), Duree.JOUR);
       duree.addTemps(moisBox.getValue(), Duree.MOIS);
       duree.addTemps(anneesBox.getValue(), Duree.ANNEE);
-      this.duree = duree;
    }
 
+   protected void reinit(){
+      duree = new Duree(0L, Duree.SECONDE);
+   }
 }

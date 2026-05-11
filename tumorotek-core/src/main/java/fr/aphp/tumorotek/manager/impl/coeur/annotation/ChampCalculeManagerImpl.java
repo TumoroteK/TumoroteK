@@ -251,6 +251,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    public Object getValueForObjectManager(final ChampCalcule champCalcule, final Object obj){
       Object val1 = null;
       Object val2 = null;
+      Boolean val2AForcerEnJours = null;
       Object res = null;
 
       // Récupère la valeur du champ1
@@ -266,6 +267,8 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
          val2 = RechercheUtilsManager.getChampValueFromObjectList(champCalcule.getChamp2(), objetsAssocies);
       }else if(null != champCalcule.getValeur()){
          val2 = champCalcule.getValeur();
+         //TK-864 :
+         val2AForcerEnJours = champCalcule.getValeurAForcerEnJours();
       }
 
       final String operateur = champCalcule.getOperateur();
@@ -275,7 +278,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
          if("calcule".equals(champ1DataType.getType())){
             champ1DataType = champCalcule.getChamp1().getChampAnnotation().getChampCalcule().getDataType();
          }
-         res = calculate(val1, val2, operateur, champ1DataType);
+         res = calculate(val1, val2, operateur, champ1DataType, val2AForcerEnJours);
       }
 
       return res;
@@ -289,7 +292,9 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * @param champ1DataType le datatype du champ1
     * @return le résultat
     */
-   private Object calculate(final Object val1, final Object val2, final String operateur, final DataType champ1DataType){
+   //adaptation pour TK-864
+   private Object calculate(final Object val1, final Object val2, final String operateur, final DataType champ1DataType, 
+                              final Boolean val2AForcerEnJours){
       Object res = null;
       switch(operateur){
          case "+":
@@ -299,7 +304,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
                   break;
                case "date":
                case "datetime":
-                  res = addDate(val1, val2);
+                  res = addDate(val1, val2, val2AForcerEnJours);//adaptation pour TK-864
                   break;
                case "duree":
                   res = addDuree(val1, val2);
@@ -316,7 +321,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
                   break;
                case "date":
                case "datetime":
-                  res = substractDate(val1, val2);
+                  res = substractDate(val1, val2, val2AForcerEnJours);//adaptation pour TK-864
                   break;
                case "duree":
                   res = substractDuree(val1, val2);
@@ -339,7 +344,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * @param val2 Objet Date ou Calendar
     * @return Calendar
     */
-   private Calendar addDate(final Object val1, final Object val2){
+   private Calendar addDate(final Object val1, final Object val2, Boolean val2AForcerEnJours){
       Calendar date1 = null;
       Calendar result = null;
 
@@ -355,22 +360,38 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
 
       if(null != date1 && null != val2){
          final Long secondes = new Long(val2.toString());
+         //TODO REFACTORING TK-867 : définir une méthode dans Duree et DureeForChampCalcule qui retourne un tableau avec
+         //les valeurs pour ANNEE, MOIS, JOUR, HEURE, MINUTE : il resterait juste à instancier le bon objet ici
          final Duree duree = new Duree(secondes, Duree.SECONDE);
-         final Long annees = duree.getTemps(Duree.ANNEE);
-         duree.addTemps(-annees, Duree.ANNEE);
-         final Long mois = duree.getTemps(Duree.MOIS);
+         Long annees = 0L;
+         Long mois = 0L;
+         //TK-864 :
+         if(val2AForcerEnJours != null && val2AForcerEnJours) {
+            //on laisse annees et mois à 0 
+         }
+         else {
+            //récupération du nombre d'années et de mois :
+            annees = duree.getTemps(Duree.ANNEE);
+            //soustraction du nombre d'années pour déterminer les mois :
+            duree.addTemps(-annees, Duree.ANNEE);
+            mois = duree.getTemps(Duree.MOIS);
+         }
+         //soustraction du nombre de mois pour déterminer les jours :
          duree.addTemps(-mois, Duree.MOIS);
          final Long jours = duree.getTemps(Duree.JOUR);
+         //soustraction du nombre de jours pour déterminer le nombre d'heures :
          duree.addTemps(-jours, Duree.JOUR);
+         //soustraction du nombre d'heures pour déterminer le nombre de minutes :
          final Long heures = duree.getTemps(Duree.HEURE);
          duree.addTemps(-heures, Duree.HEURE);
+         //ce qui reste correspond aux minutes :
          final Long minutes = duree.getTemps(Duree.MINUTE);
          result = date1;
-         result.add(Calendar.MINUTE, new Integer(minutes.toString()));
-         result.add(Calendar.HOUR_OF_DAY, new Integer(heures.toString()));
-         result.add(Calendar.DAY_OF_MONTH, new Integer(jours.toString()));
-         result.add(Calendar.MONTH, new Integer(mois.toString()));
-         result.add(Calendar.YEAR, new Integer(annees.toString()));
+         result.add(Calendar.MINUTE, minutes.intValue());
+         result.add(Calendar.HOUR_OF_DAY, heures.intValue());
+         result.add(Calendar.DAY_OF_MONTH, jours.intValue());
+         result.add(Calendar.MONTH, mois.intValue());
+         result.add(Calendar.YEAR, annees.intValue());
       }
       return result;
    }
@@ -389,7 +410,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
     * @param val2 Objet Date, Calendar ou Number
     * @return Calendar ou Durée
     */
-   private Object substractDate(final Object val1, final Object val2){
+   private Object substractDate(final Object val1, final Object val2, Boolean val2AForcerEnJours){
       Calendar date1 = null;
       Calendar date2 = null;
       Integer secondes = null;
@@ -436,10 +457,22 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
             duree.addTemps(new Long(date1.get(Calendar.DAY_OF_MONTH) - date2.get(Calendar.DAY_OF_MONTH)), Duree.JOUR);
             result = duree.getTemps(Duree.SECONDE);
          }else if(null != secondes){ // Soustraction d'une date à une durée donne une date
+            //TODO REFACTORING TK-867 : définir une méthode dans Duree et DureeForChampCalcule qui retourne un tableau avec
+            //les valeurs pour ANNEE, MOIS, JOUR, HEURE, MINUTE : il resterait juste à instancier le bon objet ici
             final Duree duree = new Duree(new Long(secondes), Duree.SECONDE);
-            final Long annees = duree.getTemps(Duree.ANNEE);
-            duree.addTemps(-annees, Duree.ANNEE);
-            final Long mois = duree.getTemps(Duree.MOIS);
+            //TK-864 : même adaptation que pour la méthode addDate() :
+            Long annees = 0L;
+            Long mois = 0L;
+            //TK-864 :
+            if(val2AForcerEnJours != null && val2AForcerEnJours) {
+               //on laisse annees et mois à 0 
+            }
+            else {
+               //récupération du nombre d'années et de mois :
+               annees = duree.getTemps(Duree.ANNEE);
+               duree.addTemps(-annees, Duree.ANNEE);
+               mois = duree.getTemps(Duree.MOIS);
+            }            
             duree.addTemps(-mois, Duree.MOIS);
             final Long jours = duree.getTemps(Duree.JOUR);
             duree.addTemps(-jours, Duree.JOUR);

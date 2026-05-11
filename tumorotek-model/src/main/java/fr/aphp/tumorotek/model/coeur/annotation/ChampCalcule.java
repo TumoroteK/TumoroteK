@@ -99,6 +99,14 @@ public class ChampCalcule implements Serializable
     */
    private String valeur;
 
+   //TK-864
+   //pour une durée, "valeur" est stockée en secondes en base.
+   //Par défaut une valeur correspondant à plus de 29j est transformée en mois
+   //mais si valeurAForcerEnJours vaut true, la valeur est transformée en jours. En effet, dans certains cas, cela ne donne pas le même résultat :
+   //Exemple : pour 35 jours précisément, si transformation en 1mois + 5jours, la durée vaudra en fait 35, 36 ou 33 jours selon que
+   //la date de référence se trouve dans un mois de 30, 31 ou 28 jours
+   private Boolean valeurAForcerEnJours;
+
    /**
     * Opération a effectuer entre les deux champs/valeur
     * TODO ChampCalcule - Enum ?
@@ -204,6 +212,15 @@ public class ChampCalcule implements Serializable
       this.valeur = valeur;
    }
 
+   @Column(name = "VALEUR_A_FORCER_EN_JOURS")
+   public Boolean getValeurAForcerEnJours(){
+      return valeurAForcerEnJours;
+   }
+
+   public void setValeurAForcerEnJours(Boolean valeurAForcerEnJours){
+      this.valeurAForcerEnJours = valeurAForcerEnJours;
+   }
+   
    /**
     * Opération a effectuer entre les deux champs/valeur
     * @return Opération a effectuer entre les deux champs/valeur
@@ -337,6 +354,7 @@ public class ChampCalcule implements Serializable
       clone.setChamp2(this.champ2);
       clone.setOperateur(this.operateur);
       clone.setValeur(this.valeur);
+      clone.setValeurAForcerEnJours(valeurAForcerEnJours);
       clone.setDataType(this.dataType);
       return clone;
    }

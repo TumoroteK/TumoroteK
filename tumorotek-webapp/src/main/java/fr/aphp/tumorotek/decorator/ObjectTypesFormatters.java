@@ -85,6 +85,7 @@ import fr.aphp.tumorotek.model.io.export.ChampEntite;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Fichier;
 import fr.aphp.tumorotek.model.utils.Duree;
+import fr.aphp.tumorotek.model.utils.DureeForChampCalcule;
 import fr.aphp.tumorotek.param.TkParam;
 import fr.aphp.tumorotek.param.TumorotekProperties;
 
@@ -598,17 +599,29 @@ public final class ObjectTypesFormatters
     * @return Délai en Années Mois Jours Heures Minutes.
     */
    public static String formatDuree(final Duree duree){
+      // avant TK-864 : code identique à DureeComponent.fillupComponent() 
+      // après TK-864 : mix entre DureeComponent.fillupComponent() et DureeForChampCalculeComponent.fillupComponent()
+      //TODO REFACTORING TK-867 : définir une méthode dans Duree et DureeForChampCalcule qui retourne un tableau avec
+      //les valeurs pour ANNEE, MOIS, JOUR, HEURE, MINUTE : il resterait juste à instancier le bon objet ici
       final Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
-      final Long annees = dureeDecompte.getTemps(Duree.ANNEE);
+      Long annees = dureeDecompte.getTemps(Duree.ANNEE);
       dureeDecompte.addTemps(-annees, Duree.ANNEE);
-      final Long mois = dureeDecompte.getTemps(Duree.MOIS);
+      Long mois = dureeDecompte.getTemps(Duree.MOIS);
       dureeDecompte.addTemps(-mois, Duree.MOIS);
-      final Long jours = dureeDecompte.getTemps(Duree.JOUR);
+      Long jours = dureeDecompte.getTemps(Duree.JOUR);
       dureeDecompte.addTemps(-jours, Duree.JOUR);
       final Long heures = dureeDecompte.getTemps(Duree.HEURE);
       dureeDecompte.addTemps(-heures, Duree.HEURE);
       final Long minutes = dureeDecompte.getTemps(Duree.MINUTE);
-
+      //TK-864
+      if(duree instanceof DureeForChampCalcule
+            && ((DureeForChampCalcule)duree).getForceEnJours() != null && ((DureeForChampCalcule)duree).getForceEnJours()) {
+         jours = jours + mois*Duree.NB_JOURS_DANS_MOIS + annees*Duree.NB_JOURS_DANS_ANNEE;
+         mois = 0L;
+         annees = 0L;
+      }
+      //
+      
       final StringBuffer sb = new StringBuffer();
       // Flag pour savoir d'où commence le formattage et ne pas avoir de "trous"
 
@@ -668,8 +681,12 @@ public final class ObjectTypesFormatters
 
          if(null != champCalcule.getChamp2()){
             sb.append("[" + formatChampLabel(champCalcule.getChamp2(), true, "-") + "]");
-         }else if("date".equals(champCalcule.getDataType().getType()) || "datetime".equals(champCalcule.getDataType().getType())
-            || "duree".equals(champCalcule.getDataType().getType())){
+         }
+         //TK-864 : pour une date ou un datetime, la durée pouvant être ajoutée ou retirée peut être forcer en jours (info stockée en base lors de la définition du champ calculé)
+         else if("date".equals(champCalcule.getDataType().getType()) || "datetime".equals(champCalcule.getDataType().getType())){
+            final Duree duree = new DureeForChampCalcule(new Long(champCalcule.getValeur()), Duree.SECONDE, champCalcule.getValeurAForcerEnJours());
+            sb.append(formatDuree(duree));
+         }else if("duree".equals(champCalcule.getDataType().getType())){
             final Duree duree = new Duree(new Long(champCalcule.getValeur()), Duree.SECONDE);
             sb.append(formatDuree(duree));
          }else{

@@ -30,4 +30,5 @@
     <include file="liquibase/changelog/db.changelog-2.3.1.0_5_TK-762.xml"/>
     <include file="liquibase/changelog/db.changelog-2.3.1.0_6_TK-810.xml"/>
     <include file="liquibase/changelog/db.changelog-2.3.1.1_1_TK-840.xml"/>
+    <include file="liquibase/changelog/db.changelog-2.3.1.1_2_TK-864.xml"/>
 </databaseChangeLog>
