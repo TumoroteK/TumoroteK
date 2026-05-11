@@ -222,10 +222,10 @@ public class FicheChampsImpression extends AbstractFicheController
       //Aurait dû s'appeler champDecorators ...
       champs = new ArrayList<>();
 
-      // on récupère les champs du bloc qui sont à imprimer (en création dépend du contexte et mode utilisation, ceux du modèle)
+      // on récupère les champs du bloc qui sont à imprimer (en création dépend du contexte et du mode d'utilisation, ceux du modèle)
       // Ceux-ci ont été mis dans blocImpressionDecorator au niveau de FicheTemplate.java / FicheTemplaceModale.java méthode generateListeBlocs()
-      //et on crée un décorator qui par défaut à l'attribut imprimer à true :
-      //on stocke dans une liste les champ entités à imprimer pour le bloc en param. Sera utilisé ensuite dans le traitement 
+      // Puis Création d'un décorator qui par défaut à l'attribut imprimer à true :
+      // Enfin stockage dans une liste des champ entités à imprimer pour le bloc en param. Sera utilisé ensuite dans le traitement 
       List<ChampEntite> listSelectedChampEntite = new ArrayList<ChampEntite>();
       for(int i = 0; i < blocImpressionDecorator.getChampEntites().size(); i++){
          ChampEntite currentChampEntite = blocImpressionDecorator.getChampEntites().get(i);
