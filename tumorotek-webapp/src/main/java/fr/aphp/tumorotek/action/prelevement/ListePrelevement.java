@@ -249,15 +249,32 @@ public class ListePrelevement extends AbstractListeController2
 
    @Override
    public void initObjectsBox(){
-
-      final List<Prelevement> prlvts = ManagerLocator.getPrelevementManager()
-         .findLastCreationManager(SessionUtils.getSelectedBanques(sessionScope), getNbLastObjs());
-
-      setListObjects(prlvts);
-      setCurrentRow(null);
-      setCurrentObject(null);
-
-      getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
+      //TK-857 : parfois, l'application ne rend pas à main après la connexion et le chargement
+      //de la liste des prélèvements.
+      //cette méthode est appelée lors du chargement des composants dans MainWindow.doAfterCompose()
+      //(mainBinder.loadAll();), méthode qui fait beaucoup de choses. 
+      //Tentative de correction du problème en séparant le création de l'objet, du chargement de sa "grid"
+      //NB : comme mainBinder.loadAll() affiche déjà un loader indiquant "Chargement..."
+      //le message du showBusy ci-dessous sera laissé vide pour ne pas en afficher un 2e
+      Clients.showBusy(getObjectsListGrid(), "");
+      Events.echoEvent("onLaterInitObjectsBox", self, null);
+   }
+   
+   //TK-857
+   public void onLaterInitObjectsBox() {
+      try { 
+         final List<Prelevement> prlvts = ManagerLocator.getPrelevementManager()
+            .findLastCreationManager(SessionUtils.getSelectedBanques(sessionScope), getNbLastObjs());
+   
+         setListObjects(prlvts);
+         setCurrentRow(null);
+         setCurrentObject(null);
+   
+         getBinder().loadAttribute(self.getFellow("objectsListGrid"), "model");
+      }
+      finally {//dans tous les cas, on veut supprimer le loader d'où l'utilisation d'un bloc try / finally
+         Clients.clearBusy(getObjectsListGrid());
+      }      
    }
 
    /**

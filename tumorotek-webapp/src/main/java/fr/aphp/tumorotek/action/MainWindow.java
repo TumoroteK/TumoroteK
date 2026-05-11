@@ -288,6 +288,12 @@ public class MainWindow extends GenericForwardComposer<Component>
          .getFellow("editUser");
       edit.addForward(null, self, "onClickEditUser", null);
 
+      //chargement de toute l'arborescence des composants ZK.
+      //ZK affiche un loader lors de cette opération
+      //C'est ce loader qui ne rend pas la main dans certains cas (TK-857)
+      //Pour essayer de corriger le problème, le chargement de la liste des prélèvements
+      //va être décorélé de la création de l'objet ListePrelevement pour d'une part que le temps d'exécution
+      //soit moins long et d'autre part, forcer l'appel d'un clearBusy à la fin du chargement
       mainBinder.loadAll();
 
       // if (sessionScope.containsKey("patient")) {
