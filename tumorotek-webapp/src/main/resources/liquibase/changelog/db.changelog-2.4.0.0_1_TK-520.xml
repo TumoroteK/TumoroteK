@@ -68,9 +68,11 @@
     	<!-- il est possible de passer ce script sous surveillance. Dans ce cas, il faut insérer une ligne dans la table CESSION_DELEGATE,
     	     qui est toujours vide et fait partie des tables à supprimer. INSERT INTO CESSION_DELEGATE values (1, (select min(cession_id) from CESSION));
     		 Dans ce cas, le script ne passera pas mais devra être lancé manuellement -->
-    	<preConditions onFail="MARK_RAN">
-            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CESSION_DELEGATE
-            </sqlCheck>
+	   	<preConditions onFail="MARK_RAN">
+            <and>
+				<tableExists tableName="CESSION_DELEGATE" />
+				<sqlCheck expectedResult="0">SELECT COUNT(1) FROM CESSION_DELEGATE</sqlCheck>
+            </and>
         </preConditions>
         <comment>Suppression de toutes les tables inutilisées</comment>
         <!-- NB : depuis la version 2.3.1.0, on ne gère plus Oracle  -->

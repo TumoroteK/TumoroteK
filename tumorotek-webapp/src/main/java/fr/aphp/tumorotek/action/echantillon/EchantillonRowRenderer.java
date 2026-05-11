@@ -450,7 +450,7 @@ public class EchantillonRowRenderer extends TKSelectObjectRenderer<Echantillon>
       }
    }
    
-   //TK-520 : cette méthode static sera appelé par tous les controllers devant géré l'affichage des codes organes
+   //TK-520 : cette méthode static sera appelée par tous les controllers devant géré l'affichage des codes organes
    //et codes lésionnels. Cela permet de centraliser à un seul endroit du code la règle d'affichage au cas où un jour elle devait évoluer.
    public static boolean displayEchansOrganeEtCodeLesionnel() {
       return !ContexteHelper.isContexteSerologie(SessionUtils.getCurrentContexte());
