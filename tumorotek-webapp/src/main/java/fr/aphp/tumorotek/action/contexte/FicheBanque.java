@@ -243,7 +243,7 @@ public class FicheBanque extends AbstractFicheCombineController
 
    private Listbox listboxProfils;
    private BindingListModelList<Utilisateur> utilisateursData;
-   private BindingListModelSet<Profil> profilsData;
+   private BindingListModelList<Profil> profilsData;
 
    // conteneurs
    private Group groupConteneurs;
@@ -402,7 +402,7 @@ public class FicheBanque extends AbstractFicheCombineController
       listboxProfils.setItemRenderer(profilRenderer);
 
       utilisateursData = new BindingListModelList<>(new ArrayList<Utilisateur>(), true);
-      profilsData = new BindingListModelSet<>(new HashSet<Profil>(), true);
+      profilsData = new BindingListModelList<>(new ArrayList<Profil>(), true);
 
       utilisateursData.setMultiple(true);
 
@@ -426,8 +426,8 @@ public class FicheBanque extends AbstractFicheCombineController
       utilisateursData.addAll(utilisateursPlateforme);
 
       //Initialisation de la liste des profils
-      final Set<Profil> profilsPlateforme = new HashSet<>(ManagerLocator.getManager(ProfilManager.class)
-         .findByPlateformeAndArchiveManager(SessionUtils.getCurrentPlateforme(), false));
+      final List<Profil> profilsPlateforme = ManagerLocator.getManager(ProfilManager.class)
+         .findByPlateformeAndArchiveManager(SessionUtils.getCurrentPlateforme(), false);
       profilsData.clear();
       profilsData.addAll(profilsPlateforme);
 
@@ -2248,7 +2248,7 @@ public class FicheBanque extends AbstractFicheCombineController
       return utilisateursData;
    }
 
-   public BindingListModelSet<Profil> getProfilsData(){
+   public BindingListModelList<Profil> getProfilsData(){
       return profilsData;
    }
 
