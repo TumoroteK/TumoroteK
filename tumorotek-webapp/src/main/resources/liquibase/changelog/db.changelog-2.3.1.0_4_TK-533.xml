@@ -12,7 +12,8 @@
         <!-- MySQL procedures -->
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_gatsbi.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
-        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_sero.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+        <!-- depuis TK-520 (version 2.4.0.0) le fichier export_sero.sql n'existe plus car les spécificités ont été mis en standard -->
+        <!-- <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_sero.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/> -->
         <!-- procédure Oracle mise en commentaire et à décommenter pour les adhérents utilisant Oracle en commentant les lignes précédentes-->
         <!-- <sqlFile encoding="utf8" path="../sql/oracle/tumorotek/export_oracle.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/> -->
     </changeSet>
