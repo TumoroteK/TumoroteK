@@ -600,27 +600,13 @@ public final class ObjectTypesFormatters
     */
    public static String formatDuree(final Duree duree){
       // avant TK-864 : code identique à DureeComponent.fillupComponent() 
-      // après TK-864 : mix entre DureeComponent.fillupComponent() et DureeForChampCalculeComponent.fillupComponent()
-      //TODO REFACTORING TK-867 : définir une méthode dans Duree et DureeForChampCalcule qui retourne un tableau avec
-      //les valeurs pour ANNEE, MOIS, JOUR, HEURE, MINUTE : il resterait juste à instancier le bon objet ici
-      final Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
-      Long annees = dureeDecompte.getTemps(Duree.ANNEE);
-      dureeDecompte.addTemps(-annees, Duree.ANNEE);
-      Long mois = dureeDecompte.getTemps(Duree.MOIS);
-      dureeDecompte.addTemps(-mois, Duree.MOIS);
-      Long jours = dureeDecompte.getTemps(Duree.JOUR);
-      dureeDecompte.addTemps(-jours, Duree.JOUR);
-      final Long heures = dureeDecompte.getTemps(Duree.HEURE);
-      dureeDecompte.addTemps(-heures, Duree.HEURE);
-      final Long minutes = dureeDecompte.getTemps(Duree.MINUTE);
-      //TK-864
-      if(duree instanceof DureeForChampCalcule
-            && ((DureeForChampCalcule)duree).getForceEnJours() != null && ((DureeForChampCalcule)duree).getForceEnJours()) {
-         jours = jours + mois*Duree.NB_JOURS_DANS_MOIS + annees*Duree.NB_JOURS_DANS_ANNEE;
-         mois = 0L;
-         annees = 0L;
-      }
-      //
+      //TK-864 + TK-867
+      Long[] dureeFormatee = duree.format();
+      Long annees = dureeFormatee[Duree.INDEX_ANNEE];
+      Long mois = dureeFormatee[Duree.INDEX_MOIS];
+      Long jours = dureeFormatee[Duree.INDEX_JOUR];
+      Long heures = dureeFormatee[Duree.INDEX_HEURE];
+      Long minutes = dureeFormatee[Duree.INDEX_MINUTE];
       
       final StringBuffer sb = new StringBuffer();
       // Flag pour savoir d'où commence le formattage et ne pas avoir de "trous"

@@ -59,6 +59,7 @@ import fr.aphp.tumorotek.model.coeur.annotation.ChampCalcule;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.io.export.Champ;
 import fr.aphp.tumorotek.model.utils.Duree;
+import fr.aphp.tumorotek.model.utils.DureeForChampCalcule;
 import fr.aphp.tumorotek.utils.ConversionUtils;
 
 /**
@@ -360,38 +361,22 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
 
       if(null != date1 && null != val2){
          final Long secondes = new Long(val2.toString());
-         //TODO REFACTORING TK-867 : définir une méthode dans Duree et DureeForChampCalcule qui retourne un tableau avec
-         //les valeurs pour ANNEE, MOIS, JOUR, HEURE, MINUTE : il resterait juste à instancier le bon objet ici
-         final Duree duree = new Duree(secondes, Duree.SECONDE);
-         Long annees = 0L;
-         Long mois = 0L;
-         //TK-864 :
-         if(val2AForcerEnJours != null && val2AForcerEnJours) {
-            //on laisse annees et mois à 0 
+         //TK-864 + TK-867 : si val2AForcerEnJours est non null, il s'agit d'une durée pour un champ calculé :
+         // A noter que lors de la mise en oeuvre de TK-864, val2AForcerEnJours ne vaut jamais false (soit null soit true) 
+         Duree duree = null;
+         if(val2AForcerEnJours != null) {
+            duree = new DureeForChampCalcule(secondes, Duree.SECONDE, val2AForcerEnJours);
          }
          else {
-            //récupération du nombre d'années et de mois :
-            annees = duree.getTemps(Duree.ANNEE);
-            //soustraction du nombre d'années pour déterminer les mois :
-            duree.addTemps(-annees, Duree.ANNEE);
-            mois = duree.getTemps(Duree.MOIS);
+            duree = new Duree(secondes, Duree.SECONDE);
          }
-         //soustraction du nombre de mois pour déterminer les jours :
-         duree.addTemps(-mois, Duree.MOIS);
-         final Long jours = duree.getTemps(Duree.JOUR);
-         //soustraction du nombre de jours pour déterminer le nombre d'heures :
-         duree.addTemps(-jours, Duree.JOUR);
-         //soustraction du nombre d'heures pour déterminer le nombre de minutes :
-         final Long heures = duree.getTemps(Duree.HEURE);
-         duree.addTemps(-heures, Duree.HEURE);
-         //ce qui reste correspond aux minutes :
-         final Long minutes = duree.getTemps(Duree.MINUTE);
+         Long[] dureeFormatee = duree.format();
          result = date1;
-         result.add(Calendar.MINUTE, minutes.intValue());
-         result.add(Calendar.HOUR_OF_DAY, heures.intValue());
-         result.add(Calendar.DAY_OF_MONTH, jours.intValue());
-         result.add(Calendar.MONTH, mois.intValue());
-         result.add(Calendar.YEAR, annees.intValue());
+         result.add(Calendar.MINUTE, dureeFormatee[Duree.INDEX_MINUTE].intValue());
+         result.add(Calendar.HOUR_OF_DAY, dureeFormatee[Duree.INDEX_HEURE].intValue());
+         result.add(Calendar.DAY_OF_MONTH, dureeFormatee[Duree.INDEX_JOUR].intValue());
+         result.add(Calendar.MONTH, dureeFormatee[Duree.INDEX_MOIS].intValue());
+         result.add(Calendar.YEAR, dureeFormatee[Duree.INDEX_ANNEE].intValue());
       }
       return result;
    }
@@ -413,7 +398,7 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
    private Object substractDate(final Object val1, final Object val2, Boolean val2AForcerEnJours){
       Calendar date1 = null;
       Calendar date2 = null;
-      Integer secondes = null;
+      Long secondes = null;
       Object result = null;
       if(Calendar.class.isInstance(val1)){
          date1 = Calendar.class.cast(val1);
@@ -432,13 +417,13 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
          cal.setTime(Date.class.cast(val2));
          date2 = cal;
       }else if(Number.class.isInstance(val2)){
-         secondes = new Integer(val2.toString());
+         secondes = new Long(val2.toString());
       }else if(String.class.isInstance(val2)){
          try{
             date2 = ConversionUtils.convertToCalendar(val2);
          }catch(final Exception e){
             try{
-               secondes = new Integer(val2.toString());
+               secondes = new Long(val2.toString());
             }catch(final Exception e2){
                log.error(e.getMessage(), e); 
                log.error(e2.getMessage(), e2);
@@ -457,33 +442,20 @@ public class ChampCalculeManagerImpl implements ChampCalculeManager, Application
             duree.addTemps(new Long(date1.get(Calendar.DAY_OF_MONTH) - date2.get(Calendar.DAY_OF_MONTH)), Duree.JOUR);
             result = duree.getTemps(Duree.SECONDE);
          }else if(null != secondes){ // Soustraction d'une date à une durée donne une date
-            //TODO REFACTORING TK-867 : définir une méthode dans Duree et DureeForChampCalcule qui retourne un tableau avec
-            //les valeurs pour ANNEE, MOIS, JOUR, HEURE, MINUTE : il resterait juste à instancier le bon objet ici
-            final Duree duree = new Duree(new Long(secondes), Duree.SECONDE);
-            //TK-864 : même adaptation que pour la méthode addDate() :
-            Long annees = 0L;
-            Long mois = 0L;
-            //TK-864 :
-            if(val2AForcerEnJours != null && val2AForcerEnJours) {
-               //on laisse annees et mois à 0 
+            //TK-864 + TK-867
+            Duree duree = null;
+            if(val2AForcerEnJours != null) {
+               duree = new DureeForChampCalcule(secondes, Duree.SECONDE, val2AForcerEnJours);
             }
             else {
-               //récupération du nombre d'années et de mois :
-               annees = duree.getTemps(Duree.ANNEE);
-               duree.addTemps(-annees, Duree.ANNEE);
-               mois = duree.getTemps(Duree.MOIS);
-            }            
-            duree.addTemps(-mois, Duree.MOIS);
-            final Long jours = duree.getTemps(Duree.JOUR);
-            duree.addTemps(-jours, Duree.JOUR);
-            final Long heures = duree.getTemps(Duree.HEURE);
-            duree.addTemps(-heures, Duree.HEURE);
-            final Long minutes = duree.getTemps(Duree.MINUTE);
-            date1.add(Calendar.MINUTE, -new Integer(minutes.toString()));
-            date1.add(Calendar.HOUR_OF_DAY, -new Integer(heures.toString()));
-            date1.add(Calendar.DAY_OF_MONTH, -new Integer(jours.toString()));
-            date1.add(Calendar.MONTH, -new Integer(mois.toString()));
-            date1.add(Calendar.YEAR, -new Integer(annees.toString()));
+               duree = new Duree(secondes, Duree.SECONDE);
+            }
+            Long[] dureeFormatee = duree.format();
+            date1.add(Calendar.MINUTE, -dureeFormatee[Duree.INDEX_MINUTE].intValue());
+            date1.add(Calendar.HOUR_OF_DAY, -dureeFormatee[Duree.INDEX_HEURE].intValue());
+            date1.add(Calendar.DAY_OF_MONTH, -dureeFormatee[Duree.INDEX_JOUR].intValue());
+            date1.add(Calendar.MONTH, -dureeFormatee[Duree.INDEX_MOIS].intValue());
+            date1.add(Calendar.YEAR, -dureeFormatee[Duree.INDEX_ANNEE].intValue());
 
             result = date1;
          }

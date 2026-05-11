@@ -94,4 +94,17 @@ public class DureeForChampCalcule extends Duree
       this.forceEnJours = forceEnJours;
    }
    
+   /**
+    * retourne les valeurs pour années et mois : 0 si forceEnJours, sinon renvoie le standard 
+    * @return
+    */
+   @Override
+   protected Long[] retrieveAnneesAndMois() {
+      if(forceEnJours != null && forceEnJours) {
+         return new Long[]{0L, 0L};
+      }
+      
+      return super.retrieveAnneesAndMois();
+      
+   }
 }

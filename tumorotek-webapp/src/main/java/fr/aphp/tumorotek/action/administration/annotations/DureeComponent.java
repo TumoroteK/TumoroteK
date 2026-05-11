@@ -181,22 +181,13 @@ public class DureeComponent extends Div
     */
    protected void fillupComponent(){
       if(this.duree != null){
-         final Duree dureeDecompte = new Duree(duree.getTemps(Duree.MILLISECONDE), Duree.MILLISECONDE);
-         final Long annees = dureeDecompte.getTemps(Duree.ANNEE);
-         dureeDecompte.addTemps(-annees, Duree.ANNEE);
-         final Long mois = dureeDecompte.getTemps(Duree.MOIS);
-         dureeDecompte.addTemps(-mois, Duree.MOIS);
-         final Long jours = dureeDecompte.getTemps(Duree.JOUR);
-         dureeDecompte.addTemps(-jours, Duree.JOUR);
-         final Long heures = dureeDecompte.getTemps(Duree.HEURE);
-         dureeDecompte.addTemps(-heures, Duree.HEURE);
-         final Long minutes = dureeDecompte.getTemps(Duree.MINUTE);
-
-         anneesBox.setValue(annees);
-         moisBox.setValue(mois);
-         joursBox.setValue(jours);
-         heuresBox.setValue(heures);
-         minutesBox.setValue(minutes);
+         //TK-864 + TK-867
+         Long[] dureeFormatee = duree.format();
+         anneesBox.setValue(dureeFormatee[Duree.INDEX_ANNEE]);
+         moisBox.setValue(dureeFormatee[Duree.INDEX_MOIS]);
+         joursBox.setValue(dureeFormatee[Duree.INDEX_JOUR]);
+         heuresBox.setValue(dureeFormatee[Duree.INDEX_HEURE]);
+         minutesBox.setValue(dureeFormatee[Duree.INDEX_MINUTE]);
       }else{
          anneesBox.setValue(0L);
          moisBox.setValue(0L);

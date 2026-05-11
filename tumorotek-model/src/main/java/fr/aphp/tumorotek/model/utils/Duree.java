@@ -73,6 +73,16 @@ public class Duree
    public static Long ANNEE = JOUR * NB_JOURS_DANS_ANNEE;
    //
    
+   //index qui permettent d'accéder aux valeurs de la durée 
+   //formattée en années, mois, jours, heures, minutes, secondes
+   public static int INDEX_ANNEE = 0;
+   public static int INDEX_MOIS = 1;
+   public static int INDEX_JOUR = 2;
+   public static int INDEX_HEURE = 3;
+   public static int INDEX_MINUTE = 4;
+   public static int INDEX_SECONDE = 5;
+   
+   
    // /!\ en java la division de 2 entiers renvoient la partie entière mais comme c'est la classe qui a forcé
    // les secondes en millisecondes, pas de risque d'erreur !
    public static Long JOUR_EN_SECONDES = JOUR / 1000;
@@ -148,5 +158,54 @@ public class Duree
       if(null != temps){
          this.millisecondes += temps * unite;
       }
+   }
+   
+   /**
+    * retourne la durée en années, mois, jours, heures minutes (tableau de Long)
+    * @return
+    */
+   public Long[] format() {
+      
+      //le nombre d'années et de mois dépend du "type" de Duree :
+      Long[] anneesAndMois = retrieveAnneesAndMois();
+      Long annees = anneesAndMois[0];
+      Long mois = anneesAndMois[1];
+      
+      Duree dureeForCalcul = new Duree(millisecondes, Duree.MILLISECONDE);
+      //soustraction du nombre d'années et de mois pour déterminer les jours :
+      dureeForCalcul.addTemps(-annees, Duree.ANNEE);
+      dureeForCalcul.addTemps(-mois, Duree.MOIS);
+      Long jours = dureeForCalcul.getTemps(Duree.JOUR);
+      //soustraction du nombre de jours pour déterminer le nombre d'heures :
+      dureeForCalcul.addTemps(-jours, Duree.JOUR);
+      Long heures = dureeForCalcul.getTemps(Duree.HEURE);
+      //soustraction du nombre d'heures pour déterminer le nombre de minutes :
+      dureeForCalcul.addTemps(-heures, Duree.HEURE);
+      Long minutes = dureeForCalcul.getTemps(Duree.MINUTE);
+      //soustraction du nombre de minutes pour déterminer le nombre de secondes :
+      dureeForCalcul.addTemps(-minutes, Duree.MINUTE);
+      Long secondes = dureeForCalcul.getTemps(Duree.SECONDE);
+      
+      Long[] result = new Long[6];
+      result[INDEX_ANNEE] = annees;
+      result[INDEX_MOIS] = mois;
+      result[INDEX_JOUR] = jours;
+      result[INDEX_HEURE] = heures;
+      result[INDEX_MINUTE] = minutes;
+      result[INDEX_SECONDE] = secondes;
+      
+      
+      return result;
+   }
+   
+   //sera surchargée dans la classe fille DureeForChampCacule :
+   protected Long[] retrieveAnneesAndMois() {
+      Duree dureeForCalcul = new Duree(millisecondes, Duree.MILLISECONDE);
+      Long annees = dureeForCalcul.getTemps(Duree.ANNEE);
+      //soustraction du nombre d'années pour déterminer le nombre de mois :
+      dureeForCalcul.addTemps(-annees, Duree.ANNEE);
+      Long mois = dureeForCalcul.getTemps(Duree.MOIS);
+      
+      return new Long[] {annees, mois};
    }
 }
