@@ -1,5 +1,17 @@
 #### Notes
 
+##### Version 2.3.1.1 - Publiée le 11/05/2026
+###### Améliorations 
+- YouTrack [TK-840](https://tumorotek.myjetbrains.com/youtrack/issue/TK-840) : <span class="badge badge-export">Export</span> des annotations de type ThesaurusM : trier les valeurs par ordre alphabétique avant de les concaténer
+- YouTrack [TK-848](https://tumorotek.myjetbrains.com/youtrack/issue/TK-848) : VisionMate > pouvoir mettre les tubes en colonne pour l'affectation des codes barres
+- YouTrack [TK-868](https://tumorotek.myjetbrains.com/youtrack/issue/TK-868) : <span class="badge badge-administration">Administration</span> Fiche Collection en modification : trier les profils par ordre alphabétique
+
+###### Corrections
+- YouTrack [TK-857](https://tumorotek.myjetbrains.com/youtrack/issue/TK-857) : L'application ne rend pas la main après le chargement de la liste des prélèvements
+- YouTrack [TK-864](https://tumorotek.myjetbrains.com/youtrack/issue/TK-864) : Annotation > la valeur d'un champ calculé à partir d'une durée est parfois incorrecte 
+- YouTrack [TK-865](https://tumorotek.myjetbrains.com/youtrack/issue/TK-865) : Modification multiple d'une durée impossible
+
+
 ##### Version 2.3.1.0 - Publiée le 22/01/2026
 ###### Nouveautés
 - YouTrack [TK-736](https://tumorotek.myjetbrains.com/youtrack/issue/TK-736) : Ajout d'un accès à une "Foire aux questions" (FAQ) sur la page de l'onglet Accueil
