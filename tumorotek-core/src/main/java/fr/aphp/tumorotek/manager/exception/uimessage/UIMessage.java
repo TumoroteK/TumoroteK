@@ -38,7 +38,7 @@ package fr.aphp.tumorotek.manager.exception.uimessage;
 
 /**
  * permet de gérer un message à afficher à l'utilisateur en fonction de sa locale.
- * celle-ci n'était pas connue côté back, cet objet permet de gérer une clé i18n et les paramètres éventuellement associés
+ * celle-ci n'étant pas connue côté back, cet objet permet de gérer une clé i18n et les paramètres éventuellement associés
  * à cette clé.
  * Utile pour préparer les messages à afficher en cas d'erreur
  * 

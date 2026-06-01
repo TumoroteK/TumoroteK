@@ -701,7 +701,6 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
          cellHeader.setCellValue(textstr);
          cellHeader.setCellStyle(mapCellStyleByDataFormatForRed.get(ExcelUtility.POI_DATA_FORMAT__GENERAL_INDEX));
   
-         // int cpt = 0;
          while(rit.hasNext()){
             row = rit.next();
             ImportError err = null;
@@ -714,25 +713,23 @@ public class ResultatsImportModale extends GenericForwardComposer<Component>
                }
             }
   
-            //	if (cpt < errors.size()
-            //			&& row.getRowNum() == errors.get(cpt).getNbRow()) {
             if(err != null){
                final Cell cell = row.createCell((short) indCell);
                cell.setCellValue(sheet instanceof XSSFSheet ? new XSSFRichTextString(handleExceptionMessage(err.getException()))
                   : new HSSFRichTextString(handleExceptionMessage(err.getException())));
   
+               //le style "POI" est défini pour une couleur et un format de données (standard, date, date heure) : récupération du style associé au rouge pour une donnée standard 
                cell.setCellStyle(mapCellStyleByDataFormatForRed.get(ExcelUtility.POI_DATA_FORMAT__GENERAL_INDEX));
   
                for(int i = 0; i < indCell; i++){
                   final Cell tmp = row.getCell(i);
                   if(tmp != null){
+                     //le style "POI" est défini pour une couleur et un type de données (standard, date, date heure) : récupération du style associé au rouge pour le format adequat
                      tmp.setCellStyle(mapCellStyleByDataFormatForRed.get(tmp.getCellStyle().getDataFormat()));
                   }
                }
             }
-  
-            //	++cpt;
-            //}
+
          }
   
          out = new ByteArrayOutputStream();
