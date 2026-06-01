@@ -42,14 +42,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.apache.commons.collections.map.HashedMap;
+import java.util.stream.Stream;
 
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.contexte.Banque;
@@ -455,5 +453,24 @@ public final class Utils
       }  
       
       return new StringBuffer(keyPrefix).append(suffix).toString();
+   }
+
+   /**
+    * concatène les éléments d'une liste de "String" en ne prenant au maximum que les nbElementMax premiers et en ajoutant "..." à la fin (précédé du séparateur) 
+    * si la liste a été tronquée 
+    * @param listATransformer
+    * @param separateur
+    * @param nbElementMax
+    * @return
+    */
+   public static String convertListToStringWithTruncationIfNecessary(List<String> listATransformer, String separateur, int nbElementMax) {
+      Stream<String> listATransformerAsStream = listATransformer.stream();
+      String suffixe = "";
+      if(listATransformer.size() > nbElementMax) {
+         listATransformerAsStream = listATransformerAsStream.limit(nbElementMax);
+         suffixe = new StringBuilder(separateur).append("...").toString();
+      }
+      
+      return new StringBuilder(listATransformerAsStream.collect(Collectors.joining(separateur))).append(suffixe).toString();
    }
 }

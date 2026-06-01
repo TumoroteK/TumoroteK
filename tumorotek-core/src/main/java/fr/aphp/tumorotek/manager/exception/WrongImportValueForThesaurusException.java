@@ -39,10 +39,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import fr.aphp.tumorotek.manager.exception.uimessage.UIMessage;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
+import fr.aphp.tumorotek.utils.Utils;
 
 /**
  * exception lancée quand la valeur renseignée pour un champ de type thesaurus ne correspond pas aux valeurs définies
@@ -57,6 +57,10 @@ public class WrongImportValueForThesaurusException extends AbstractImportCellSco
 {
 
    private static final long serialVersionUID = 1L;
+   
+   //Pour éviter des problème d'affichage dans une cellule excel (TK-873), on n'affichera à l'utilisateur que les 35 premières valeurs du thesaurus
+   public static final int MAX_VALEUR_AUTORISEE_AFFICHEE = 35;
+   public static final String SEPARATEUR_VALEUR_AUTORISEE_AFFICHEE = ", ";
    
    private List<String> listValeurAutorisee = null;
    
@@ -83,7 +87,10 @@ public class WrongImportValueForThesaurusException extends AbstractImportCellSco
 
    @Override
    public UIMessage buildUIMessage() {
-      return buildUIMessage(new String[] {getColonne().getNom(), listValeurAutorisee.stream().collect(Collectors.joining(", "))});
+      //TK-873 : on ne retourne que les x premières valeurs pour éviter un problème d'affichage dans excel
+      return buildUIMessage(new String[] {getColonne().getNom(), 
+                                             Utils.convertListToStringWithTruncationIfNecessary(listValeurAutorisee, 
+                                             SEPARATEUR_VALEUR_AUTORISEE_AFFICHEE, MAX_VALEUR_AUTORISEE_AFFICHEE)});
    }
    
    protected List<String> getListValeurAutorisee(){

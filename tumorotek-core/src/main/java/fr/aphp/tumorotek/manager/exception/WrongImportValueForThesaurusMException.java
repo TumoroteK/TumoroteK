@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import fr.aphp.tumorotek.manager.exception.uimessage.UIMessage;
 import fr.aphp.tumorotek.model.io.imports.ImportColonne;
+import fr.aphp.tumorotek.utils.Utils;
 
 /**
  * exception lancée quand la valeur renseignée pour un champ de type thesaurusM contient au moins une valeur
@@ -40,9 +41,11 @@ public class WrongImportValueForThesaurusMException extends WrongImportValueForT
    
    @Override
    public UIMessage buildUIMessage(){
+      //TK-873 : on ne retourne que les x premières valeurs pour éviter un problème d'affichage dans excel
       return buildUIMessage(new String[] {   getColonne().getNom(), 
-                                              listValeurNonAutorisee.stream().collect(Collectors.joining(", ")),
-                                              getListValeurAutorisee().stream().collect(Collectors.joining(", "))});
+                                              listValeurNonAutorisee.stream().collect(Collectors.joining(SEPARATEUR_VALEUR_AUTORISEE_AFFICHEE)),
+                                              Utils.convertListToStringWithTruncationIfNecessary(getListValeurAutorisee(), 
+                                                 SEPARATEUR_VALEUR_AUTORISEE_AFFICHEE, MAX_VALEUR_AUTORISEE_AFFICHEE)});
    }
 
 }
