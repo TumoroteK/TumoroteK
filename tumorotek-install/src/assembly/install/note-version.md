@@ -1,5 +1,9 @@
 #### Notes
 
+##### Version 2.3.1.2 - Publiée le 01/06/2026
+###### Corrections
+- YouTrack [TK-873](https://tumorotek.myjetbrains.com/youtrack/issue/TK-873) : ${import} Plantage lors du chargement du fichier des erreurs d'import si service préleveur non défini
+
 ##### Version 2.3.1.1 - Publiée le 11/05/2026
 ###### Améliorations 
 - YouTrack [TK-840](https://tumorotek.myjetbrains.com/youtrack/issue/TK-840) : ${export} des annotations de type ThesaurusM : trier les valeurs par ordre alphabétique avant de les concaténer
