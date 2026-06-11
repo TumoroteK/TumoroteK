@@ -238,14 +238,14 @@ public class ResultatsModale extends AbstractController
 
    public void onClick$afficher(){
       // réalise l'affichage
-      Events.postEvent("onShowResults", getParent(), null);
+      Events.postEvent("onShowResultsFromResultatsIds", getParent(), null);
       // fermeture de la fenêtre
       Events.postEvent(new Event("onClose", self.getRoot()));
    }
 
    public void onClick$afficherItem(){
       // réalise l'affichage
-      Events.postEvent("onShowResults", getParent(), null);
+      Events.postEvent("onShowResultsFromResultatsIds", getParent(), null);
       // fermeture de la fenêtre
       Events.postEvent(new Event("onClose", self.getRoot()));
    }
