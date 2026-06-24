@@ -112,7 +112,7 @@ import fr.aphp.tumorotek.webapp.general.SessionUtils;
  *
  *
  */
-public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombineController
+public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombineController implements ResultatsModaleEvent
 {
 
 	private static final long serialVersionUID = 1L;
@@ -1255,6 +1255,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		setValeursDerives2(new ArrayList<>());
 	}
 
+	@Override
 	public void onDoExport(final Event e){
 		// fermeture de la fenêtre
 		Events.postEvent(new Event("onClose", self.getRoot()));
@@ -1279,6 +1280,11 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		Events.echoEvent("onLaterShowResults", self, null);
 	}
 
+	@Override
+   public void onShowResultsFromResultatsIds(){
+     onShowResults();
+   }
+	
 	/**
 	 * Evenement relayant la sélection d'un trop grand nombre de 
 	 * résultats (envoyé depuis ResultatsModale)
@@ -1298,6 +1304,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		Events.postEvent(new Event("onClose", self.getRoot()));
 	}
 
+	@Override
 	public void onDoBatchDelete(){
 		// fermeture de la fenêtre
 		Events.postEvent(new Event("onClose", self.getRoot()));
@@ -1314,6 +1321,7 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 	 * Evenement relayant l'envoi vers une nouvelle cession 
 	 * d'un trop grand nombre de résultats (envoyé depuis ResultatsModale)
 	 */
+	@Override
 	public void onDoNewCession(){
 		Clients.showBusy(Labels.getLabel("cession.select.wait"));
 		Events.echoEvent("onLaterNewCession", self, null);

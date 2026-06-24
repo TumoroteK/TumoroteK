@@ -87,6 +87,7 @@ import fr.aphp.tumorotek.action.recherche.ExportModale;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvancee;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheAvanceeCession;
 import fr.aphp.tumorotek.action.recherche.FicheRechercheINCa;
+import fr.aphp.tumorotek.action.recherche.ResultatsModaleEvent;
 import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
 import fr.aphp.tumorotek.decorator.TKSelectObjectRenderer;
@@ -110,7 +111,7 @@ import fr.aphp.tumorotek.webapp.general.export.Export;
  * @author Mathieu BARTHELEMY
  * @version 2.2.1
  */
-public abstract class AbstractListeController2 extends AbstractController
+public abstract class AbstractListeController2 extends AbstractController implements ResultatsModaleEvent
 {
 	private static final long serialVersionUID = -7175263022919263339L;
 
@@ -738,6 +739,8 @@ public abstract class AbstractListeController2 extends AbstractController
       updateListResultsLabel(getListObjects().size());
       getBinder().loadComponent(objectsListGrid);
    }
+   
+   @Override
    public void onShowResultsFromResultatsIds(){
       List<Integer> ids = new ArrayList<>();
       if(getResultatsIds().size() > 500){
@@ -755,6 +758,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 * Evenement relayant l'envoi vers une nouvelle cession
 	 * d'un trop grand nombre de résultats (envoyé depuis ResultatsModale)
 	 */
+   @Override
 	public void onDoNewCession(){
 		Clients.showBusy(Labels.getLabel("cession.select.wait"));
 		Events.echoEvent("onLaterNewCession", self, null);
@@ -839,6 +843,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 * résultats (envoyé depuis ResultatsModale)
 	 * @version 2.1
 	 */
+	@Override
 	public void onDoExport(final Event e) {
 	
 		if(e.getData() == null){			
@@ -1308,6 +1313,7 @@ public abstract class AbstractListeController2 extends AbstractController
 	 * directement depuis le listeController (recherche rapide).
 	 * @param Event
 	 */
+	@Override
 	public void onDoBatchDelete(){
 		final List<Integer> ids = new ArrayList<>();
 		ids.addAll(getResultatsIds());

@@ -236,18 +236,25 @@ public class ResultatsModale extends AbstractController
       Events.postEvent(new Event("onClose", self.getRoot()));
    }
 
-   public void onClick$afficher(){
+   //TK-875 : 
+   // /!\ getParent() peut renvoyer une classe héritant :
+   //- de AbstractFicheRechercheAvancee pour afficher les 500 premiers éléments ramenés par la recherche
+   //- ou de AbstractListeController2 quand utilisation de l'affichage des objets liés aux éléments ramenés par la recherche
+   // => définition d'une interface au dessus de ces 2 classes : ResultatsModaleEvent pour définir la méthode onShowResultsFromResultatsIds() et éviter
+   // qu'une adaptation de celle-ci ne soit faite que pour un seul cas
+   private void afficher500First(){
       // réalise l'affichage
       Events.postEvent("onShowResultsFromResultatsIds", getParent(), null);
       // fermeture de la fenêtre
       Events.postEvent(new Event("onClose", self.getRoot()));
    }
+   
+   public void onClick$afficher(){
+      afficher500First();
+   }
 
    public void onClick$afficherItem(){
-      // réalise l'affichage
-      Events.postEvent("onShowResultsFromResultatsIds", getParent(), null);
-      // fermeture de la fenêtre
-      Events.postEvent(new Event("onClose", self.getRoot()));
+      afficher500First();
    }
 
    public void onClick$newCessionItem(){
