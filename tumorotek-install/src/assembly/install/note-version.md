@@ -1,5 +1,9 @@
 #### Notes
 
+##### Version 2.3.1.3 - Publiée le 24/06/2026
+###### Corrections
+- YouTrack [TK-875](https://tumorotek.myjetbrains.com/youtrack/issue/TK-875) : Recherche > affichage des 500 premiers : la liste n'est pas mise à jour
+
 ##### Version 2.3.1.2 - Publiée le 01/06/2026
 ###### Corrections
 - YouTrack [TK-873](https://tumorotek.myjetbrains.com/youtrack/issue/TK-873) : ${import} Plantage lors du chargement du fichier des erreurs d'import si service préleveur non défini
