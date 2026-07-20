@@ -55,7 +55,7 @@ public class ImportChampAnnotationTraitementFactory
          case "alphanum":
             return new ImportChampAnnotationTraitementForAlphanum(champAnnotaionId, indexColonne, importColonne);
          case "hyperlien":
-            return new ImportChampAnnotationTraitementForAlphanum(champAnnotaionId, indexColonne, importColonne);           
+            return new ImportChampAnnotationTraitementForLienHypertexteAsAlphanum(champAnnotaionId, indexColonne, importColonne);           
          case "num":
             return new ImportChampAnnotationTraitementForNumAsAlphanum(champAnnotaionId, indexColonne, importColonne);
          case "duree":
