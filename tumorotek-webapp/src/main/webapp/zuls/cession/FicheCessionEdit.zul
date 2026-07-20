@@ -537,7 +537,7 @@
 						<div>
 							<hbox>
 								<textbox id="etudeTitreBox" value="@{fwinCessionEdit$composer.cession.etudeTitre,
-	    								 save-when='validate.onClick, create.onClick, self.onBlur',
+	    								 save-when='validate.onClick, create.onClick',
 	    								 load-after='remplissageAuto.onClick'}" 
 									width="300px" 
 									constraint="@{fwinCessionEdit$composer.titreEtudeConstraint}"
@@ -579,7 +579,7 @@
 						<label value="${c:l('Champ.Cession.Description')}" sclass="formLabel"/>
 						<hbox>
 							<textbox id="descriptionBox" value="@{fwinCessionEdit$composer.cession.description,
-			        					save-when='validate.onClick, create.onClick, self.onBlur',
+			        					save-when='validate.onClick, create.onClick',
 	    								 load-after='remplissageAuto.onClick'}" 
 								width="400px" 
 								rows="3"
@@ -775,7 +775,7 @@
 									width="50px"
 									value="@{fwinCessionEdit$composer.cession.temperature,
 										load-after='temperatureListBox.onSelect',
-										save-when='validate.onClick, create.onClick, self.onBlur'}"
+										save-when='validate.onClick, create.onClick'}"
 									locale="en"
 								/>
 								<separator/>
@@ -796,7 +796,7 @@
 						<!-- Observations -->
 						<label value="${c:l('Champ.Cession.Observations')}" sclass="formLabel"/>
 						<textbox id="observationsBox" value="@{fwinCessionEdit$composer.cession.observations,
-		        								 save-when='validate.onClick, create.onClick, self.onBlur'}" 
+		        								 save-when='validate.onClick, create.onClick'}" 
 							width="400px" 
 							rows="3"
 							constraint="@{fwinCessionEdit$composer.cessionDescrConstraint}"
