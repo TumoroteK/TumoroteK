@@ -1,8 +1,16 @@
 #### Notes
 
+##### Version 2.3.1.4 - Publiée le ???????
+###### Corrections
+- YouTrack [TK-884](https://tumorotek.myjetbrains.com/youtrack/issue/TK-884) : lors de la création d'une ${cession}, le numéro renseigné s'efface
+
 ##### Version 2.3.1.3 - Publiée le 24/06/2026
 ###### Corrections
 - YouTrack [TK-875](https://tumorotek.myjetbrains.com/youtrack/issue/TK-875) : Recherche > affichage des 500 premiers : la liste n'est pas mise à jour
+
+###### Corrections dans le module Gatsbi (version 1.0.0.12)
+- YouTrack [TK-877](https://tumorotek.myjetbrains.com/youtrack/issue/TK-877) : Un paramétrage archivé n'est plus proposé lors de la création dans TK d'un patient, prélèvement ou échantillon
+
 
 ##### Version 2.3.1.2 - Publiée le 01/06/2026
 ###### Corrections
