@@ -512,10 +512,12 @@ public class Patient extends TKDelegetableObject<Patient> implements TKAnnotable
          return false;
       }
 
-      final boolean eq = Objects.equals(nom, test.getNom())
-         && Objects.equals(prenom, test.getPrenom())
-         && Objects.equals(dateNaissance, test.getDateNaissance());
+      final boolean eq = (((this.nom != null && this.nom.equalsIgnoreCase(test.nom)) || this.nom == test.nom)
+         && ((this.prenom != null && this.prenom.equalsIgnoreCase(test.prenom)) || this.prenom == test.prenom)
+         && ((this.dateNaissance != null && this.dateNaissance.equals(test.dateNaissance))
+            || this.dateNaissance == test.dateNaissance));
 
+      
       // verif supp sur la ville de naissance
       if(this.villeNaissance != null && test.villeNaissance != null){
          return eq && this.villeNaissance.equalsIgnoreCase(test.villeNaissance);
