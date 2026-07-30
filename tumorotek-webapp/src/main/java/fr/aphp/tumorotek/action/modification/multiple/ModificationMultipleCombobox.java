@@ -163,8 +163,10 @@ public class ModificationMultipleCombobox extends AbstractModificationMultipleCo
       this.allValues.clear();
       this.allValues.addAll(allValuesThesaurus);
       setChampThesaurus(champNameThesaurus);
-      super.init(pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr, isCombined);
+      //TK-890 : isObligatoire est utilisé dans extractValuesFromObjects elle-même appelée dans le init
+      //donc il faut qu'il soit valorisé avant l'appel (initialement il était après)
       isObligatoire = isOblig;
+      super.init(pathToPage, methodToCall, objs, label, champToEdit, entiteNom, constr, isCombined);
    }
 
    @Override
