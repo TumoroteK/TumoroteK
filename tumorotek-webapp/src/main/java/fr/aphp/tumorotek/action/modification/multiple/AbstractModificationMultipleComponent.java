@@ -655,6 +655,6 @@ public abstract class AbstractModificationMultipleComponent extends AbstractCont
       return (getConstraint() != null
          && (getConstraint() instanceof TumoTextConstraint && !((TumoTextConstraint) getConstraint()).getNullable())
          || (getConstraint() instanceof SimpleConstraint
-            && !((SimpleConstraint) getConstraint()).equals(new SimpleConstraint("no empty"))));
+            && ((SimpleConstraint) getConstraint()).equals(new SimpleConstraint("no empty"))));
    }
 }

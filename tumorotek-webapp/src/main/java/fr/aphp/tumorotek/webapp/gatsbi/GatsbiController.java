@@ -559,6 +559,8 @@ public class GatsbiController
          }else if(constraint instanceof SimpleConstraint){
             int flags = ((SimpleConstraint) constraint).getFlags();
             if(required){
+               //écriture imposée par zkoss... la gestion de flags n'est pas très friendly...
+               //fonctionnement de (|) : https://www.baeldung.com/java-bitwise-operators
                flags = flags | SimpleConstraint.NO_EMPTY;
             } // else not possible to remove required flag with bitwise operator ???
 
