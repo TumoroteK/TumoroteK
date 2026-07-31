@@ -424,7 +424,8 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
 
    public void onClick$dateStockMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Calendarbox", getObjsToEdit(),
-         "Champ.Echantillon.DateStock", "dateStock", null, null, null, null, false, null, switchAnyRequiredFlag(false, 56));
+         "Champ.Echantillon.DateStock", "dateStock", null, null, null, 
+         muteAnyRequiredConstraint(null, 56), false, null, switchAnyRequiredFlag(false, 56));
    }
 
    public void onClick$delaiCglMultiLabel(){
