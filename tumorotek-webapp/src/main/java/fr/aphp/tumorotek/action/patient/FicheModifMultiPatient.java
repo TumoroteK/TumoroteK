@@ -258,23 +258,23 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
 
    public void onClick$nipMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
-         "Champ.Patient.Nip", "nip", null, null, null, PatientConstraints.getCodeNullConstraint(), false, false, null);
+         "Champ.Patient.Nip", "nip", null, null, null, muteAnyRequiredConstraint(PatientConstraints.getCodeNullConstraint(),2), false, false, null);
    }
 
    public void onClick$nomMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
-         "Champ.Patient.Nom", "nom", null, null, null, PatientConstraints.getNomConstraint(), false, true, null);
+         "Champ.Patient.Nom", "nom", null, null, null, muteAnyRequiredConstraint(PatientConstraints.getNomConstraint(),3), false, true, null);
    }
 
    public void onClick$nomNaissanceMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
-         "Champ.Patient.NomNaissance", "nomNaissance", null, null, null, PatientConstraints.getNomNullConstraint(), false, true,
+         "Champ.Patient.NomNaissance", "nomNaissance", null, null, null, muteAnyRequiredConstraint(PatientConstraints.getNomNullConstraint(),4), false, true,
          null);
    }
 
    public void onClick$prenomMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
-         "Champ.Patient.Prenom", "prenom", null, null, null, PatientConstraints.getNomNullConstraint(), false, true, null);
+         "Champ.Patient.Prenom", "prenom", null, null, null, muteAnyRequiredConstraint(PatientConstraints.getNomNullConstraint(),5), false, true, null);
    }
 
    public void onClick$sexeMultiLabel(){
@@ -282,17 +282,17 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
       final List<? extends Object> sexes = PatientUtils.getSexes();
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-         "Champ.Patient.Sexe", "sexe", (List<Object>) sexes, "label", null, null, false, null, true);
+         "Champ.Patient.Sexe", "sexe", (List<Object>) sexes, "label", null, muteAnyRequiredConstraint(null,6), false, null, switchAnyRequiredFlag(true,6));
    }
 
    public void onClick$dateNaissanceMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Datebox", getObjsToEdit(),
-         "Champ.Patient.DateNaissance", "dateNaissance", null, null, null, null, false, null, null);
+         "Champ.Patient.DateNaissance", "dateNaissance", null, null, null, muteAnyRequiredConstraint(null,7), false, null, null);
    }
 
    public void onClick$paysNaissanceMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
-         "Champ.Patient.PaysNaissance", "paysNaissance", null, null, null, ContexteConstraints.getVillePaysConstraint(), false,
+         "Champ.Patient.PaysNaissance", "paysNaissance", null, null, null, muteAnyRequiredConstraint(ContexteConstraints.getVillePaysConstraint(),9), false,
          true, null);
    }
 
@@ -300,7 +300,7 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
 
    public void onClick$villeNaissanceMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Textbox", getObjsToEdit(),
-         "Champ.Patient.VilleNaissance", "villeNaissance", null, null, null, ContexteConstraints.getVillePaysConstraint(), false,
+         "Champ.Patient.VilleNaissance", "villeNaissance", null, null, null, muteAnyRequiredConstraint(ContexteConstraints.getVillePaysConstraint(),8), false,
          true, null);
    }
 
@@ -317,17 +317,17 @@ public class FicheModifMultiPatient extends AbstractFicheModifMultiController
       }
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", (List<Object>) getObjsToEdit(),
-         "Champ.Patient.PatientEtat", "patientEtat", (List<Object>) etats, "label", null, null, false, null, true);
+         "Champ.Patient.PatientEtat", "patientEtat", (List<Object>) etats, "label", null, muteAnyRequiredConstraint(null,10), false, null, switchAnyRequiredFlag(true,10));
    }
 
    public void onClick$dateEtatMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Datebox", getObjsToEdit(),
-         "Champ.Patient.DateEtat", "dateEtat", null, null, null, null, false, null, null);
+         "Champ.Patient.DateEtat", "dateEtat", null, null, null, muteAnyRequiredConstraint(null,11), false, null, null);
    }
 
    public void onClick$dateDecesMultiLabel(){
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Datebox", getObjsToEdit(),
-         "Champ.Patient.DateDeces", "dateDeces", null, null, null, null, false, null, null);
+         "Champ.Patient.DateDeces", "dateDeces", null, null, null, muteAnyRequiredConstraint(null,12), false, null, null);
    }
 
    /**

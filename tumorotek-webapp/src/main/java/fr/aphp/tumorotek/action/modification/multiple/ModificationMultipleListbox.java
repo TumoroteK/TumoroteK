@@ -44,6 +44,7 @@ import org.slf4j.LoggerFactory;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.zkoss.util.resource.Labels;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zkplus.databind.AnnotateDataBinder;
 import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Listbox;
@@ -112,6 +113,8 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
       }
    }
 
+   //TK-893 on ne peut pas appliquer la méthode setConsraint sur une ListBox (pour gérer le cas de sexe pour lequel on ne veut pas valoriser une valeur par
+   //défaut au chargement de la page donc la liste des valeurs proposées contient null associé à "" (cf PatientUtils.getSexes()) => contrôle à la validation
    @Override
    public void setConstraintsToBoxes(final Constraint constr){}
 
@@ -180,10 +183,15 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
       super.extractValuesFromObjects();
 
       // pour chaque objet du thésaurus, on va extraire la valeur du
-      // champ à afficher
+      // champ à afficher ???
       for(final Object object : allValues){
          try{
 
+            // Très bizarre car object est un élément d'un thesaurus donc il ne s'agit pas d'un objet maladie,
+            // prélèvement ou echantillon qui peut avec un "delegate"... il y a du y avoir une confusion
+            // De plus, dans l'absolu allStringValues ne concerne pas les valeurs associées aux objets sélectionnés mais toutes les
+            // valeurs possibles dans le thesaurus associés donc il n'y a rien à ajouter (vue l'initialisation faite dans init)
+            // et si il y avait eu quelque chose à ajouter, cela aurait dû être fait dans initComponentsInWindow()
             boolean isDelegateProperty = false;
             TKDelegateObject<?> delegate = null;
 
@@ -213,7 +221,15 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
          }
 
       }
-      if(!("sexe".equals(getChamp()) || "patientEtat".equals(getChamp())) && (isObligatoire == null || !isObligatoire)
+      // ce bloc devrait être dans initComponentsInWindow puisqu'il concerne allValues et allStringValues utilisées par
+      // eraseListBox (composant non lié aux valeurs existant dans la séletion des objets (sur lesquels portent la modification multiple)
+      // cette "verrue" est nécessaire car pour le sexe, la valeur "vide" est contenue dans la liste de toutes les valeurs possibles 
+      // (cf PatientUtils.getSexes()) demande du métier pour que lors de la création d'un patient aucune valeur ne soit prérenseignée
+      // dans le champ sens (obligatoire dans les collections non Gatsbi) pour éviter d'oublier de changer la valeur
+      // Par contre, cette règle n'a pas été appliquée pour PatientEtat car c'es Vivant par défaut ce qui reprénte quasiment 100% des cas
+      // Par conséquent, ajouter la condition sur patientEtat empêche de ne pas renseigner cette valeur même si elle n'est pas obligatoire (collection Gatsbi)
+      // d'où la mise en commentaire (TK-895).
+      if(!("sexe".equals(getChamp()) /*|| "patientEtat".equals(getChamp())*/) && (isObligatoire == null || !isObligatoire)
          && !allValues.isEmpty()){
          allValues.add(0, null);
          allStringValues.add(0, "---");
@@ -267,8 +283,23 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
    public void initComponentsInWindow(){
       super.initComponentsInWindow();
 
+      // /!\ ce code est surprenant car values et StringValues sont les valeurs récupérées des objets sélectionnés (traitement fait 
+      // dans super.extractValuesFromObjects())
+      // donc si le champ est obligatoire, il ne devrait / doit pas contenir "" ...
+      // Ne pas confondre values et StringValues avec allValues et allStringValues qui elles sont initialisées avec toutes les valeurs
+      // possibles et peuvent donc contenir null / "" pour sexe notamment (cf PatientUtils.getSexes())
       if(isObligatoire != null && isObligatoire && getStringValues().contains("")){
-         final int empty = getValues().indexOf("");
+         int empty = getValues().indexOf("");
+         //TK-893 : dans le cas du sexe, une valeur "" est ajoutée même quand c'est obligatoire pour ne pas renseigner par une valeur par défaut (et risquer qu'elle reste à tort)
+         //mais cette valeur affichée à l'utilisateur qui provient de PatientUtils.getSexes() est associé au "code" null et non "" comme ça semble être le cas pour d'autres usages
+         //Dans l'absolu, il semblerait plus judicieux de récupérer l'index de empty par la même règle que pour le test qui a détecté un empty (à savoir utiliser getStringValues() 
+         //et non getValues()) mais pour éviter une régression si la vraie raison de ce code m'échappe, utilisation d'un "double test" pour récupérer empty dans le cas du sexe
+         // /!\ les attributs values et stringValues ne sont pas utilisées dans le composant qui définit
+         // allValues et allStringValues :-( ... les modifications de values et stringValues faites ci-dessous ne
+         // servent qu'à valoriser selectedStringValue mais allValues et allStringValues contiennent donc toujours null / ""
+         if(empty == -1) {
+            empty = getValues().indexOf(null);
+         }
          getValues().remove(empty);
          getStringValues().remove(empty);
          // selectionne le premier item de la liste
@@ -305,4 +336,28 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
    public Boolean isObligatoire(){
       return isObligatoire;
    }
+   
+   @Override
+   public void onClick$validate(){
+
+      if(isObligatoire()){
+         //TK-893 : gestion des cas où la liste des valeurs contient une ligne vide pour ne pas prérenseigner le champ (exemple sexe) :
+         if(rowOneValue.isVisible()){
+            //if(getSelectedStringValue() == null || getSelectedStringValue().equals("")) {
+            if(oneValueListBox.getSelectedItem().getValue() == null || oneValueListBox.getSelectedItem().getValue().equals("")) {
+               throw new WrongValueException(oneValueListBox, Labels.getLabel("anno.thes.empty"));
+            }
+         }
+         else if (rowMultiValue.isVisible()) {
+            if(eraseListBox.getSelectedItem() == null || eraseListBox.getSelectedItem().getValue().equals("")) {
+               throw new WrongValueException(eraseListBox, Labels.getLabel("anno.thes.empty"));
+            }
+         }
+      }
+
+      super.onClick$validate();
+   }
 }
+
+
+
