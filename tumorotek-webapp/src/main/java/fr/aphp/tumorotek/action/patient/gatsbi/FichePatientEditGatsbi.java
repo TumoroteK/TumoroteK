@@ -43,8 +43,10 @@ import java.util.HashSet;
 import java.util.List;
 
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Groupbox;
 import org.zkoss.zul.Listbox;
@@ -120,6 +122,13 @@ public class FichePatientEditGatsbi extends FichePatientEdit
          }
       } else {
          return super.setSexeItemFromDBValue(pat);
+      }
+   }
+   
+   @Override
+   protected void checkRequiredSexe(){
+      if(contexte.isChampIdRequired(6)) {
+         super.checkRequiredSexe();
       }
    }
    

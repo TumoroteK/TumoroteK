@@ -312,14 +312,16 @@ public class FichePatientEdit extends AbstractFicheEditController
       if(this.patient.getVilleNaissance().equals("")){
          this.patient.setVilleNaissance(null);
       }
-      if(this.selectedSexe != null){
-         if(selectedSexe.getCode() == null){
-            throw new WrongValueException(sexeBox, Labels.getLabel("patient.error.sexe"));
-         }
-         patient.setSexe(this.selectedSexe.getCode());
-      }
+      setEmptyToNullSexe();
       
       setEmptyToNullEtat();
+   }
+
+   protected void setEmptyToNullSexe(){
+      if(this.selectedSexe != null){
+         checkRequiredSexe();
+         patient.setSexe(this.selectedSexe.getCode());
+      }
    }
    
    /**
@@ -484,14 +486,19 @@ public class FichePatientEdit extends AbstractFicheEditController
    }
 
    public void onSelect$sexeBox(){
-      if(selectedSexe.getCode() == null){
-         throw new WrongValueException(sexeBox, Labels.getLabel("patient.error.sexe"));
-      }
+      checkRequiredSexe();
 
       Clients.clearWrongValue(sexeBox);
       accordEtatToGender();
    }
 
+   protected void checkRequiredSexe() {
+      if(selectedSexe.getCode() == null){
+         throw new WrongValueException(sexeBox, Labels.getLabel("patient.error.sexe"));
+      }  
+   }
+ 
+   
    /**
     * Modifie le label état en fonction du genre grammatical dicté
     * par le choix du sexe du patient (modes create/edit).
