@@ -198,6 +198,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
 	private Label demandeurHelpLabel;
 	private Label descriptionHelpLabel;
 	private Label dateValidationHelpLabel;
+   private Textbox etudeTitreBox;
 	private Label titreEtudeHelpLabel;
 	private Label codeProdDeriveCede;
 	private Label codeEchantillonCede;
@@ -312,6 +313,11 @@ public class FicheCessionEdit extends AbstractFicheEditController
 	private Label cederMultiProdDeriveBanquesLabel;
 	private ListModelList<Banque> availableBanquesForDeriveModel;
 
+	//TK-531
+	//stocke la valeur du numéro de cession lors du chargement de la page. Permet de savoir ensuite si l'utilisateur l'a modifié
+	//pour faire le contrôle de doublon uniquement dans ce cas
+	private String numCessionAuChargement;
+	
 	@Override
 	public void doAfterCompose(final Component comp) throws Exception{
 		super.doAfterCompose(comp);
@@ -328,6 +334,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
 		this.cession = (Cession) c;
 
 		if(cession.getCessionId() != null){
+		   numCessionAuChargement = cession.getNumero();
 			// récupération des échantillons cédés
 			echantillonsCedes = ManagerLocator.getCederObjetManager().getEchantillonsCedesByCessionManager(cession);
 			echantillonsCedesDecores = cedeObjFactory.decorateListe(echantillonsCedes);
@@ -1458,6 +1465,27 @@ public class FicheCessionEdit extends AbstractFicheEditController
 		displayObjectsListData(new ArrayList<TKAnnotableObject>(cedeObjFactory.undecorateListe(decos)));
 	}
 
+	//TK-531 / TK-881 / TK-884
+	//Potentiellement, l'utilisateur rentre dans le champ typeBox pour modifier la valeur du champ
+	//Or :
+	// - la méthode onSelect$typesBox() se termine par un reload de la page
+	// - et les champs de la page sont initialisés par le contenu de l'objet cession
+	//Il faut donc que l'objet cession soit valorisé avant de recharger la page
+	//Initialement, ceci était fait dans le zul par "save-when='..., self.onBlur'" mais ça a posé un problème sur numéro de cession (affichage d'un message intempestif 
+	//quand on quitte le champ TK-531)
+	//Mais la correction et la suppression du onBlur a créé des régressions (TK-881 et TK-884)
+	//Pour corriger TK-531, il fallait dans l'absolu juste utiliser numCessionAuChargement (cf onBlur$numeroBox())
+	//Mais comme l'utilisation de "save-when='..., self.onBlur'" a posé question car il n'est pas facile de comprendre son utilité, décision de faire autrement : 
+	//supprimer les conditions "save-when='..., self.onBlur'" et gérer manuellement la sauvegarde lorsque celle-ci est nécessaire c'est-à-dire à l'entrée dans le champ typeBox
+	//
+	public void onFocus$typesBox(){
+	   cession.setNumero(numeroBox.getValue());
+	   cession.setDescription(descriptionBox.getValue());
+	   cession.setObservations(observationsBox.getValue());
+	   cession.setEtudeTitre(etudeTitreBox.getValue());
+	   cession.setTemperature(temperatureBox.getValue() == null ? null : temperatureBox.getValue().floatValue());
+	}
+	
 	/**
 	 * Méthode appelée lorsque l'utilisateur sélectionne un type de cession.
 	 * Le formulaire changera en fonction du type choisi.
@@ -2678,7 +2706,7 @@ public class FicheCessionEdit extends AbstractFicheEditController
 
 		final String numCession = numeroBox.getValue();
 		// TK-531 : Empêcher l'apparition d'un message de doublon intempestif en mode modification
-		if (!numCession.equals(cession.getNumero())){
+		if (!numCession.equals(numCessionAuChargement)){
 			final List<Cession> doublons = ManagerLocator.getManager(CessionManager.class)
 					.findByNumeroInPlateformeManager(numCession, SessionUtils.getCurrentPlateforme());
 			if(!doublons.isEmpty()){
