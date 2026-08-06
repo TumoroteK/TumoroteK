@@ -285,11 +285,21 @@ public class MaladieManagerImpl implements MaladieManager
          log.warn("Objet obligatoire Patient manquant lors de la {} d'une Maladie", operation);
          throw new RequiredObjectIsNullException("Maladie", operation, "Patient");
       }
-      
-      // Gatsbi required
+
+      // TK-897
+      // Gatsbi 
+      // Si Gatsbi :
+      // - il ne faut pas vérifier la date de début qui est en fait la date de la visite
+      //   et celle-ci peut être dans le futur 
+      // - il faut gérer les champs obligatoires dans le contexte Gatsbi
+      boolean isGatsbi = false;
       final List<Integer> requiredChampEntiteId = new ArrayList<>();
-      if(maladie.getPatient().getBanque() != null && maladie.getPatient().getBanque().getEtude() != null){
-         final Contexte maladieContexte = maladie.getPatient().getBanque().getEtude().getContexteForEntite(7);
+      Banque banqueDeLaMaladie = maladie.getBanque();
+      //NB : à date la 1ere clause (maladie.getBanque() suffit à définir qu'il s'agit d'une visite mais
+      //     par sécurité, on regarde aussi si la banque est rattachée à une étude
+      if(banqueDeLaMaladie != null && banqueDeLaMaladie.getEtude() != null){
+         isGatsbi = true;
+         final Contexte maladieContexte = banqueDeLaMaladie.getEtude().getContexteForEntite(7);
          if(maladieContexte != null){
             requiredChampEntiteId.addAll(maladieContexte.getRequiredChampEntiteIds());
          }
@@ -297,12 +307,17 @@ public class MaladieManagerImpl implements MaladieManager
 
       //Validation maladie
       Validator[] validators;
-      if(requiredChampEntiteId.isEmpty() || maladie.getSystemeDefaut()){ // pas de restriction gatsbi
-         validators = new Validator[] {maladieValidator};
-      }else{ // gatsbi définit certain debut box obligatoires, non appliqué si system-defaut
+      if(isGatsbi) {//TK-897
+         //validation différente car les dates de début des visites :
+         // - sont obligatoires 
+         // - mais peuvent être dans le futur contrairement aux dates de début des maladies.
+         //De plus, d'autres champs de la maladie peuvent avoir été rendus obligatoires
          final MaladieGatsbiValidator gValidator = 
             new MaladieGatsbiValidator("maladie", requiredChampEntiteId);
          validators = new Validator[] {gValidator, maladieValidatorDateCoherenceOverride};
+      }
+      else { //standard :
+         validators = new Validator[] {maladieValidator};
       }
 
       BeanValidator.validateObject(maladie, validators);   
