@@ -1,16 +1,23 @@
 #### Notes
 
+##### Version 2.3.1.5 - Publiée le 06/08/2026
+###### Corrections
+- YouTrack [TK-881](https://tumorotek.myjetbrains.com/youtrack/issue/TK-881) : lors de la création d'une ${cession}, le changement de type efface le numéro de la cession
+- YouTrack [TK-897](https://tumorotek.myjetbrains.com/youtrack/issue/TK-897) : GATSBI > Erreur "date postérieure à la date actuelle" en voulant créer un ${prelevement} sur une collection avec un schéma de visites
+
+
 ##### Version 2.3.1.4 - Publiée le 03/08/2026
 ###### Corrections
-- YouTrack [TK-896](https://tumorotek.myjetbrains.com/youtrack/issue/TK-896) : GATSBI ${patient} : impossible de remettre à blanc le champ sexe même s'il est non obligatoire
-- YouTrack [TK-895](https://tumorotek.myjetbrains.com/youtrack/issue/TK-895) : GATSBI > Modification mulitple sur ${patient} : impossible de remettre l'état à blanc mais si le champ est non obligatoire
-- YouTrack [TK-894](https://tumorotek.myjetbrains.com/youtrack/issue/TK-894) : GATSBI > Modification multiple sur ${echantillon} : si la date de stockage est obligatoire, la tentative de suppression de la valeur est mal gérée
-- YouTrack [TK-893](https://tumorotek.myjetbrains.com/youtrack/issue/TK-893) : GATSBI > Modification multiple sur ${patient}, plantage java.lang.ArrayIndexOutOfBoundsException
-- YouTrack [TK-890](https://tumorotek.myjetbrains.com/youtrack/issue/TK-890) : Modification multiple > pour un champ "liste" obligatoire, proposition de la valeur "---" qui remet la valeur à blanc
-- YouTrack [TK-889](https://tumorotek.myjetbrains.com/youtrack/issue/TK-889) : Modification Multiple ${echantillon} > impossible de supprimer un délai de stockage
-- YouTrack [TK-888](https://tumorotek.myjetbrains.com/youtrack/issue/TK-888) : ${import} Message bloquant "patient existant" alors que le prélèvement devrait être ajouté
-- YouTrack [TK-887](https://tumorotek.myjetbrains.com/youtrack/issue/TK-887) : DiaTK > Message bloquant "patient existant" lors de la création d'un prélèvement sur un patient existant
 - YouTrack [TK-884](https://tumorotek.myjetbrains.com/youtrack/issue/TK-884) : lors de la création d'une ${cession}, le numéro renseigné s'efface
+- YouTrack [TK-887](https://tumorotek.myjetbrains.com/youtrack/issue/TK-887) : DiaTK > Message bloquant "patient existant" lors de la création d'un prélèvement sur un patient existant
+- YouTrack [TK-888](https://tumorotek.myjetbrains.com/youtrack/issue/TK-888) : ${import} Message bloquant "patient existant" alors que le prélèvement devrait être ajouté
+- YouTrack [TK-889](https://tumorotek.myjetbrains.com/youtrack/issue/TK-889) : Modification Multiple ${echantillon} > impossible de supprimer un délai de stockage
+- YouTrack [TK-890](https://tumorotek.myjetbrains.com/youtrack/issue/TK-890) : Modification multiple > pour un champ "liste" obligatoire, proposition de la valeur "---" qui remet la valeur à blanc
+- YouTrack [TK-893](https://tumorotek.myjetbrains.com/youtrack/issue/TK-893) : GATSBI > Modification multiple sur ${patient}, plantage java.lang.ArrayIndexOutOfBoundsException
+- YouTrack [TK-894](https://tumorotek.myjetbrains.com/youtrack/issue/TK-894) : GATSBI > Modification multiple sur ${echantillon} : si la date de stockage est obligatoire, la tentative de suppression de la valeur est mal gérée
+- YouTrack [TK-895](https://tumorotek.myjetbrains.com/youtrack/issue/TK-895) : GATSBI > Modification mulitple sur ${patient} : impossible de remettre l'état à blanc mais si le champ est non obligatoire
+- YouTrack [TK-896](https://tumorotek.myjetbrains.com/youtrack/issue/TK-896) : GATSBI ${patient} : impossible de remettre à blanc le champ sexe même s'il est non obligatoire
+
 
 ##### Version 2.3.1.3 - Publiée le 24/06/2026
 ###### Corrections
