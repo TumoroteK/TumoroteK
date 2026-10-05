@@ -228,7 +228,7 @@ CREATE PROCEDURE `create_tmp_prelevement_table_gatsbi`(IN etude_id INTEGER)
 	    IF ((is_chp_visible(273, etude_id)), 'LABO_INTER varchar(3), ', ''),
         IF ((is_chp_visible(40, etude_id)), 'QUANTITE DECIMAL(12, 3), QUANTITE_UNITE varchar(25), ', ''),
 	    IF ((is_chp_visible(44, etude_id)), 'PATIENT_NDA varchar(20), ', ''),
-	    IF ((is_chp_visible(229, etude_id)), 'CODE_ORGANE VARCHAR(500), ', ''),
+	    IF ((is_chp_visible(229, etude_id)), 'CODE_ORGANES VARCHAR(500), ', ''),
 	    IF ((is_chp_visible(230, etude_id)), 'DIAGNOSTIC VARCHAR(500), ', ''),
         'ECHAN_TOTAL          int(4),
         ECHAN_RESTANT        int(4),

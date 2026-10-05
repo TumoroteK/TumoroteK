@@ -233,7 +233,8 @@ public class ResultSetToExcel
       boolean isAnno = false;
 
       // /!\ contient l'index de la colonne dans le resulset (qui commence à 0) et non son numéro (qui commence à 1)
-      List<Integer> listIndexColonneANePasAfficherEnSero = new ArrayList<Integer>();
+      List<Integer> listIndexColonneResultSetANePasAfficherEnSero = new ArrayList<Integer>();
+      int indexColonneForExport = 0;
       
       for(int i = 0; i < nbCols; i++){//TK-520 : filter les colonnes qui ne doivent pas être affichées dans certains contexte - garder les numéros pour utilisation dans la boucle qui lit les données...
          // title = alias ssi export catalogue
@@ -317,11 +318,12 @@ public class ResultSetToExcel
 
          
          if(ContexteHelper.isContexteSerologie(contexte) && LIST_CHAMP_A_NE_PAS_AFFICHER_EN_SERO.contains(title)) {
-            listIndexColonneANePasAfficherEnSero.add(i);
-            //on ne crée pas la cellule
+            listIndexColonneResultSetANePasAfficherEnSero.add(i);
+            //on ne crée pas la cellule et on n'incrémente pas l'index des colonnes de tableau d'export
          }
          else {
-            writeCell(row, i, isAnno ? title : labelPrintTitle(title, entite), formatTypes[i], boldStyle);
+            writeCell(row, indexColonneForExport, isAnno ? title : labelPrintTitle(title, entite), formatTypes[i], boldStyle);
+            indexColonneForExport++;
          }
       }
 
@@ -342,15 +344,15 @@ public class ResultSetToExcel
       //Construction de la liste des index de colonne à afficher pour ne pas avoir à faire le test sur chaque ligne de données
       List<Integer> listIndexColonneAAfficher = new ArrayList<Integer>();
       for(int i=0; i< nbCols; i++) {
-         if(!listIndexColonneANePasAfficherEnSero.contains(i)) {
+         if(!listIndexColonneResultSetANePasAfficherEnSero.contains(i)) {
             listIndexColonneAAfficher.add(i); 
          }
       }
       
       while(resultSet.next()){
          row = sheet.createRow(currentRow++);
+         int indexColonneDansTableauResultat = 0;
          for(Integer indexColonneAAfficher : listIndexColonneAAfficher) {
-            int indexColonneDansTableauResultat = 0;
             int numeroColonneDansResultset = indexColonneAAfficher + 1;
             final Object value = resultSet.getObject(numeroColonneDansResultset);
             //amélioration faite suite au bug TG-209
@@ -818,14 +820,18 @@ public class ResultSetToExcel
       if(entite.equals("Patient")){
          if(title.equals("MEDECIN_PATIENT")){
             return Labels.getLabel("patient.medecins");
-         }else if(title.equals("CODE_ORGANE")){
+         }else if(title.equals("CODE_ORGANES")){
             return Labels.getLabel("Champ.Echantillon.Organe");
          }else if(title.equals("NOMBRE_PRELEVEMENT")){
             return Labels.getLabel("patient.nbPrelevements");
          }
       }else if(entite.equals("Prelevement")){
-         if(title.equals("CODE_ORGANE")){
+         if(title.equals("FIABILITE_DIAGNOSTIC")){
+            return Labels.getLabel("Champ.Maladie.Diagnostic");
+         }else if(title.equals("CODE_ORGANES")){
             return Labels.getLabel("Champ.Echantillon.Organe");
+         }else if(title.equals("CODE_MORPHOS")) {
+            return Labels.getLabel("Champ.Echantillon.CodeMorphos");
          }else if(title.equals("PROTOCOLES")){
             return Labels.getLabel("Champ.Prelevement.Protocoles");
          }else if(title.equals("COMPLEMENT_DIAG")){
