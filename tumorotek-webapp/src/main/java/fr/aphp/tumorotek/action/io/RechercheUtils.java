@@ -70,6 +70,8 @@ public class RechercheUtils
     * @param matAfs ??
     * @param affichage affichage
     */
+   //CHT : TK-900 à optimiser : le traitement ne rend pas la main (du fait du loader "asynchrone" et du timeout sur le https) 
+   //pour un gros volume : 21000 lignes ne ramenant que des codes échantillons
    public static void loadMatriceAffichable(final List<List<Object>> matObjs, final List<List<Object>> matAfs,
       final Affichage affichage){
       // On itère la matrice
