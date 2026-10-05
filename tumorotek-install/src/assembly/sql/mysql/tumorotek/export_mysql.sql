@@ -315,7 +315,7 @@ CREATE PROCEDURE `create_tmp_patient_table_anonyme`()
       DATE_ETAT          date,
       DATE_DECES         date,
       MEDECIN_PATIENT    varchar(300),
-      CODE_ORGANE        VARCHAR(500),
+      CODE_ORGANES        VARCHAR(500),
       NOMBRE_PRELEVEMENT int(4),
       DATE_HEURE_SAISIE  datetime,
       UTILISATEUR_SAISIE varchar(100),
@@ -346,7 +346,7 @@ CREATE PROCEDURE `fill_tmp_table_patient`(IN id INTEGER)
                                     DATE_ETAT,
                                     DATE_DECES,
                                     MEDECIN_PATIENT,
-                                    CODE_ORGANE,
+                                    CODE_ORGANES,
                                     NOMBRE_PRELEVEMENT,
                                     UTILISATEUR_SAISIE,
                                     DATE_HEURE_SAISIE,
@@ -411,7 +411,7 @@ CREATE PROCEDURE `fill_tmp_table_patient_anonyme`(IN id INTEGER)
                                     DATE_ETAT,
                                     DATE_DECES,
                                     MEDECIN_PATIENT,
-                                    CODE_ORGANE,
+                                    CODE_ORGANES,
                                     NOMBRE_PRELEVEMENT,
                                     UTILISATEUR_SAISIE,
                                     DATE_HEURE_SAISIE,
@@ -552,7 +552,6 @@ CREATE PROCEDURE `create_tmp_prelevement_table`()
       PATIENT_NDA          varchar(20),
       FIABILITE_DIAGNOSTIC    varchar(200), -- TK-520 (avant en anapath correspond au code lésion, en sero fiabilite du diagnostic)
       CODE_ORGANES          VARCHAR(500), -- TK-520 en anapth correspond au code organe mais /!\ ne doit pas être affiché en séro ...
-      -- DIAGNOSTIC ?????          VARCHAR(500), -- TK-520 en anapth correspond au code lésion mais /!\ ne doit pas être affiché en séro ...
       CODE_MORPHOS          VARCHAR(500), -- TK-520 en anapth correspond au code lésion mais /!\ ne doit pas être affiché en séro ...
       ECHAN_TOTAL          int(4),
       ECHAN_RESTANT        int(4),
@@ -637,7 +636,9 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
            p.numero_labo                                                                                 as laboratoire,
            n.nature,
            LEFT((SELECT GROUP_CONCAT(pt.nom)
-            FROM PRELEVEMENT prlt JOIN PROTOCOLE pt ON pt.PROTOCOLE_ID = prlt.PROTOCOLE_ID
+            FROM PRELEVEMENT prlt 
+            	JOIN PRELEVEMENT_PROTOCOLE pp ON pp.PRELEVEMENT_ID = prlt.PRELEVEMENT_ID
+           		JOIN PROTOCOLE pt ON pt.PROTOCOLE_ID = pp.PROTOCOLE_ID
             WHERE prlt.PRELEVEMENT_ID = id), 200)														as 'protocoles', -- new TK-520
            p.date_prelevement,
            pt.type,
@@ -726,8 +727,6 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
            LEFT JOIN PRELEVEMENT_TYPE pt
              ON p.prelevement_type_id = pt.prelevement_type_id -- LEFT JOIN OBJET_NON_CONFORME onc ON p.prelevement_id = onc.objet_id
              -- LEFT JOIN NON_CONFORMITE nc ON onc.non_conformite_id = nc.non_conformite_id
-           LEFT JOIN DIAGNOSTIC diag
-             ON p.diagnostic_id = diag.diagnostic_id
            LEFT JOIN SERVICE s ON p.service_preleveur_id = s.service_id
            LEFT JOIN ETABLISSEMENT et ON s.etablissement_id = et.etablissement_id
            LEFT JOIN COLLABORATEUR co ON p.preleveur_id = co.collaborateur_id
@@ -738,6 +737,7 @@ CREATE PROCEDURE `fill_tmp_table_prel`(IN id INTEGER)
            LEFT JOIN COLLABORATEUR coco ON p.operateur_id = coco.collaborateur_id
            LEFT JOIN UNITE u ON p.quantite_unite_id = u.unite_id
            LEFT JOIN MALADIE m on p.maladie_id = m.maladie_id
+           LEFT JOIN DIAGNOSTIC diag ON m.diagnostic_id = diag.diagnostic_id
            LEFT JOIN PATIENT pat ON m.patient_id = pat.patient_id
     WHERE p.banque_id = b.banque_id
       AND p.nature_id = n.nature_id

@@ -27,7 +27,7 @@ END fill_tmp_table_maladie_sero;
 -- -----------------------------------------------------
 -- PRELEVEMENT 
 -- ajout PROTOCOLES et COMPLEMENT_DIAGNOSTIC
--- suppr CODE_ORGANE
+-- suppr CODE_ORGANES
 -- -----------------------------------------------------
 
 -- dans un premier temps, fait exactement la même chose que le contexte anapth pour débloquer l'export en serologie
