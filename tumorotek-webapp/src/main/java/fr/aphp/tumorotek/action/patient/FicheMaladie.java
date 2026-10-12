@@ -690,6 +690,7 @@ public class FicheMaladie extends AbstractFicheCombineController
       if(setMedecins && medecins.size() > 0){
          this.maladie.setCollaborateurs(new HashSet<>(this.medecins));
       }
+      this.maladie.setDiagnostic(selectedDiag);
    }
 
    @Override
@@ -1198,6 +1199,10 @@ public class FicheMaladie extends AbstractFicheCombineController
       return selectedDiag;
    }
 
+   public void setSelectedDiag(Diagnostic diagnostic){
+      selectedDiag = diagnostic;
+   }
+   
    public List<Diagnostic> getDiagnostics(){
       return ManagerLocator.getManager(DiagnosticManager.class).findAllObjectsManager();
    }
