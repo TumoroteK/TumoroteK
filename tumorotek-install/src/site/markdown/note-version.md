@@ -1,5 +1,9 @@
 #### Notes
 
+##### Version 2.3.1.6 - Publiée le 16/10/2026
+###### Corrections
+- YouTrack [TK-902](https://tumorotek.myjetbrains.com/youtrack/issue/TK-902) : VisionMate > l'attribution des échantillons ou dérivés en mode colonne ne respecte pas l'ordre
+
 ##### Version 2.3.1.5 - Publiée le 06/08/2026
 ###### Corrections
 - YouTrack [TK-881](https://tumorotek.myjetbrains.com/youtrack/issue/TK-881) : lors de la création d'une <span class="badge badge-cession">Cession</span>, le changement de type efface le numéro de la cession
