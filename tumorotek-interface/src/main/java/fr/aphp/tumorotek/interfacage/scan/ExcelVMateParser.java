@@ -41,8 +41,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.camel.Body;
 import org.slf4j.Logger;
@@ -91,11 +93,9 @@ public class ExcelVMateParser
          boolean headersFound = false;
          int colNum;
 
-         int termWidth = 1;
-         int termHeight = 0;
-         boolean firstLigneDone = false;
-
-         String previousRow = null;
+         //Ces 2 sets (qui garantissent l'unicité) vont permettre de définir les dimensions de la boîte (que le mode de scan soit en ligne ou en colonne)
+         Set<String> numRows = new HashSet<String>();
+         Set<String> numCols = new HashSet<String>();
 
          for(final Iterator<Row> rit = sheet.rowIterator(); rit.hasNext();){
             final HSSFRow row = (HSSFRow) rit.next();
@@ -143,20 +143,12 @@ public class ExcelVMateParser
                cell = row.getCell(colsPosition.get("LocationRow").intValue());
                cell.setCellType(CellType.STRING);
                tube.setLigne(cell.getStringCellValue());
+               numRows.add(tube.getLigne());
                // col
                cell = row.getCell(colsPosition.get("LocationColumn").intValue());
                cell.setCellType(CellType.STRING);
                tube.setColonne(cell.getStringCellValue());
-
-               if(tube.getLigne() != previousRow){
-                  termHeight++;
-                  if(previousRow != null){ // first line parsed
-                     firstLigneDone = true;
-                  }
-                  previousRow = tube.getLigne();
-               }else if(!firstLigneDone){
-                  termWidth++;
-               }
+               numCols.add(tube.getColonne());
 
                tube.setScanTerminale(sT);
                sT.getScanTubes().add(tube);
@@ -166,8 +158,8 @@ public class ExcelVMateParser
          final Calendar c = Calendar.getInstance();
          c.setTime(dateScan);
          sT.setDateScan(c);
-         sT.setHeight(termHeight);
-         sT.setWidth(termWidth);
+         sT.setHeight(numRows.size());
+         sT.setWidth(numCols.size());
 
       }catch(final Exception e){
          log.error("Error parsing VisionMate xls", e);

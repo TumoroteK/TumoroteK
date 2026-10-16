@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -122,6 +123,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Prelevement;
 import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
+import fr.aphp.tumorotek.model.interfacage.scan.ScanTube;
 import fr.aphp.tumorotek.model.qualite.NonConformite;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
@@ -2878,22 +2880,28 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
     * @param sT scanTerminale
     */
    public void applyTKObjectsCodesFromScan(final ScanTerminale sT){
-      if(!getAddedEchantillons().isEmpty() && !sT.getScanTubes().isEmpty()){
+      //TK-902 : Pour conserver l'ordre du scan, tri par les id (les scanTubes ont été créés en lisant ligne à ligne le fichier)
+      List<ScanTube> listScanTubeTrie = sT.getScanTubes();
+      Collections.sort(listScanTubeTrie, Comparator.comparing(ScanTube::getScanTubeId));
+      if(!getAddedEchantillons().isEmpty() && !listScanTubeTrie.isEmpty()){
          int i = 0;
          Textbox tb;
+         int nbScanTubes = listScanTubeTrie.size();
          for(final EchantillonDTO deco : getEchantillonsDecorated()){
             
             if(deco.isNew() && deco.getAdrlTmp() == null){
-               while(i < sT.getScanTubes().size() && sT.getScanTubes().get(i).getCode() == null) {//TK-848 : on récupère le tube suivant avec un code renseigné
+               //TK-848 : gestion du cas où les échantillons ne seraient pas à la suite (trou non rempli entre 2 trous remplis)
+               //A noter que la méthode setValue de Textbox n'accepte pas la valeur null, ça envoie une exception sans doute catchée car invisible par l'utilisateur...
+               while(i < nbScanTubes && listScanTubeTrie.get(i).getCode() == null) {//TK-848 : on récupère le tube suivant avec un code renseigné
                      i++;
                }
-               if(i == sT.getScanTubes().size()) { 
+               if(i == nbScanTubes) { 
                   break;
                }
                else {
                   tb = (Textbox) echantillonsList.getRows().getChildren().get(getEchantillonsDecorated().indexOf(deco))
                      .getFirstChild().getNextSibling();
-                  tb.setValue(sT.getScanTubes().get(i).getCode());
+                  tb.setValue(listScanTubeTrie.get(i).getCode());
                   Events.postEvent("onChange", tb, null);
                   i++;
                }

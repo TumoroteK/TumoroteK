@@ -39,6 +39,8 @@ import java.io.File;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -138,6 +140,7 @@ import fr.aphp.tumorotek.model.contexte.Banque;
 import fr.aphp.tumorotek.model.contexte.Collaborateur;
 import fr.aphp.tumorotek.model.interfacage.DossierExterne;
 import fr.aphp.tumorotek.model.interfacage.scan.ScanTerminale;
+import fr.aphp.tumorotek.model.interfacage.scan.ScanTube;
 import fr.aphp.tumorotek.model.qualite.OperationType;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
@@ -2693,20 +2696,27 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
     * @param sT scanTerminale
     */
    public void applyTKObjectsCodesFromScan(final ScanTerminale sT){
-      if(!getAddedProdDerives().isEmpty() && !sT.getScanTubes().isEmpty()){
+      //TK-902 : Pour conserver l'ordre du scan, tri par les id (les scanTubes ont été créés en lisant ligne à ligne le fichier) 
+      List<ScanTube> listScanTubeTrie = sT.getScanTubes();
+      Collections.sort(listScanTubeTrie, Comparator.comparing(ScanTube::getScanTubeId));
+      if(!getAddedProdDerives().isEmpty() && !listScanTubeTrie.isEmpty()){
          int i = 0;
-
          Textbox tb;
+         int nbScanTubes = listScanTubeTrie.size();
          for(final ProdDeriveDecorator2 deco : getProdDerivesDecorated()){
             if(deco.isNew() && deco.getAdrlTmp() == null){
-               if(i < sT.getScanTubes().size()){
+               while(i < nbScanTubes && listScanTubeTrie.get(i).getCode() == null) {//TK-848 : on récupère le tube suivant avec un code renseigné
+                  i++;
+               }
+               if(i == nbScanTubes) { 
+                  break;
+               }
+               else {
                   tb = (Textbox) derivesList.getRows().getChildren().get(getProdDerivesDecorated().indexOf(deco)).getFirstChild()
                      .getNextSibling();
-                  tb.setValue(sT.getScanTubes().get(i).getCode());
+                  tb.setValue(listScanTubeTrie.get(i).getCode());
                   Events.postEvent("onChange", tb, null);
                   i++;
-               }else{
-                  break;
                }
             }
          }

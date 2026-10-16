@@ -167,6 +167,7 @@ public class ScanTube implements java.io.Serializable
       return hash;
    }
 
+   //NB : la règle de gestion utilisée suppose qu'une boîte scannée comprend au maximum 26 lignes ....
    @Transient
    public int getPosition(){
       int pos = 0;
