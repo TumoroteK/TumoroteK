@@ -1,7 +1,11 @@
 #### Notes
 
+##### Version 2.3.1.7 - Publiée le 20/10/2026
+###### Correction
+- YouTrack [TK-903](https://tumorotek.myjetbrains.com/youtrack/issue/TK-903) : ${produit-derive} Valeurs des quantités calculées parfois inexactes au niveau des chiffres après la virgule
+
 ##### Version 2.3.1.6 - Publiée le 16/10/2026
-###### Corrections
+###### Correction
 - YouTrack [TK-902](https://tumorotek.myjetbrains.com/youtrack/issue/TK-902) : VisionMate > l'attribution des échantillons ou dérivés en mode colonne ne respecte pas l'ordre
 
 ##### Version 2.3.1.5 - Publiée le 06/08/2026
