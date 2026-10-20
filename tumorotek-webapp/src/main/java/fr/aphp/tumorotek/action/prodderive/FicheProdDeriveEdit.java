@@ -99,6 +99,7 @@ import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
+import fr.aphp.tumorotek.utils.TKFloatUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -655,7 +656,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          // si une quantité a été saisie pour la transformation
          if(getTransformation().getQuantite() != null){
             // maj de la quantité de l'echantillon
-            final Float tmp = getQuantiteMax() - getTransformation().getQuantite();
+            //TK-903
+            final Float tmp = TKFloatUtils.subtract(getQuantiteMax(), getTransformation().getQuantite());
             ((Echantillon) getParentObject()).setQuantite(tmp);
          }else{
             ((Echantillon) getParentObject()).setQuantite(getQuantiteMax());
@@ -710,7 +712,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    }
 
    /**
-    * Mets a jour l'échantillon lié au produit dérivé.
+    * Met a jour le produit dérivé dont est issu ce produit dérivé.
     */
    public ObjetStatut prepareUpdateParentProduitDerive(){
 
@@ -719,7 +721,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          // si une quantité a été saisie pour la transformation
          if(getTransformation().getQuantite() != null){
             // maj de la quantité du prodderive
-            final Float tmp = getQuantiteMax() - getTransformation().getQuantite();
+            //TK-903 :
+            final Float tmp = TKFloatUtils.subtract(getQuantiteMax(), getTransformation().getQuantite());
             ((ProdDerive) getParentObject()).setQuantite(tmp);
          }else{
             ((ProdDerive) getParentObject()).setQuantite(getQuantiteMax());
@@ -729,9 +732,10 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          if(((ProdDerive) getParentObject()).getQuantiteInit() != null
             && !((ProdDerive) getParentObject()).getQuantiteInit().equals(new Float(0.0))){
             if(((ProdDerive) getParentObject()).getVolumeInit() != null){
-               final float rapport =
-                  ((ProdDerive) getParentObject()).getQuantite() / ((ProdDerive) getParentObject()).getQuantiteInit();
-               final Float newVol = ((ProdDerive) getParentObject()).getVolumeInit() * rapport;
+               //TK-903
+               ProdDerive parent = (ProdDerive) getParentObject();
+               final Float rapport = TKFloatUtils.divide(parent.getQuantite(), parent.getQuantiteInit());
+               final Float newVol = TKFloatUtils.multiply(parent.getVolumeInit(), rapport);
                ((ProdDerive) getParentObject()).setVolume(newVol);
             }
          }else{
@@ -882,7 +886,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             quantiteMax = ((Prelevement) getParentObject()).getQuantite();
             // si une quantité avait déjà été saisie pour la transfo
             if(quantiteMax != null && this.transformation.getQuantite() != null){
-               quantiteMax = quantiteMax + this.transformation.getQuantite();
+               //TK-903 :
+               quantiteMax = TKFloatUtils.add(quantiteMax, this.transformation.getQuantite());
             }
             // si le parent est un echantillon
          }else if(typeParent.equals("Echantillon")){
@@ -893,7 +898,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             quantiteMax = ((Echantillon) getParentObject()).getQuantite();
             // si une quantité avait déjà été saisie pour la transfo
             if(quantiteMax != null && this.transformation.getQuantite() != null){
-               quantiteMax = quantiteMax + this.transformation.getQuantite();
+               //TK-903 :
+               quantiteMax = TKFloatUtils.add(quantiteMax, this.transformation.getQuantite());
             }
             // si le parent est un dérivé
          }else if(typeParent.equals("ProdDerive")){
@@ -904,7 +910,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             quantiteMax = ((ProdDerive) getParentObject()).getQuantite();
             // si une quantité avait déjà été saisie pour la transfo
             if(quantiteMax != null && this.transformation.getQuantite() != null){
-               quantiteMax = quantiteMax + this.transformation.getQuantite();
+               //TK-903 :
+               quantiteMax = TKFloatUtils.add(quantiteMax, this.transformation.getQuantite());
             }
             // si un volume avait déjà été saisi pour la transfo
          }
@@ -1216,7 +1223,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
          if(prodDerive.getConc() != null){
 
-            final Float res = prodDerive.getVolumeInit() * prodDerive.getConc();
+            //TK-903 : problème de calcul en java en passant par le signe de multiplication
+            Float res = calculateQuantiteFromVolumeAndConcentration(prodDerive.getVolumeInit(),prodDerive.getConc());
             prodDerive.setQuantiteInit(res);
             updateQuantite(prodDerive.getQuantiteInit());
 
@@ -1235,7 +1243,8 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
 
          if(prodDerive.getVolumeInit() != null){
 
-            final Float res = prodDerive.getVolumeInit() * prodDerive.getConc();
+            //TK-903 : problème de calcul en java en passant par le signe de multiplication
+            Float res = calculateQuantiteFromVolumeAndConcentration(prodDerive.getVolumeInit(),prodDerive.getConc());
             prodDerive.setQuantiteInit(res);
             updateQuantite(prodDerive.getQuantiteInit());
 
@@ -1258,7 +1267,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          Float diff = this.prodDerive.getQuantiteInit();
          // si une quantité initiale était saisie
          if(getCopy().getQuantiteInit() != null){
-            diff = diff - getCopy().getQuantiteInit();
+            diff = TKFloatUtils.subtract(diff, getCopy().getQuantiteInit());
          }else if(getCopy().getQuantiteInit() == null && getCopy().getQuantite() != null){
             prodDerive.setQuantite(prodDerive.getQuantiteInit());
             diff = zero;
@@ -1268,7 +1277,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          if(diff != zero){
             Float restant;
             if(getCopy().getQuantite() != null){
-               restant = getCopy().getQuantite() + diff;
+               restant = TKFloatUtils.add(getCopy().getQuantite(), diff);
             }else{
                restant = diff;
             }
@@ -1303,7 +1312,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          Float diff = this.prodDerive.getVolumeInit();
          // si un volume initial était saisi
          if(getCopy().getVolumeInit() != null){
-            diff = diff - getCopy().getVolumeInit();
+            diff = TKFloatUtils.subtract(diff, getCopy().getVolumeInit());
          }else if(getCopy().getVolumeInit() == null && getCopy().getVolume() != null){
             prodDerive.setVolume(prodDerive.getVolumeInit());
             diff = zero;
@@ -1313,7 +1322,7 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          if(diff != zero){
             Float restant;
             if(getCopy().getVolume() != null){
-               restant = getCopy().getVolume() + diff;
+               restant = TKFloatUtils.add(getCopy().getVolume(), diff);
             }else{
                restant = diff;
             }
@@ -2103,14 +2112,14 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             // si l'échantillon avait deja une valeur de volume et de
             // volumeInit
             if(getCopy().getVolume() != null && getCopy().getVolumeInit() != null){
-
-               final float diff = volumeInitValue.floatValue() - getCopy().getVolumeInit();
-               final float restant = getCopy().getVolume() + diff;
-               final Float zero = new Float(0.0);
+               //TK-903
+               final float diff = TKFloatUtils.subtract(volumeInitValue.floatValue(), getCopy().getVolumeInit());
+               final float restant = TKFloatUtils.add(getCopy().getVolume(), diff);
+               final float zero = 0.0f;
                // si le volume restant est négatif
                if(restant < zero){
                   // on calcule le volumeInit minimal autorisé
-                  final float min = getCopy().getVolumeInit() - getCopy().getVolume();
+                  final float min = TKFloatUtils.subtract(getCopy().getVolumeInit(), getCopy().getVolume());
                   throw new WrongValueException(comp, Labels.getLabel("validation.invalid.volume.init") + " " + min);
                }
             }
@@ -2226,26 +2235,34 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
             // quantiteInit
             if(getCopy().getQuantite() != null && getCopy().getQuantiteInit() != null){
 
-               final float diff = quantiteInitValue.floatValue() - getCopy().getQuantiteInit();
-               final float restant = getCopy().getQuantite() + diff;
-               final Float zero = new Float(0.0);
+               //TK-903 : 
+               final BigDecimal diff = quantiteInitValue.subtract(TKFloatUtils.transformInBigDecimal(getCopy().getQuantiteInit()));
+               final BigDecimal restant = TKFloatUtils.transformInBigDecimal(getCopy().getQuantite()).add(diff);
+               final BigDecimal zero = new BigDecimal("0");
                // si la Quantite restante est négative
-               if(restant < zero){
+               if(restant.compareTo(zero) < 0){
                   // on calcule la quantiteInit minimale autorisée
-                  final float min = getCopy().getQuantiteInit() - getCopy().getQuantite();
+                  final float min = TKFloatUtils.subtract(getCopy().getQuantiteInit(), getCopy().getQuantite());
                   throw new WrongValueException(comp, Labels.getLabel("validation.invalid.quantite.init") + " " + min);
                }
                // la quantité init doit respecter la formule :
                // qteInit = volInit * concentration
                if(prodDerive.getVolumeInit() != null && prodDerive.getConc() != null){
-
-                  Float res = prodDerive.getVolumeInit() * prodDerive.getConc();
+                  
+                  //TK-903
+                  Float res = calculateQuantiteFromVolumeAndConcentration(prodDerive.getVolumeInit(), prodDerive.getConc());
+                  //TK-903 : mise en commentaire de la 1ere correction non satisfaisante pour tous les cas
+                  /*
                   res = ObjectTypesFormatters.floor(res, 3);
-
                   // TK-290 arrondi peut être supérieur ou inférieur = OK
                   if((quantiteInit.floatValue() > (res + 0.001f)) || (quantiteInit.floatValue() < (res - 0.001f))){
                      throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
                   }
+                  */
+                  if(quantiteInit.floatValue() != res.floatValue() ){
+                     throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
+                  }
+                  //fin TK-903
                }
             }
          }
@@ -2642,5 +2659,11 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       return ObjectTypesFormatters.ILNObjectStatut(getObject().getObjetStatut());
    }
 
+   //TK-903 : utilisation de BigDecimal pour calculer les quantités afin d'éviter les "erreurs d'arrondi" introduites
+   //par l'utilisation du signe de multiplication
+   protected Float calculateQuantiteFromVolumeAndConcentration(Float volume, Float concentration) {
+      Float resultat = TKFloatUtils.multiply(volume, concentration);
+      return (resultat == null ? 0 : resultat);
+   }
 
 }

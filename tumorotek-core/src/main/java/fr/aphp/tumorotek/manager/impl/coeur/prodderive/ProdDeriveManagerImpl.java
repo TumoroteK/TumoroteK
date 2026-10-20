@@ -119,6 +119,7 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Unite;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.utils.TKFloatUtils;
 import fr.aphp.tumorotek.utils.Utils;
 
 /**
@@ -1942,7 +1943,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             // si une quantité a été saisie pour la transformation
             if(tf.getQuantite() != null){
                // maj de la quantité du parent si restant >= 0
-               final Float tmp = ((TKStockableObject) parent).getQuantite() - tf.getQuantite();
+               final Float tmp = TKFloatUtils.subtract(((TKStockableObject) parent).getQuantite(), tf.getQuantite());
                if(tmp >= 0){
                   ((TKStockableObject) parent).setQuantite(tmp);
                }else{
@@ -1958,8 +1959,8 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
                final ProdDerive deriveParent = (ProdDerive) parent;
                if(deriveParent.getQuantiteInit() != null && !deriveParent.getQuantiteInit().equals(new Float(0.0))){
                   if(deriveParent.getVolumeInit() != null){
-                     final float rapport = deriveParent.getQuantite() / deriveParent.getQuantiteInit();
-                     final Float newVol = deriveParent.getVolumeInit() * rapport;
+                     final float rapport = TKFloatUtils.divide(deriveParent.getQuantite(),deriveParent.getQuantiteInit());
+                     final Float newVol = TKFloatUtils.multiply(deriveParent.getVolumeInit(), rapport);
                      deriveParent.setVolume(newVol);
                   }
                }else{
@@ -1978,7 +1979,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
          // si une quantité a été saisie pour la transformation
          if(tf.getQuantite() != null){
             // maj de la quantité du prlvt
-            final Float tmp = ((Prelevement) parent).getQuantite() - tf.getQuantite();
+            final Float tmp = TKFloatUtils.subtract(((Prelevement) parent).getQuantite(), tf.getQuantite());
             if(tmp >= 0){
                ((Prelevement) parent).setQuantite(tmp);
             }else{

@@ -130,6 +130,7 @@ import fr.aphp.tumorotek.model.stockage.Emplacement;
 import fr.aphp.tumorotek.model.stockage.Terminale;
 import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.systeme.Temperature;
+import fr.aphp.tumorotek.utils.TKFloatUtils;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
 /**
@@ -2071,9 +2072,9 @@ public class FicheCessionEdit extends AbstractFicheEditController
 
 		// si la quantité demandée inférieure ou égale à celle disponile
 		if(deco.getCederObjet().getQuantite() != null && deco.getCederObjet().getQuantite() <= deco.getQuantiteMax()){
-			final Float res = deco.getQuantiteMax() - deco.getCederObjet().getQuantite();
-			// arrondi pour éviter les valeurs 20.00012
-			deco.setQuantiteRestante(ObjectTypesFormatters.floor(res, 3));
+			//TK-903 :
+		   final Float res = TKFloatUtils.subtract(deco.getQuantiteMax(), deco.getCederObjet().getQuantite());
+			deco.setQuantiteRestante(res);
 		}
 	}
 
@@ -2090,9 +2091,8 @@ public class FicheCessionEdit extends AbstractFicheEditController
 
 		// si la quantité demandée est inférieure ou égale à celle disponile
 		if(deco.getCederObjet().getQuantite() != null && deco.getCederObjet().getQuantite() <= deco.getQuantiteMax()){
-			final Float res = deco.getQuantiteMax() - deco.getCederObjet().getQuantite();
-			// arrondi pour éviter les valeurs 20.00012
-			deco.setQuantiteRestante(ObjectTypesFormatters.floor(res, 3));
+			final Float res = TKFloatUtils.subtract(deco.getQuantiteMax(), deco.getCederObjet().getQuantite());
+			deco.setQuantiteRestante(res);
 		}
 	}
 

@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.action.controller;
 import java.awt.print.PrinterException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -144,6 +145,7 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 import fr.aphp.tumorotek.model.utilisateur.Profil;
 import fr.aphp.tumorotek.model.utilisateur.ProfilUtilisateur;
 import fr.aphp.tumorotek.model.utilisateur.Utilisateur;
+import fr.aphp.tumorotek.utils.TKFloatUtils;
 import fr.aphp.tumorotek.webapp.general.DeleteModale;
 import fr.aphp.tumorotek.webapp.general.SessionUtils;
 
@@ -1093,8 +1095,9 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 		// maj du volume
 		if(derive.getQuantiteInit() != null && !derive.getQuantiteInit().equals(new Float(0.0))){
 			if(derive.getVolumeInit() != null){
-				final Float rapport = qte / derive.getQuantiteInit();
-				vol = derive.getVolumeInit() * rapport;
+				//TK-903 :
+			   final Float rapport = TKFloatUtils.divide(qte, derive.getQuantiteInit());
+				vol = TKFloatUtils.multiply(derive.getVolumeInit(), rapport);
 			}else{
 				return null;
 			}
@@ -1110,8 +1113,9 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 
 		if(derive.getVolumeInit() != null && !derive.getVolumeInit().equals(new Float(0.0))){
 			if(derive.getQuantiteInit() != null){
-				final Float rapport = vol / derive.getVolumeInit();
-				quantite = derive.getQuantiteInit() * rapport;
+				//TK-903 :
+			   final Float rapport = TKFloatUtils.divide(vol, derive.getVolumeInit());
+				quantite = TKFloatUtils.multiply(derive.getQuantiteInit(), rapport);
 			}else{
 				return null;
 			}

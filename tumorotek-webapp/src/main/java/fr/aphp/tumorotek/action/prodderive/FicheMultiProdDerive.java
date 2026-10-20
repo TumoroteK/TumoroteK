@@ -2476,10 +2476,9 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             // la quantité init doit respecter la formule :
             // qteInit = volInit * concentration
             if(getProdDerive().getVolumeInit() != null && getProdDerive().getConc() != null){
-
-               Float res = getProdDerive().getVolumeInit() * getProdDerive().getConc();
-
-               res = ObjectTypesFormatters.floor(res, 3);
+               
+               //TK-903 : problème de calcul en java en passant par le signe de multiplication
+               Float res = calculateQuantiteFromVolumeAndConcentration(getProdDerive().getVolumeInit(),getProdDerive().getConc());
                if(!getQuantiteInit().equals(res)){
                   throw new WrongValueException(comp, Labels.getLabel("validation.invalid.formule" + ".quantite.init"));
                }
@@ -2555,7 +2554,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
          if(getProdDerive().getConc() != null){
 
-            final Float res = getProdDerive().getVolumeInit() * getProdDerive().getConc();
+            //TK-903 : problème de calcul en java en passant par le signe de multiplication
+            Float res = calculateQuantiteFromVolumeAndConcentration(getProdDerive().getVolumeInit(), getProdDerive().getConc());
             getProdDerive().setQuantiteInit(res);
 
          }
@@ -2574,7 +2574,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
 
          if(getProdDerive().getVolumeInit() != null){
 
-            final Float res = getProdDerive().getVolumeInit() * getProdDerive().getConc();
+            //TK-903 : problème de calcul en java en passant par le signe de multiplication
+            Float res = calculateQuantiteFromVolumeAndConcentration(getProdDerive().getVolumeInit(), getProdDerive().getConc());
             getProdDerive().setQuantiteInit(res);
 
          }

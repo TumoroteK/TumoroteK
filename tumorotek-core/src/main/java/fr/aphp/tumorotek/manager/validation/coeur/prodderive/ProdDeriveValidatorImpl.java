@@ -43,7 +43,7 @@ import fr.aphp.tumorotek.manager.coeur.prodderive.ProdDeriveValidator;
 import fr.aphp.tumorotek.manager.validation.CoherenceDateManager;
 import fr.aphp.tumorotek.manager.validation.ValidationUtilities;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
-import fr.aphp.tumorotek.utils.Utils;
+import fr.aphp.tumorotek.utils.TKFloatUtils;
 
 /**
  * Validator pour le bean domaine ProdDerive (de prodderive).
@@ -186,13 +186,21 @@ public class ProdDeriveValidatorImpl implements ProdDeriveValidator
       }
       // quantiteInit = volumeInit * concentration
       if(derive.getQuantiteInit() != null && derive.getVolumeInit() != null && derive.getConc() != null){
-         final Float res = derive.getVolumeInit() * derive.getConc();
-         final Float floor = Utils.floor(res, 3);
+         //TK-903
+         final Float quantiteCalculee = TKFloatUtils.multiply(derive.getVolumeInit(), derive.getConc());
+         //TK-903 : partie ci-dessus mise en commentaire car correspond à la 1ere correction du pb non suffisante
+/*
+         final Float floor = Utils.floor(quantiteCalculee, 3);
          // TK-290 arrondi peut être supérieur ou inférieur = OK
          if((derive.getQuantiteInit().floatValue() > (floor + 0.001f))
             || (derive.getQuantiteInit().floatValue() < (floor - 0.001f))){
             errs.rejectValue("quantiteInit", "prodDerive.quantiteInit.illegal");
          }
+*/
+         if(derive.getQuantiteInit().floatValue() != quantiteCalculee.floatValue()) {
+            errs.rejectValue("quantiteInit", "prodDerive.quantiteInit.illegal");
+         }
+         //fin TK-903
       }
       // unites valides
       if(derive.getVolumeUnite() != null){
