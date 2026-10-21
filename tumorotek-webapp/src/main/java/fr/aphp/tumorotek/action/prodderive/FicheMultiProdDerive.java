@@ -373,7 +373,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
    public boolean onLaterCreate(){
 
       try{
-         createObjectWithAnnots();
+         //TK-905 :
+         createNewObject();
 
          // ajout du dérivé à la liste
          for(int i = 0; i < addedProdDerives.size(); i++){
@@ -421,6 +422,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          return true;
 
       }catch(final RuntimeException re){
+         log.error("Erreur lors de la création des produits dérivés", re);
+         
          // ferme wait message
          Clients.clearBusy();
 
