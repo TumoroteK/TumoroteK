@@ -681,7 +681,6 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
     */
    private boolean prepareAnnotationValeurAlphanumOrHyperlien(final AnnotationValeur valeur){
       String newVal = null;
-
       if(((Textbox) box).getValue() != null && !((Textbox) box).getValue().equals("")){
          newVal = ((Textbox) box).getValue();
       }else if(isCombined && combineBox.isChecked()){
@@ -1622,6 +1621,11 @@ public class AnnotationComponent extends GenericForwardComposer<Component>
 
       this.valeursToDelete.addAll(this.valeurs);
       this.valeurs.clear();
+      //TK-904 : permet de ne pas ajouter 2 fois une même valeur dans le cas d'un 2e clic sur "Ajouter à la liste" si le 1er 
+      //clic a été bloqué par un champ d'annotation obligatoire non renseigné ! 
+      //Cette modification permet en même temps de bien prendre en compte une éventuelle modification de sélection lors du 2e 
+      //clic (sinon le fait de décocher une valeur n'est pas pris en compte) (TK-906)
+      this.valeursToCreateOrUpdate.clear();
 
       if(this.selectedIts.size() > 0){
          // enregistre les nouvelles valeurs
