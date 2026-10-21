@@ -224,7 +224,7 @@ public class AnnotationValeurManagerImpl implements AnnotationValeurManager
             throw new IllegalArgumentException("Operation must match " + "'creation/modification' values");
          }
       }else{
-         log.warn("Doublon lors {} objet AnnotationValeur {}", operation, valeur);
+         log.error("Doublon lors {} objet AnnotationValeur {}", operation, valeur);
          throw new DoublonFoundException("AnnotationValeur", operation);
       }
    }

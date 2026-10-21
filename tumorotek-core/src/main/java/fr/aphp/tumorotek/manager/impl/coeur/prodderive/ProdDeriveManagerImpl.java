@@ -1457,6 +1457,7 @@ public class ProdDeriveManagerImpl implements ProdDeriveManager
             objetNonConformeManager.createUpdateOrRemoveListObjectManager(newDerive, noconfsCess, "Cession");
          }
       }catch(final RuntimeException e){
+         log.error("Erreur lors de la création des dérivés : ",e);
          //         if(filesCreated != null){
          for(final File f : filesCreated){
             // fichierManager.removeObjectManager(fichier);
