@@ -44,9 +44,11 @@ import java.util.List;
 
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Page;
 import org.zkoss.zk.ui.Path;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zul.Constraint;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
@@ -59,6 +61,7 @@ import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.modification.multiple.CodesPack;
 import fr.aphp.tumorotek.action.modification.multiple.ConformitePack;
 import fr.aphp.tumorotek.action.modification.multiple.FilePack;
+import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleListbox;
 import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
 import fr.aphp.tumorotek.action.patient.LabelCodeItem;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -112,6 +115,9 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
    private Label nonConformeTraitementLabelChanged;
 
    private Label nonConformeCessionLabelChanged;
+   
+   //TK-907 : 
+   private Label requalifiableLabelChanged;
 
    protected Label qualiteEchanLabel;
 
@@ -208,6 +214,9 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
       }else if("conformeCession".equals(champ)){
          nonConformeCessionLabelChanged.setValue(printValue);
          nonConformeCessionLabelChanged.setVisible(!reset);
+      }else if("requalifiable".equals(champ)){ // TK-907
+         requalifiableLabelChanged.setValue(printValue);
+         requalifiableLabelChanged.setVisible(!reset);
       }
    }
 
@@ -331,6 +340,11 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
             current.setConformeCession(getObject().getConformeCession());
             hasAnyChange = true;
          }
+         //TK-907
+         if(!requalifiableLabelChanged.getValue().equals("")){
+            current.setRequalifiable(getObject().getRequalifiable());
+            hasAnyChange = true;
+         }         
 
          // sort de la boucle de suite si pas chgts
          if(!hasAnyChange){
@@ -420,7 +434,8 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
       bools.add(new Boolean(false));
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-         "general.sterile", "sterile", bools, "bool", null, null, false, null, false);
+         "general.sterile", "sterile", bools, ModificationMultipleListbox.CHAMP_THESAURUS_FOR_BOOLEEN, 
+         null, null, false, null, false);
    }
 
    public void onClick$dateStockMultiLabel(){
@@ -470,7 +485,8 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
       bools.add(new Boolean(false));
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-         "Champ.Echantillon.Tumoral", "tumoral", bools, "bool", null, null, false, null, false);
+         "Champ.Echantillon.Tumoral", "tumoral", bools, ModificationMultipleListbox.CHAMP_THESAURUS_FOR_BOOLEEN, 
+         null, null, false, null, false);
    }
 
    public void onClick$organeMultiLabel(){
@@ -521,6 +537,19 @@ public class FicheModifMultiEchantillon extends AbstractFicheModifMultiControlle
          switchAnyRequiredFlag(false, 244));
    }
 
+   //TK-907
+   public void onClick$requalifiableMultiLabel(){
+
+      final List<Object> bools = new ArrayList<>();
+      bools.add(new Boolean(true));
+      bools.add(new Boolean(false));
+
+      openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
+         "Champ.Echantillon.Requalifiable", "requalifiable", bools, ModificationMultipleListbox.CHAMP_THESAURUS_FOR_BOOLEEN,
+         null, muteAnyRequiredConstraint(new SimpleConstraint(SimpleConstraint.NO_NEGATIVE), 277), false, false,
+         switchAnyRequiredFlag(false, 277));
+   }
+   
    @Override
    public TKdataObject getParentObject(){
       return null;

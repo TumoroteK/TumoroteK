@@ -181,6 +181,11 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
    protected Listbox nonConformitesTraitementBox;
 
    protected Listbox nonConformitesCessionBox;
+   
+   //TK-907
+   protected Checkbox requalifiableBoxOui;
+   protected Checkbox requalifiableBoxNon;
+   //
 
    // Labels anonymisables
    protected Label emplacementLabelEchan;
@@ -481,7 +486,17 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       }else{
          this.echantillon.setConformeCession(null);
       }
-
+      
+      //TK-907 gestion de la requalification
+      if(requalifiableBoxOui.isChecked()){
+         this.echantillon.setRequalifiable(true);
+      }else if(requalifiableBoxNon.isChecked()){
+         this.echantillon.setRequalifiable(false);
+      }else{
+         this.echantillon.setRequalifiable(null);
+      }
+      //
+      
       // update de l'objet
       ManagerLocator.getEchantillonManager().updateObjectWithNonConformitesManager(echantillon,
          GatsbiController.enrichesBanqueWithEtudeContextes(echantillon.getBanque(), sessionScope), prelevement,
@@ -1104,8 +1119,20 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       initDelaiCgl();
 
       initNonConformites(addSelectedInListIfAbsent);
+      
+      //TK-907
+      initRequalifiable();
    }
 
+   //TK-907
+   public void initRequalifiable(){
+      if(this.echantillon.getRequalifiable() != null){
+         boolean requalifiable = this.echantillon.getRequalifiable();
+         requalifiableBoxOui.setChecked(requalifiable);
+         requalifiableBoxNon.setChecked(!requalifiable);
+      }
+   }
+   
    public void initNonConformites(boolean addSelectedInListIfAbsent){
 
       //A SUPPRIMER (TK-779) : cet attribut selectedNonConformiteTraitement n'est plus utilisé car ne gère qu'une conformité alors que plusieurs possibles - cf appel de selectNonConformites() en bas de la méthode
@@ -1256,6 +1283,20 @@ public class FicheEchantillonEdit extends AbstractFicheEditController
       }
    }
 
+   //TK-907
+   public void onCheck$requalifiableBoxOui(){
+      if(requalifiableBoxOui.isChecked()){
+         requalifiableBoxNon.setChecked(false);
+      }
+   }
+   public void onCheck$requalifiableBoxNon(){
+      if(requalifiableBoxNon.isChecked()){
+         requalifiableBoxOui.setChecked(false);
+      }
+   }
+   //
+   
+   
    public List<EchantillonType> getTypes(){
       return types;
    }

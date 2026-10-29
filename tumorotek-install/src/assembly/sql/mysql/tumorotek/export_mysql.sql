@@ -844,6 +844,8 @@ CREATE PROCEDURE `create_tmp_echantillon_table`()
       EMPLACEMENT          varchar(100),
       TEMP_STOCK           decimal(12, 3),
       OBJET_STATUT         varchar(20),
+      -- TK-907
+      REQUALIFIABLE		  boolean,
       ECHAN_QUALITE        varchar(200),
       MODE_PREPA           varchar(200),
       STERILE              boolean,
@@ -888,6 +890,8 @@ CREATE PROCEDURE `fill_tmp_table_echan`(IN id INTEGER)
                                         EMPLACEMENT,
                                         TEMP_STOCK,
                                         OBJET_STATUT,
+                                        -- TK-907
+                                        REQUALIFIABLE,
                                         ECHAN_QUALITE,
                                         MODE_PREPA,
                                         STERILE,
@@ -919,6 +923,8 @@ CREATE PROCEDURE `fill_tmp_table_echan`(IN id INTEGER)
            get_adrl(e.emplacement_id)                                                                         as 'emplacement',
            (SELECT temp FROM CONTENEUR WHERE conteneur_id = get_conteneur(e.emplacement_id)),
            os.statut,
+           -- TK-907
+           e.requalifiable,
            eq.echan_qualite,
            mp.nom                                                                                             as 'Mode_de_préparation',
            e.sterile,
@@ -1013,6 +1019,8 @@ CREATE PROCEDURE `create_tmp_derive_table`()
       EMPLACEMENT             varchar(100),
       TEMP_STOCK              decimal(12, 3),
       OBJET_STATUT            varchar(20),
+      -- TK-907
+      REQUALIFIABLE			 boolean,
       CONFORME_TRAITEMENT     boolean,
       RAISON_NC_TRAITEMENT    varchar(1000),
       CONFORME_CESSION        boolean,
@@ -1062,6 +1070,8 @@ CREATE PROCEDURE `fill_tmp_table_derive`(IN id INTEGER)
                                    EMPLACEMENT,
                                    TEMP_STOCK,
                                    OBJET_STATUT,
+                                   -- TK-907
+                                   REQUALIFIABLE,
                                    CONFORME_TRAITEMENT,
                                    RAISON_NC_TRAITEMENT,
                                    CONFORME_CESSION,
@@ -1099,6 +1109,8 @@ CREATE PROCEDURE `fill_tmp_table_derive`(IN id INTEGER)
            get_adrl(pd.emplacement_id)                                as 'Emplacement',
            (SELECT temp FROM CONTENEUR WHERE conteneur_id = get_conteneur(pd.emplacement_id)),
            os.statut                                                  as 'Statut',
+           -- TK-907
+           pd.requalifiable,
            pd.conforme_traitement                                     as 'Conforme_après_traitement',
            LEFT((select GROUP_CONCAT(nc.nom)
             FROM OBJET_NON_CONFORME onc

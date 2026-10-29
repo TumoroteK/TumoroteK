@@ -224,7 +224,12 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
    private Component[] objLabelsDeriveParent;
 
    private Component[] objLabelsTransformation;
-
+   
+   //TK-907
+   protected Checkbox requalifiableBoxOui;
+   protected Checkbox requalifiableBoxNon;
+   //
+   
    // Objets Principaux.
    private ProdDerive prodDerive = new ProdDerive();
 
@@ -578,7 +583,17 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }else{
          this.prodDerive.setConformeCession(null);
       }
-
+      
+      //TK-907 gestion de la requalification
+      if(requalifiableBoxOui.isChecked()){
+         this.prodDerive.setRequalifiable(true);
+      }else if(requalifiableBoxNon.isChecked()){
+         this.prodDerive.setRequalifiable(false);
+      }else{
+         this.prodDerive.setRequalifiable(null);
+      }
+      //
+      
       // update de l'objet
       ManagerLocator.getProdDeriveManager().updateObjectWithNonConformitesManager(prodDerive, prodDerive.getBanque(),
          selectedType, findStatutForTKStockableObject(prodDerive), selectedCollaborateur, emp, selectedVolumeUnite,
@@ -984,8 +999,21 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
       }
 
       initNonConformites();
+      
+      //TK-907
+      initRequalifiable();
    }
 
+   //TK-907
+   private void initRequalifiable(){
+      if(this.prodDerive.getRequalifiable() != null){
+         boolean requalifiable = this.prodDerive.getRequalifiable();
+         requalifiableBoxOui.setChecked(requalifiable);
+         requalifiableBoxNon.setChecked(!requalifiable);
+      }
+   }
+   
+   
    /*************************************************************************/
    /************************** PARENT    ************************************/
    /*************************************************************************/
@@ -1613,6 +1641,19 @@ public class FicheProdDeriveEdit extends AbstractFicheEditController
          conformeCessionBox.setVisible(false);
       }
    }
+   
+   //TK-907
+   public void onCheck$requalifiableBoxOui(){
+      if(requalifiableBoxOui.isChecked()){
+         requalifiableBoxNon.setChecked(false);
+      }
+   }
+   public void onCheck$requalifiableBoxNon(){
+      if(requalifiableBoxNon.isChecked()){
+         requalifiableBoxOui.setChecked(false);
+      }
+   }
+   //
 
    /**
     * Retourne les non conformites sélectionnées.

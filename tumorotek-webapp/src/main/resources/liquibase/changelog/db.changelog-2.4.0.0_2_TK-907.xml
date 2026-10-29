@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    
+    <changeSet id="2.4.0.0-TK-907-01" author="CH" context="*">
+        <preConditions onFail="MARK_RAN">
+        	<not>
+        		<columnExists tableName="ECHANTILLON" columnName="REQUALIFIABLE" />
+        	</not>
+        </preConditions>
+        <comment>Ajout de la notion de requalifiable</comment>
+        <addColumn tableName="ECHANTILLON">
+            <column name="REQUALIFIABLE" type="TINYINT(1)" />
+        </addColumn>        
+    </changeSet>
+
+    <changeSet id="2.4.0.0-TK-907-02" author="CH" context="*">
+        <preConditions onFail="MARK_RAN">
+        	<not>
+        		<columnExists tableName="PROD_DERIVE" columnName="REQUALIFIABLE" />
+        	</not>
+        </preConditions>
+        <comment>Ajout de la notion de requalifiable</comment>
+        <addColumn tableName="PROD_DERIVE">
+            <column name="REQUALIFIABLE" type="TINYINT(1)" />
+        </addColumn>        
+    </changeSet>
+    
+    <!-- NB : la mise à jour du script d'export est prise en compte avec TK-520 : cf db.changelog-2.4.0.0_1_TK-520.xml -->
+    
+    
+    <changeSet id="2.4.0.0-TK-907-03" author="CH" context="*"> 
+    		<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE
+                WHERE NOM = 'Requalifiable' and ENTITE_ID=3
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout du champ entite Requalifiable pour un échantillon</comment>
+        <!-- passage par un script SQL car il faut mettre à jour l'ordre de certains champs pour bien positionner ce nouveau champ côté Gatsbi-->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-907-03-ajoutRequalifiableEchantillon.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    
+    <changeSet id="2.4.0.0-TK-907-04" author="CH" context="*"> 
+    		<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM CHAMP_ENTITE
+                WHERE NOM = 'Requalifiable' and ENTITE_ID=8
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout du champ entite Requalifiable pour un produit dérivé</comment>
+        <!-- passage par un script SQL car il faut mettre à jour l'ordre de certains champs pour bien positionner ce nouveau champ côté Gatsbi -->
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-907-04-ajoutRequalifiableDerive.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+    
+    
+    
+    
+    <changeSet id="2.4.0.0-TK-907-05" author="CH" context="*">
+		<comment>Chargement des procédures d'export qui ont été mises à jour</comment>
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+		<!-- appel de export_gatsbi mis en commentaire dans db.changelog-2.3.1_4_TK-533.xml -->
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_gatsbi.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+	</changeSet>
+</databaseChangeLog>

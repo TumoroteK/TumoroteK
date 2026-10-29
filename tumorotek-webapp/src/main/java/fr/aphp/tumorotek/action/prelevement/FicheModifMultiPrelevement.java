@@ -49,6 +49,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.modification.multiple.ConformitePack;
+import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleListbox;
 import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
 import fr.aphp.tumorotek.manager.context.ProtocoleManager;
 import fr.aphp.tumorotek.model.TKdataObject;
@@ -481,7 +482,7 @@ public class FicheModifMultiPrelevement extends AbstractFicheModifMultiControlle
       bools.add(new Boolean(false));
 
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
-         "general.sterile", "sterile", bools, "bool", null, null, false, null, false);
+         "general.sterile", "sterile", bools, ModificationMultipleListbox.CHAMP_THESAURUS_FOR_BOOLEEN, null, null, false, null, false);
    }
 
    public void onClick$risqueMultiLabel(){

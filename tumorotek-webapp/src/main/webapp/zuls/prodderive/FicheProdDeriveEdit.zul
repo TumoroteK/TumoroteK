@@ -400,7 +400,7 @@
 							</listitem>
 						</listbox>
 					</row>
-					<row spans="1,3">
+					<row>
 						<!-- Opérateur du produit dérivé -->
 						<label value="${c:l('Champ.ProdDerive.Collaborateur')}" sclass="formLabel"/>
 						<div>
@@ -415,6 +415,13 @@
 								sclass="formLink"
 							/>
 						</div>
+						<label id="requalifiableLabel" value="${c:l('Champ.ProdDerive.Requalifiable')}" sclass="formLabel" />
+						<hlayout sclass="z-valign-middle">
+							<checkbox id="requalifiableBoxOui"/>
+							<label value="${c:l('general.checkbox.true')}" sclass="formLabel"/>
+							<checkbox id="requalifiableBoxNon"/>
+							<label value="${c:l('general.checkbox.false')}" sclass="formLabel"/>
+						</hlayout>
 					</row>
 					<row>
 						<!-- Emplacement du produit dérivé -->

@@ -1231,6 +1231,16 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
          }else if(getEchantillon().getConformeCession()){
             setSelectedNonConformiteCession(null);
          }
+         
+         //TK-907 gestion de la requalification
+         if(requalifiableBoxOui.isChecked()){
+            getEchantillon().setRequalifiable(true);
+         }else if(requalifiableBoxNon.isChecked()){
+            getEchantillon().setRequalifiable(false);
+         }else{
+            getEchantillon().setRequalifiable(null);
+         }
+         //
 
          // Gestion du collaborateur
          final String selectedNomAndPremon = this.collabBox.getValue().toUpperCase();
@@ -1330,6 +1340,8 @@ public class FicheMultiEchantillons extends FicheEchantillonEdit
             newEchantillon.setLateralite(lateralite);
             newEchantillon.setConformeTraitement(getEchantillon().getConformeTraitement());
             newEchantillon.setConformeCession(getEchantillon().getConformeCession());
+            //TK-907
+            newEchantillon.setRequalifiable(getEchantillon().getRequalifiable());
 
             echantillons.add(newEchantillon);
             addedEchantillons.add(newEchantillon);

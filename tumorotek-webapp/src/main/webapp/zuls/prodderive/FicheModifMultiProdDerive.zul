@@ -159,6 +159,18 @@
 								sclass="formLink" />
 						</div>
 					</row>
+					<row>
+						<!-- Requalifiable -->
+						<label value="${c:l('Champ.ProdDerive.Requalifiable')}" sclass="formLabel" />
+						<div>					
+							<label id="requalifiableLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic" />
+							<label id="requalifiableMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>					
+					</row>	
 					<row spans="1,3">	
 					<!-- Conforme après traitement -->
 						<label id="nonconformeTraitementLabel" value="${c:l('Champ.ProdDerive.ConformeTraitement')}" sclass="formLabel" />

@@ -7,10 +7,15 @@
     <changeSet id="tag-version-2.3.1.0-TK-533" author="PZ" context="*">
         <tagDatabase tag="${project.parent.version}"/>
     </changeSet>
+
+ <!-- depuis TK-520 (version 2.4.0.0) les procédures stockées ne doivent plus être appelées dans ce script car elles ne sont plus adaptées au modèle de données.
+ 	  Elles sont appelées dans le fichier db.changelog-2.4.0.0_1_TK-520.xml.
+ 	  NB : depuis la version 2.3.1.0, les scripts Oracle ne sont plus maintenus
+ -->
+ <!--     
     <changeSet id="export-tri-valeurs-anno-TK-840" author="CH" runAlways="false" context="*">
-        <comment>Export : Ajout d'un tri sur les libellé dans les concaténation des annotations de type "liste multiple"</comment>
-        <!-- MySQL procedures -->
+        <comment>Export : Ajout d'un tri sur les libellés dans les concaténations des annotations de type "liste multiple"</comment>
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
-        <!-- NB : depuis la version 2.3.1.0, les scripts Oracle ne sont plus maintenus -->
     </changeSet>
+-->
 </databaseChangeLog>

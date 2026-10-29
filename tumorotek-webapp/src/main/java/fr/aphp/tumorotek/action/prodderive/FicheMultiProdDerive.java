@@ -1061,6 +1061,16 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
          }else if(getProdDerive().getConformeCession()){
             setSelectedNonConformiteCession(null);
          }
+         
+         //TK-907 gestion de la requalification
+         if(requalifiableBoxOui.isChecked()){
+            getProdDerive().setRequalifiable(true);
+         }else if(requalifiableBoxNon.isChecked()){
+            getProdDerive().setRequalifiable(false);
+         }else{
+            getProdDerive().setRequalifiable(null);
+         }
+         //
 
          final List<ProdDerive> newDerivesBatch = new ArrayList<>();
 
@@ -1116,6 +1126,8 @@ public class FicheMultiProdDerive extends FicheProdDeriveEdit
             newProdDerive.setModePrepaDerive(getSelectedModePrepaDerive());
             newProdDerive.setConformeTraitement(getProdDerive().getConformeTraitement());
             newProdDerive.setConformeCession(getProdDerive().getConformeCession());
+            //TK-907
+            newProdDerive.setRequalifiable(getProdDerive().getRequalifiable());
 
             final ProdDeriveDecorator2 deco = new ProdDeriveDecorator2(newProdDerive);
             deco.setNonConformiteTraitements(findSelectedNonConformitesTraitement());

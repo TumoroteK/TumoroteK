@@ -163,12 +163,18 @@
 								sclass="formValue" />							
 						</box>
 					</row>				
-					<row spans="1,3">
+					<row>
 					<!-- Opérateur -->
 						<label value="${c:l('Champ.Echantillon.Collaborateur')}" sclass="formLabel"/>
 						<label id="operateurLabelEchan" 
 							value="@{fwinEchantillonStatic$composer.object.collaborateur.nomAndPrenom}"
 							sclass="@{fwinEchantillonStatic$composer.sClassOperateur}" />
+
+					<!-- Requalification -->
+						<label value="${c:l('Champ.Echantillon.Requalifiable')}" sclass="formLabel"/>
+						<label id="requalifiableLabel" 
+							value="@{fwinEchantillonStatic$composer.requalifiableFormated}"
+							sclass="formValue" />
 					</row>
 					
 					<row>

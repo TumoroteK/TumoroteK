@@ -83,6 +83,9 @@ public interface TKStockableObject extends TKAnnotableObject
    ObjetStatut getObjetStatut();
 
    void setObjetStatut(ObjetStatut s);
+   
+   //TK-907 : devrait s'appeler isRequalif() mais préfixe "get" pour garder la logique existante
+   Boolean getRequalifiable();
 
    /**
     * Comparator permettant d'ordonner une liste de dérivés par leur codes.

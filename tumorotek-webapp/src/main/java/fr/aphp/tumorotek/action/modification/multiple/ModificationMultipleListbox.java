@@ -68,6 +68,10 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
    private static final Logger log = LoggerFactory.getLogger(ModificationMultipleListbox.class);
 
    private static final long serialVersionUID = 3551763682958457361L;
+   
+   //si cette page est utilisée pour mettre à jour un champ de type booléen, valeur à utiliser pour le paramètre
+   //champThesaurus
+   public static final String CHAMP_THESAURUS_FOR_BOOLEEN = "bool";
 
    /**
     * Components.
@@ -182,7 +186,7 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
             String stringTmp = null;
 
             if(null != object){
-               if(!"bool".equals(getChamp()) && !"bool".equals(getChampThesaurus())){
+               if(!CHAMP_THESAURUS_FOR_BOOLEEN.equals(getChamp()) && !CHAMP_THESAURUS_FOR_BOOLEEN.equals(getChampThesaurus())){
                   stringTmp = (String) PropertyUtils.getSimpleProperty(object, getChampThesaurus());
                }else{
                   stringTmp = ObjectTypesFormatters.booleanLitteralFormatter((Boolean) object);
@@ -212,7 +216,7 @@ public class ModificationMultipleListbox extends AbstractModificationMultipleCom
       String out = null;
       try{
          if(obj != null){
-            if(!getChamp().equals("bool") && !getChampThesaurus().equals("bool")){
+            if(!getChamp().equals(CHAMP_THESAURUS_FOR_BOOLEEN) && !getChampThesaurus().equals(CHAMP_THESAURUS_FOR_BOOLEEN)){
                out = (String) PropertyUtils.getSimpleProperty(obj, getChampThesaurus());
             }else{
                out = ObjectTypesFormatters.booleanLitteralFormatter((Boolean) obj);

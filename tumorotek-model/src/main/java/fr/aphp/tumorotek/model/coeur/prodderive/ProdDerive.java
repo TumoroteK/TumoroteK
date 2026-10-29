@@ -217,6 +217,14 @@ public class ProdDerive implements TKStockableObject, Serializable
    private Transformation transformation;
 
    private ModePrepaDerive modePrepaDerive;
+   
+   //TK-907
+   //permet d'indiquer si le produit dérivé est requalifiable
+   //pour les dérivés issus d'un échantillon, cette caractéristique est "héritée" de celle de l'échantillon parent
+   //pour les dérivés issus d'un prélèvement, l'utilisateur a la main pour renseigner cette donnée
+   //Le dérivé est dit requalifié à partir du moment où il a été cédé (c'est-à-dire qu'il appartient
+   //à une cession de type recherche au statut VALIDEE)
+   private Boolean requalifiable;
 
    public ProdDerive(){
       super();
@@ -500,6 +508,16 @@ public class ProdDerive implements TKStockableObject, Serializable
       this.conformeCession = conforme;
    }
 
+   //TK-907
+   @Override
+   @Column(name = "REQUALIFIABLE", nullable = true)
+   public Boolean getRequalifiable() {
+      return requalifiable;
+   }
+   public void setRequalifiable(final Boolean requalifiable){
+      this.requalifiable = requalifiable;
+   }
+   
    /**
     * 2 produits dérivés sont considérés comme égaux s'ils ont le même code
     * et la même banque.
@@ -585,6 +603,8 @@ public class ProdDerive implements TKStockableObject, Serializable
       clone.setArchive(this.getArchive());
       clone.setConformeTraitement(this.getConformeTraitement());
       clone.setConformeCession(this.getConformeCession());
+      //TK-907
+      clone.setRequalifiable(getRequalifiable());
 
       return clone;
    }

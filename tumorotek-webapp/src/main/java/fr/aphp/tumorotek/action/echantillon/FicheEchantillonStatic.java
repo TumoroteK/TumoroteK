@@ -613,6 +613,10 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       }
       return sb.toString();
    }
+   
+   public String getRequalifiableFormated(){
+      return ObjectTypesFormatters.booleanLitteralFormatter(this.echantillon.getRequalifiable());
+   }
 
    public String getTumoralFormated(){
       return ObjectTypesFormatters.booleanLitteralFormatter(this.echantillon.getTumoral());

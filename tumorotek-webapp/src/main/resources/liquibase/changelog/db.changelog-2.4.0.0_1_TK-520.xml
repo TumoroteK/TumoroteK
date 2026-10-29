@@ -79,10 +79,14 @@
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-520-serologie-10-drop.sql" relativeToChangelogFile="true"/>
     </changeSet>
 
+<!-- l'appel de export_mysql.sql est déporté dans db.changelog-2.4.0.0_2_TK-907 car le script a été adapté 
+     aux modifications de structure de la base liées à TK-907 donc plante désormais à cette étape ... -->
+<!--
 	<changeSet id="2.4.0.0-TK-520-20" author="CH" runAlways="false" context="*">
 		<comment>Chargement des procédures d'export qui ont été mises à jour</comment>
 		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
 	</changeSet>
+-->
 
 </databaseChangeLog>
 

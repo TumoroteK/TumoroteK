@@ -1093,6 +1093,11 @@ public class FicheProdDeriveStatic extends AbstractFicheStaticController
       return sb.toString();
    }
 
+   public String getRequalifiableFormated(){
+      return ObjectTypesFormatters.booleanLitteralFormatter(this.prodDerive.getRequalifiable());
+   }
+   
+   
    /*public void onClick$print() {
    	StringBuffer sb = new StringBuffer();
    	sb.append(Labels.getLabel("impression.print.prodDerive"));

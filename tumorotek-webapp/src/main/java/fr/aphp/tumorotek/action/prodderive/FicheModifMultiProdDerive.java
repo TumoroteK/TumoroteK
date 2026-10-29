@@ -47,6 +47,7 @@ import fr.aphp.tumorotek.action.ManagerLocator;
 import fr.aphp.tumorotek.action.controller.AbstractFicheModifMultiController;
 import fr.aphp.tumorotek.action.controller.AbstractObjectTabController;
 import fr.aphp.tumorotek.action.modification.multiple.ConformitePack;
+import fr.aphp.tumorotek.action.modification.multiple.ModificationMultipleListbox;
 import fr.aphp.tumorotek.action.modification.multiple.SimpleChampValue;
 import fr.aphp.tumorotek.model.TKdataObject;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
@@ -87,6 +88,9 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
    private Label nonConformeTraitementLabelChanged;
 
    private Label nonConformeCessionLabelChanged;
+   
+   //TK-907 : 
+   private Label requalifiableLabelChanged;
 
    private List<NonConformite> nonConformitesTraitement = null;
 
@@ -140,6 +144,9 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
       }else if("conformeCession".equals(champ)){
          nonConformeCessionLabelChanged.setValue(printValue);
          nonConformeCessionLabelChanged.setVisible(!reset);
+      }else if("requalifiable".equals(champ)){ // TK-907
+         requalifiableLabelChanged.setValue(printValue);
+         requalifiableLabelChanged.setVisible(!reset);
       }
    }
 
@@ -216,6 +223,11 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
             current.setConformeCession(getObject().getConformeCession());
             hasAnyChange = true;
          }
+         //TK-907
+         if(!requalifiableLabelChanged.getValue().equals("")){
+            current.setRequalifiable(getObject().getRequalifiable());
+            hasAnyChange = true;
+         }            
 
          // sort de la boucle de suite si pas chgts
          if(!hasAnyChange){
@@ -327,6 +339,18 @@ public class FicheModifMultiProdDerive extends AbstractFicheModifMultiController
       openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Conformitebox", getObjsToEdit(),
          "Champ.ProdDerive.ConformeCession", "conformeCession", (List<Object>) nonConfs, "Cession", null, null, false, null,
          false);
+   }
+   
+   //TK-907
+   public void onClick$requalifiableMultiLabel(){
+
+      final List<Object> bools = new ArrayList<>();
+      bools.add(new Boolean(true));
+      bools.add(new Boolean(false));
+
+      openModificationMultipleWindow(page, Path.getPath(self), "onGetChangeOnChamp", "Listbox", getObjsToEdit(),
+         "Champ.ProdDerive.Requalifiable", "requalifiable", bools, ModificationMultipleListbox.CHAMP_THESAURUS_FOR_BOOLEEN,
+         null, null, false, false, false);
    }
 
    @Override

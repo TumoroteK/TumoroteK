@@ -252,6 +252,12 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
 
    // stream utilise pour enregistre Cr anapath
    private InputStream anapathStream;
+   
+   //TK-907
+   //permet d'indiquer si l'échantillon est requalifiable
+   //L'échantillon est dit requalifié à partir du moment où il a été cédé (c'est-à-dire appartient
+   //à une cession de type recherche au statut VALIDEE)
+   private Boolean requalifiable;
 
    public Echantillon(){}
 
@@ -512,7 +518,17 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
    public void setCodesAssignes(final Set<CodeAssigne> cs){
       this.codesAssignes = cs;
    }
-
+   
+   //TK-907
+   @Override
+   @Column(name = "REQUALIFIABLE", nullable = true)
+   public Boolean getRequalifiable() {
+      return requalifiable;
+   }
+   public void setRequalifiable(final Boolean requalifiable){
+      this.requalifiable = requalifiable;
+   }
+   
    /**
     * 2 échantillons sont considérés comme égaux s'ils ont le même
     * code et la même Banque.
@@ -614,7 +630,9 @@ public class Echantillon implements TKStockableObject, Serializable, TKFileSetta
       clone.setArchive(this.getArchive());
       clone.setCodesAssignes(getCodesAssignes());
       clone.setAnapathStream(getAnapathStream());
-
+      //TK-907
+      clone.setRequalifiable(getRequalifiable());
+      
       return clone;
    }
 

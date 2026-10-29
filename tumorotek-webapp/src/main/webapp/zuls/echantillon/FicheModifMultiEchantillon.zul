@@ -153,6 +153,18 @@
 						</div>					
 					</row>
 					<row>
+					<!-- Requalifiable -->
+						<label value="${c:l('Champ.Echantillon.Requalifiable')}" sclass="formLabel" />
+						<div>					
+							<label id="requalifiableLabelChanged" 
+								sclass="formValue"
+								style="font-style:italic" />
+							<label id="requalifiableMultiLabel"
+								value="${c:l('general.edit.modification.multiple')}" 
+								sclass="formLink" />
+						</div>					
+					</row>					
+					<row>
 					<!-- qualite -->
 					<label id="qualiteEchanLabel" value="${c:l('Champ.Echantillon.EchanQualite')}" sclass="formLabel" />
 						<div>
