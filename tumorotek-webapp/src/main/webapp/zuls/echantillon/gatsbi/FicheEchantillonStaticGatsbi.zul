@@ -152,13 +152,20 @@
 								<label id="delaiCglLabel" value="@{fwinEchantillonStatic$composer.delaiLabel}"
 									sclass="formValue" />	
 							</div>
-							<div class="item item-wide" id="echanOperateurDiv"><!-- Opérateur -->
+							<div class="item item-mid" id="echanOperateurDiv"><!-- Opérateur -->
 								<custom-attributes champId="53" />
 								<label value="${c:l('Champ.Echantillon.Collaborateur')}" sclass="chpLabel formLabel"/>
 								<label id="operateurLabelEchan" 
 									value="@{fwinEchantillonStatic$composer.object.collaborateur.nomAndPrenom}"
 									sclass="@{fwinEchantillonStatic$composer.sClassOperateur}" />
 							</div>
+							<div class="item item-mid" id="echanRequalifiableDiv"><!-- TK-907 : Requalification -->
+								<custom-attributes champId="277" />
+								<label value="${c:l('Champ.Echantillon.Requalifiable')}" sclass="chpLabel formLabel"/>
+								<label id="requalifiableLabelEchan" 
+									value="@{fwinEchantillonStatic$composer.requalifiableFormated}"
+									sclass="formValue" />
+							</div>							
 							<div class="item item-mid" id="echanStatutDiv"><!-- Statut de l'objet : toujours affiché -->
 								<label value="${c:l('Champ.Echantillon.ObjetStatut')}" sclass="chpLabel formLabel"/>
 								<label id="statutLabelEchan" 

@@ -200,7 +200,7 @@
 									<label value=" min " style="font-weight:bold;"/>
 								</div>	
 							</div>
-							<div class="item item-wide" id="echanOperateurDiv"><!-- Opérateur -->
+							<div class="item item-mid" id="echanOperateurDiv"><!-- Opérateur -->
 								<!-- TG-204 : le filtre du contexte Gatsbi sur cette liste n''est pas géré comme les autres thesaurus car le composant est différent comboBox au lieu de listBox
 									=> pas besoin de l'attribut listmodel   -->								
 								<custom-attributes champId="53" />
@@ -219,6 +219,19 @@
 										sclass="formLink" />
 								</div>
 							</div>
+							<div class="item item-mid" id="echanRequalifiableDiv"><!-- TK-907 : Requalification -->
+								<custom-attributes champId="277" />
+								<div class="row-container chpLabel">
+									<label value="${c:l('Champ.Echantillon.Requalifiable')}" sclass="formLabel" />
+									<label value="*" sclass="requiredMark" />
+								</div>
+								<div class="row-container">
+									<checkbox id="requalifiableBoxOui"/>
+									<label value="${c:l('general.checkbox.true')}" sclass="formLabel"/>
+									<checkbox id="requalifiableBoxNon"/>
+									<label value="${c:l('general.checkbox.false')}" sclass="formLabel"/>								
+								</div>
+							</div>	
 							<div class="item item-mid" id="echanStatutDiv"><!-- Statut de l'objet : toujours affiché -->
 								<label value="${c:l('Champ.Echantillon.ObjetStatut')}" sclass="chpLabel formLabel"/>
 								<label id="statutLabelEchan" 

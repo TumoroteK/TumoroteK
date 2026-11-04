@@ -53,10 +53,19 @@
         <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-907-04-ajoutRequalifiableDerive.sql" relativeToChangelogFile="true"/>
     </changeSet>
     
+    <changeSet id="2.4.0.0-TK-907-05" author="CH" context="*"> 
+    	<preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">SELECT COUNT(1) FROM GATSBI_CONTEXTE_CHAMP_ENTITE WHERE CHAMP_ENTITE_ID = 277;
+            </sqlCheck>
+        </preConditions>
+        <comment>Ajout du champ entite Requalifiable dans les contextes existants</comment>
+        <sqlFile encoding="utf8" path="../sql/mysql/tumorotek/TK-907-05-impactsGatsbi.sql" relativeToChangelogFile="true"/>
+    </changeSet>
+
     
+
     
-    
-    <changeSet id="2.4.0.0-TK-907-05" author="CH" context="*">
+    <changeSet id="2.4.0.0-TK-907-10" author="CH" context="*">
 		<comment>Chargement des procédures d'export qui ont été mises à jour</comment>
 		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
 		<!-- appel de export_gatsbi mis en commentaire dans db.changelog-2.3.1_4_TK-533.xml -->
