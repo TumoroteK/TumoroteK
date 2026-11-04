@@ -1488,6 +1488,16 @@ public class ImportManagerImpl implements ImportManager
                   }
                }
             }
+            //TK-910
+            //Lors de la saisie manuelle, l'utilisateur renseigne le champ quantité initiale et elle est reportée dans l'attribut quantité
+            //de l'échantillon (pas de champ pour cette notion dans l'écran de création). Par contre, lors de l'import, l'utilisateur peut
+            //définir un modèle avec la colonne quantité mais pas la colonne quantité initiale. La quantité initiale reste donc à null (associé à 0)
+            //ce qui pose problème lors des cessions : une cession partielle entrainera automatiquement l'épuisement de l'échantillon
+            //gestion donc de ce cas particulier :
+            if(echan.getQuantite() != null && echan.getQuantiteInit() == null) {
+               echan.setQuantiteInit(echan.getQuantite());
+            }
+            
             if(annotations.size() > 0){
                // on met la liste d'annotations dans la hashtable
                properties.getAnnotationsEntite().put(e, annotations);
@@ -1579,6 +1589,11 @@ public class ImportManagerImpl implements ImportManager
                   }
                }
             }
+            //TK-910 :
+            if(derive.getQuantite() != null && derive.getQuantiteInit() == null) {
+               derive.setQuantiteInit(derive.getQuantite());
+            }
+            
             if(annotations.size() > 0){
                // on met la liste d'annotations dans la hashtable
                properties.getAnnotationsEntite().put(e, annotations);
