@@ -56,6 +56,9 @@ import fr.aphp.tumorotek.model.systeme.Entite;
 public interface TraitementQueryManager
 {
 
+   //valeur qui permet de faire une recherche sur champ non renseigné
+   public static final String CHAMP_NON_RENSEIGNE = "EMPTY";
+   
    /**
     * Retourne les objets correspondant à un critère.
     * @param critere Critere à exécuter.

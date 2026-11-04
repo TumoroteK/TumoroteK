@@ -200,8 +200,11 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	//
 	private Listbox crAnapathFilebox;
 	// impact since 2.3
-	private Checkbox impactEchanTBox;
-	private Checkbox impactEchanFBox;
+	private Checkbox impactEchanTBox;//case à cocher Oui
+	private Checkbox impactEchanFBox;//case à cocher Non
+	
+	//TK-907
+	private Listbox requalifiableEchanBoolBox;
 	
 	// Components dérivés
 	private Textbox codeProdDeriveBox;
@@ -221,9 +224,12 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 	private Decimalbox tempStockDeriveBox;
 	private Listbox operateursTempStockDeriveBox;
 	  // impact since 2.3
-   private Checkbox impactDeriveTBox;
-   private Checkbox impactDeriveFBox;
+   private Checkbox impactDeriveTBox;//case à cocher Oui
+   private Checkbox impactDeriveFBox;//case à cocher Non
 
+   //TK-907
+   private Listbox requalifiableDeriveBoolBox;
+   
 	// Groupes
 	private Group groupPatients;
 	protected Group groupMaladies;
@@ -306,12 +312,14 @@ public class FicheRechercheAvancee extends AbstractFicheRechercheAvancee {
 		objEchantillonComponents = new Component[] {this.codeEchantillonBox, this.typeEchantillonBox, this.qualiteEchantillonBox,
 				this.statutEchantillonBox, this.quantiteEchantillonBox, this.delaiCglEchantillonBox, 
 				this.dateStock1Box, this.dateStock2Box, this.tempStockEchantillonBox,
-				this.modePreparationEchantillonBox, this.codeLesionnelBox, this.codeOrganeBox, this.conformeEchanTraitementBoolBox,
+				this.modePreparationEchantillonBox, this.requalifiableEchanBoolBox,
+				this.codeLesionnelBox, this.codeOrganeBox, this.conformeEchanTraitementBoolBox,
 				this.nonConformitesEchanTraitementBox, this.conformeEchanCessionBoolBox, this.nonConformitesEchanCessionBox,
 				this.crAnapathFilebox, this.impactEchanFBox, this.impactEchanTBox};
 
 		objProdDeriveComponents = new Component[] {this.codeProdDeriveBox, this.typeProdDeriveBox, this.codeLaboProdDeriveBox,
-				this.qualiteProdDeriveBox, this.statutProdDeriveBox, this.volumeDeriveBox, this.quantiteDeriveBox,
+		      this.requalifiableDeriveBoolBox,//TK-907
+		      this.qualiteProdDeriveBox, this.statutProdDeriveBox, this.volumeDeriveBox, this.quantiteDeriveBox,
 				this.dateStockDerive1Box, this.dateStockDerive2Box, this.tempStockDeriveBox, 
 				this.conformeDeriveTraitementBoolBox, this.nonConformitesDeriveTraitementBox,
 				this.conformeDeriveCessionBoolBox, this.nonConformitesDeriveCessionBox, this.impactDeriveTBox, this.impactDeriveFBox};

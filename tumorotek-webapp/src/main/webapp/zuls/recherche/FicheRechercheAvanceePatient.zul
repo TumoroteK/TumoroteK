@@ -796,8 +796,8 @@
 											attribut="ObjetStatutId" entite="Echantillon" />
 									</listbox>
 								</row>
-								<!-- mode prépa -->
-								<row spans="1,3">
+								<row>
+									<!-- mode prépa -->
 									<label
 										value="${c:l('Champ.Echantillon.ModePrepa')}"
 										sclass="formLabel" />
@@ -812,6 +812,21 @@
 										<custom-attributes
 											attribut="ModePrepaId" entite="Echantillon" />
 									</listbox>
+									
+									<!-- TK-907 : requalifiable -->
+									<label
+										value="${c:l('Champ.Echantillon.Requalifiable')}"
+										sclass="formLabel" />
+									<listbox
+										id="requalifiableEchanBoolBox" mold="select" rows="1">
+										<listitem label="" />
+										<listitem value="true" label="${c:l('general.checkbox.true')}" />
+										<listitem value="false" label="${c:l('general.checkbox.false')}" />	
+										<listitem value="EMPTY" label="${c:l('general.empty')}" />
+										<custom-attributes
+											attribut="Requalifiable" entite="Echantillon" />
+									</listbox>
+									
 								</row>
 								<row>
 									<label value="${c:l('Champ.Echantillon.ConformeTraitement')}"
@@ -908,8 +923,8 @@
 											attribut="ProdTypeId" entite="ProdDerive" />
 									</listbox>
 								</row>
-								<!--  code labo -->
 								<row>
+									<!--  code labo -->
 									<label
 										value="${c:l('Champ.ProdDerive.CodeLabo')}" sclass="formLabel" />
 									<textbox id="codeLaboProdDeriveBox"
@@ -917,6 +932,20 @@
 										<custom-attributes
 											attribut="CodeLabo" entite="ProdDerive" />
 									</textbox>
+									
+									<!-- TK-907 : requalifiable -->
+									<label
+										value="${c:l('Champ.ProdDerive.Requalifiable')}"
+										sclass="formLabel" />
+									<listbox
+										id="requalifiableDeriveBoolBox" mold="select" rows="1">
+										<listitem label="" />
+										<listitem value="true" label="${c:l('general.checkbox.true')}" />
+										<listitem value="false" label="${c:l('general.checkbox.false')}" />	
+										<listitem value="EMPTY" label="${c:l('general.empty')}" />
+										<custom-attributes
+											attribut="Requalifiable" entite="ProdDerive" />
+									</listbox>
 								</row>
 								<!-- qualité et statut -->
 								<row>

@@ -86,6 +86,7 @@ import fr.aphp.tumorotek.action.controller.AbstractFicheCombineController;
 import fr.aphp.tumorotek.action.recherche.historique.SearchHistory;
 import fr.aphp.tumorotek.component.CalendarBox;
 import fr.aphp.tumorotek.decorator.AnnotationItemRenderer;
+import fr.aphp.tumorotek.manager.io.utils.TraitementQueryManager;
 import fr.aphp.tumorotek.model.coeur.annotation.ChampAnnotation;
 import fr.aphp.tumorotek.model.coeur.annotation.DataType;
 import fr.aphp.tumorotek.model.coeur.annotation.Item;
@@ -471,7 +472,11 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		}
 
 		if(current.getId().endsWith("BoolBox")){
-			obj = new Boolean((String) obj);
+		   //si l'utilisateur n'a pas demandé "non renseigné", on transforme on booleen. Sinon on transmet EMPTY qui sera transformé 
+		   //en null lors de l'appel de la requête avec les paramètres
+			if(!TraitementQueryManager.CHAMP_NON_RENSEIGNE.equals((String)obj)) {
+	         obj = new Boolean((String) obj);
+			}
 		}
 
 		if(prop != null){
@@ -1010,7 +1015,11 @@ public abstract class AbstractFicheRechercheAvancee extends AbstractFicheCombine
 		}
 
 		if(current.getId().endsWith("BoolBox")){
-			obj = new Boolean((String) obj);
+         //si l'utilisateur n'a pas demandé "non renseigné", on transforme on booleen. Sinon on transmet EMPTY qui sera transformé 
+         //en null lors de l'appel de la requête avec les paramètres
+         if(!TraitementQueryManager.CHAMP_NON_RENSEIGNE.equals((String)obj)) {
+            obj = new Boolean((String) obj);
+         }
 		}
 
 		if(!searchForProdDerives){

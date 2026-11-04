@@ -740,10 +740,16 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                            where.append("e");
                         }
 
+                        //gestion des recherches sur "non renseigné" => =:valeuri doit être remplacée par IS NULL :
+                        String clauseWithGestionEmpty = " " + criteres.get(k).getOperateur() + " :valeur" + nbWhere + " ";
+                        if(values.get(k).equals(CHAMP_NON_RENSEIGNE)) {
+                           clauseWithGestionEmpty = " IS NULL ";
+                        }
+                        
                         if(!nomChampMinFirst.equals("")){
-                           where.append("." + nomChampMinFirst + " " + criteres.get(k).getOperateur() + " :valeur" + nbWhere);
+                           where.append(".").append(nomChampMinFirst).append(clauseWithGestionEmpty);
                         }else{
-                           where.append(" " + criteres.get(k).getOperateur() + " :valeur" + nbWhere);
+                           where.append(clauseWithGestionEmpty);
                         }
                      }
                      // 2.0.10.2 Recherche patient implique 
@@ -830,10 +836,14 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
       values.removeAll(valuesChampsCalcules);
       for(int i = 0; i < values.size(); i++){
-         final StringBuffer sb = new StringBuffer("valeur");
-         sb.append(i + 1);
-         query.setParameter(sb.toString(), values.get(i));
-         log.debug(sb.toString() + " : " + values.get(i));   
+         //si la recherche est sur "non renseigné", aucun param :xxx n'a été ajouté au niveau de la clause (IS NULL à la place)
+         //donc il ne faut pas transmettre la valeur
+         if(!values.get(i).equals(CHAMP_NON_RENSEIGNE)) {
+            final StringBuffer sb = new StringBuffer("valeur");
+            sb.append(i + 1);
+            query.setParameter(sb.toString(), values.get(i));
+            log.debug(sb.toString() + " : " + values.get(i));   
+         }
       }
 
       // si la liste n'est pas vide et que l'entité
@@ -1432,12 +1442,16 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
                                  where.append("AND prod");
                               }
                            }
+                           //gestion des recherches sur "non renseigné" => =:valeuri doit être remplacée par IS NULL :
+                           String clauseWithGestionEmpty = " " + criteres.get(k).getOperateur() + " :valeur" + nbWhere + " ";
+                           if(values.get(k).equals(CHAMP_NON_RENSEIGNE)) {
+                              clauseWithGestionEmpty = " IS NULL ";
+                           }
 
                            if(!nomChampMinFirst.equals("")){
-                              where.append(
-                                 "." + nomChampMinFirst + " " + criteres.get(k).getOperateur() + " :valeur" + nbWhere + " ");
+                              where.append(".").append(nomChampMinFirst).append(clauseWithGestionEmpty);
                            }else{
-                              where.append(" " + criteres.get(k).getOperateur() + " :valeur" + nbWhere + " ");
+                              where.append(clauseWithGestionEmpty);
                            }
                            wheres.add(where.toString());
                            ++nbWhere;
@@ -1499,9 +1513,13 @@ public class TraitementQueryManagerImpl implements TraitementQueryManager
       final TypedQuery<Integer> query = em.createQuery(sql.toString(), Integer.class);
       query.setParameter("entite", entiteTransformation);
       for(int i = 0; i < values.size(); i++){
-         final StringBuffer sb = new StringBuffer("valeur");
-         sb.append(i + 1);
-         query.setParameter(sb.toString(), values.get(i));
+         //si la recherche est sur "non renseigné", aucun param :xxx n'a été ajouté au niveau de la clause (IS NULL à la place)
+         //donc il ne faut pas transmettre la valeur
+         if(!values.get(i).equals(CHAMP_NON_RENSEIGNE)) {
+            final StringBuffer sb = new StringBuffer("valeur");
+            sb.append(i + 1);
+            query.setParameter(sb.toString(), values.get(i));
+         }
       }
 
       // si la liste n'est pas vide et que l'entité
