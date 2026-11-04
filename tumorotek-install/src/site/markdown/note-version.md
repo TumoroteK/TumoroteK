@@ -1,5 +1,12 @@
 #### Notes
 
+##### Version 2.3.1.8 - Publiée le 21/10/2026
+###### Corrections
+- YouTrack [TK-904](https://tumorotek.myjetbrains.com/youtrack/issue/TK-904) : Création d'un <span class="badge badge-echantillon">Echantillon</span> ou <span class="badge badge-produit-derive">Produit dérivé</span> : erreur "doublon" dans un cas particulier
+- YouTrack [TK-905](https://tumorotek.myjetbrains.com/youtrack/issue/TK-905) : Création d'un <span class="badge badge-produit-derive">Produit dérivé</span> : ergonomie surprenante avec un champ d'annotation obligatoire
+- YouTrack [TK-906](https://tumorotek.myjetbrains.com/youtrack/issue/TK-906) : Création d'un <span class="badge badge-echantillon">Echantillon</span> ou <span class="badge badge-produit-derive">Produit dérivé</span> : mauvaise valeur prise en compte pour un champ d'annotation de type "liste multiple"  dans un cas très particulier
+
+
 ##### Version 2.3.1.7 - Publiée le 20/10/2026
 ###### Correction
 - YouTrack [TK-903](https://tumorotek.myjetbrains.com/youtrack/issue/TK-903) : <span class="badge badge-produit-derive">Produit dérivé</span> Valeurs des quantités calculées parfois inexactes au niveau des chiffres après la virgule
