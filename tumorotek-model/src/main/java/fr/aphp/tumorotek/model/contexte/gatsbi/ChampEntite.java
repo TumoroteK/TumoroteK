@@ -38,6 +38,7 @@ package fr.aphp.tumorotek.model.contexte.gatsbi;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -175,15 +176,14 @@ public class ChampEntite implements Serializable, Comparable<ChampEntite>
       return result;
    }
 
+   // TK-915 : réécriture du compareTo proposée par Copilot pour éviter l'exception 
+   // java.lang.IllegalArgumentException: Comparison method violates its general contract!
+   // due à la mauvaise gestion du cas où ordreTableau et arg0 sont null, dans le code précédent
    @Override
    public int compareTo(final ChampEntite arg0){
-      if(ordreTableau != null && arg0 != null && arg0.getOrdreTableau() != null){
-         return ordreTableau.compareTo(arg0.getOrdreTableau());
-      }else if(ordreTableau == null){
-         return 1;
-      }else if(arg0 == null || arg0.getOrdreTableau() == null){
-         return -1; // nulls last
-      }
-      return 0;
+      return Comparator
+         .nullsLast(Integer::compareTo) // mets les null à la fin et les considèrera comme égaux
+         .compare(ordreTableau,
+                  arg0 == null ? null : arg0.getOrdreTableau());
    }
 }
