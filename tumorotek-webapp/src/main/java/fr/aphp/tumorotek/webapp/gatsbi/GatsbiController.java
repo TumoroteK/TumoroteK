@@ -426,6 +426,7 @@ public class GatsbiController
                                  contexte.getNom()
                               }
                );
+               Clients.clearBusy();
                Messagebox.show(messageAvertissement, Labels.getLabel("general.warning"), Messagebox.OK, Messagebox.EXCLAMATION);
                log.warn(messageAvertissement); 
             }
