@@ -182,7 +182,7 @@ public class ChampEntite implements Serializable, Comparable<ChampEntite>
    @Override
    public int compareTo(final ChampEntite arg0){
       return Comparator
-         .nullsLast(Integer::compareTo) // mets les null à la fin et les considèrera comme égaux
+         .nullsLast(Integer::compareTo) // gestion des valeurs null et arbitrairement, on les considère comme les plus grandes valeurs
          .compare(ordreTableau,
                   arg0 == null ? null : arg0.getOrdreTableau());
    }
