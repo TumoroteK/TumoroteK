@@ -38,7 +38,6 @@ package fr.aphp.tumorotek.action.controller;
 import java.awt.print.PrinterException;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -51,9 +50,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.validation.Errors;
 import org.zkoss.util.media.AMedia;
@@ -101,7 +100,6 @@ import fr.aphp.tumorotek.action.utilisateur.FichePasswordModale;
 import fr.aphp.tumorotek.action.utilisateur.ProfilExport;
 import fr.aphp.tumorotek.component.ProgressBarComponent;
 import fr.aphp.tumorotek.decorator.ObjectTypesFormatters;
-import fr.aphp.tumorotek.manager.exception.TKBasicRuntimeException;
 import fr.aphp.tumorotek.manager.exception.DeriveBatchSaveException;
 import fr.aphp.tumorotek.manager.exception.DoublonFoundException;
 import fr.aphp.tumorotek.manager.exception.EmplacementDoublonFoundException;
@@ -110,9 +108,9 @@ import fr.aphp.tumorotek.manager.exception.ObjectReferencedException;
 import fr.aphp.tumorotek.manager.exception.ObjectUsedException;
 import fr.aphp.tumorotek.manager.exception.RequiredObjectIsNullException;
 import fr.aphp.tumorotek.manager.exception.StringEtiquetteOverSizeException;
+import fr.aphp.tumorotek.manager.exception.TKBasicRuntimeException;
 import fr.aphp.tumorotek.manager.exception.TKException;
 import fr.aphp.tumorotek.manager.exception.TransformationQuantiteOverDemandException;
-import fr.aphp.tumorotek.manager.exception.TKWarningException;
 import fr.aphp.tumorotek.manager.impl.coeur.cession.OldEmplTrace;
 import fr.aphp.tumorotek.manager.validation.exception.ValidationException;
 import fr.aphp.tumorotek.model.TKAnnotableObject;
@@ -299,7 +297,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 
 	/**
 	 * Méthode appelée lorsque l'utilisateur clique sur le lien
-	 * pour voir recherché les patients existants lors de la
+	 * pour rechercher les patients existants lors de la
 	 * création d'un nouveau prélèvement.
 	 * @param page dans laquelle inclure la modale
 	 * @param path Chemin vers la page ayant appelée cette modale.
@@ -311,21 +309,38 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	public void openSelectPatientWindow(final String path, final String returnMethode, final Boolean isFusionPatients,
 			final String critere, final Patient patAExclure, final Contexte contexte, final Banque banque){
 
-		final HashMap<String, Object> map = new HashMap<>();
-		map.put("path", path);
-		map.put("methode", returnMethode);
-		map.put("isFusion", isFusionPatients);
-		map.put("critere", critere);
-		map.put("patAExclure", patAExclure);
-		map.put("contexte", contexte);
-		map.put("banque", banque);
+	   //TK-914 : gestion d'un problème de double-clic sur le bouton recherchant les patients
+	   if(!isBlockModal()){
 
-		final Window window = (Window) Executions.createComponents(
-		   contexte == null ? "/zuls/prelevement/SelectPatientModale.zul" : "/zuls/prelevement/gatsbi/SelectPatientModaleGatsbi.zul", 
-		   null, map);
-		window.doModal();
+	      setBlockModal(true);
+      
+	      try {
+            final HashMap<String, Object> map = new HashMap<>();
+            map.put("path", path);
+            map.put("methode", returnMethode);
+            map.put("isFusion", isFusionPatients);
+            map.put("critere", critere);
+            map.put("patAExclure", patAExclure);
+            map.put("contexte", contexte);
+            map.put("banque", banque);
+
+            final Window window = (Window) Executions.createComponents(
+               contexte == null ? "/zuls/prelevement/SelectPatientModale.zul" : "/zuls/prelevement/gatsbi/SelectPatientModaleGatsbi.zul", 
+            	   null, map);
+            window.doModal();
+	      }
+         catch(Exception exception) {
+            log.error(exception.getMessage(), exception);	         
+         }
+         finally {
+            setBlockModal(false);
+         }
+	   }
 	}
 
+// TODO CHT : TK-917 : améliorer la gestion de blockModal dans les méthodes openXXX pour qu'il soit bien repassé à false 
+// même en cas d'exception (reaffecter à false dans un bloc finally - comme fait pour openSelectPatientWindow())  
+	
 	/**
 	 * Méthode appelée lorsque l'utilisateur clique sur le lien
 	 * operateurAideSaisieEchan. Cette méthode va créer une nouvelle fenêtre
@@ -393,7 +408,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 				blockModal = false;
 
 			}catch(final SuspendNotAllowedException e){
-				log.error(e.getMessage(), e); 
+				log.error(e.getMessage(), e);
 			}
 		}
 	}
@@ -708,7 +723,6 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
             message = new StringBuilder(Labels.getLabel(ex.getMessage()));
          }
       }
-		///////
 		else{
 			if(null == ex.getMessage()){
 				message = new StringBuilder(ex.toString());
@@ -2410,6 +2424,7 @@ public abstract class AbstractController extends GenericForwardComposer<Componen
 	 * @return Le ProfilExport si anonymisation demandée
 	 * @since 2.2.3-rc1
 	 */
+	//NB : (TK-914) pas de risque de double-clic le bouton associé à cette action car il est associé à un élément d'un menu. Le bouton est donc "caché" dès le 1er clic
 	public ProfilExport openExportAnonymeModale(){
 		
 		ProfilExport pExport = ProfilExport.ANONYMESTOCK;
