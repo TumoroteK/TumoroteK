@@ -50,6 +50,7 @@ import org.zkoss.bind.annotation.ExecutionArgParam;
 import org.zkoss.bind.annotation.Init;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.select.Selectors;
 import org.zkoss.zk.ui.select.annotation.Wire;
@@ -69,6 +70,9 @@ import fr.aphp.tumorotek.model.contexte.gatsbi.Parametrage;
  */
 public class SelectParametrageModaleVM
 {
+   //TK-913 : Flag qui permet de gérer un éventuel double-clic de l'utilisateur lors du clic sur un des boutons ouvrant cette popup
+   //évite l'erreur ZK : Not unique in ID space 'selectParametrageModale'
+   public static final String FLAG__SELECT_PARAMETRAGE_OPEN = "FLAG__SELECT_PARAMETRAGE_OPEN";
 
    private String entiteLabel;
 
@@ -105,7 +109,7 @@ public class SelectParametrageModaleVM
       args.put("paramId", paramId);
       args.put("parentObj", parentObj);
       Events.postEvent("onSelectParametrage", parent, args);
-      comp.detach();
+      detach(comp);
    }
 
    public SimpleListModel<Parametrage> getParametrages(){
@@ -121,6 +125,15 @@ public class SelectParametrageModaleVM
       final Map<String, Object> args = new HashMap<>();
       args.put("parentObj", parentObj);
       Events.postEvent("onSelectParametrageClose", parent, args);
+      detach(comp);
+   }
+   
+   //TK-913 : gestion du double clic 
+   private void detach(Window comp) {
+      //nettoyage du flag fait avant le detach pour s'assurer qu'il soit bien fait même en cas d'exception lancée par le
+      //detach() (évite d'utiliser un bloc try / finally). En effet, dans ce cas, on préfère permettre de 
+      //recréer la fenêtre avec un éventuel message d'erreur que de ne jamais permettre de la recréer !
+      Executions.getCurrent().getDesktop().removeAttribute(FLAG__SELECT_PARAMETRAGE_OPEN);
       comp.detach();
    }
 }

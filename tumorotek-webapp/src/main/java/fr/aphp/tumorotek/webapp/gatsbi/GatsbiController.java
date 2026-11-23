@@ -63,6 +63,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.zkoss.util.resource.Labels;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Desktop;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -1101,11 +1102,21 @@ public class GatsbiController
    public static void addNewObjectForContext(Contexte contexte, Component selfComponent, Consumer<Event> elseMethod, Event evt,
       TKdataObject parentObj){
       if(!contexte.getParametrages().isEmpty()){
-         final Map<String, Object> args = new HashMap<String, Object>();
-         args.put("contexte", contexte);
-         args.put("parent", selfComponent);
-         args.put("parentObj", parentObj);
-         Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);
+         //TK-913 : gestion d'un éventuel double-clic de l'utilisateur : évite l'erreur ZK : Not unique in ID space 'selectParametrageModale'
+         Desktop desktop = Executions.getCurrent().getDesktop();
+         if(desktop.hasAttribute(SelectParametrageModaleVM.FLAG__SELECT_PARAMETRAGE_OPEN)) {
+            //la modale existe déjà donc on ne fait rien
+            log.warn("un double-clic a dû être fait au niveau de " + (selfComponent == null ? "null" : selfComponent));               
+         }
+         else {
+            //on crée la modale :
+            final Map<String, Object> args = new HashMap<String, Object>();
+            args.put("contexte", contexte);
+            args.put("parent", selfComponent);
+            args.put("parentObj", parentObj);
+            Executions.createComponents("/zuls/gatsbi/SelectParametrageModale.zul", null, args);
+            desktop.setAttribute(SelectParametrageModaleVM.FLAG__SELECT_PARAMETRAGE_OPEN, Boolean.TRUE);
+         }
       }else{ // no parametrages
          // super.onClick$addNew(event);
          elseMethod.accept(evt);
