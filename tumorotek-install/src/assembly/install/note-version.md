@@ -1,5 +1,13 @@
 #### Notes
 
+##### Version 2.3.1.9 - Publiée le 23/11/2026
+###### Corrections
+- YouTrack [TK-910](https://tumorotek.myjetbrains.com/youtrack/issue/TK-910) : ${import} Amélioration de la gestion des quantités quand colonne quantité sans colonne quantité initiale
+- YouTrack [TK-913](https://tumorotek.myjetbrains.com/youtrack/issue/TK-913) : Création d'un ${prelevement} : plantage aléatoire ("Not unique in ID space") lors du passage sur l'écran des échantillons - lié à un double-clic
+- YouTrack [TK-914](https://tumorotek.myjetbrains.com/youtrack/issue/TK-914) : Création d'un ${prelevement} : plantage aléatoire ("Not unique in ID space") lors de la recherche d'un patient - lié à un double-clic
+- YouTrack [TK-916](https://tumorotek.myjetbrains.com/youtrack/issue/TK-916) : Gatsbi > Problème d'affichage d'un message d'avertissement
+
+
 ##### Version 2.3.1.8 - Publiée le 21/10/2026
 ###### Corrections
 - YouTrack [TK-904](https://tumorotek.myjetbrains.com/youtrack/issue/TK-904) : Création d'un ${echantillon} ou ${produit-derive} : erreur "doublon" dans un cas particulier
