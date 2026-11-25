@@ -464,6 +464,8 @@ public class TemplateManagerImpl implements TemplateManager
             tableAnnotationTemplateManager.removeObjectManager(tables.get(i));
          }
 
+         // CHT : pourquoi cette mise en commentaire ? Si les clés d'impression ne sont pas supprimées, ça pose pb si l'utilisateur veut supprimer un champ d'annotation
+         // qui a été utilisée comme clé d'impression car celle-ci perdurant, le champ associé perdure aussi et empêche la suppression du champ associé...
          //         // suppression des CleImpression
          //         final List<CleImpression> clesImpression = cleManager.findByTemplateManager(template);
          //         for(int i = 0; i < clesImpression.size(); i++){
