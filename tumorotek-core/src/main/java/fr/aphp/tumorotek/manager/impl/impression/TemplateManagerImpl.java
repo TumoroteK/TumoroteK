@@ -464,6 +464,11 @@ public class TemplateManagerImpl implements TemplateManager
             tableAnnotationTemplateManager.removeObjectManager(tables.get(i));
          }
 
+         // Il semble que ce code ait été mis en commentaire car une clé d'impression peut être rattachée à plusieurs modèles mais cela pose problème si les clés d'impression 
+         // deviennent orphelines (qu'elles ne sont plus rattachées à aucun modèle) car TK ne permet pas de les supprimer et si une est rattachée à un champ d'annotation
+         // celui-ci ne peut pas être supprimé à cause de sa référence à un élement de CHAMP rattaché à la clé d'impression. Message d'erreur dans ce cas :  
+         // `CLE_IMPRESSION`, CONSTRAINT  `FK_CHAMP_ID` FOREIGN KEY(`CHAMP_ID`) REFERENCES `CHAMP` (`CHAMP_ID`)
+         // c'est un scenario assez rare mais bloquant .... (correction en bdd : TKB-36). TK-919 pour la correction pérenne.
          //         // suppression des CleImpression
          //         final List<CleImpression> clesImpression = cleManager.findByTemplateManager(template);
          //         for(int i = 0; i < clesImpression.size(); i++){
