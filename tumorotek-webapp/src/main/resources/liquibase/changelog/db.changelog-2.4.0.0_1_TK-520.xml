@@ -83,6 +83,11 @@
 		<comment>Chargement des procédures d'export qui ont été mises à jour</comment>
 		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_mysql.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
 	</changeSet>
+	
+	<changeSet id="2.4.0.0-TK-520-21" author="CH" runAlways="false" context="*">
+		<comment>Chargement des procédures d'export qui ont été mises à jour</comment>
+		<sqlFile encoding="utf8" path="../sql/mysql/tumorotek/export_gatsbi.sql" endDelimiter="&amp;&amp;" relativeToChangelogFile="true" stripComments="true"/>
+	</changeSet>
 
 </databaseChangeLog>
 

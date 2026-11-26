@@ -115,6 +115,7 @@ import fr.aphp.tumorotek.model.coeur.prelevement.Risque;
 import fr.aphp.tumorotek.model.coeur.prodderive.ProdDerive;
 import fr.aphp.tumorotek.model.contexte.BanqueTableCodage;
 import fr.aphp.tumorotek.model.contexte.Coordonnee;
+import fr.aphp.tumorotek.model.contexte.Protocole;
 import fr.aphp.tumorotek.model.qualite.ObjetNonConforme;
 import fr.aphp.tumorotek.model.stockage.Conteneur;
 import fr.aphp.tumorotek.model.stockage.Emplacement;
@@ -2228,5 +2229,11 @@ public class FicheEchantillonStatic extends AbstractFicheStaticController
       }else{
          ((Groupbox) groupInfosCompEchan).setOpen(b);
       }      
+   }
+   
+   //TK-520
+   public String getProtocolesFormated() {
+      return (prelevement != null && prelevement.getProtocoles() != null) ? 
+         prelevement.getProtocoles().stream().map(Protocole::getNom).collect(Collectors.joining(",")) : "";
    }
 }

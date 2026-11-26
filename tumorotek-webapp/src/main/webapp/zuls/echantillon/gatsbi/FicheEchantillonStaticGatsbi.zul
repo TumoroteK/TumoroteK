@@ -96,9 +96,16 @@
 										value="@{fwinEchantillonStatic$composer.prelevement.nature.nature}"
 										sclass="formValue" />
 								</div>
-								<div class="item item-wide" id="row3PrlvtEchan"><!-- patient -->
+								<div class="item item-mid" id="row3PrlvtEchan"><!-- patient -->
 									<label value="${c:l('prelevement.patient')}" sclass="chpLabel formLabel" />
 									<label id="patientLabel" sclass="formValue" />
+								</div>
+								<div class="item item-mid" id="protocolesDiv"><!-- protocoles -->
+									<custom-attributes champId="274" />
+									<label value="${c:l('Champ.Prelevement.Protocoles')}" sclass="chpLabel formLabel" />
+									<label id="protocolesPrlvtLabel" 
+										value="@{fwinEchantillonStatic$composer.protocolesFormated}"
+										sclass="formValue" />
 								</div>
 							</div>
 						</div>

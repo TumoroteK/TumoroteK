@@ -1996,7 +1996,7 @@ CREATE PROCEDURE `select_cession_data`(IN entite_id INTEGER, IN count_annotation
 
     SET @annocols = get_anno_cols(count_annotation, entite_id);
 
-    IF entite_id = 3 -- TK-520 à conditionner en fonction du contexte pour TUMORAL..CODE_MORPHO
+    IF entite_id = 3
     THEN
       SET @sql = 'SELECT a.cession_id, a.numero,
 			tee.ECHANTILLON_ID,

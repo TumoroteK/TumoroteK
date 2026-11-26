@@ -99,10 +99,16 @@
 							value="@{fwinEchantillonStatic$composer.prelevement.nature.nature}"
 							sclass="formValue" />
 					</row>
-					<row id="row3PrlvtEchan" spans="1,3">
+					<row id="row3PrlvtEchan">
 						<!-- Patient -->
 						<label value="${c:l('prelevement.patient')}" sclass="formLabel" />
 						<label id="patientLabel" 
+							sclass="formValue" />
+						<!-- Type du prélèvement -->
+						<label value="${c:l('Champ.Prelevement.Protocoles')}" 
+							sclass="formLabel" />
+						<label id="protocolesPrlvtLabel" 
+							value="@{fwinEchantillonStatic$composer.protocolesFormated}"
 							sclass="formValue" />
 					</row>
 					<row spans="4">
